@@ -12,10 +12,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': PROJECT,
-        'USER': os.getenv('MYSQL_USER'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
-        'HOST': os.getenv('MYSQL_HOST'),
-        'PORT': os.getenv('MYSQL_PORT'),
+        'USER': os.getenv('VAULT_MYSQL_USER'),
+        'PASSWORD': os.getenv('VAULT_MYSQL_PASSWORD'),
+        'HOST': os.getenv('VAULT_MYSQL_HOST'),
+        'PORT': os.getenv('VAULT_MYSQL_PORT'),
     }
 }
 

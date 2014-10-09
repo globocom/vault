@@ -16,11 +16,11 @@ import os
 def get_settings_path():
     """
     Retrieve settings path according to value set in the
-    environment variable ENVIRON.
+    environment variable VAULT_ENVIRON.
 
-    If ENVIRON is not defined, use 'local' as default.
+    If VAULT_ENVIRON is not defined, use 'local' as default.
     """
-    environ_name = os.getenv('ENVIRON', 'local').lower()
+    environ_name = os.getenv('VAULT_ENVIRON', 'local').lower()
     return "vault.settings.{}".format(environ_name)
 
 

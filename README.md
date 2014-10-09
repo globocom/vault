@@ -14,11 +14,11 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 2) set environment variables
 
-    $ export ENVIRON=PROD
-    $ export MYSQL_USER=(vault mysql user)
-    $ export MYSQL_PASSWORD=(vault mysql password)
-    $ export MYSQL_PORT=3306
-    $ export MYSQL_HOST=(vault mysql host)
+    $ export VAULT_ENVIRON=PROD
+    $ export VAULT_MYSQL_USER=(vault mysql user)
+    $ export VAULT_MYSQL_PASSWORD=(vault mysql password)
+    $ export VAULT_MYSQL_PORT=3306
+    $ export VAULT_MYSQL_HOST=(vault mysql host)
     $ export VAULT_STATIC_URL='http://your-static-url'
     $ export VAULT_KEYSTONE_URL='https://your-keystone-url:5000'
 

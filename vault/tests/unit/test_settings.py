@@ -20,7 +20,7 @@ class SettingsTestCase(unittest.TestCase):
         self.assertEqual(response, expected)
 
     def test_get_settings_path_from_environment_variable(self):
-        os.environ = {"ENVIRON": "abc"}
+        os.environ = {"VAULT_ENVIRON": "abc"}
         response = settings.get_settings_path()
         expected = "vault.settings.abc"
         self.assertEqual(response, expected)
