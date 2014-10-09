@@ -1,0 +1,7 @@
+*.pyc
+statictemp/
+actions.log
+.DS_Store
+.coverage
+.env
+1

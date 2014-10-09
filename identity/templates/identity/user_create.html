@@ -1,0 +1,66 @@
+{% extends "vault/base.html" %}
+
+{% block title %}Create User{% endblock %}
+{% block content_title %}Create User{% endblock %}
+
+{% block content %}
+  <form action="" class="form-box user-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    {{ form.id }}
+    
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.password_confirm.label_tag }}
+          {{ form.password_confirm }}
+          {{ form.password_confirm.errors }}
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          {{ form.project.label_tag }}
+          {{ form.project }}
+          {{ form.project.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.role.label_tag }}
+          {{ form.role }}
+          {{ form.role.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.enabled.label_tag }}
+          {{ form.enabled }}
+          {{ form.enabled.errors }}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">Create User</button>
+      </div>
+    </fieldset>
+
+  </form>
+{% endblock %}

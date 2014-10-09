@@ -1,0 +1,96 @@
+{% extends "vault/base.html" %}
+
+{% load lastpart %}
+{% load dateconv %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_top %}
+  {% if prefix %}
+  <a class="btn btn-primary" href="{% url "upload" container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary" href="{% url "upload" container=container %}">
+  {% endif %}
+  <i class="fa fa-upload"></i>&nbsp;&nbsp;Upload&nbsp;Object</a>
+
+  {% if prefix %}
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container %}">
+  {% endif %}
+  <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
+{% endblock %}
+
+{% block content %}
+  <ul class="breadcrumb">
+    <li><a href="{% url "containerview" %}">Containers</a></li>
+    <li>
+      {% if prefix %}
+        <a class="u" href="{% url "objectview" container=container %}">{{container}}</a>
+      {% else %}
+        {{container}}
+      {% endif %}
+    </li>
+    {% for prefix in prefixes %}
+    <li>
+      {% if forloop.counter < prefixes|length %}
+      <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+      {% else %}
+      {{prefix.display_name}}
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div class="panel panel-default">
+    <table class="items-list table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th style="width: 0.5em;" class="hidden-phone"></th>
+          <th>Name</th>
+          <th style="width: 12.5em;" class="hidden-phone">Created</th>
+          <th style="width: 6em;" class="hidden-phone">Size</th>
+          <th style="width: 1em;"></th>
+        </tr>
+      </thead>
+      {% if folders or objects %}
+      <tbody>
+        {% for folder in folders %}
+        <tr>
+          <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
+          <td>
+              <a href="{% url "objectview" container=container prefix=folder.0 %}"><strong>{{folder.0|lastpart}}</strong></a>
+          </td>
+          <td class="hidden-phone"></td>
+          <td class="hidden-phone"></td>
+          <td>
+            <a href="{% url "delete_pseudofolder" container=container pseudofolder=folder.1 %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete pseudofolder {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+
+        {% for key in objects %}
+        <tr>
+          <td class="hidden-phone"><i class="fa fa-file"></i></td>
+          <td><a href="{% url "download" container=container objectname=key.name %}" class="block">{{key.name|lastpart}}</a></td>
+          <td class="hidden-phone">{{key.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}</td>
+          <td class="hidden-phone">{{key.bytes|filesizeformat}}</td>
+          <td><a href="{% url "delete_object" container=container objectname=key.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% else %}
+      <tbody>
+        <tr>
+          <th colspan="5" class="center">
+            <strong><center>There are no objects in this container yet. Upload new objects by clicking the "Upload Object" button.<center></strong>
+          </th>
+        </tr>
+      </tbody>
+      {% endif %}
+    </table>
+  </div>
+{% endblock %}
+{% block jsadd %} <script type="text/javascript"> $('input[id=file]').change(function() { $('#filetmp').val($(this).val()); }); </script> {% endblock %}

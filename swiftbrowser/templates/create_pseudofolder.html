@@ -1,0 +1,41 @@
+{% extends "vault/base.html" %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content %}
+  <ul class="breadcrumb">
+    <li><a href="{% url "containerview" %}">Containers</a></li>
+    <li><a class="u" href="{% url "objectview" container=container %}">{{container}}</a></li>
+    {% for prefix in prefixes %}
+    <li><a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a></li>
+    {% endfor %}
+    <li>Create Pseudofolder</li>
+  </ul>
+
+  <form method="POST" class="form-box project-form">
+    {% csrf_token %}
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+            {{ form.foldername.label_tag }}
+            {{ form.foldername }}
+            {{ form.foldername.errors }}
+            <span class="help-block">
+                Enter name of pseudofolder here.
+                Please note that you can not rename it afterwards.
+            </span>
+        </div>
+
+      <div class="col-md-6">&nbsp;</div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

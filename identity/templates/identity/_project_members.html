@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<section id="add-user-role" {% if not has_id %}class="disabled"{% endif %}>
+  <div class="title">Manage Users:</div>
+
+  <div class="controls">
+    <select class="users">
+    {% for user in users %}
+      <option value="{{ user.id }}">{{ user.name }}</option>
+    {% endfor %}
+    </select>
+
+    <span>&nbsp;with role:&nbsp;</span>
+
+    <select class="roles">
+    {% for role in roles %}
+      <option value="{{ role.id }}">{{ role.name }}</option>
+    {% endfor %}
+    </select>
+
+    <a href="#" class="btn btn-primary btn-sm  add-btn">Add</a>
+  </div>
+
+  <div class="box-users">
+    <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
+    <table class="related-users">
+      <thead>
+        <tr>
+          <th width="45%">user</th>
+          <th width="45%">role</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="lock">
+    <span class="msg-lock">Create project to manage users</span>
+  </div>
+</section>

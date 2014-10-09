@@ -1,0 +1,8 @@
+-r requirements.txt
+django-jstest==0.2.0
+ipdb==0.8
+mock==1.0.1
+pep8==1.5.7
+pylint==1.0.0
+pytest-cov==1.7.0
+pytest==2.5.2

@@ -1,0 +1,59 @@
+{% extends "vault/base.html" %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content %}
+
+  <ul class="breadcrumb">
+    <li><a href="{% url "containerview" %}">Containers</a></li>
+    <li><a class="u" href="{% url "objectview" container=container %}">{{container}}</a></li>
+    {% for prefix in prefixes %}
+    <li><a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a></li>
+    {% endfor %}
+    <li>Upload File</li>
+  </ul>
+
+  <form action="{% url "create_object" container=container prefix=prefix %}" method="POST" class="form-box project-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="redirect" value="{{ redirect_url }}" />
+    <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
+    <input type="hidden" name="max_file_count" value="{{ max_file_count }}" />
+    <input type="hidden" name="expires" value="{{ expires }}" />
+    <input type="hidden" name="signature" value="{{ signature }}" />
+    <input type="file" name="file1" id="file" style="display: none;" />
+
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+            <label for="filetmp">File:</label><br />
+            <input id="filetmp" name="filetmp" class="form-control" type="text"><br>
+            <button class="btn btn-sm btn-default" type="button" onclick="$('input[id=file]').click();">Browse</button>
+            <span class="help-block">
+                Please select a file to upload.
+            </span>
+        </div>
+
+      <div class="col-md-6">&nbsp;</div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button type="submit" id="btSubmit" class="btn btn-primary">Start upload</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+  $('input[id=file]').change(function() {
+    $('#filetmp').val($(this).val());
+  });
+  $('#btSubmit').click(function() {
+    $('.loading').fadeIn('slow');
+  });
+</script>
+{% endblock %}

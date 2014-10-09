@@ -1,0 +1,95 @@
+{% extends "vault/base.html" %}
+
+{% load lastpart %}
+{% load dateconv %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+{% block content %}
+  <ul class="breadcrumb">
+    <li><a href="{% url "containerview" %}">Containers</a></li>
+    <li>Add ACL to container {{container}}</li>
+  </ul>
+
+  {% include "addacl_modal.html" %}
+
+  <div class="panel panel-default">
+    <table class="items-list table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th style="width: 1em;" class="hidden-phone"></th>
+          <th>Name</th>
+          <th style="width: 7.5em;"></th>
+          <th style="width: 1em;">
+            <div class="dropdown pull-right">
+              <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-chevron-down icon-white"></i></a>
+              <ul class="dropdown-menu">
+                <li>
+                  {% if not public %}
+                  <form method="POST" action="{% url "edit_acl" container=container %}" id="mkpublic">
+                    {% csrf_token %}
+                    <input name="username" type="hidden" value=".r:*">
+                    <input name="read" type="hidden" value="On">
+                  </form>
+                  <a href="#" onclick="mkpublic.submit()"><i class="fa fa-eye"></i> Make public</a>
+                  {% else %}
+                  <a href="{% url "edit_acl" container=container %}?delete=.r:*,.rlistings"><i class="fa fa-eye-slash"></i> Make private</a>
+                  {% endif %}
+                </li>
+                <li class="divider" />
+                <li><a href="#addacl_modal" data-target="#addacl_modal" data-toggle="modal"><i class="fa fa-user"></i> Add ACL</a></li>
+              </ul>
+            </div>
+          </th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for user, permission in acls.items %}
+      <tr>
+        <td class="hidden-phone"><i class="fa fa-user"></i></td>
+        <td>
+          {% if user == ".rlistings" %}
+            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the listing of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+          {% elif user == ".r:*" %}
+            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the download of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+          {% else %}
+            {{user}}
+          {% endif %}
+        </td>
+        <td style="text-align:right;">
+          {% if permission.read %}
+          <a class="btn btn-xs btn-success">Read</a>
+          {% endif %}
+
+          {% if permission.write %}
+          <a class="btn btn-xs btn-danger">Write</a>
+          {% endif %}
+        </td>
+        <td>
+          <a class="btn btn-xs btn-danger" href="{% url "edit_acl" container=container%}?delete={{ user }}"><i class="fa fa-trash-o icon-white"></i></a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">
+          <strong><center>There are no ACLs for this container yet. Add a new ACL by clicking the red button.<center></strong>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block jsadd %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("a").tooltip({
+      'selector': '',
+      'placement': 'bottom'
+    });
+  });
+</script>
+{% endblock %}
