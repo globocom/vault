@@ -46,5 +46,10 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 ### Compatibility
 
 - Django 1.6
-- Swift 1.13.1 (auth v2.0)
+- Swift 2.1.0 (auth v2.0)
 - Keystone 2014.1
+
+### Screenshots
+
+![Login](screenshots/vault_login.png)
+![Dashboard](screenshots/vault_dashboard.png)
