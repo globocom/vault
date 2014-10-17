@@ -15,6 +15,10 @@ import os
 
 PROJECT = 'vault'
 
+DEBUG = os.getenv('VAULT_DEBUG', True)
+
+TEMPLATE_DEBUG = DEBUG
+
 SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -93,9 +97,6 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 
 # ENV Confs
-
-DEBUG = os.getenv('VAULT_DEBUG', True)
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
