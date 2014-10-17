@@ -10,11 +10,11 @@ from identity.views import (ListUserView, ListProjectView, CreateUserView,
 urlpatterns = patterns('',
     # Users
     url(r'^users/?$', ListUserView.as_view(), name='users'),
-    url(r'^user/add/?$', CreateUserView.as_view(), name='add_user'),
-    url(r'^user/(?P<user_id>[\w\-]+)/?$', UpdateUserView.as_view(),
-        name='edit_user'),
-    url(r'^user/delete/(?P<user_id>[\w\-]+)/?$', DeleteUserView.as_view(),
-        name='delete_user'),
+    # url(r'^user/add/?$', CreateUserView.as_view(), name='add_user'),
+    # url(r'^user/(?P<user_id>[\w\-]+)/?$', UpdateUserView.as_view(),
+    #     name='edit_user'),
+    # url(r'^user/delete/(?P<user_id>[\w\-]+)/?$', DeleteUserView.as_view(),
+    #     name='delete_user'),
 
     # Projects
     url(r'^projects/?$', ListProjectView.as_view(), name='projects'),

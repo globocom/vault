@@ -4,12 +4,6 @@
 
 {% block content_title %}Users{% endblock %}
 
-{% block content_top %}
-  <a href="{% url "add_user" %}" class="create-user btn btn-primary">
-    <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;Create User
-  </a>
-{% endblock %}
-
 {% block content %}
 <div class="panel panel-default">
   <table class="items-list table table-bordered table-striped table-hover">
@@ -17,8 +11,7 @@
       <tr>
         <th width="40%">User</th>
         <th width="45%">Email</th>
-        <th width="10%">Enabled</th>
-        <th width="5%"></th>
+        <th width="15%">Enabled</th>
       </tr>
     </thead>
     <tbody>
@@ -27,9 +20,6 @@
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.enabled }}</td>
-        <td>
-          <a href="{% url "edit_user" user.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
-        </td>
       </tr>
       {% endfor %}
     </tbody>
