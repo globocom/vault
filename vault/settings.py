@@ -15,7 +15,7 @@ import os
 
 PROJECT = 'vault'
 
-DEBUG = os.getenv('VAULT_DEBUG', True)
+DEBUG = eval(os.getenv('VAULT_DEBUG', 'True'))
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -107,7 +107,7 @@ DATABASES = {
         'USER': os.getenv('VAULT_MYSQL_USER', 'root'),
         'PASSWORD': os.getenv('VAULT_MYSQL_PASSWORD', ''),
         'HOST': os.getenv('VAULT_MYSQL_HOST', ''),
-        'PORT': os.getenv('VAULT_MYSQL_PORT', 3306),
+        'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3306)),
     }
 }
 
@@ -125,4 +125,4 @@ if KEYSTONE_VERSION == 3:
 else:
     OPENSTACK_KEYSTONE_URL = "%s/v2.0" % os.getenv('VAULT_KEYSTONE_URL')
 
-SWIFT_INSECURE = os.getenv('VAULT_SWIFT_INSECURE', True)
+SWIFT_INSECURE = eval(os.getenv('VAULT_SWIFT_INSECURE', 'True'))
