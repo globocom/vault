@@ -161,9 +161,10 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(len(msgs), 1)
         self.assertEqual(msgs[0].message, 'Access denied.')
 
+    @patch("swiftbrowser.views.actionlog.log")
     @patch('swiftbrowser.views.log.exception')
     @patch('swiftbrowser.views.client.put_container')
-    def test_create_container_valid_form(self, mock_put_container, mock_logging):
+    def test_create_container_valid_form(self, mock_put_container, mock_logging, mock_log):
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
@@ -177,6 +178,7 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(msgs[0].message, 'Container created.')
         self.assertTrue(mock_put_container.called)
         self.assertFalse(mock_logging.called)
+        mock_log.assert_called_with("user", "create", "fakecontainer")
 
     @patch('swiftbrowser.views.log.exception')
     @patch('swiftbrowser.views.client.put_container')

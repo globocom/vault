@@ -86,6 +86,7 @@ def create_container(request):
                                  http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
                                  "Container created.")
+            actionlog.log(request.user.name, "create", container)
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, 'Access denied.')
