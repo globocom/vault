@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import logging
+import syslog
 
 
 class ActionNotFound(Exception):
@@ -10,12 +10,7 @@ class ActionNotFound(Exception):
 class ActionLogger(object):
     """ A wrapper to log actions """
 
-    def __init__(self, filename=None):
-
-        if filename:
-            logging.basicConfig(filename=filename, level=logging.INFO)
-
-        self.logger = logging.getLogger('actionlogger')
+    def __init__(self):
         self._actions = {'create': 'CREATED',
                          'update': 'UPDATED',
                          'delete': 'DELETED'}
@@ -27,4 +22,5 @@ class ActionLogger(object):
         msg = 'User (%s) %s: %s' % (str(user),
                                     self._actions[action],
                                     str(item))
-        self.logger.info(msg)
+
+        syslog.syslog(syslog.LOG_INFO, msg)
