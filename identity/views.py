@@ -32,7 +32,8 @@ class ListUserView(SuperUserMixin, TemplateView):
         keystone = Keystone(self.request)
 
         try:
-            context['users'] = keystone.user_list()
+            users = keystone.user_list()
+            context['users'] = sorted(users, key=lambda l: l.name.lower())
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
@@ -204,7 +205,8 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
         keystone = Keystone(self.request)
 
         try:
-            context['projects'] = keystone.project_list()
+            projects = keystone.project_list()
+            context['projects'] = sorted(projects, key=lambda l: l.name.lower())
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
@@ -242,8 +244,11 @@ class BaseProjectView(SuperUserMixin, FormView):
             context['has_id'] = True
 
             try:
-                context['users'] = self.keystone.user_list()
-                context['roles'] = self.keystone.role_list()
+                users = self.keystone.user_list()
+                context['users'] = sorted(users, key=lambda l: l.name.lower())
+
+                roles = self.keystone.role_list()
+                context['roles'] = sorted(roles, key=lambda l: l.name.lower())
             except Exception as e:
                 log.exception('Exception: %s' % e)
 
