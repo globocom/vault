@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 from django.conf import settings
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def update_default_context(request, context={}):
 
@@ -19,3 +19,18 @@ def update_default_context(request, context={}):
     context['has_identity'] = request.session.get('has_identity')
 
     return context
+
+def generic_pagination(items, page=1, per_page=2):
+
+    paginator = Paginator(items, per_page) # Show 5 items per page
+
+    try:
+        paginated_items = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        paginated_items = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        paginated_items = paginator.page(paginator.num_pages)
+
+    return paginated_items

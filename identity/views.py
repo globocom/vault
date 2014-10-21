@@ -9,16 +9,16 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
-from django.views.generic.detail import BaseDetailView
+# from django.views.generic.detail import BaseDetailView
 from django.views.decorators.debug import sensitive_post_parameters
 
 from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
-from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
-
+from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
+from vault import utils
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -30,10 +30,11 @@ class ListUserView(SuperUserMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ListUserView, self).get_context_data(**kwargs)
         keystone = Keystone(self.request)
+        page = self.request.GET.get('page', 1)
 
         try:
-            users = keystone.user_list()
-            context['users'] = sorted(users, key=lambda l: l.name.lower())
+            users = sorted(keystone.user_list(), key=lambda l: l.name.lower())
+            context['users'] = utils.generic_pagination(users, page)
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
@@ -203,10 +204,12 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ListProjectView, self).get_context_data(**kwargs)
         keystone = Keystone(self.request)
+        page = self.request.GET.get('page', 1)
 
         try:
-            projects = keystone.project_list()
-            context['projects'] = sorted(projects, key=lambda l: l.name.lower())
+            projects = sorted(keystone.project_list(),
+                                key=lambda l: l.name.lower())
+            context['projects'] = utils.generic_pagination(projects, page)
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
