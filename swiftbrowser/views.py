@@ -86,7 +86,8 @@ def create_container(request):
                                  http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
                                  "Container created.")
-            actionlog.log(request.user.name, "create", container)
+
+            actionlog.log(request.user.username, "create", container)
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, 'Access denied.')
@@ -123,6 +124,7 @@ def delete_container(request, container):
         client.delete_container(storage_url, auth_token,
                                 container, http_conn=http_conn)
         messages.add_message(request, messages.SUCCESS, "Container deleted.")
+        actionlog.log(request.user.username, "delete", container)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, 'Access denied.')
@@ -249,6 +251,7 @@ def create_object(request, container, prefix=None):
 
         if req.status_code == 201:
             messages.add_message(request, messages.SUCCESS, 'Object created.')
+            actionlog.log(request.user.username, "create", obj)
         elif req.status_code == 401 or req.status_code == 403:
             messages.add_message(request, messages.ERROR, 'Access denied.')
         else:
@@ -293,6 +296,7 @@ def delete_object(request, container, objectname):
                                  container=container, name=objectname,
                                  http_conn=http_conn)
         messages.add_message(request, messages.SUCCESS, 'Object deleted.')
+        actionlog.log(request.user.username, "delete", objectname)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, 'Access denied.')
