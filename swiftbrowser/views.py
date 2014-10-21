@@ -251,6 +251,7 @@ def create_object(request, container, prefix=None):
 
         if req.status_code == 201:
             messages.add_message(request, messages.SUCCESS, 'Object created.')
+            actionlog.log(request.user.username, "create", obj)
         elif req.status_code == 401 or req.status_code == 403:
             messages.add_message(request, messages.ERROR, 'Access denied.')
         else:
@@ -295,6 +296,7 @@ def delete_object(request, container, objectname):
                                  container=container, name=objectname,
                                  http_conn=http_conn)
         messages.add_message(request, messages.SUCCESS, 'Object deleted.')
+        actionlog.log(request.user.username, "delete", objectname)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, 'Access denied.')
