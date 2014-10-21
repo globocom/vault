@@ -98,7 +98,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # ENV Confs
 
-ALLOWED_HOSTS = eval(os.getenv('VAULT_ALLOWED_HOSTS', '[]'))
+ALLOWED_HOSTS = [os.getenv('VAULT_ALLOWED_HOSTS', '')]
 
 DATABASES = {
     'default': {
