@@ -273,6 +273,7 @@ body {
 .error .msg { background-color: rgba(156, 5, 5, 0.85); }
 .info .msg { background-color: rgba(0, 80, 200, 0.85); }
 
+/* loading */
 .loading {
     content: '';
     display: block;
@@ -292,4 +293,19 @@ body {
     top: 50%;
     display: block;
     font-size: large;
+}
+
+/* metadata */
+.btn-meta {
+    background-color: #ccc;
+    color: white;
+    padding: 0 8px;
+    font-size: 10px;
+    float: right;
+    margin-top: 3px;
+}
+
+.btn-meta:hover {
+    background-color: #444;
+    color: white;
 }

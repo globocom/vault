@@ -62,6 +62,7 @@
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
               <a href="{% url "objectview" container=container prefix=folder.0 %}"><strong>{{folder.0|lastpart}}</strong></a>
+              <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
           </td>
           <td class="hidden-phone"></td>
           <td class="hidden-phone"></td>
@@ -73,11 +74,22 @@
 
         {% for key in objects %}
         <tr>
-          <td class="hidden-phone"><i class="fa fa-file"></i></td>
-          <td><a href="{% url "download" container=container objectname=key.name %}" class="block">{{key.name|lastpart}}</a></td>
-          <td class="hidden-phone">{{key.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}</td>
-          <td class="hidden-phone">{{key.bytes|filesizeformat}}</td>
-          <td><a href="{% url "delete_object" container=container objectname=key.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a></td>
+          <td class="hidden-phone">
+            <i class="fa fa-file"></i>
+          </td>
+          <td>
+            <a href="{% url "download" container=container objectname=key.name %}" class="block">{{key.name|lastpart}}</a>
+            <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
+          </td>
+          <td class="hidden-phone">
+            {{key.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+          </td>
+          <td class="hidden-phone">
+            {{key.bytes|filesizeformat}}
+          </td>
+          <td>
+            <a href="{% url "delete_object" container=container objectname=key.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>

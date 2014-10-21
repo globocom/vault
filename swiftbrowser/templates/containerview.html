@@ -29,10 +29,19 @@
     <tbody>
     {% for container in containers %}
       <tr>
-        <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
-        <td><strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong></td>
-        <td class="hidden-phone">{{container.count}}</td>
-        <td class="hidden-phone">{{container.bytes|filesizeformat}}</td>
+        <td class="hidden-phone">
+          <i class="fa fa-inbox"></i>
+        </td>
+        <td>
+          <strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong>
+          <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
+        </td>
+        <td class="hidden-phone">
+          {{container.count}}
+        </td>
+        <td class="hidden-phone">
+          {{container.bytes|filesizeformat}}
+        </td>
         <td>
           <div class="dropdown pull-right">
             <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-chevron-down icon-white"></i></a>
