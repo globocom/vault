@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 def update_default_context(request, context={}):
 
     context['logged_user'] = request.user
@@ -20,9 +21,10 @@ def update_default_context(request, context={}):
 
     return context
 
+
 def generic_pagination(items, page=1, per_page=2):
 
-    paginator = Paginator(items, per_page) # Show 5 items per page
+    paginator = Paginator(items, per_page)
 
     try:
         paginated_items = paginator.page(page)
