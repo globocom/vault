@@ -61,8 +61,10 @@
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-              <a href="{% url "objectview" container=container prefix=folder.0 %}"><strong>{{folder.0|lastpart}}</strong></a>
-              <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
+            <a href="{% url "objectview" container=container prefix=folder.0 %}"><strong>{{folder.0|lastpart}}</strong></a>
+            <button class="btn-meta btn btn-sm"
+                    data-name="{{ folder.0 }}"
+                    data-meta-url="{% url "metadata" container=container objectname=folder.0 %}">show&nbsp;metadata</button>
           </td>
           <td class="hidden-phone"></td>
           <td class="hidden-phone"></td>
@@ -79,7 +81,9 @@
           </td>
           <td>
             <a href="{% url "download" container=container objectname=key.name %}" class="block">{{key.name|lastpart}}</a>
-            <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
+            <button class="btn-meta btn btn-sm"
+                    data-name="{{ key.name }}"
+                    data-meta-url="{% url "metadata" container=container objectname=key.name %}">show&nbsp;metadata</button>
           </td>
           <td class="hidden-phone">
             {{key.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}

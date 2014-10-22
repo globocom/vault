@@ -91,6 +91,7 @@ class FakeUser(AnonymousUser):
 
         self.id = n
         self.name = name if name else "FakeUser%d" % n
+        self.username = self.name
         self.enabled = True
         self.description = ''
         self.project_id = 1

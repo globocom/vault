@@ -34,7 +34,9 @@
         </td>
         <td>
           <strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong>
-          <button class="btn-meta btn btn-sm">show&nbsp;metadata</button>
+          <button class="btn-meta btn btn-sm"
+                  data-name="{{ container.name }}"
+                  data-meta-url="{% url "metadata" container=container.name %}">show&nbsp;metadata</button>
         </td>
         <td class="hidden-phone">
           {{container.count}}
