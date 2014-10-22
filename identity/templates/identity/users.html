@@ -1,5 +1,7 @@
 {% extends "vault/base.html" %}
 
+{% load pagination %}
+
 {% block title %}Users{% endblock %}
 
 {% block content_title %}Users{% endblock %}
@@ -35,4 +37,5 @@
     </tbody>
   </table>
 </div>
+{% pagination users %}
 {% endblock %}

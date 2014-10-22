@@ -18,6 +18,8 @@ urlpatterns = patterns('',
 
     # Projects
     url(r'^projects/?$', ListProjectView.as_view(), name='projects'),
+    url(r'^projects/(?P<page>[\w\-]+)/?$', ListProjectView.as_view(),
+        name='projects'),
     url(r'^project/add/?$', CreateProjectView.as_view(), name='add_project'),
     url(r'^project/(?P<project_id>[\w\-]+)/?$', UpdateProjectView.as_view(),
         name='edit_project'),

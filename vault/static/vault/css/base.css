@@ -293,3 +293,8 @@ body {
     display: block;
     font-size: large;
 }
+
+.table-pagination {
+    width: 100%;
+    text-align: center;
+}
