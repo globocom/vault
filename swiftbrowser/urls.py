@@ -35,4 +35,7 @@ urlpatterns = patterns('swiftbrowser.views',
 
     url(r'^download/(?P<container>.+?)/(?P<objectname>.+?)$',
         views.download, name="download"),
+
+    url(r'^metadata/(?P<container>.+?)/(?P<objectname>.+?)?$',
+        views.metadataview, name="metadata"),
 )
