@@ -316,7 +316,7 @@ body {
     right: -340px;
     bottom: 0;
     width: 280px;
-    padding: 52px 15px 0;
+    padding: 52px 0 0;
     background-color: #444;
     border-left: 1px solid #111;
 
@@ -372,11 +372,48 @@ body {
     border-right: 1px solid #111;
 }
 
-.metadata .name {
+.metadata .object-name {
     display: block;
-    padding-top: 30px;
-    font-size: 32px;
+    padding: 15px;
+    font-size: 18px;
     font-weight: 300;
     color: white;
     margin: 0px;
+    color: white;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.metadata .items {
+    position: absolute;
+    top: 110px;
+    bottom: 0;
+    overflow-y: auto;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #333;
+}
+
+.metadata .items .key,
+.metadata .items .value {
+    display: block;
+    font-size: 12px;
+    padding: 3px 15px;
+    color: #ccc;
+}
+
+.metadata .items .key {
+    background-color: #333;
+    border-radius: 2px;
+    color: #f5ee98;
+}
+
+.metadata .items .value {
+    background-color: #373737;
+}
+
+.metadata .load {
+    display: none;
 }
