@@ -1,5 +1,7 @@
 {% extends "vault/base.html" %}
 
+{% load pagination %}
+
 {% block title %}Storage{% endblock %}
 
 {% block content_title %}Storage{% endblock %}
@@ -76,4 +78,5 @@
 
   </table>
 </div>
+{% pagination containers %}
 {% endblock %}

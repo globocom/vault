@@ -2,6 +2,7 @@
 
 {% load lastpart %}
 {% load dateconv %}
+{% load pagination %}
 
 {% block title %}Storage{% endblock %}
 
@@ -55,33 +56,32 @@
           <th style="width: 1em;"></th>
         </tr>
       </thead>
-      {% if folders or objects %}
+      {% for obj in objects %}
       <tbody>
-        {% for folder in folders %}
+        {% if 'prefix' in obj %}
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-              <a href="{% url "objectview" container=container prefix=folder.0 %}"><strong>{{folder.0|lastpart}}</strong></a>
+              <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
           </td>
           <td class="hidden-phone"></td>
           <td class="hidden-phone"></td>
           <td>
-            <a href="{% url "delete_pseudofolder" container=container pseudofolder=folder.1 %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete pseudofolder {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a>
+            <a href="{% url "delete_pseudofolder" container=container pseudofolder=obj.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete pseudofolder {{obj.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a>
           </td>
         </tr>
-        {% endfor %}
-
-        {% for key in objects %}
+        {% else %}
         <tr>
           <td class="hidden-phone"><i class="fa fa-file"></i></td>
-          <td><a href="{% url "download" container=container objectname=key.name %}" class="block">{{key.name|lastpart}}</a></td>
-          <td class="hidden-phone">{{key.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}</td>
-          <td class="hidden-phone">{{key.bytes|filesizeformat}}</td>
-          <td><a href="{% url "delete_object" container=container objectname=key.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{key.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a></td>
+          <td><a href="{% url "download" container=container objectname=obj.name %}" class="block">{{obj.name|lastpart}}</a></td>
+          <td class="hidden-phone">{{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}</td>
+          <td class="hidden-phone">{{obj.bytes|filesizeformat}}</td>
+          <td><a href="{% url "delete_object" container=container objectname=obj.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{obj.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a></td>
         </tr>
-        {% endfor %}
+        {% endif %}
       </tbody>
-      {% else %}
+      {% endfor %}
+      {% if not objects %}
       <tbody>
         <tr>
           <th colspan="5" class="center">
@@ -92,5 +92,6 @@
       {% endif %}
     </table>
   </div>
+{% pagination objects %}
 {% endblock %}
 {% block jsadd %} <script type="text/javascript"> $('input[id=file]').change(function() { $('#filetmp').val($(this).val()); }); </script> {% endblock %}

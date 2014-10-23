@@ -22,7 +22,7 @@ def update_default_context(request, context={}):
     return context
 
 
-def generic_pagination(items, page=1, per_page=5):
+def generic_pagination(items, page=1, per_page=settings.PAGINATION_SIZE):
 
     paginator = Paginator(items, per_page)
 

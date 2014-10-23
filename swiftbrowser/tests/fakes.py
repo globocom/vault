@@ -90,7 +90,7 @@ class FakeUser(AnonymousUser):
         super(FakeUser, self).__init__()
 
         self.id = n
-        self.name = name if name else "FakeUser%d" % n
+        self.username = name if name else "FakeUser%d" % n
         self.enabled = True
         self.description = ''
         self.project_id = 1

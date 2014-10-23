@@ -29,8 +29,7 @@ from swiftbrowser.utils import replace_hyphens, prefix_list, \
     pseudofolder_object_list, get_temp_key, get_admin_url, \
     get_acls, remove_duplicates_from_acl
 
-from vault.utils import update_default_context
-
+from vault import utils
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -45,6 +44,8 @@ def containerview(request):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
+    page = request.GET.get('page', 1)
+
     try:
         account_stat, containers = client.get_account(storage_url, auth_token,
                                                       http_conn=http_conn)
@@ -54,13 +55,13 @@ def containerview(request):
                              'Unable to list containers')
 
         account_stat = {}
-        containers = {}
+        containers = []
 
     account_stat = replace_hyphens(account_stat)
 
-    context = update_default_context(request, {
+    context = utils.update_default_context(request, {
         'account_stat': account_stat,
-        'containers': containers,
+        'containers': utils.generic_pagination(containers, page),
     })
 
     return render_to_response('containerview.html', context,
@@ -94,7 +95,7 @@ def create_container(request):
 
         return redirect(containerview)
 
-    context = update_default_context(request, {
+    context = utils.update_default_context(request, {
         'form': form,
     })
 
@@ -133,7 +134,7 @@ def delete_container(request, container):
 
 
 @login_required
-def objectview(request, container, prefix=None):
+def objectview(request, container, prefix=None, page=None):
     """ Returns list of all objects in current container. """
 
     storage_url = get_admin_url(request)
@@ -141,8 +142,10 @@ def objectview(request, container, prefix=None):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
+    page = request.GET.get('page', 1)
+
     try:
-        meta, objects = client.get_container(storage_url, auth_token,
+        _, objects = client.get_container(storage_url, auth_token,
                                              container, delimiter='/',
                                              prefix=prefix,
                                              http_conn=http_conn)
@@ -152,12 +155,10 @@ def objectview(request, container, prefix=None):
         return redirect(containerview)
 
     prefixes = prefix_list(prefix)
-    pseudofolders, objs = pseudofolder_object_list(objects, prefix)
-
-    context = update_default_context(request, {
+    object_list = pseudofolder_object_list(objects, prefix)
+    context = utils.update_default_context(request, {
         'container': container,
-        'objects': objs,
-        'folders': pseudofolders,
+        'objects': utils.generic_pagination(object_list, page),
         'prefix': prefix,
         'prefixes': prefixes,
     })
@@ -204,7 +205,7 @@ def upload(request, container, prefix=None):
 
     prefixes = prefix_list(prefix)
 
-    context = update_default_context(request, {
+    context = utils.update_default_context(request, {
         'swift_url': swift_url,
         'redirect_url': redirect_url,
         'max_file_size': max_file_size,
@@ -404,7 +405,7 @@ def create_pseudofolder(request, container, prefix=None):
 
     prefixes = prefix_list(prefix)
 
-    context = update_default_context(request, {
+    context = utils.update_default_context(request, {
         'container': container,
         'prefix': prefix,
         'prefixes': prefixes,
@@ -514,7 +515,7 @@ def edit_acl(request, container):
     if acls.get('.r:*', False):
         public = True
 
-    context = update_default_context(request, {
+    context = utils.update_default_context(request, {
         'container': container,
         'session': request.session,
         'acls': acls,

@@ -95,8 +95,9 @@ LOGIN_REDIRECT_URL = '/'
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-
 # ENV Confs
+
+PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 50)
 
 ALLOWED_HOSTS = ['*']
 

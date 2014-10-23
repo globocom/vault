@@ -4,19 +4,19 @@
   <ul class="pagination">
     {% if items.paginator.num_pages > 1 %}
       {% if items.has_previous %}
-        <li><a href="{% url "projects" %}/{{ items.previous_page_number }}/">&laquo;</a></li>
+        <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>
       {% endif %}
 
       {% for i in items.paginator.num_pages|times %}
         {% if i == items.number %}
           <li class="active"><a>{{ i }}</a></li>
         {% else %}
-          <li><a href="{% url "projects" %}/{{ i }}/">{{ i }}</a></li>
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
         {% endif %}
       {% endfor %}
 
       {% if items.has_next %}
-          <li><a href="{% url "projects" %}/{{ items.next_page_number }}/">&raquo;</a></li>
+          <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>
       {% endif %}
     {% endif %}
   </ul>

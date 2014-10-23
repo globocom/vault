@@ -204,10 +204,7 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ListProjectView, self).get_context_data(**kwargs)
         keystone = Keystone(self.request)
-        # page = self.request.GET.get('page', 1)
-        page = kwargs.get('page', 1)
-
-        # import ipdb;ipdb.set_trace()
+        page = self.request.GET.get('page', 1)
 
         try:
             projects = sorted(keystone.project_list(),

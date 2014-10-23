@@ -78,11 +78,13 @@ def pseudofolder_object_list(objects, prefix):
             entry = obj['subdir'].strip('/') + '/'
             if entry != prefix and entry not in duplist:
                 duplist.append(entry)
-                pseudofolders.append((entry, obj['subdir']))
+                # pseudofolders.append((entry, obj['subdir']))
+                pseudofolders.append({'prefix': entry, 'name': obj['subdir']})
         else:
             objs.append(obj)
 
-    return (pseudofolders, objs)
+    # return (pseudofolders, objs)
+    return pseudofolders + objs
 
 
 def get_temp_key(storage_url, auth_token, http_conn):
