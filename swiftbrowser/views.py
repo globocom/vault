@@ -538,7 +538,9 @@ def metadataview(request, container, objectname=None):
     if objectname:
         url = '{0}/{1}'.format(url, objectname)
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers,
+                            verify=not settings.SWIFT_INSECURE)
+
     content = json.dumps(dict(response.headers))
 
     status = response.status_code
