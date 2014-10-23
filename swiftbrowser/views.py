@@ -7,6 +7,7 @@ import os
 import requests
 import time
 import urlparse
+import json
 
 from actionlogger import ActionLogger
 
@@ -523,4 +524,23 @@ def edit_acl(request, container):
     })
 
     return render_to_response('edit_acl.html', context,
-                            context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def metadataview(request, container, objectname=None):
+    """ Return object/container/pseudofolder metadata. """
+
+    storage_url = get_admin_url(request)
+    headers = {'X-Storage-Token': request.user.token.id}
+
+    url = '{0}/{1}'.format(storage_url, container)
+    if objectname:
+        url = '{0}/{1}'.format(url, objectname)
+
+    response = requests.get(url, headers=headers)
+    content = json.dumps(dict(response.headers))
+
+    return HttpResponse(content,
+                        content_type='application/json',
+                        status=response.status_code)

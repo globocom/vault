@@ -62,7 +62,10 @@
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-              <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
+            <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
+            <button class="btn-meta btn btn-sm"
+                    data-name="{{ obj.prefix }}"
+                    data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">show&nbsp;metadata</button>
           </td>
           <td class="hidden-phone"></td>
           <td class="hidden-phone"></td>
@@ -72,11 +75,24 @@
         </tr>
         {% else %}
         <tr>
-          <td class="hidden-phone"><i class="fa fa-file"></i></td>
-          <td><a href="{% url "download" container=container objectname=obj.name %}" class="block">{{obj.name|lastpart}}</a></td>
-          <td class="hidden-phone">{{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}</td>
-          <td class="hidden-phone">{{obj.bytes|filesizeformat}}</td>
-          <td><a href="{% url "delete_object" container=container objectname=obj.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{obj.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a></td>
+          <td class="hidden-phone">
+            <i class="fa fa-file"></i>
+          </td>
+          <td>
+            <a href="{% url "download" container=container objectname=obj.name %}" class="block">{{obj.name|lastpart}}</a>
+            <button class="btn-meta btn btn-sm"
+                    data-name="{{ obj.name }}"
+                    data-meta-url="{% url "metadata" container=container objectname=obj.name %}">show&nbsp;metadata</button>
+          </td>
+          <td class="hidden-phone">
+            {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+          </td>
+          <td class="hidden-phone">
+            {{obj.bytes|filesizeformat}}
+          </td>
+          <td>
+            <a href="{% url "delete_object" container=container objectname=obj.name %}" class="btn btn-xs btn-danger" onclick="return confirm('Delete object {{obj.name}}?');" ><i class="fa fa-trash-o icon-white"></i></a>
+          </td>
         </tr>
         {% endif %}
       </tbody>

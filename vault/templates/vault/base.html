@@ -78,6 +78,17 @@
   </div>
 </section>
 
+<!-- metadata -->
+<div class="metadata">
+  <button class="close-btn"><i class="fa fa-times"></i></button>
+  <div class="tabs">
+    <button class="tab">Metadata</button>
+  </div>
+  <span class="object-name"></span>
+  <ul class="items"></ul>
+</div>
+
+<!-- messages -->
 <ul class="messages"></ul>
 
 <script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
@@ -93,6 +104,7 @@
 
 <script>
   Base.Menu.init();
+  Base.Metatada.init();
   Base.SelectProject.init('{{ project_id }}');
 </script>
 {% block js_bottom %}{% endblock %}

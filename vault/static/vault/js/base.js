@@ -191,3 +191,72 @@ Base.SelectProject = {};
     });
 
 })(window, jQuery);
+
+
+Base.Metatada = {};
+
+(function(window, $) {
+    'use strict';
+
+    var $meta, $items, $objName, $btnMeta, $btnCloseMeta;
+
+    function init() {
+        $meta = $('.metadata');
+        $btnMeta = $('.btn-meta');
+        $btnCloseMeta = $meta.find('.close-btn');
+        $objName = $meta.find('.object-name');
+        $items = $meta.find('.items');
+
+        bindEvents();
+    }
+
+    function bindEvents() {
+        $btnMeta.on('click', function() {
+            showMetaInfo( $(this).data('name'), $(this).data('meta-url') );
+        });
+
+        $btnCloseMeta.on('click', function() {
+            closeMeta();
+        });
+
+        $(document).on('keyup', function(e) {
+            if (e.keyCode == 27) {
+                closeMeta();
+            }
+        });
+    }
+
+    function closeMeta() {
+        $meta.removeClass('open');
+        $objName.text('');
+        $items.html('');
+    }
+
+    function showMetaInfo(name, url) {
+        var litems = '';
+
+        $meta.addClass('open');
+        $objName.text(name);
+
+        $.ajax({
+            type: "GET",
+            url: url
+        })
+        .done(function (data) {
+            for(var item in data) {
+                if (data.hasOwnProperty(item)) {
+                    litems += '<li>'+ item +':'+ data[item] +'</li>';
+                }
+            }
+            $items.html(litems);
+        })
+        .fail(function (data) {
+            Base.Messages.show("Unable to show item metadata" , 'error');
+        });
+    }
+
+    $.extend(Base.Metatada, {
+        init: init
+    });
+
+})(window, jQuery);
