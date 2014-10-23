@@ -233,10 +233,11 @@ Base.Metatada = {};
     }
 
     function showMetaInfo(name, url) {
-        var litems = '';
+        var lts = '';
 
         $meta.addClass('open');
-        $objName.text(name);
+        $objName.text(name)
+                .attr('title', name);
 
         $.ajax({
             type: "GET",
@@ -245,10 +246,13 @@ Base.Metatada = {};
         .done(function (data) {
             for(var item in data) {
                 if (data.hasOwnProperty(item)) {
-                    litems += '<li>'+ item +':'+ data[item] +'</li>';
+                    lts += ['<li>',
+                              '<span class="key"><i class="fa fa-caret-right"></i>&nbsp;'+ item +'</span>',
+                              '<span class="value">'+ data[item] +'</span>',
+                            '</li>'].join('');
                 }
             }
-            $items.html(litems);
+            $items.html(lts);
         })
         .fail(function (data) {
             Base.Messages.show("Unable to show item metadata" , 'error');

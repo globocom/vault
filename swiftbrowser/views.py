@@ -541,6 +541,12 @@ def metadataview(request, container, objectname=None):
     response = requests.get(url, headers=headers)
     content = json.dumps(dict(response.headers))
 
+    status = response.status_code
+    if status >= 200 and status < 300 or status == 304:
+        status = 200
+    else:
+        status = 404
+
     return HttpResponse(content,
                         content_type='application/json',
-                        status=response.status_code)
+                        status=status)
