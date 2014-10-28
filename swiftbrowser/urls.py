@@ -38,4 +38,7 @@ urlpatterns = patterns('swiftbrowser.views',
 
     url(r'^metadata/(?P<container>.+?)/(?P<objectname>.+?)?$',
         views.metadataview, name="metadata"),
+
+    url(r'^versioning/(?P<container>.+?)/$',
+        views.object_versioning, name="object_versioning"),
 )

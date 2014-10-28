@@ -101,6 +101,13 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
+    def test_object_versioning_needs_authentication(self):
+        """ Verify if views.edit_acl is requiring a authentication """
+        self.user.is_authenticated = lambda: False
+        response = views.object_versioning(self.request)
+
+        self.assertEqual(response.status_code, 302)
+
     @patch('swiftbrowser.views.client.get_account')
     def test_containerview_list_containters(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
@@ -1002,3 +1009,32 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.content, content)
         self.assertIn(headers['content-type'], computed_headers)
+
+    @patch("swiftbrowser.views.actionlog.log")
+    @patch('swiftbrowser.views.log.exception')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.client.put_container')
+    def test_versioning_enable_valid_form(self, mock_put_container, mock_post_container, _, mock_log):
+        self.request.method = 'POST'
+        post = self.request.POST.copy()
+
+        post.update({'versioning': 'enable'})
+        self.request.POST = post
+
+        views.object_versioning(self.request, 'fakecontainer')
+
+        # Create container <name>_version
+        self.assertTrue(mock_put_container.called)
+        mock_log.assert_called_with("user", "create", "fakecontainer_version")
+
+        # Update container <name> with header
+        self.assertTrue(mock_post_container.called)
+        mock_log.assert_called_with("user", "update", "fakecontainer")
+
+        kargs = mock_post_container.mock_calls[0][2]
+        expected = 'X-Versions-Location : fakecontainer_version'
+        computed = kargs['header']
+        self.assertEqual(expected, computed)
+
+        msgs = [msg for msg in self.request._messages]
+        self.assertEqual(msgs[0].message, 'Container version enabled.')

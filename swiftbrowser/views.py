@@ -64,7 +64,6 @@ def containerview(request):
         'account_stat': account_stat,
         'containers': utils.generic_pagination(containers, page),
     })
-
     return render_to_response('containerview.html', context,
                               context_instance=RequestContext(request))
 
@@ -102,7 +101,6 @@ def create_container(request):
 
     return render_to_response('create_container.html', context,
                               context_instance=RequestContext(request))
-
 
 @login_required
 def delete_container(request, container):
@@ -552,3 +550,132 @@ def metadataview(request, container, objectname=None):
     return HttpResponse(content,
                         content_type='application/json',
                         status=status)
+
+@login_required
+def object_versioning(request, container):
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    prefix = ''
+    objects = None
+
+    if request.method == 'GET':
+        headers = client.head_container(storage_url,
+                                auth_token,
+                                container,
+                                http_conn=http_conn)
+
+        version_location = headers.get('x-versions-location', None)
+
+        if version_location:
+            try:
+                _, objects = client.get_container(storage_url,
+                                                  auth_token,
+                                                  version_location,
+                                                  prefix=prefix,
+                                                  # delimiter='/',
+                                                  http_conn=http_conn)
+            except client.ClientException:
+                pass
+
+        context = {
+            'container': container,
+            'objects': objects,
+            'version_location': version_location,
+        }
+
+        return render_to_response('container_versioning.html', context,
+                              context_instance=RequestContext(request))
+
+    if request.method == 'POST':
+
+        action = request.POST.get('action', None)
+
+        if action == 'enable':
+            enable_versioning(request, container)
+        elif action == 'disable':
+            disable_versioning(request, container)
+        else:
+            messages.add_message(request, messages.ERROR, 'Action is required.')
+
+        return redirect(object_versioning, container=container)
+
+def enable_versioning(request, container):
+    """ Enable/Disable versioning in container. """
+
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    version_location = '_version_{}'.format(container)
+
+    try:
+        client.put_container(storage_url,
+                             auth_token,
+                             version_location,
+                             http_conn=http_conn)
+        actionlog.log(request.user.username, "create", version_location)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        messages.add_message(request, messages.ERROR, 'Access denied.')
+        return False
+
+    try:
+        header = {'x-versions-location': version_location}
+        client.post_container(storage_url,
+                                auth_token,
+                                container,
+                                headers=header,
+                                http_conn=http_conn)
+        actionlog.log(request.user.username, "update", container)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        messages.add_message(request, messages.ERROR, 'Access denied.')
+        return False
+
+    return True
+
+def disable_versioning(request, container):
+    """ Enable/Disable versioning in container. """
+
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    headers = client.head_container(storage_url,
+                                auth_token,
+                                container,
+                                http_conn=http_conn)
+
+    version_location = headers.get('x-versions-location', None)
+
+    if version_location:
+        try:
+            header = {'x-versions-location': ''}
+            client.post_container(storage_url,
+                                  auth_token,
+                                  container,
+                                  headers=header,
+                                  http_conn=http_conn)
+            actionlog.log(request.user.username, "update", container)
+        except client.ClientException as err:
+            log.exception('Exception: {0}'.format(err))
+            messages.add_message(request, messages.ERROR, 'Access denied.')
+            return False
+
+        try:
+            client.delete_container(storage_url,
+                                    auth_token,
+                                    version_location,
+                                    http_conn=http_conn)
+            actionlog.log(request.user.username, "delete", version_location)
+        except client.ClientException as err:
+            log.exception('Exception: {0}'.format(err))
+            messages.add_message(request, messages.ERROR, 'Access denied.')
+            return False
+
+    return True
