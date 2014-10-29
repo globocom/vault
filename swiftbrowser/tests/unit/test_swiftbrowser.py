@@ -1002,3 +1002,23 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.content, content)
         self.assertIn(headers['content-type'], computed_headers)
+
+    @patch('swiftbrowser.views.requests.get')
+    def test_metadataview_return_headers_from_container(self, mock_get):
+        headers = {'content-type': 'fake/container'}
+        mock_get.return_value = fakes.FakeRequestResponse(content='',
+                                                          headers=headers)
+        response = views.metadataview(self.request, 'fakecontainer')
+
+        self.assertIn('fake/container', response.content)
+
+    @patch('swiftbrowser.views.requests.get')
+    def test_metadataview_return_headers_from_object(self, mock_get):
+        headers = {'content-type': 'fake/object'}
+        mock_get.return_value = fakes.FakeRequestResponse(content='',
+                                                          headers=headers)
+        response = views.metadataview(self.request,
+                                      'fakecontainer',
+                                      'fakeobject')
+
+        self.assertIn('fake/object', response.content)
