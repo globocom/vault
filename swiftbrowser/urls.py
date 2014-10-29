@@ -19,10 +19,10 @@ urlpatterns = patterns('swiftbrowser.views',
         views.create_pseudofolder, name="create_pseudofolder"),
 
     url(r'^delete_container/(?P<container>.+?)$',
-        views.delete_container, name="delete_container"),
+        views.delete_container_view, name="delete_container"),
 
     url(r'^delete/(?P<container>.+?)/(?P<objectname>.+?)$',
-        views.delete_object, name="delete_object"),
+        views.delete_object_view, name="delete_object"),
 
     url(r'^delete_pseudofolder/(?P<container>.+?)/(?P<pseudofolder>.+?)$',
         views.delete_pseudofolder, name="delete_pseudofolder"),

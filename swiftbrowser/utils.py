@@ -22,6 +22,7 @@ from django.conf import settings
 
 log = logging.getLogger(__name__)
 
+
 # TODO: Ajustar para ser compliance com v3
 def get_admin_url(request):
     finalURL = None
@@ -133,30 +134,3 @@ def remove_duplicates_from_acl(acls):
     cleaned_entries = list(set(entries))
     acls = ','.join(cleaned_entries)
     return acls
-
-
-def toggle_versioning(storage_url, auth_token, container, http_conn, action):
-    """ Enable/Disable versioning in container. """
-    version_location = ''
-    if action == 'enable':
-        version_location = '_version_{}'.format(container)
-
-    header = {'x-versions-location': version_location}
-    client.post_container(storage_url,
-                            auth_token,
-                            container,
-                            headers=header,
-                            http_conn=http_conn)
-
-# def create_container(storage_url, auth_token, container, http_conn):
-#     """ Creates a container. """
-#     try:
-#         client.put_container(storage_url,
-#                             auth_token,
-#                             container,
-#                             http_conn=http_conn)
-#     except client.ClientException as err:
-#         log.exception('Exception: {0}'.format(err))
-#         return False
-
-#     return True

@@ -52,10 +52,10 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_delete_container_needs_authentication(self):
+    def test_delete_container_view_needs_authentication(self):
         """ Verify if views.delete_container is requiring a authentication """
         self.user.is_authenticated = lambda: False
-        response = views.delete_container(self.request)
+        response = views.delete_container_view(self.request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -73,10 +73,10 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_delete_object_needs_authentication(self):
+    def test_delete_object_view_needs_authentication(self):
         """ Verify if views.delete_object is requiring a authentication """
         self.user.is_authenticated = lambda: False
-        response = views.delete_object(self.request)
+        response = views.delete_object_view(self.request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -632,32 +632,111 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(msgs[0].message, 'ACL update failed.')
         self.assertIn('projectfake:userfake', response.content)
 
-    @patch('swiftbrowser.views.client.delete_container')
-    @patch('swiftbrowser.views.client.get_container')
-    def test_delete_container_view(self, mock_get_container, mock_delete_container):
-        mock_get_container.return_value = fakes.get_container()
+    @patch('swiftbrowser.views.delete_container')
+    def test_delete_container_view_deletes_with_success(self, mock_delete_container):
 
-        swiftclient.client.delete_object = mock.Mock()
+        mock_delete_container.return_value = True
+        views.delete_container_view(self.request, container='container')
 
-        resp = views.delete_container(self.request, container='container')
-        msgs = [msg for msg in self.request._messages]
-
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp['Location'], '/storage/')
-        self.assertEqual(msgs[0].message, 'Container deleted.')
         self.assertTrue(mock_delete_container.called)
 
-    @patch('swiftbrowser.views.client.delete_container')
-    @patch('swiftbrowser.views.client.get_container')
-    def test_delete_container_exception(self, mock_get_container, mock_delete_container):
-        mock_get_container.return_value = fakes.get_container()
-        mock_delete_container.side_effect = client.ClientException('')
-        swiftclient.client.delete_object = mock.Mock()
-
-        resp = views.delete_container(self.request, container='container')
         msgs = [msg for msg in self.request._messages]
+        self.assertEqual(msgs[0].message, 'Container deleted.')
 
+    @patch('swiftbrowser.views.delete_container')
+    def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
+
+        mock_delete_container.return_value = False
+        views.delete_container_view(self.request, container='container')
+
+        self.assertTrue(mock_delete_container.called)
+
+        msgs = [msg for msg in self.request._messages]
         self.assertEqual(msgs[0].message, 'Access denied.')
+
+    @patch('swiftbrowser.views.client.get_object')
+    @patch('swiftbrowser.views.client.delete_object')
+    @patch("swiftbrowser.views.actionlog.log")
+    @patch('swiftbrowser.views.client.delete_container')
+    def test_delete_container_without_deleting_objects(self,
+                                                       mock_delete_container,
+                                                       mock_action_log,
+                                                       mock_delete_object,
+                                                       mock_get_object):
+        fakecontainer = 'fakecontainer'
+        resp = views.delete_container(self.request, fakecontainer, force=False)
+        self.assertTrue(resp)
+
+        self.assertFalse(mock_get_object.called)
+        self.assertFalse(mock_delete_object.called)
+
+        self.assertTrue(mock_delete_container.called)
+        self.assertTrue(mock_action_log.called)
+
+    @patch('swiftbrowser.views.client.get_container')
+    @patch('swiftbrowser.views.client.delete_object')
+    @patch("swiftbrowser.views.actionlog.log")
+    @patch('swiftbrowser.views.client.delete_container')
+    def test_delete_container_deleting_objects(self, mock_delete_container,
+                                                     mock_action_log,
+                                                     mock_delete_object,
+                                                     mock_get_container):
+        fakecontainer = 'fakecontainer'
+        mock_get_container.return_value = (None, [{'name': 'object1'}])
+
+        resp = views.delete_container(self.request, fakecontainer, force=True)
+        self.assertTrue(resp)
+
+        kargs = mock_delete_object.mock_calls[0][2]
+
+        self.assertEqual('fakecontainer', kargs['container'])
+        self.assertEqual('object1', kargs['name'])
+
+        self.assertTrue(mock_delete_container.called)
+        self.assertTrue(mock_action_log.called)
+
+    @patch('swiftbrowser.views.client.get_container')
+    @patch('swiftbrowser.views.client.delete_object')
+    @patch("swiftbrowser.views.actionlog.log")
+    @patch('swiftbrowser.views.client.delete_container')
+    def test_delete_container_fail_to_get_objects(self, mock_delete_container,
+                                                        mock_action_log,
+                                                        mock_delete_object,
+                                                        mock_get_container):
+        fakecontainer = 'fakecontainer'
+        mock_get_container.side_effect = client.ClientException('')
+
+        expected = False
+        computed = views.delete_container(self.request, fakecontainer, True)
+        self.assertEqual(computed, expected)
+
+        self.assertFalse(mock_delete_object.called)
+        self.assertFalse(mock_delete_container.called)
+        self.assertFalse(mock_action_log.called)
+
+    @patch('swiftbrowser.views.log.exception')
+    @patch('swiftbrowser.views.client.get_container')
+    @patch('swiftbrowser.views.client.delete_object')
+    @patch("swiftbrowser.views.actionlog.log")
+    @patch('swiftbrowser.views.client.delete_container')
+    def test_delete_container_fail_to_delete_container(self,
+                                                       mock_delete_container,
+                                                       mock_action_log,
+                                                       mock_delete_object,
+                                                       mock_get_container,
+                                                       mock_log_exception):
+        fakecontainer = 'fakecontainer'
+        mock_delete_container.side_effect = client.ClientException('')
+        mock_get_container.return_value = (None, [{'name': 'object1'}])
+
+        expected = False
+        computed = views.delete_container(self.request, fakecontainer, True)
+        self.assertEqual(computed, expected)
+
+        self.assertTrue(mock_log_exception.called)
+
+        self.assertTrue(mock_delete_object.called)
+        self.assertTrue(mock_delete_container.called)
 
     @patch('swiftbrowser.views.client.put_object')
     def test_create_pseudofolder_with_no_prefix(self, mock_put_object):
@@ -761,73 +840,93 @@ class TestSwiftbrowser(TestCase):
         self.assertFalse(mock_put_object.called)
         self.assertIn('This field is required.', response.content)
 
-    @patch('swiftbrowser.views.client.delete_object')
-    def test_delete_object_inside_a_container(self, mock_delete_object):
+    @patch('swiftbrowser.views.delete_object')
+    def test_view_delete_object_inside_a_container(self, mock_delete_object):
+
+        mock_delete_object.return_value = True
 
         fakecontainer = 'fakecontainer'
         fakeobject_name = 'fakeobject'
 
-        response = views.delete_object(self.request, fakecontainer,
-                                       fakeobject_name)
+        response = views.delete_object_view(self.request,
+                                            fakecontainer,
+                                            fakeobject_name)
 
         msgs = [msg for msg in self.request._messages]
 
-        self.assertTrue(mock_delete_object.called)
         self.assertEqual(msgs[0].message, 'Object deleted.')
-
-        kargs = mock_delete_object.mock_calls[0][2]
-
-        self.assertEqual(kargs['name'], fakeobject_name)
-        self.assertEqual(kargs['container'], fakecontainer)
 
         location = response.items()[1][1]
         expected = reverse('objectview', kwargs={'container': fakecontainer})
         self.assertEqual(location, expected)
 
-    @patch('swiftbrowser.views.client.delete_object')
-    def test_delete_object_inside_a_pseudofolder(self, mock_delete_object):
+    @patch('swiftbrowser.views.delete_object')
+    def test_view_delete_object_inside_a_pseudofolder(self, mock_delete_object):
+
+        mock_delete_object.return_value = True
 
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
         fakeobject_name = fakepseudofolder + 'fakeobject'
 
-        response = views.delete_object(self.request, fakecontainer,
-                                       fakeobject_name)
+        response = views.delete_object_view(self.request,
+                                            fakecontainer,
+                                            fakeobject_name)
 
         msgs = [msg for msg in self.request._messages]
-
-        self.assertTrue(mock_delete_object.called)
         self.assertEqual(msgs[0].message, 'Object deleted.')
-
-        kargs = mock_delete_object.mock_calls[0][2]
-
-        self.assertEqual(kargs['name'], fakeobject_name)
-        self.assertEqual(kargs['container'], fakecontainer)
 
         location = response.items()[1][1]
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': fakepseudofolder})
         self.assertEqual(location, expected)
 
-    @patch('swiftbrowser.views.log.exception')
-    @patch('swiftbrowser.views.client.delete_object')
-    def test_delete_object_exception(self, mock_delete_object, mock_logging):
+    @patch('swiftbrowser.views.delete_object')
+    def test_view_delete_object_fail_to_delete(self, mock_delete_object):
+
+        mock_delete_object.return_value = False
 
         fakecontainer = 'fakecontainer'
         fakeobject_name = 'fakeobject'
-        mock_delete_object.side_effect = client.ClientException('')
 
-        response = views.delete_object(self.request, fakecontainer,
-                                       fakeobject_name)
+        response = views.delete_object_view(self.request,
+                                            fakecontainer,
+                                            fakeobject_name)
 
         msgs = [msg for msg in self.request._messages]
 
-        self.assertTrue(mock_logging.called)
         self.assertEqual(msgs[0].message, 'Access denied.')
 
         location = response.items()[1][1]
         expected = reverse('objectview', kwargs={'container': fakecontainer})
         self.assertEqual(location, expected)
+
+    @patch('swiftbrowser.views.actionlog.log')
+    @patch('swiftbrowser.views.client.delete_object')
+    def test_delete_object(self, mock_delete_object, mock_actionlog):
+
+        fakecontainer = 'fakecontainer'
+        fakeobject = 'fakeobject'
+
+        response = views.delete_object(self.request, fakecontainer, fakeobject)
+
+        self.assertTrue(response)
+        self.assertTrue(mock_actionlog.called)
+
+    @patch('swiftbrowser.views.actionlog.log')
+    @patch('swiftbrowser.views.client.delete_object')
+    def test_delete_object_fail_to_delete(self, mock_delete_object, mock_actionlog):
+
+        mock_delete_object.side_effect = client.ClientException('')
+
+        fakecontainer = 'fakecontainer'
+        fakeobject = 'fakeobject'
+
+        response = views.delete_object(self.request, fakecontainer, fakeobject)
+
+        self.assertFalse(response)
+        self.assertTrue(mock_delete_object.called)
+
 
     @patch('swiftbrowser.views.client.delete_object')
     @patch('swiftbrowser.views.client.get_container')
@@ -1010,31 +1109,136 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(response.content, content)
         self.assertIn(headers['content-type'], computed_headers)
 
-    @patch("swiftbrowser.views.actionlog.log")
-    @patch('swiftbrowser.views.log.exception')
+    @patch('swiftbrowser.views.actionlog.log')
     @patch('swiftbrowser.views.client.post_container')
     @patch('swiftbrowser.views.client.put_container')
-    def test_versioning_enable_valid_form(self, mock_put_container, mock_post_container, _, mock_log):
-        self.request.method = 'POST'
-        post = self.request.POST.copy()
+    def test_enable_versioning(self,
+                               mock_put_container,
+                               mock_post_container,
+                               mock_actionlog):
 
-        post.update({'versioning': 'enable'})
-        self.request.POST = post
+        container = 'fakecontainer'
+        computed = views.enable_versioning(self.request, container)
 
-        views.object_versioning(self.request, 'fakecontainer')
-
-        # Create container <name>_version
+        self.assertEqual(computed, True)
         self.assertTrue(mock_put_container.called)
-        mock_log.assert_called_with("user", "create", "fakecontainer_version")
-
-        # Update container <name> with header
-        self.assertTrue(mock_post_container.called)
-        mock_log.assert_called_with("user", "update", "fakecontainer")
 
         kargs = mock_post_container.mock_calls[0][2]
-        expected = 'X-Versions-Location : fakecontainer_version'
-        computed = kargs['header']
-        self.assertEqual(expected, computed)
+
+        headers = kargs['headers']
+        version_location = '_version_{}'.format(container)
+        self.assertEqual(version_location, headers['x-versions-location'])
+
+        # Create container/update container
+        self.assertEqual(mock_actionlog.call_count, 2)
+
+    @patch('swiftbrowser.views.actionlog.log')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.client.put_container')
+    def test_enable_versioning_fail_to_create_container(self,
+                                                        mock_put_container,
+                                                        mock_post_container,
+                                                        mock_actionlog):
+
+        mock_put_container.side_effect = client.ClientException('')
+
+        container = 'fakecontainer'
+        computed = views.enable_versioning(self.request, container)
+
+        self.assertEqual(computed, False)
+
+        self.assertFalse(mock_post_container.called)
+
+        self.assertEqual(mock_actionlog.call_count, 0)
+
+    @patch('swiftbrowser.views.actionlog.log')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.client.put_container')
+    def test_enable_versioning_fail_to_update_container(self,
+                                                        mock_put_container,
+                                                        mock_post_container,
+                                                        mock_actionlog):
+
+        mock_post_container.side_effect = client.ClientException('')
+
+        container = 'fakecontainer'
+        computed = views.enable_versioning(self.request, container)
+
+        self.assertEqual(computed, False)
+
+        self.assertTrue(mock_post_container.called)
+
+        self.assertEqual(mock_actionlog.call_count, 1)
+
+    @patch('swiftbrowser.views.actionlog.log')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.delete_container')
+    @patch('swiftbrowser.views.client.head_container')
+    def test_disable_versioning(self,
+                                mock_head_container,
+                                mock_delete_container,
+                                mock_post_container,
+                                mock_actionlog):
+
+        version_location = '_version_fakecontainer'
+        mock_head_container.return_value = {'x-versions-location': version_location}
+
+        container = 'fakecontainer'
+        computed = views.disable_versioning(self.request, container)
+
+        self.assertEqual(computed, True)
+
+        kargs = mock_delete_container.mock_calls[0][2]
+
+        self.assertEqual(version_location, kargs['container'])
+
+        self.assertEqual(mock_actionlog.call_count, 1)
+
+    @patch('swiftbrowser.views.log.exception')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.delete_container')
+    @patch('swiftbrowser.views.client.head_container')
+    def test_disable_versioning_fail_to_get_container_headers(self,
+                                                       mock_head_container,
+                                                       mock_delete_container,
+                                                       mock_post_container,
+                                                       mock_logging):
+
+        mock_head_container.side_effect = client.ClientException('')
+
+        container = 'fakecontainer'
+        computed = views.disable_versioning(self.request, container)
+
+        self.assertEqual(computed, False)
 
         msgs = [msg for msg in self.request._messages]
-        self.assertEqual(msgs[0].message, 'Container version enabled.')
+        self.assertEqual(msgs[0].message, 'Access denied.')
+
+        self.assertEqual(mock_logging.call_count, 1)
+
+    @patch('swiftbrowser.views.log.exception')
+    @patch('swiftbrowser.views.client.post_container')
+    @patch('swiftbrowser.views.delete_container')
+    @patch('swiftbrowser.views.client.head_container')
+    def test_disable_versioning_fail_to_update_container_header(self,
+                                                       mock_head_container,
+                                                       mock_delete_container,
+                                                       mock_post_container,
+                                                       mock_logging):
+
+        mock_post_container.side_effect = client.ClientException('')
+
+        version_location = '_version_fakecontainer'
+        mock_head_container.return_value = {'x-versions-location': version_location}
+
+        container = 'fakecontainer'
+        computed = views.disable_versioning(self.request, container)
+
+        self.assertEqual(computed, False)
+
+        self.assertFalse(mock_delete_container.called)
+
+        msgs = [msg for msg in self.request._messages]
+        self.assertEqual(msgs[0].message, 'Access denied.')
+
+        self.assertEqual(mock_logging.call_count, 1)
