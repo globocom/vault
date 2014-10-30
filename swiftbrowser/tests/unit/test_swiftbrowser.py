@@ -14,6 +14,7 @@ from swiftbrowser.tests import fakes
 from swiftbrowser import views
 
 from vault.tests.fakes import fake_request
+from vault import utils
 
 
 class TestSwiftbrowser(TestCase):
@@ -1242,3 +1243,85 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(msgs[0].message, 'Access denied.')
 
         self.assertEqual(mock_logging.call_count, 1)
+
+    @patch('swiftbrowser.views.render_to_response')
+    @patch('swiftbrowser.views.client.head_container')
+    def test_object_versioning_view_versioning_disabled(self,
+                                                        mock_head_container,
+                                                        mock_render):
+        mock_head_container.return_value = {}
+
+        views.object_versioning(self.request, 'fakecontainer')
+
+        kargs = mock_render.mock_calls[0][2]
+        computed = kargs.get('dictionary')
+
+        expected = {'objects': utils.generic_pagination([], 1),
+                    'container': 'fakecontainer',
+                    'version_location': None}
+
+        self.assertEqual(str(computed['objects']), str(expected['objects']))
+        self.assertEqual(computed['container'], expected['container'])
+        self.assertEqual(computed['version_location'], expected['version_location'])
+
+    @patch('swiftbrowser.views.render_to_response')
+    @patch('swiftbrowser.views.client.get_container')
+    @patch('swiftbrowser.views.client.head_container')
+    def test_object_versioning_view_versioning_enabled(self,
+                                                       mock_head_container,
+                                                       mock_get_container,
+                                                       mock_render):
+        mock_head_container.return_value = {'x-versions-location': 'abc'}
+        mock_get_container.return_value = (None, [])
+
+        views.object_versioning(self.request, 'fakecontainer')
+
+        kargs = mock_render.mock_calls[0][2]
+        computed = kargs.get('dictionary')
+
+        expected = {'objects': utils.generic_pagination([], 1),
+                    'container': 'fakecontainer',
+                    'version_location': 'abc'}
+
+        self.assertEqual(str(computed['objects']), str(expected['objects']))
+        self.assertEqual(computed['container'], expected['container'])
+        self.assertEqual(computed['version_location'], expected['version_location'])
+
+    @patch('swiftbrowser.views.enable_versioning')
+    def test_object_versioning_view_enabling_versioning(self, mock_enable):
+
+        post = self.request.method = 'POST'
+        post = self.request.POST.copy()
+
+        post.update({'action': 'enable'})
+        self.request.POST = post
+
+        response = views.object_versioning(self.request, 'fakecontainer')
+
+        self.assertEqual(mock_enable.call_count, 1)
+
+        location = response.items()[1][1]
+        expected = reverse('object_versioning',
+                           kwargs={'container': 'fakecontainer'})
+
+        self.assertEqual(location, expected)
+
+    @patch('swiftbrowser.views.disable_versioning')
+    def test_object_versioning_view_disabling_versioning(self, mock_disable):
+
+        post = self.request.method = 'POST'
+        post = self.request.POST.copy()
+
+        post.update({'action': 'disable'})
+        self.request.POST = post
+
+        response = views.object_versioning(self.request, 'fakecontainer')
+
+        self.assertEqual(mock_disable.call_count, 1)
+
+        location = response.items()[1][1]
+        expected = reverse('object_versioning',
+                           kwargs={'container': 'fakecontainer'})
+
+        self.assertEqual(location, expected)
+

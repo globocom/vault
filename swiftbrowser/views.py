@@ -593,7 +593,9 @@ def object_versioning(request, container):
                                        insecure=settings.SWIFT_INSECURE)
 
     prefix = ''
-    objects = None
+    objects = []
+
+    page = request.GET.get('page', 1)
 
     if request.method == 'GET':
         headers = client.head_container(storage_url,
@@ -616,12 +618,13 @@ def object_versioning(request, container):
 
         context = {
             'container': container,
-            'objects': objects,
+            'objects': utils.generic_pagination(objects, page),
             'version_location': version_location,
         }
 
-        return render_to_response('container_versioning.html', context,
-                              context_instance=RequestContext(request))
+        return render_to_response('container_versioning.html',
+                                  dictionary=context,
+                                  context_instance=RequestContext(request))
 
     if request.method == 'POST':
 
@@ -671,6 +674,8 @@ def enable_versioning(request, container):
         messages.add_message(request, messages.ERROR, 'Access denied.')
         return False
 
+    messages.add_message(request, messages.SUCCESS, 'Versioning enabled.')
+
     return True
 
 
@@ -707,6 +712,10 @@ def disable_versioning(request, container):
             messages.add_message(request, messages.ERROR, 'Access denied.')
             return False
 
-        delete_container(request=request, container=version_location)
+        deleted = delete_container(request=request, container=version_location)
+        if not deleted:
+            return False
+
+    messages.add_message(request, messages.SUCCESS, 'Versioning disabled.')
 
     return True

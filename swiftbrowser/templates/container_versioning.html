@@ -1,5 +1,6 @@
 {% extends "vault/base.html" %}
 
+{% load pagination %}
 {% load lastpart %}
 {% load dateconv %}
 
@@ -83,4 +84,5 @@
       </fieldset>
     </form>
   {% endif %}
+{% pagination objects %}
 {% endblock %}
