@@ -56,8 +56,8 @@
           <th style="width: 1em;"></th>
         </tr>
       </thead>
-      {% for obj in objects %}
       <tbody>
+      {% for obj in objects %}
         {% if 'prefix' in obj %}
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
@@ -65,7 +65,7 @@
             <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
             <button class="btn-meta btn btn-sm"
                     data-name="{{ obj.prefix }}"
-                    data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">show&nbsp;metadata</button>
+                    data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">details</button>
           </td>
           <td class="hidden-phone"></td>
           <td class="hidden-phone"></td>
@@ -79,10 +79,11 @@
             <i class="fa fa-file"></i>
           </td>
           <td>
-            <a href="{% url "download" container=container objectname=obj.name %}" class="block">{{obj.name|lastpart}}</a>
+            <span class="block">{{obj.name|lastpart}}</span>
             <button class="btn-meta btn btn-sm"
                     data-name="{{ obj.name }}"
-                    data-meta-url="{% url "metadata" container=container objectname=obj.name %}">show&nbsp;metadata</button>
+                    data-download-url="{% url "download" container=container objectname=obj.name %}"
+                    data-meta-url="{% url "metadata" container=container objectname=obj.name %}">details</button>
           </td>
           <td class="hidden-phone">
             {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
@@ -95,8 +96,8 @@
           </td>
         </tr>
         {% endif %}
-      </tbody>
       {% endfor %}
+      </tbody>
       {% if not objects %}
       <tbody>
         <tr>

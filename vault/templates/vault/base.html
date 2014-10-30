@@ -80,15 +80,26 @@
 
 <!-- metadata -->
 <div class="metadata">
-  <button class="close-btn"><i class="fa fa-times"></i></button>
-  <div class="tabs">
-    <button class="tab">Metadata</button>
-  </div>
-  <span class="object-name"></span>
+  <button class="close-meta-btn"><i class="fa fa-times"></i></button>
   <div class="load">
     <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
   </div>
-  <ul class="items"></ul>
+
+  <h4 class="object-name"></h4>
+
+  <div class="tabs-nav">
+    <button class="tab active">Metadata</button>
+    <button class="tab ">Content</button>
+  </div>
+
+  <div class="tabs-content">
+    <div class="content active">
+      <ul class="items"></ul>
+    </div>
+    <div class="content">
+      <iframe class="object-content" src="#"></iframe>
+    </div>
+  </div>
 </div>
 
 <!-- messages -->

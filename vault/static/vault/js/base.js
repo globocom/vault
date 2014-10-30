@@ -198,14 +198,18 @@ Base.Metatada = {};
 (function(window, $) {
     'use strict';
 
-    var $meta, $items, $objName, $btnMeta, $btnCloseMeta;
+    var $meta, $btnMeta, $btnCloseMeta, $objName, $items, $tabs,
+        $tabsContent, $objContent;
 
     function init() {
         $meta = $('.metadata');
         $btnMeta = $('.btn-meta');
-        $btnCloseMeta = $meta.find('.close-btn');
+        $btnCloseMeta = $meta.find('.close-meta-btn');
         $objName = $meta.find('.object-name');
         $items = $meta.find('.items');
+        $tabs = $meta.find('.tabs-nav .tab');
+        $tabsContent = $meta.find('.tabs-content .content');
+        $objContent = $meta.find('.object-content');
 
         bindEvents();
     }
@@ -213,10 +217,20 @@ Base.Metatada = {};
     function bindEvents() {
         $btnMeta.on('click', function() {
             showMetaInfo( $(this).data('name'), $(this).data('meta-url') );
+            showObjContent( $(this).data('download-url') );
         });
 
         $btnCloseMeta.on('click', function() {
             closeMeta();
+        });
+
+        $tabs.on('click', function() {
+            $tabs.removeClass('active');
+            $(this).addClass('active');
+
+            $tabsContent.removeClass('active')
+                        .eq($(this).index())
+                        .addClass('active');
         });
 
         $(document).on('keyup', function(e) {
@@ -257,6 +271,10 @@ Base.Metatada = {};
         .fail(function (data) {
             Base.Messages.show("Unable to show item metadata" , 'error');
         });
+    }
+
+    function showObjContent(url) {
+        $objContent.attr('src', url);
     }
 
     $.extend(Base.Metatada, {
