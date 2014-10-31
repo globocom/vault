@@ -58,6 +58,12 @@ def containerview(request):
         account_stat = {}
         containers = []
 
+    # Does not show containers used to keep object versions
+    version_prefix = settings.SWIFT_VERSION_PREFIX
+    if version_prefix:
+        containers = [obj for obj in containers
+                                if not obj['name'].startswith(version_prefix)]
+
     account_stat = replace_hyphens(account_stat)
 
     context = utils.update_default_context(request, {
@@ -152,7 +158,7 @@ def delete_container_view(request, container):
 
 
 @login_required
-def objectview(request, container, prefix=None, page=None):
+def objectview(request, container, prefix=None):
     """ Returns list of all objects in current container. """
 
     storage_url = get_admin_url(request)
@@ -586,13 +592,12 @@ def metadataview(request, container, objectname=None):
 
 
 @login_required
-def object_versioning(request, container):
+def object_versioning(request, container, prefix=None):
     storage_url = get_admin_url(request)
     auth_token = request.user.token.id
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
-    prefix = ''
     objects = []
 
     page = request.GET.get('page', 1)
@@ -611,16 +616,21 @@ def object_versioning(request, container):
                                                   auth_token,
                                                   version_location,
                                                   prefix=prefix,
-                                                  # delimiter='/',
+                                                  delimiter='/',
                                                   http_conn=http_conn)
             except client.ClientException:
                 pass
 
-        context = {
+        prefixes = prefix_list(prefix)
+        object_list = pseudofolder_object_list(objects, prefix)
+
+        context = utils.update_default_context(request, {
             'container': container,
-            'objects': utils.generic_pagination(objects, page),
+            'objects': utils.generic_pagination(object_list, page),
             'version_location': version_location,
-        }
+            'prefix': prefix,
+            'prefixes': prefixes,
+        })
 
         return render_to_response('container_versioning.html',
                                   dictionary=context,
@@ -648,7 +658,7 @@ def enable_versioning(request, container):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
-    version_location = '_version_{}'.format(container)
+    version_location = '{0}{1}'.format(settings.SWIFT_VERSION_PREFIX, container)
 
     try:
         client.put_container(storage_url,

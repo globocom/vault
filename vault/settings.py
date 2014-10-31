@@ -128,4 +128,9 @@ if KEYSTONE_VERSION == 3:
 else:
     OPENSTACK_KEYSTONE_URL = "%s/v2.0" % os.getenv('VAULT_KEYSTONE_URL')
 
+# When versioning is enabled in a container named <container>, another
+# container named <prefix><container> will be create to keep objects versions
+SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
+
+# True if you are using invalid SSL certs
 SWIFT_INSECURE = eval(os.getenv('VAULT_SWIFT_INSECURE', 'True'))
