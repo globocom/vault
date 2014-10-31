@@ -9,6 +9,7 @@ import urlparse
 import hmac
 import string
 import random
+import logging
 from hashlib import sha1
 
 from swiftclient import client
@@ -18,6 +19,8 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib import messages
 from django.conf import settings
+
+log = logging.getLogger(__name__)
 
 
 # TODO: Ajustar para ser compliance com v3

@@ -58,13 +58,18 @@ def containerview(request):
         account_stat = {}
         containers = []
 
+    # Does not show containers used to keep object versions
+    version_prefix = settings.SWIFT_VERSION_PREFIX
+    if version_prefix:
+        containers = [obj for obj in containers
+                                if not obj['name'].startswith(version_prefix)]
+
     account_stat = replace_hyphens(account_stat)
 
     context = utils.update_default_context(request, {
         'account_stat': account_stat,
         'containers': utils.generic_pagination(containers, page),
     })
-
     return render_to_response('containerview.html', context,
                               context_instance=RequestContext(request))
 
@@ -104,38 +109,56 @@ def create_container(request):
                               context_instance=RequestContext(request))
 
 
-@login_required
-def delete_container(request, container):
-    """ Deletes a container """
+def delete_container(request, container, force=True):
+    """
+    Deletes a container. If force is True, it will deletes all objects first.
+    """
 
     storage_url = get_admin_url(request)
     auth_token = request.user.token.id
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
-    try:
-        _m, objects = client.get_container(storage_url,
+    if force:
+        try:
+            _, objects = client.get_container(storage_url,
                                            auth_token,
                                            container,
                                            http_conn=http_conn)
-        for obj in objects:
-            client.delete_object(storage_url, auth_token,
-                                 container, obj['name'],
-                                 http_conn=http_conn)
+        except client.ClientException as err:
+            log.exception('Exception: {0}'.format(err))
+            return False
 
+        for obj in objects:
+            delete_object(request=request,
+                          container=container,
+                          objectname=obj['name'])
+
+    try:
         client.delete_container(storage_url, auth_token,
                                 container, http_conn=http_conn)
-        messages.add_message(request, messages.SUCCESS, "Container deleted.")
         actionlog.log(request.user.username, "delete", container)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
+        return False
+
+    return True
+
+
+@login_required
+def delete_container_view(request, container):
+    """ Deletes a container """
+    response = delete_container(request, container)
+    if response:
+        messages.add_message(request, messages.SUCCESS, "Container deleted.")
+    else:
         messages.add_message(request, messages.ERROR, 'Access denied.')
 
     return redirect(containerview)
 
 
 @login_required
-def objectview(request, container, prefix=None, page=None):
+def objectview(request, container, prefix=None):
     """ Returns list of all objects in current container. """
 
     storage_url = get_admin_url(request)
@@ -285,33 +308,47 @@ def download(request, container, objectname):
 
 
 @login_required
-def delete_object(request, container, objectname):
+def delete_object_view(request, container, objectname):
     """ Deletes an object """
 
-    storage_url = get_admin_url(request)
-    auth_token = request.user.token.id
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    response = delete_object(request, container, objectname)
 
-    try:
-        client.delete_object(storage_url, token=auth_token,
-                                 container=container, name=objectname,
-                                 http_conn=http_conn)
+    if response:
         messages.add_message(request, messages.SUCCESS, 'Object deleted.')
-        actionlog.log(request.user.username, "delete", objectname)
-    except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+    else:
         messages.add_message(request, messages.ERROR, 'Access denied.')
 
     prefix = '/'.join(objectname.split('/')[:-1])
 
     if prefix:
         prefix += '/'
-
-    if prefix:
         return redirect(objectview, container=container, prefix=prefix)
     else:
         return redirect(objectview, container=container)
+
+
+def delete_object(request, container, objectname):
+    """
+    Deletes an object from swift.
+    """
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    try:
+        client.delete_object(storage_url,
+                             token=auth_token,
+                             container=container,
+                             name=objectname,
+                             http_conn=http_conn)
+
+        actionlog.log(request.user.username, "delete", objectname)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        return False
+
+    return True
 
 
 @login_required
@@ -552,3 +589,143 @@ def metadataview(request, container, objectname=None):
     return HttpResponse(content,
                         content_type='application/json',
                         status=status)
+
+
+@login_required
+def object_versioning(request, container, prefix=None):
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    objects = []
+
+    page = request.GET.get('page', 1)
+
+    if request.method == 'GET':
+        headers = client.head_container(storage_url,
+                                auth_token,
+                                container,
+                                http_conn=http_conn)
+
+        version_location = headers.get('x-versions-location', None)
+
+        if version_location:
+            try:
+                _, objects = client.get_container(storage_url,
+                                                  auth_token,
+                                                  version_location,
+                                                  prefix=prefix,
+                                                  delimiter='/',
+                                                  http_conn=http_conn)
+            except client.ClientException:
+                pass
+
+        prefixes = prefix_list(prefix)
+        object_list = pseudofolder_object_list(objects, prefix)
+
+        context = utils.update_default_context(request, {
+            'container': container,
+            'objects': utils.generic_pagination(object_list, page),
+            'version_location': version_location,
+            'prefix': prefix,
+            'prefixes': prefixes,
+        })
+
+        return render_to_response('container_versioning.html',
+                                  dictionary=context,
+                                  context_instance=RequestContext(request))
+
+    if request.method == 'POST':
+
+        action = request.POST.get('action', None)
+
+        if action == 'enable':
+            enable_versioning(request, container)
+        elif action == 'disable':
+            disable_versioning(request, container)
+        else:
+            messages.add_message(request, messages.ERROR, 'Action is required.')
+
+        return redirect(object_versioning, container=container)
+
+
+def enable_versioning(request, container):
+    """ Enable/Disable versioning in container. """
+
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    version_location = '{0}{1}'.format(settings.SWIFT_VERSION_PREFIX, container)
+
+    try:
+        client.put_container(storage_url,
+                             auth_token,
+                             version_location,
+                             http_conn=http_conn)
+        actionlog.log(request.user.username, "create", version_location)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        messages.add_message(request, messages.ERROR, 'Access denied.')
+        return False
+
+    try:
+        header = {'x-versions-location': version_location}
+        client.post_container(storage_url,
+                                auth_token,
+                                container,
+                                headers=header,
+                                http_conn=http_conn)
+        actionlog.log(request.user.username, "update", container)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        messages.add_message(request, messages.ERROR, 'Access denied.')
+        return False
+
+    messages.add_message(request, messages.SUCCESS, 'Versioning enabled.')
+
+    return True
+
+
+def disable_versioning(request, container):
+    """ Enable/Disable versioning in container. """
+
+    storage_url = get_admin_url(request)
+    auth_token = request.user.token.id
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    try:
+        headers = client.head_container(storage_url,
+                                    auth_token,
+                                    container,
+                                    http_conn=http_conn)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        messages.add_message(request, messages.ERROR, 'Access denied.')
+        return False
+
+    version_location = headers.get('x-versions-location', None)
+
+    if version_location:
+        try:
+            client.post_container(storage_url,
+                                  auth_token,
+                                  container,
+                                  headers={'x-versions-location': ''},
+                                  http_conn=http_conn)
+            actionlog.log(request.user.username, "update", container)
+        except client.ClientException as err:
+            log.exception('Exception: {0}'.format(err))
+            messages.add_message(request, messages.ERROR, 'Access denied.')
+            return False
+
+        deleted = delete_container(request=request, container=version_location)
+        if not deleted:
+            return False
+
+    messages.add_message(request, messages.SUCCESS, 'Versioning disabled.')
+
+    return True
