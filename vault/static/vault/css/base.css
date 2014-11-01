@@ -363,7 +363,7 @@ body {
     transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
 }
 
-.metadata .close-btn:hover {
+.metadata .close-meta-btn:hover {
     color: white;
 }
 
@@ -405,11 +405,13 @@ body {
     text-transform: uppercase;
     border: 0;
     background-color: #333;
+    outline: none;
 }
 
 .metadata .tabs-nav .tab.active {
     background-color: #4f4f4f;
     border-bottom: 0;
+    cursor: default;
 }
 
 .metadata .tabs-content {
@@ -458,8 +460,9 @@ body {
 }
 
 .metadata .object-content {
-    background-color: #333;
+    background-color: #fff;
     border: 0;
     height: 100%;
     width: 100%;
+    border: 3px solid #333;
 }
