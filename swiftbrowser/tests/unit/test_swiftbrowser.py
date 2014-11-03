@@ -928,7 +928,6 @@ class TestSwiftbrowser(TestCase):
         self.assertFalse(response)
         self.assertTrue(mock_delete_object.called)
 
-
     @patch('swiftbrowser.views.client.delete_object')
     @patch('swiftbrowser.views.client.get_container')
     def test_delete_empty_pseudofolder(self, mock_get_container, mock_delete_object):
@@ -1324,4 +1323,3 @@ class TestSwiftbrowser(TestCase):
                            kwargs={'container': 'fakecontainer'})
 
         self.assertEqual(location, expected)
-
