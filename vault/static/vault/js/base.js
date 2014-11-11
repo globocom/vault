@@ -217,7 +217,7 @@ Base.Metatada = {};
     function bindEvents() {
         $btnMeta.on('click', function() {
             showMetaInfo( $(this).data('name'), $(this).data('meta-url') );
-            showObjContent( $(this).data('download-url') );
+            setObjContentUrl( $(this).data('download-url') );
         });
 
         $btnCloseMeta.on('click', function() {
@@ -231,6 +231,10 @@ Base.Metatada = {};
             $tabsContent.removeClass('active')
                         .eq($(this).index())
                         .addClass('active');
+        });
+
+        $tabs.filter('.tabcontent').on('click', function() {
+            $objContent.attr('src', $objContent.data('content-url'));
         });
 
         $(document).on('keyup', function(e) {
@@ -273,8 +277,9 @@ Base.Metatada = {};
         });
     }
 
-    function showObjContent(url) {
-        $objContent.attr('src', url);
+    function setObjContentUrl(url) {
+        $objContent.data('content-url', url)
+                   .attr('src', 'about:blank');
     }
 
     $.extend(Base.Metatada, {
