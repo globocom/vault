@@ -248,6 +248,7 @@ Base.Metatada = {};
         $meta.removeClass('open');
         $objName.text('');
         $items.html('');
+        $tabs.filter('.tabmeta').click();
     }
 
     function showMetaInfo(name, url) {
