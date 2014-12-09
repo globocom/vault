@@ -76,7 +76,7 @@ USE_L10N = True
 USE_TZ = True
 
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATIC_ROOT = 'statictemp/'
+STATIC_ROOT = 'vault_static/'
 
 STATICFILES_DIRS = ()
 
