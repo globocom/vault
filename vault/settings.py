@@ -85,6 +85,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
+
+STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
+# STATIC_URL = os.getenv('VAULT_STATIC_URL', '/static/')
+
 # Keystone
 OPENSTACK_SSL_NO_VERIFY = True
 
@@ -111,8 +115,6 @@ DATABASES = {
         'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3306)),
     }
 }
-
-STATIC_URL = os.getenv('VAULT_STATIC_URL', '/static/')
 
 # Keystone
 OPENSTACK_API_VERSIONS = {
