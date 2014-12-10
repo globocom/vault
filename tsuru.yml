@@ -1,4 +1,10 @@
 hooks:
     build:
         - HOME=/home/ubuntu USER=ubuntu /home/application/.app_env/bin/pip install -r requirements_prod.txt
-        - python manage.py collectstatic --noinput && cd /home/application/current && simpleswift --os-auth-url $SWIFT_AUTH_URL --os-username $SWIFT_USER --os-password $SWIFT_PASSWORD --os-tenant-name $SWIFT_TENANT upload $SWIFT_CONTAINER vault_static/
+        - python manage.py collectstatic --noinput && \
+            cd /home/application/current && \
+            simpleswift --os-auth-url $SWIFT_AUTH_URL \
+                        --os-username $SWIFT_USER \
+                        --os-password $SWIFT_PASSWORD \
+                        --os-tenant-name $SWIFT_TENANT \
+                        upload $SWIFT_CONTAINER vault_static/
