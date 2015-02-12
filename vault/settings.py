@@ -108,7 +108,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': PROJECT,
+        'NAME': os.getenv('VAULT_MYSQL_DB', PROJECT),
         'USER': os.getenv('VAULT_MYSQL_USER', 'root'),
         'PASSWORD': os.getenv('VAULT_MYSQL_PASSWORD', ''),
         'HOST': os.getenv('VAULT_MYSQL_HOST', ''),
