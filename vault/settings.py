@@ -15,7 +15,7 @@ import os
 
 PROJECT = 'vault'
 
-DEBUG = eval(os.getenv('VAULT_DEBUG', 'True'))
+DEBUG = False if os.environ.get('VAULT_DEBUG') == 'False' else True
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -75,7 +75,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_ROOT = 'vault_static/'
 
 STATICFILES_DIRS = ()
@@ -87,7 +86,6 @@ STATICFILES_FINDERS = (
 
 
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
-# STATIC_URL = os.getenv('VAULT_STATIC_URL', '/static/')
 
 # Keystone
 OPENSTACK_SSL_NO_VERIFY = True
@@ -121,7 +119,10 @@ OPENSTACK_API_VERSIONS = {
     "identity": 2
 }
 
-KEYSTONE_CREATE_USER = eval(os.getenv('VAULT_KEYSTONE_CREATE_USER', 'False'))
+if os.environ.get('VAULT_KEYSTONE_CREATE_USER') == 'False':
+    KEYSTONE_CREATE_USER = False
+else:
+    KEYSTONE_CREATE_USER = True
 
 KEYSTONE_VERSION = OPENSTACK_API_VERSIONS.get('identity', 2)
 
@@ -135,4 +136,7 @@ else:
 SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
 
 # True if you are using invalid SSL certs
-SWIFT_INSECURE = eval(os.getenv('VAULT_SWIFT_INSECURE', 'True'))
+if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
+    SWIFT_INSECURE = False
+else:
+    SWIFT_INSECURE = True
