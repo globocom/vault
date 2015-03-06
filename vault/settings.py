@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 import os
 
+# Disable HTTPS verification warnings.
+from requests.packages import urllib3
+urllib3.disable_warnings()
 
 PROJECT = 'vault'
 
