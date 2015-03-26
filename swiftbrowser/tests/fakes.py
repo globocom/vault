@@ -102,7 +102,7 @@ class FakeUser(AnonymousUser):
                     u'region': u'RegionOne',
                     u'id': u'fakeid',
                     u'internalURL': u'https://fakeurl',
-                    u'publicURL': u'http://fakeurl'
+                    u'publicURL': u'http://fakepublicurl'
                 }],
                 u'endpoints_links': [],
                 u'type': u'object-store',

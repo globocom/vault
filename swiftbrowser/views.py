@@ -28,7 +28,7 @@ from swiftbrowser.forms import CreateContainerForm, PseudoFolderForm, \
 
 from swiftbrowser.utils import replace_hyphens, prefix_list, \
     pseudofolder_object_list, get_temp_key, get_admin_url, \
-    get_acls, remove_duplicates_from_acl
+    get_acls, remove_duplicates_from_acl, get_public_url
 
 from vault import utils
 
@@ -162,6 +162,7 @@ def objectview(request, container, prefix=None):
     """ Returns list of all objects in current container. """
 
     storage_url = get_admin_url(request)
+    public_url = get_public_url(request) + '/' + container
     auth_token = request.user.token.id
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
@@ -179,7 +180,7 @@ def objectview(request, container, prefix=None):
         return redirect(containerview)
 
     prefixes = prefix_list(prefix)
-    object_list = pseudofolder_object_list(objects, prefix)
+    object_list = pseudofolder_object_list(objects, prefix, public_url)
     context = utils.update_default_context(request, {
         'container': container,
         'objects': utils.generic_pagination(object_list, page),

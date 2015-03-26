@@ -37,6 +37,20 @@ def get_admin_url(request):
 
     return str(finalURL)
 
+def get_public_url(request):
+    """ Retrieve public URL """
+    finalURL = None
+    if request.user.service_catalog:
+        for service in request.user.service_catalog:
+            if service['type'] == 'object-store':
+                finalURL = service['endpoints'][0]['publicURL']
+
+    finalURL = re.sub(r"\/AUTH_[\w]+\/?$",
+                      "/AUTH_%s" % request.session.get('project_id'),
+                      finalURL)
+
+    return str(finalURL)
+
 
 def replace_hyphens(olddict):
     """ Replaces all hyphens in dict keys with an underscore.
@@ -63,7 +77,7 @@ def prefix_list(prefix):
     return prefixes
 
 
-def pseudofolder_object_list(objects, prefix):
+def pseudofolder_object_list(objects, prefix, public_url):
     pseudofolders = []
     objs = []
     duplist = []
@@ -84,6 +98,7 @@ def pseudofolder_object_list(objects, prefix):
                 # pseudofolders.append((entry, obj['subdir']))
                 pseudofolders.append({'prefix': entry, 'name': obj['subdir']})
         else:
+            obj['public_url'] = public_url + '/' + obj['name']
             objs.append(obj)
 
     # return (pseudofolders, objs)

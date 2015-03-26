@@ -7,6 +7,10 @@ from swiftclient import client
 
 from swiftbrowser import utils
 
+from vault.tests.fakes import fake_request
+from swiftbrowser.tests import fakes
+
+
 
 class TestSwiftbrowserUtils(TestCase):
 
@@ -75,3 +79,12 @@ class TestSwiftbrowserUtils(TestCase):
         computed_key = utils.get_temp_key('http://fakeurl', 'faketoken', False)
 
         self.assertIsNone(computed_key)
+
+    def test_get_public_url(self):
+        user = fakes.FakeUser(1, 'user')
+        request = fake_request(user=user)
+        public_url = utils.get_public_url(request)
+        self.assertEqual(public_url, 'http://fakepublicurl')
+
+
+
