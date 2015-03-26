@@ -1,3 +1,4 @@
 hooks:
     build:
         - HOME=/home/ubuntu USER=ubuntu /home/application/.app_env/bin/pip install -r requirements_prod.txt
+        - python manage.py collectstatic --noinput && cd /home/application/current && simpleswift upload $SWIFT_CONTAINER vault_static/

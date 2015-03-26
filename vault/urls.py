@@ -17,7 +17,10 @@ urlpatterns = patterns('',
         name='set_project'),
 )
 
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^', include('jstest.urls')),
-    )
+try:
+    if settings.DEBUG:
+        urlpatterns += patterns('',
+            (r'^', include('jstest.urls')),
+        )
+except:
+    pass
