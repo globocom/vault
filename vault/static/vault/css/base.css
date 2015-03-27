@@ -301,6 +301,25 @@ body {
     text-align: center;
 }
 
+.btn-copy-url {
+    background-color: #ccc;
+    color: white;
+    padding: 0 8px;
+    font-size: 10px;
+    margin-top: 3px;
+    margin-right: 3px;
+    /*display: none;*/
+    float: right;
+}
+
+.btn-copy-url:hover,
+.btn-copy-url:focus,
+.zeroclipboard-is-hover {
+    background-color: #444;
+    color: white;
+    text-decoration: none;
+}
+
 /* metadata */
 .btn-meta {
     background-color: #ccc;
@@ -314,6 +333,7 @@ body {
 .btn-meta:hover {
     background-color: #444;
     color: white;
+    text-decoration: none;
 }
 
 .metadata {

@@ -1,5 +1,6 @@
 {% extends "vault/base.html" %}
 
+{% load staticfiles %}
 {% load lastpart %}
 {% load dateconv %}
 {% load pagination %}
@@ -84,6 +85,8 @@
                     data-name="{{ obj.name }}"
                     data-download-url="{% url "download" container=container objectname=obj.name %}"
                     data-meta-url="{% url "metadata" container=container objectname=obj.name %}">details</button>
+
+            <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{obj.public_url}}" title="Click to copy URL to clipboard">Copy URL</button>
           </td>
           <td class="hidden-phone">
             {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
@@ -110,5 +113,15 @@
     </table>
   </div>
 {% pagination objects %}
+
+<script>
+  ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
+  var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
+  client.on( "ready", function( readyEvent ) {
+    client.on( "aftercopy", function( event ) {
+      Base.Messages.show('URL copied to clipboard', 'success')
+    });
+  });
+</script>
 {% endblock %}
-{% block jsadd %} <script type="text/javascript"> $('input[id=file]').change(function() { $('#filetmp').val($(this).val()); }); </script> {% endblock %}
+
