@@ -8,7 +8,6 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 ### Basic setup (production) ###
 
-
 1) install dependencies
 
     $ pip install -r requirements.txt
@@ -44,7 +43,7 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
     pip install -r requirements_test.txt
     make tests
 
-### Compatibility
+### Compatibilities
 
 - Django 1.6
 - Swift 2.1.0 (auth v2.0)
