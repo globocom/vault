@@ -6,7 +6,7 @@ Manage users and tenants on your Keystone service.
 
 Manage containers and objects on Swift. (A customized version of [django-swiftbrowser](https://github.com/cschwede/django-swiftbrowser))
 
-### Basic setup (production)
+### Basic setup (production) ###
 
 
 1) install dependencies
