@@ -1,0 +1,127 @@
+{% load staticfiles %}
+{% load selectproject %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vault - {% block title %}{% endblock %}</title>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
+  {% block css %}{% endblock %}
+
+  <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
+  <script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
+  {% block js_top %}{% endblock %}
+
+</head>
+<body>
+
+<div class="loading">
+  <div class="loading-content">Processing<br>
+  <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
+  </div>
+</div>
+
+<header id="header" class="navbar navbar-default">
+  <div class="navbar-header">
+    <a href="{% url "dashboard" %}" class="navbar-brand logo">Vault</a>
+  </div>
+
+  <ul class="nav navbar-nav navbar-right">
+    {% selectproject %}
+  </ul>
+</header>
+
+<nav id="sidebar">
+  <div class="user-info">
+    <i class="icon-user fa fa-user"></i>
+    {{ logged_user.username }}<br />
+    <a class="logout-btn" href="{{ logout_url }}">logout&nbsp;<i class="icon fa fa-sign-out"></i></a>
+  </div>
+
+  <ul class="menu">
+    <li><a href="{% url "dashboard" %}"><i class="icon fa fa-dashboard"></i>Dashboard</a></li>
+    {% if has_identity %}
+      <li class="open">
+        <a href="#" class="group">
+          <i class="icon fa fa-key"></i>Identity
+          <i class="plus fa fa-angle-left"></i>
+          <i class="minus fa fa-angle-down"></i>
+        </a>
+        <ul>
+          <li><a href="{% url "users" %}"><i class="icon fa fa-caret-right"></i>Users</a></li>
+          <li><a href="{% url "projects" %}"><i class="icon fa fa-caret-right"></i>Projects</a></li>
+        </ul>
+      </li>
+    {% endif %}
+    <li><a href="{% url "containerview" %}"><i class="icon fa fa-hdd-o"></i>Storage</a></li>
+  </ul>
+</nav>
+
+<section id="content" class="container-fluid">
+  <div class="row">
+
+    <h2 class="content-title col-md-4">
+      {% block content_title %}{% endblock %}
+    </h2>
+
+    <div class="content-top col-md-8">
+      {% block content_top %}{% endblock %}
+    </div>
+
+    <div class="col-md-12">
+      {% block content %}{% endblock %}
+    </div>
+
+  </div>
+</section>
+
+<!-- metadata -->
+<div class="metadata">
+  <button class="close-meta-btn"><i class="fa fa-times"></i></button>
+  <div class="load">
+    <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
+  </div>
+
+  <h4 class="object-name"></h4>
+
+  <div class="tabs-nav">
+    <button class="tab tabmeta active">Metadata</button>
+    <button class="tab tabcontent">Content</button>
+  </div>
+
+  <div class="tabs-content">
+    <div class="content active">
+      <ul class="items"></ul>
+    </div>
+    <div class="content">
+      <iframe class="object-content"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- messages -->
+<ul class="messages"></ul>
+
+<script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vault/js/base.js' %}"></script>
+
+{% if messages %}
+<script>
+{% for message in messages %}
+  Base.Messages.show('{{ message }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
+{% endfor %}
+</script>
+{% endif %}
+
+<script>
+  Base.Menu.init();
+  Base.Metatada.init();
+  Base.SelectProject.init('{{ project_id }}');
+</script>
+{% block js_bottom %}{% endblock %}
+</body>
+</html>

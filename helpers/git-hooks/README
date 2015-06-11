@@ -1,0 +1,8 @@
+Git hooks is used to prevent mistakes.
+
+We cannot commit code with statements like pdb, print, or exposing internal data
+
+To install copy the pre-commit file to the .git/hooks of the project and
+turn it into an executable file: chmod +x .git/hooks/pre-commit
+
+On the next commit, it will work.

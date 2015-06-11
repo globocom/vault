@@ -1,0 +1,15 @@
+<li class="dropdown current-project">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <span class="info">Current Project: &nbsp;</span>
+    <span class="current">
+      <span class="name">Select a project</span>&nbsp;<i class="fa fa-caret-down"></i>
+    </span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    {% for project in projects %}
+    <li>
+      <a href="#" data-project-id="{{ project.id }}">{{ project.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</li>

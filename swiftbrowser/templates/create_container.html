@@ -1,0 +1,37 @@
+{% extends "vault/base.html" %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content %}
+  <ul class="breadcrumb">
+    <li><a href="{% url "containerview" %}">Containers</a></li>
+    <li>Create container</li>
+  </ul>
+
+  <form method="POST" action="{% url "create_container" %}" class="form-box project-form">
+    {% csrf_token %}
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+            {{ form.containername.label_tag }}
+            {{ form.containername }}
+            {{ form.containername.errors }}
+            <span class="help-block">
+                Enter name of container here. Use only letters, numbers, underscore or hyphens.
+                Please note that you can not rename it afterwards.
+            </span>
+        </div>
+
+      <div class="col-md-6">&nbsp;</div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">Create Container</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

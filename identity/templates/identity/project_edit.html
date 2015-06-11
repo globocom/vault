@@ -1,0 +1,72 @@
+{% extends "vault/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Edit Project{% endblock %}
+{% block content_title %}Edit Project{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block js_top %}
+  <script src="{% static 'identity/js/project.js' %}"></script>
+{% endblock %}
+
+{% block content_top %}
+  <a href="{% url "delete_project" idendity_project_id %}" class="delete-project btn btn-danger">Delete Project</a>
+{% endblock %}
+
+{% block content %}
+  <form action="" class="form-box project-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    {{ form.id }}
+
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.description.label_tag }}
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.enabled.label_tag }}
+          {{ form.enabled }}
+          {{ form.enabled.errors }}
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        {% include "identity/_project_members.html" %}
+      </div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">Save Project</button>
+      </div>
+    </fieldset>
+
+  </form>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+Base.Forms.init({
+  'delete_btn_class': '.delete-project'
+});
+Project.Users.init({
+  'projectId': '{{ idendity_project_id }}',
+  'addUrl': '{% url "project_add_user" %}',
+  'deleteUrl': '{% url "project_delete_user" %}',
+  'listUrl': '{% url "project_list_users" %}'
+});
+</script>
+{% endblock %}

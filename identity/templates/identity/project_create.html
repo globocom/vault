@@ -1,0 +1,60 @@
+{% extends "vault/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Create Project{% endblock %}
+{% block content_title %}Create Project{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block js_top %}
+  <script src="{% static 'identity/js/project.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <form action="" class="form-box project-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    {{ form.id }}
+
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.description.label_tag }}
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.enabled.label_tag }}<br />
+          {{ form.enabled }}
+          {{ form.enabled.errors }}
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        {% include "identity/_project_members.html" %}
+      </div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">Create Project</button>
+      </div>
+    </fieldset>
+
+  </form>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+Project.Users.init('{{ idendity_project_id }}');
+</script>
+{% endblock %}

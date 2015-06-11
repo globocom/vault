@@ -1,0 +1,95 @@
+{% extends "vault/base.html" %}
+
+{% load pagination %}
+
+{% block title %}Storage{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_top %}
+  <a href="{% url "create_container" %}" class="btn btn btn-primary">
+    <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;Create&nbsp;Container
+  </a>
+{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb">
+  <li>Containers</li>
+</ul>
+
+<div class="panel panel-default">
+  <table class="items-list table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th width="2%" class="hidden-phone"></th>
+        <th width="76%">Name</th>
+        <th width="10%" class="hidden-phone">Objects</th>
+        <th width="10%" class="hidden-phone">Size</th>
+        <th width="2%">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for container in containers %}
+      <tr>
+        <td class="hidden-phone">
+          <i class="fa fa-inbox"></i>
+        </td>
+        <td>
+          <strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong>
+          <button class="btn-meta btn btn-sm"
+                  data-name="{{ container.name }}"
+                  data-meta-url="{% url "metadata" container=container.name %}">details</button>
+        </td>
+        <td class="hidden-phone">
+          {{container.count}}
+        </td>
+        <td class="hidden-phone">
+          {{container.bytes|filesizeformat}}
+        </td>
+        <td>
+          <div class="dropdown pull-right">
+            <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
+            <ul class="dropdown-menu">
+                {% url "object_versioning" container=container.name as object_versioning_url %}
+                <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i> Versioning</a></li>
+              {% url "edit_acl" container=container.name as edit_acl_url %}
+              {% if edit_acl_url %}
+                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i> Sharing</a></li>
+                <li class="divider" />
+              {% endif %}
+
+              <li>
+                <a href="{% url "delete_container" container=container.name %}" onclick="return confirm('Delete container {{container.name}}?');">
+                  <i class="fa fa-trash-o"></i> Delete container
+                </a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">
+          <strong><center>There are no containers in this account yet. Create a new container by clicking the "Create Container" button.<center></strong>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+
+      <tfoot>
+        <tr>
+          <th colspan="5" class="center">
+              {{account_stat.x_account_bytes_used|filesizeformat}}
+              {% if account_stat.x_account_meta_quota_bytes %}
+                  of
+                  {{account_stat.x_account_meta_quota_bytes|filesizeformat}}
+              {% endif %}
+              used
+          </th>
+        </tr>
+      </tfoot>
+
+  </table>
+</div>
+{% pagination containers %}
+{% endblock %}
