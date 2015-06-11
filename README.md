@@ -1,5 +1,5 @@
 # Vault
-Admin webapp for Openstack's Keystone and Swift
+Admin webapp for Openstack's Keystone and Swift.
 
 ### Short description
 Manage users and tenants on your Keystone service.
