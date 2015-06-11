@@ -8,6 +8,7 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 ### Basic setup (production)
 
+
 1) install dependencies
 
     $ pip install -r requirements.txt
