@@ -1,4 +1,5 @@
 -r requirements.txt
+-r requirements_prod.txt
 django-jstest==0.2.0
 ipdb==0.8
 mock==1.0.1
