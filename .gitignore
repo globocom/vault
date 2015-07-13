@@ -4,4 +4,6 @@ actions.log
 .DS_Store
 .coverage
 .env
-1
+
+#pycharm
+.idea/

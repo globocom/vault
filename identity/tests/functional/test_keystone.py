@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import os
 from unittest import TestCase
 
 from django.conf import settings
@@ -89,8 +90,8 @@ class TestKeystoneV2(TestCase, KeystoneBase):
 
         cli = Client()
         response = cli.post('/auth/login/', {
-            'username': 'admin',
-            'password': 'admin',
+            'username': os.getenv('VAULT_TEST_USER'),
+            'password': os.getenv('VAULT_TEST_PASS'),
             'region': settings.OPENSTACK_KEYSTONE_URL
         })
 
