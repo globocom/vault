@@ -1,5 +1,9 @@
+-i https://artifactory.globoi.com/artifactory/api/pypi/pypi/simple
+-i https://artifactory.globoi.com/artifactory/api/pypi/pypi-all/simple
+
 -r requirements.txt
-django-jstest==0.2.0
+-r requirements_prod.txt
+
 ipdb==0.8
 mock==1.0.1
 pep8==1.5.7

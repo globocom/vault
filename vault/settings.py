@@ -41,14 +41,6 @@ INSTALLED_APPS = (
     'swiftbrowser',
 )
 
-try:
-    if DEBUG:
-        INSTALED_APPS = INSTALED_APPS + (
-            'jstest'
-        )
-except:
-    pass
-
 AUTHENTICATION_BACKENDS = (
     'openstack_auth.backend.KeystoneBackend',
 )
