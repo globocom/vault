@@ -24,7 +24,7 @@ TEMPLATE_DEBUG = DEBUG
 
 SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -32,22 +32,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'openstack_auth',
-
-    'vault',
     'dashboard',
     'identity',
     'swiftbrowser',
+    'vault',
 )
-
-try:
-    if DEBUG:
-        INSTALED_APPS = INSTALED_APPS + (
-            'jstest'
-        )
-except:
-    pass
 
 AUTHENTICATION_BACKENDS = (
     'openstack_auth.backend.KeystoneBackend',
@@ -62,10 +52,21 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 ROOT_URLCONF = 'vault.urls'
 
