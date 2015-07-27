@@ -11,7 +11,6 @@ from vault.tests.fakes import fake_request
 from swiftbrowser.tests import fakes
 
 
-
 class TestSwiftbrowserUtils(TestCase):
 
     def test_remove_duplicates_from_acl(self):
@@ -85,6 +84,3 @@ class TestSwiftbrowserUtils(TestCase):
         request = fake_request(user=user)
         public_url = utils.get_public_url(request)
         self.assertEqual(public_url, 'http://fakepublicurl')
-
-
-

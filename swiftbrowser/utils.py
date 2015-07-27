@@ -37,6 +37,7 @@ def get_admin_url(request):
 
     return str(finalURL)
 
+
 def get_public_url(request):
     """ Retrieve public URL """
     finalURL = None
