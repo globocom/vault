@@ -596,6 +596,7 @@ def metadataview(request, container, objectname=None):
 def object_versioning(request, container, prefix=None):
     storage_url = get_admin_url(request)
     auth_token = request.user.token.id
+    public_url = get_public_url(request) + '/' + container
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
@@ -623,7 +624,7 @@ def object_versioning(request, container, prefix=None):
                 pass
 
         prefixes = prefix_list(prefix)
-        object_list = pseudofolder_object_list(objects, prefix)
+        object_list = pseudofolder_object_list(objects, prefix, public_url)
 
         context = utils.update_default_context(request, {
             'container': container,
