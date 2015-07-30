@@ -15,4 +15,4 @@ simple-swiftclient==0.0.3
 six==1.9.0
 wsgiref==0.1.2
 
-globo-backstage-accounts
+# globo-backstage-accounts
