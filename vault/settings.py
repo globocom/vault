@@ -42,10 +42,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
-BACKSTAGE_ACCOUNTS_URL = os.getenv('VAULT_BACKSTAGE_ACCOUNTS_URL', 'https://accounts.backstage.dev.globoi.com'),
-BACKSTAGE_BAR_URL = os.getenv('VAULT_BACKSTAGE_BAR_URL', 'https://barra.backstage.dev.globoi.com'),
-BACKSTAGE_CLIENT_ID = os.getenv('VAULT_BACKSTAGE_CLIENT_ID', 'WUPshuyoPIfjoEn5BsmrUQ=='),
-BACKSTAGE_CLIENT_SECRET = os.getenv('VAULT_BACKSTAGE_CLIENT_SECRET', 'duMbvbCu9zlvFlvGnhGxMw=='),
+BACKSTAGE_ACCOUNTS_URL = os.getenv('VAULT_BACKSTAGE_ACCOUNTS_URL', 'https://accounts.backstage.dev.globoi.com')
+BACKSTAGE_BAR_URL = os.getenv('VAULT_BACKSTAGE_BAR_URL', 'https://barra.backstage.dev.globoi.com')
+BACKSTAGE_CLIENT_ID = os.getenv('VAULT_BACKSTAGE_CLIENT_ID', 'WUPshuyoPIfjoEn5BsmrUQ==')
+BACKSTAGE_CLIENT_SECRET = os.getenv('VAULT_BACKSTAGE_CLIENT_SECRET', 'duMbvbCu9zlvFlvGnhGxMw==')
 
 AUTHENTICATION_BACKENDS = (
     'backstage_accounts.backends.BackstageBackend',
