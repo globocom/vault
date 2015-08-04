@@ -61,22 +61,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'DIRS': [],
-#         'APP_DIRS': True,
-#         'OPTIONS': {
-#             'context_processors': [
-#                 'django.template.context_processors.debug',
-#                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#         },
-#     },
-# ]
-
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
@@ -87,7 +71,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
 )
-
 
 ROOT_URLCONF = 'vault.urls'
 
@@ -109,11 +92,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
-
-# Keystone
-OPENSTACK_SSL_NO_VERIFY = True
 
 LOGIN_URL = '/admin/accounts/login/backstage/'
 LOGOUT_URL = '{}/logout'.format(BACKSTAGE_ACCOUNTS_URL)
@@ -143,6 +122,8 @@ DATABASES = {
 OPENSTACK_API_VERSIONS = {
     "identity": 2
 }
+
+OPENSTACK_SSL_NO_VERIFY = True
 
 if os.environ.get('VAULT_KEYSTONE_CREATE_USER') == 'False':
     KEYSTONE_CREATE_USER = False
