@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'identity',
     'swiftbrowser',
     'vault',
+    'actionlogger'
 )
 
 AUTHENTICATION_BACKENDS = (
