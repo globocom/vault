@@ -24,3 +24,9 @@ class ActionLogger(object):
                                     str(item))
 
         syslog.syslog(syslog.LOG_INFO, msg)
+
+    
+    def savedb(self, user, action, item):
+    
+        audit = Audit(user=request.user, action=action, item=item)   
+        audit.save()
