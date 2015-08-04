@@ -2,8 +2,8 @@
 
 import sys
 import os
-
 import django
+
 
 def pytest_sessionstart():
     sys.path.insert(0, os.path.dirname(__file__) + '/vault')

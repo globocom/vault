@@ -7,9 +7,7 @@ from vault.views import SetProjectView
 
 
 urlpatterns = patterns('',
-    # url(r'', include('backstage_accounts.urls')),
-
-    # url(r'^auth/', include('openstack_auth.urls')),
+    url(r'', include('backstage_accounts.urls')),
     url(r'^', include('dashboard.urls')),
     url(r'^', include('identity.urls')),
     url(r'^storage/', include('swiftbrowser.urls')),
@@ -18,11 +16,3 @@ urlpatterns = patterns('',
     url(r'^set-project/(?P<project_id>[\w\-]+)/?$', SetProjectView.as_view(),
         name='set_project'),
 )
-
-try:
-    if settings.DEBUG:
-        urlpatterns += patterns('',
-            (r'^', include('jstest.urls')),
-        )
-except:
-    pass
