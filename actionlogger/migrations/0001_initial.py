@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Audit',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True)),
                 ('user', models.CharField(max_length=30)),
                 ('action', models.CharField(max_length=30)),
                 ('item', models.CharField(max_length=30)),

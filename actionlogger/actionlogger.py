@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import syslog
-
+from models import *
 
 class ActionNotFound(Exception):
     pass
@@ -26,7 +26,8 @@ class ActionLogger(object):
         syslog.syslog(syslog.LOG_INFO, msg)
 
     
-    def savedb(self, user, action, item):
-    
-        audit = Audit(user=request.user, action=action, item=item)   
+    def savedb(self, audit):
         audit.save()
+
+    def removedb(self, audit):    
+        audit.delete()
