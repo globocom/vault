@@ -1,56 +1,45 @@
 """ Standalone webinterface for Openstack Swift. """
 # -*- coding: utf-8 -*-
 # pylint:disable=E0611, E1101
-
-import os
 import re
-import time
-import urlparse
-import hmac
 import string
 import random
 import logging
-from hashlib import sha1
 
 from swiftclient import client
 
-from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
-from django.contrib import messages
-from django.conf import settings
 
 log = logging.getLogger(__name__)
 
 
 # TODO: Ajustar para ser compliance com v3
 def get_admin_url(request):
-    finalURL = None
+    final_url = None
     if request.user.service_catalog:
         for service in request.user.service_catalog:
             if service['type'] == 'object-store':
-                finalURL = service['endpoints'][0]['adminURL']
+                final_url = service['endpoints'][0]['adminURL']
 
-    finalURL = re.sub(r"\/AUTH_[\w]+\/?$",
+    final_url = re.sub(r"\/AUTH_[\w]+\/?$",
                       "/AUTH_%s" % request.session.get('project_id'),
-                      finalURL)
+                      final_url)
 
-    return str(finalURL)
+    return str(final_url)
 
 
 def get_public_url(request):
     """ Retrieve public URL """
-    finalURL = None
+    final_url = None
     if request.user.service_catalog:
         for service in request.user.service_catalog:
             if service['type'] == 'object-store':
-                finalURL = service['endpoints'][0]['publicURL']
+                final_url = service['endpoints'][0]['publicURL']
 
-    finalURL = re.sub(r"\/AUTH_[\w]+\/?$",
+    final_url = re.sub(r"\/AUTH_[\w]+\/?$",
                       "/AUTH_%s" % request.session.get('project_id'),
-                      finalURL)
+                      final_url)
 
-    return str(finalURL)
+    return str(final_url)
 
 
 def replace_hyphens(olddict):
