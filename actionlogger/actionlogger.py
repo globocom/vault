@@ -2,6 +2,7 @@
 
 import syslog
 from models import *
+from django.db import transaction
 
 class ActionNotFound(Exception):
     pass
@@ -28,6 +29,4 @@ class ActionLogger(object):
     
     def savedb(self, audit):
         audit.save()
-
-    def removedb(self, audit):    
-        audit.delete()
+        transaction.commit()

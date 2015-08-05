@@ -13,8 +13,6 @@ audit = Audit(id=1, user='TestUser', action='create', item='A Test Project', cre
 
 class TestActionLogger(TestCase):
 
-
-
 	def setUp(self):
 		self.actionlog = ActionLogger()
 
@@ -29,5 +27,5 @@ class TestActionLogger(TestCase):
 
 	def test_audit_action(self):
 		self.actionlog.savedb(audit)
-		line = Audit.objects.get(user=audit.user)        
+		line = Audit.objects.get(id=audit.id)        
 		self.assertEqual(line.user,'TestUser')
