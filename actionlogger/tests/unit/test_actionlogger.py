@@ -3,13 +3,11 @@
 from mock import patch
 from unittest import TestCase
 from actionlogger.models import *
+from actionlogger import ActionLogger, ActionNotFound
 
 import datetime
 
-from actionlogger import ActionLogger, ActionNotFound
-
-
-audit = Audit(id=1, user='TestUser', action='create', item='A Test Project', created_at=datetime.datetime.now())   
+audit = Audit(user='TestUser', action='create', item='A Test Project', created_at=datetime.datetime.now())   
 
 class TestActionLogger(TestCase):
 
