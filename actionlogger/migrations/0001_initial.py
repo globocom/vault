@@ -17,9 +17,10 @@ class Migration(migrations.Migration):
                 ('user', models.CharField(max_length=30)),
                 ('action', models.CharField(max_length=30)),
                 ('item', models.CharField(max_length=30)),
-                ('created_at', models.DateField(auto_now_add=True)),
+                ('created_at', models.DateField(auto_now=True)),
             ],
             options={
+                'db_table': 'vault_audit',
             },
             bases=(models.Model,),
         ),
