@@ -7,7 +7,7 @@ class Audit(models.Model):
 	user = models.CharField(max_length=30)
 	action = models.CharField(max_length=30)
 	item = models.CharField(max_length=30)
-	created_at = models.DateField(auto_now_add=True)
+	created_at = models.DateField(auto_now=True)
 
 	def __unicode__(self):
 		return " %s - %s - %s - %s " % (self.user, self.action, self.item, self.created_at)

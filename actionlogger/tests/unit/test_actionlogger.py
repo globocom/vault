@@ -7,7 +7,7 @@ from actionlogger import ActionLogger, ActionNotFound
 
 import datetime
 
-audit = Audit(user='TestUser', action='create', item='A Test Project', created_at=datetime.datetime.now())   
+audit = Audit(user='TestUser', action='create', item='A Test Project')   
 
 class TestActionLogger(TestCase):
 
