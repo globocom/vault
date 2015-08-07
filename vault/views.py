@@ -9,8 +9,12 @@ import logging
 
 from openstack_auth.views import switch
 
+from backstage_accounts.views import OAuthBackstageCallback,\
+                                     OAuthBackstageRedirect
+
 from django.conf import settings
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.views.generic.base import View
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -90,3 +94,18 @@ class SetProjectView(LoginRequiredMixin, View):
                                  'Unable to change your project.')
 
         return http_redirect
+
+
+class OAuthVaultCallback(OAuthBackstageCallback):
+
+    def get_error_redirect(self, provider, reason):
+        return reverse('dashboard')
+
+    def get_login_redirect(self, provider, user, access, new=False):
+
+        # Dashboard do admin
+        return reverse('dashboard')
+
+
+class OAuthVaultRedirect(OAuthBackstageRedirect):
+    pass

@@ -94,7 +94,7 @@ STATICFILES_FINDERS = (
 
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
-LOGIN_URL = '/admin/accounts/login/backstage/'
+LOGIN_URL = '/admin/vault/login/backstage/'
 LOGOUT_URL = '{}/logout'.format(BACKSTAGE_ACCOUNTS_URL)
 LOGIN_REDIRECT_URL = '/'
 
