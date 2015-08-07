@@ -2,11 +2,13 @@
 
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 
 from vault.views import SetProjectView
 
 
 urlpatterns = patterns('',
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^auth/', include('openstack_auth.urls')),
     url(r'^', include('dashboard.urls')),
     url(r'^', include('identity.urls')),
