@@ -34,6 +34,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         groups = user.groups.all()
         group_projects = GroupProjects.objects.filter(group__in=groups)
 
+        projects = [gp.project for gp in group_projects]
+
         context['projects'] = projects
 
         # context['widget_users_data'] = self._widget_users()
