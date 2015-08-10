@@ -28,10 +28,10 @@ class Project(models.Model):
 
 
 # Vault
-class ProjectGroups(models.Model):
-    project = models.ForeignKey(Project)
+class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
+    project = models.ForeignKey(Project)
 
     class Meta:
-        db_table = 'project_groups'
+        db_table = 'group_projects'
         unique_together = (('project', 'group'),)

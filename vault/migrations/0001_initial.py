@@ -7,10 +7,11 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0001_initial'),
+        ('auth', '0001_initial')
     ]
 
     operations = [
+
         migrations.CreateModel(
             name='Domain',
             fields=[
@@ -25,6 +26,7 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+
         migrations.CreateModel(
             name='Project',
             fields=[
@@ -39,21 +41,5 @@ class Migration(migrations.Migration):
                 'managed': False,
             },
             bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='ProjectGroups',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('group', models.ForeignKey(to='auth.Group')),
-                ('project', models.ForeignKey(to='vault.Project')),
-            ],
-            options={
-                'db_table': 'project_groups',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.AlterUniqueTogether(
-            name='projectgroups',
-            unique_together=set([('project', 'group')]),
         ),
     ]

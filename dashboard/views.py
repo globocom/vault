@@ -12,7 +12,7 @@ from swiftclient import client
 
 from identity.keystone import Keystone
 from vault.views import LoginRequiredMixin
-from vault.models import ProjectGroups
+from vault.models import GroupProjects
 from swiftbrowser.utils import get_admin_url
 
 
@@ -32,7 +32,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         user = context['logged_user']
 
         groups = user.groups.all()
-        projects = ProjectGroups.objects.filter(group__in=groups)
+        group_projects = GroupProjects.objects.filter(group__in=groups)
 
         context['projects'] = projects
 
