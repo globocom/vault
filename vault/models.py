@@ -51,7 +51,7 @@ class GroupProjects(models.Model):
 
 class AreaProjects(models.Model):
     area = models.ForeignKey(Area)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, unique=True)
 
     class Meta:
         db_table = 'vault_area_projects'
