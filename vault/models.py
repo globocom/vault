@@ -28,10 +28,32 @@ class Project(models.Model):
 
 
 # Vault
+class Area(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30)
+    description = models.TextField(max_length=255)
+    created_at = models.DateField(auto_now=True)
+
+    class Meta:
+        db_table = 'vault_area'
+
+    def __unicode__(self):
+        return " %s - %s" % (self.name, self.description)
+
 class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
     project = models.ForeignKey(Project)
 
     class Meta:
-        db_table = 'group_projects'
+        db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
+
+
+class AreaProjects(models.Model):
+    area = models.ForeignKey(Area)
+    project = models.ForeignKey(Project, unique=True)
+
+    class Meta:
+        db_table = 'vault_area_projects'
+        unique_together = (('project', 'area'),)
+

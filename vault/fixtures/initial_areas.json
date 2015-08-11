@@ -1,0 +1,74 @@
+[
+  {
+    "model": "vault.area",
+    "pk": 1,
+    "fields": {
+      "name": "G1/Jornalismo",
+      "description": "Tenant para G1/Jornalismo",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 2,
+    "fields": {
+      "name": "GE/Esportes",
+      "description": "Tenant para GE/Esportes",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 3,
+    "fields": {
+      "name": "GShow/Entretenimento",
+      "description": "Tenant para GShow/Entretenimento",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 4,
+    "fields": {
+      "name": "Infra",
+      "description": "Tenant para Infra",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 5,
+    "fields": {
+      "name": "Parceiros",
+      "description": "Tenant para Parceiros",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 6,
+    "fields": {
+      "name": "Plataformas",
+      "description": "Tenant para Plataformas",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 7,
+    "fields": {
+      "name": "Produtos Globo",
+      "description": "Tenant para Produtos Globo",
+      "created_at" : "2015-08-06"
+    }
+  },
+  {
+    "model": "vault.area",
+    "pk": 8,
+    "fields": {
+      "name": "Webmedia",
+      "description": "Tenant para Webmedia",
+      "created_at" : "2015-08-06"
+    }
+  }
+]

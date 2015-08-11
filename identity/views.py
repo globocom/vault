@@ -2,14 +2,13 @@
 
 import logging
 
-from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
-# from django.views.generic.detail import BaseDetailView
+
 from django.views.decorators.debug import sensitive_post_parameters
 
 from keystoneclient.exceptions import Conflict
@@ -123,12 +122,6 @@ class CreateUserView(BaseUserView):
                     project=post.get('project'), enabled=enabled,
                     domain=post.get('domain'), role=post.get('role'))
 
-                # Movido para dentro do metodo self.keystone.user_create
-                # if post.get('role'):
-                #     role = self.keystone.role_get(post.get('role'))
-                #     project = self.keystone.project_get(post.get('project'))
-                #     self.keystone.add_user_role(user, project, role)
-
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created user')
                 actionlog.log(request.user.username, 'create', user)
@@ -228,7 +221,7 @@ class BaseProjectView(SuperUserMixin, FormView):
     def get(self, request, *args, **kwargs):
         self.keystone = Keystone(request)
         form = self.get_form(self.form_class)
-        context = self.get_context_data(form=form, **kwargs)
+        context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
 
@@ -236,6 +229,9 @@ class BaseProjectView(SuperUserMixin, FormView):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project_id = kwargs.get('project_id')
         form = kwargs.get('form')
+
+        request = kwargs.get('request')
+        context['user_groups'] = request.user.groups.order_by('name')
 
         if not project_id:
             project_id = form.data.get('id')
