@@ -38,7 +38,7 @@ class Area(models.Model):
         db_table = 'vault_area'
 
     def __unicode__(self):
-        return " %s - %s - %s - %s " % (self.name, self.description, self.created_at)
+        return " %s - %s" % (self.name, self.description)
 
 class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
