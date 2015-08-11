@@ -33,5 +33,5 @@ class GroupProjects(models.Model):
     project = models.ForeignKey(Project)
 
     class Meta:
-        db_table = 'group_projects'
+        db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
