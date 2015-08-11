@@ -35,3 +35,15 @@ class GroupProjects(models.Model):
     class Meta:
         db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
+
+class Area(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=30)
+	description = models.TextField(max_length=255)
+	created_at = models.DateField(auto_now=True)
+
+	class Meta:
+		db_table = 'vault_area'
+
+	def __unicode__(self):
+		return " %s - %s - %s - %s " % (self.name, self.description, self.created_at)
