@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
-
+import factory
+from django.contrib.auth.models import User, Group
 
 class FakeResource(object):
     """ Fake Keystone Resource (e.g. User, Project, Role) """
@@ -31,3 +32,33 @@ class FakeKeystone:
         self.roles.get = lambda id: FakeResource(id)
         self.tenants.get = lambda a: FakeResource(1)
         self.projects.get = lambda a: FakeResource(1)
+
+
+# factories.py
+class GroupFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Group
+
+    name = factory.Sequence(lambda n: "Group #%s" % n)
+
+
+class UserFactory(factory.Factory):
+
+    class Meta:
+        model = User
+
+    pk = 1
+    first_name = "John"
+    last_name = "Doe"
+    is_superuser = True
+
+    @factory.post_generation
+    def groups(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for group in extracted:
+                self.groups.add(group)

@@ -5,6 +5,8 @@ import logging
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 
+from vault.models import GroupProjects
+
 # Mapping of V3 Catalog Endpoint_type to V2 Catalog Interfaces
 ENDPOINT_TYPE_TO_INTERFACE = {
     'public': 'publicURL',
@@ -21,48 +23,73 @@ else:
 log = logging.getLogger(__name__)
 
 
+class UnauthorizedProject(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+         return repr(self.value)
+
+
 class Keystone(object):
     """ return an authenticated keystone client """
 
-    def __init__(self, request):
-        self.user = request.user
+    def __init__(self, request, tenant_id=None):
+        self.token = request.session.get('token', None)
+        self.tenant_id = tenant_id
+
         self.conn = self._keystone_conn(request)
 
-    def _keystone_conn(self, request):
-        remote_addr = request.environ.get('REMOTE_ADDR', "")
-        endpoint = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
-        insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
-        cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-        endpoint = self._get_keystone_endpoint()
+        # Talvez nao seja o melhor local para esta verificacao
+        groups = request.user.groups.all()
+        group_projects = GroupProjects.objects.filter(group__in=groups,
+                                                      project_id=self.tenant_id)
 
-        conn = client.Client(token=self.user.token.id,
-                             endpoint=endpoint,
-                             original_ip=remote_addr,
-                             insecure=insecure,
-                             cacert=cacert,
-                             auth_url=endpoint,
-                             debug=settings.DEBUG)
+        if not group_projects and not request.user.is_superuser:
+            raise UnauthorizedProject('Usuario sem permissao neste project')
+
+
+    def _keystone_conn(self, request):
+
+        kwargs = {
+            'remote_addr': request.environ.get('REMOTE_ADDR', ''),
+            'endpoint': getattr(settings, 'OPENSTACK_KEYSTONE_URL'),
+            'auth_url': getattr(settings, 'OPENSTACK_KEYSTONE_URL'),
+            'insecure': getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False),
+            'cacert': getattr(settings, 'OPENSTACK_SSL_CACERT', None),
+        }
+
+        if self.tenant_id:
+            kwargs['tenant_id'] = self.tenant_id
+
+        if self.token:
+            kwargs['token'] = self.token
+        else:
+            kwargs['username'] = getattr(settings, 'USERNAME_BOLADAO')
+            kwargs['password'] = getattr(settings, 'PASSWORD_BOLADAO')
+
+        conn = client.Client(**kwargs)
+
         return conn
 
-    def _get_keystone_endpoint(self):
-        interface = 'internal'
+    # def _get_keystone_endpoint(self):
+    #     interface = 'internal'
 
-        if self.user.is_superuser:
-            interface = 'admin'
+    #     if self.user.is_superuser:
+    #         interface = 'admin'
 
-        service = self._get_service_from_catalog('identity')
+    #     service = self._get_service_from_catalog('identity')
 
-        for endpoint in service['endpoints']:
+    #     for endpoint in service['endpoints']:
 
-            if settings.KEYSTONE_VERSION < 3:
-                interface = ENDPOINT_TYPE_TO_INTERFACE.get(interface, '')
+    #         if settings.KEYSTONE_VERSION < 3:
+    #             interface = ENDPOINT_TYPE_TO_INTERFACE.get(interface, '')
 
-                return endpoint[interface]
+    #             return endpoint[interface]
 
-            else:
+    #         else:
 
-                if endpoint['interface'] == interface:
-                    return endpoint['url']
+    #             if endpoint['interface'] == interface:
+    #                 return endpoint['url']
 
     def _get_service_from_catalog(self, service_type):
         catalog = self.user.service_catalog

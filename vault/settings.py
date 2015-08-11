@@ -146,3 +146,6 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
     SWIFT_INSECURE = False
 else:
     SWIFT_INSECURE = True
+
+USERNAME_BOLADAO = os.getenv('USERNAME_BOLADAO', 'storm')
+PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm')
