@@ -30,6 +30,7 @@ INSTALLED_APPS = (
    'backstage_accounts',
    'allaccess',
 
+   'actionlogger',
    'dashboard',
    'identity',
    'swiftbrowser',
