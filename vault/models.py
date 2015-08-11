@@ -48,3 +48,12 @@ class GroupProjects(models.Model):
         db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
 
+
+class AreaProjects(models.Model):
+    area = models.ForeignKey(Area)
+    project = models.ForeignKey(Project)
+
+    class Meta:
+        db_table = 'vault_area_projects'
+        unique_together = (('project', 'area'),)
+
