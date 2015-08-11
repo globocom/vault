@@ -29,15 +29,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
 
-        user = context['logged_user']
-
-        groups = user.groups.all()
-        group_projects = GroupProjects.objects.filter(group__in=groups)
-
-        projects = [gp.project for gp in group_projects]
-
-        context['projects'] = projects
-
         # context['widget_users_data'] = self._widget_users()
         # context['widget_storage_data'] = self._widget_storage()
 

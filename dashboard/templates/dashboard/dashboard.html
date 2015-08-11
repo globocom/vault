@@ -1,6 +1,7 @@
 {% extends "vault/base.html" %}
 
 {% load staticfiles %}
+{% load selectproject %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -9,14 +10,27 @@
 {% endblock %}
 
 {% block content_title %}Dashboard{% endblock %}
+{% block content_breadcrumb %}<a href="/">Home</a>{% endblock %}
+
+
+{% block content_top %}
+  <a href="{% url "admin:index" %}" class="btn btn-primary">
+    <i class="fa fa-cogs icon-white"></i>&nbsp;&nbsp;Admin
+  </a>
+{% endblock %}
+
 
 {% block content %}
 
+
+{% selectproject %}
+
+
 <div class="top row">
   {% if widget_users_data %}
-  
+
     <div class="col-md-6">
-      
+
       {% with widget_users_data as data %}
       <div class="widget widget-users">
         <i class="icon fa fa-users"></i>
@@ -27,7 +41,7 @@
         </div>
       </div>
       {% endwith %}
-    
+
     </div>
 
   {% endif %}

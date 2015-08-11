@@ -166,16 +166,17 @@ Base.SelectProject = {};
     function init(id) {
         project_id = id;
 
-        $main = $('#header .current-project');
+        // $main = $('#header .current-project');
+        $main = $('.selectproject');
         $current = $main.find('.current');
         $currentItem = $main.find('[data-project-id="'+ project_id +'"]');
 
         bindEvents();
-        loadCurrentProject();
+        // loadCurrentProject();
     }
 
     function bindEvents() {
-        $main.on('click', '.dropdown-menu a', function() {
+        $main.on('click', '.set-project', function() {
             window.location.href = '/set-project/'+ $(this).data('project-id') + '?next=' + window.location.pathname;
         });
     }

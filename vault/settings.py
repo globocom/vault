@@ -27,13 +27,13 @@ SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = (
-    'backstage_accounts',
-    'allaccess',
-
     'dashboard',
     'identity',
     'swiftbrowser',
     'vault',
+
+    'backstage_accounts',
+    'allaccess',
 
     'django.contrib.auth',
     'django.contrib.admin',
