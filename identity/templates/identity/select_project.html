@@ -1,6 +1,6 @@
 <ul class="selectproject">
   {% for project in projects %}
-  <li class="widget" data-project-id="{{ project.id }}">
+  <li data-project-id="{{ project.id }}">
     <strong>{{ project.name }}</strong>
     {% if project.description %}{{ project.description }}{% endif %}
 
