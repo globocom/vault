@@ -40,6 +40,7 @@ class Area(models.Model):
     def __unicode__(self):
         return " %s - %s" % (self.name, self.description)
 
+
 class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
     project = models.ForeignKey(Project)

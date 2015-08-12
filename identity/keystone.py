@@ -4,28 +4,19 @@ import logging
 
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
+from keystoneclient.v2_0 import client
 
-from vault.models import GroupProjects
-
-# Mapping of V3 Catalog Endpoint_type to V2 Catalog Interfaces
-ENDPOINT_TYPE_TO_INTERFACE = {
-    'public': 'publicURL',
-    'internal': 'internalURL',
-    'admin': 'adminURL',
-}
-
-if settings.KEYSTONE_VERSION == 3:
-    from keystoneclient.v3 import client
-else:
-    from keystoneclient.v2_0 import client
+from vault.models import GroupProjects, Project
 
 
 log = logging.getLogger(__name__)
 
 
 class UnauthorizedProject(Exception):
+
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
          return repr(self.value)
 
@@ -33,33 +24,36 @@ class UnauthorizedProject(Exception):
 class Keystone(object):
     """ return an authenticated keystone client """
 
-    def __init__(self, request, tenant_id=None):
+    def __init__(self, request, tenant_name=None):
         self.token = request.session.get('token', None)
-        self.tenant_id = tenant_id
 
-        self.conn = self._keystone_conn(request)
+        if tenant_name:
+            self.tenant_name = tenant_name
+        else:
+            self.tenant_name = getattr(settings, 'PROJECT_BOLADAO')
+
+        project = Project.objects.get(name=self.tenant_name)
+        groups = request.user.groups.all()
 
         # Talvez nao seja o melhor local para esta verificacao
-        groups = request.user.groups.all()
         group_projects = GroupProjects.objects.filter(group__in=groups,
-                                                      project_id=self.tenant_id)
+                                                      project_id=project.id)
 
+        # Pode autenticar se project pertence ao time do usuario, ou o usuario
+        # eh superuser
         if not group_projects and not request.user.is_superuser:
             raise UnauthorizedProject('Usuario sem permissao neste project')
 
+        self.conn = self._keystone_conn(request)
 
     def _keystone_conn(self, request):
 
         kwargs = {
             'remote_addr': request.environ.get('REMOTE_ADDR', ''),
-            'endpoint': getattr(settings, 'OPENSTACK_KEYSTONE_URL'),
-            'auth_url': getattr(settings, 'OPENSTACK_KEYSTONE_URL'),
-            'insecure': getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False),
-            'cacert': getattr(settings, 'OPENSTACK_SSL_CACERT', None),
+            'auth_url': getattr(settings, 'KEYSTONE_URL'),
+            'insecure': True,
+            'tenant_name': self.tenant_name,
         }
-
-        if self.tenant_id:
-            kwargs['tenant_id'] = self.tenant_id
 
         if self.token:
             kwargs['token'] = self.token
@@ -70,34 +64,6 @@ class Keystone(object):
         conn = client.Client(**kwargs)
 
         return conn
-
-    # def _get_keystone_endpoint(self):
-    #     interface = 'internal'
-
-    #     if self.user.is_superuser:
-    #         interface = 'admin'
-
-    #     service = self._get_service_from_catalog('identity')
-
-    #     for endpoint in service['endpoints']:
-
-    #         if settings.KEYSTONE_VERSION < 3:
-    #             interface = ENDPOINT_TYPE_TO_INTERFACE.get(interface, '')
-
-    #             return endpoint[interface]
-
-    #         else:
-
-    #             if endpoint['interface'] == interface:
-    #                 return endpoint['url']
-
-    def _get_service_from_catalog(self, service_type):
-        catalog = self.user.service_catalog
-
-        if catalog:
-            for service in catalog:
-                if service['type'] == service_type:
-                    return service
 
     # based on: https://github.com/openstack/horizon/blob/master/openstack_dashboard/api/keystone.py#L51-L56
     def _project_manager(self):

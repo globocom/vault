@@ -17,6 +17,7 @@ from actionlogger import ActionLogger
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
+from vault.models import Area
 from vault import utils
 
 log = logging.getLogger(__name__)
@@ -219,8 +220,9 @@ class BaseProjectView(SuperUserMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
-        form = self.get_form(self.form_class)
+        # self.keystone = Keystone(request)
+        # form = self.get_form(self.form_class)
+        form = ProjectForm(request.user)
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
@@ -231,7 +233,9 @@ class BaseProjectView(SuperUserMixin, FormView):
         form = kwargs.get('form')
 
         request = kwargs.get('request')
-        context['user_groups'] = request.user.groups.order_by('name')
+
+        context['user_groups'] = request.user.groups.all()
+        context['areas'] = Area.objects.all()
 
         if not project_id:
             project_id = form.data.get('id')
@@ -254,8 +258,45 @@ class BaseProjectView(SuperUserMixin, FormView):
         return context
 
 
+class CreateProjectViewOriginal(BaseProjectView):
+    template_name = "identity/project_create.html"
+
+    def post(self, request, *args, **kwargs):
+        self.keystone = Keystone(self.request)
+        form = self.get_form(self.form_class)
+
+        if form.is_valid():
+            post = request.POST
+            enabled = False if post.get('enabled') in ('False', '0') else True
+            description = post.get('description')
+
+            if description == '':
+                description = None
+
+            try:
+                project = self.keystone.project_create(request,
+                                                       post.get('name'),
+                                                       description=description,
+                                                       enabled=enabled)
+
+                messages.add_message(request, messages.SUCCESS,
+                                     'Successfully created project')
+
+                actionlog.log(request.user.username, 'create', project)
+            except Exception as e:
+                log.exception('Exception: %s' % e)
+                messages.add_message(request, messages.ERROR,
+                                     "Error when create project")
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
+    form_class = ProjectForm
+    success_url = reverse_lazy('projects')
 
     def post(self, request, *args, **kwargs):
         self.keystone = Keystone(self.request)
