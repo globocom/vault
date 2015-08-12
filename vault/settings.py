@@ -119,21 +119,8 @@ DATABASES = {
     }
 }
 
-# Keystone
-# OPENSTACK_API_VERSIONS = {
-#     "identity": 2
-# }
-
-# OPENSTACK_SSL_NO_VERIFY = True
-
-# if os.environ.get('VAULT_KEYSTONE_CREATE_USER') == 'False':
-#     KEYSTONE_CREATE_USER = False
-# else:
-#     KEYSTONE_CREATE_USER = True
-
-# KEYSTONE_VERSION = OPENSTACK_API_VERSIONS.get('identity', 2)
-
 KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
+KEYSTONE_VERSION = 2
 
 # When versioning is enabled in a container named <container>, another
 # container named <prefix><container> will be create to keep objects versions
@@ -145,6 +132,6 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
 else:
     SWIFT_INSECURE = True
 
-USERNAME_BOLADAO = os.getenv('USERNAME_BOLADAO', 'storm_tmp')
-PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm_tmp')
+USERNAME_BOLADAO = os.getenv('USERNAME_BOLADAO', 'storm')
+PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm')
 PROJECT_BOLADAO = os.getenv('PROJECT_BOLADAO', 'infra')
