@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% load selectproject %}
+{% load backstage_bar %}
 
 <!DOCTYPE html>
 <html>
@@ -26,16 +26,20 @@
 </div>
 
 <header id="header" class="navbar navbar-default">
+  <ul class="nav navbar-nav navbar-left">
+    <a href="#" class="btn-menu-bars"><i class="icon-menu fa fa-bars"></i></a>
+  </ul>
+
   <div class="navbar-header">
     <a href="{% url "dashboard" %}" class="navbar-brand logo">Vault</a>
   </div>
 
   <ul class="nav navbar-nav navbar-right">
-    {% selectproject %}
+    {% backstage_bar_html %}
   </ul>
 </header>
 
-<nav id="sidebar">
+<!-- <nav id="sidebar">
   <div class="user-info">
     <i class="icon-user fa fa-user"></i>
     {{ logged_user.username }}<br />
@@ -59,20 +63,21 @@
     {% endif %}
     <li><a href="{% url "containerview" %}"><i class="icon fa fa-hdd-o"></i>Storage</a></li>
   </ul>
-</nav>
+</nav> -->
 
 <section id="content" class="container-fluid">
   <div class="row">
 
     <h2 class="content-title col-md-4">
       {% block content_title %}{% endblock %}
+      <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
     </h2>
 
     <div class="content-top col-md-8">
       {% block content_top %}{% endblock %}
     </div>
 
-    <div class="col-md-12">
+    <div class="content-body col-md-12">
       {% block content %}{% endblock %}
     </div>
 
@@ -112,16 +117,17 @@
 {% if messages %}
 <script>
 {% for message in messages %}
-  Base.Messages.show('{{ message }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
+  Base.Messages.show('{{ message|capfirst }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
 {% endfor %}
 </script>
 {% endif %}
 
 <script>
-  Base.Menu.init();
+  // Base.Menu.init();
   Base.Metatada.init();
   Base.SelectProject.init('{{ project_id }}');
 </script>
+{% backstage_bar_js %}
 {% block js_bottom %}{% endblock %}
 </body>
 </html>

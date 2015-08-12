@@ -23,6 +23,7 @@ body {
     padding: 0;
     margin-bottom: 0;
     background-color: white;
+    border-bottom: 1px solid #e2e2e2;
     z-index: 9;
 }
 
@@ -31,8 +32,8 @@ body {
     width: 240px;
 }
 
-#header .navbar-brand {
-    padding: 18px 0 0 20px;
+#header .navbar-header a.navbar-brand {
+    padding: 15px 0px 0px 15px;
     font-family: kitchen_policeregular, Helvetica, Arial, sans-serif;
     font-weight: normal;
     font-size: 28px;
@@ -41,8 +42,23 @@ body {
 
 #header .navbar-right {
     margin-right: 0;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid #e2e2e2;
     height: 49px;
+    padding: 9px 0 0 9px;
+}
+
+#header .navbar-left {
+    margin-left: 0;
+    border-right: 1px solid #e2e2e2;
+    height: 49px;
+    padding: 12px 0 0 14px;
+    width: 50px;
+}
+
+#header .navbar-left .icon-menu {
+    text-decoration: none;
+    font-size: 24px;
+    color: #333;
 }
 
 #header .current-project .dropdown-toggle {
@@ -165,21 +181,48 @@ body {
 #content {
     position: relative;
     top: 50px;
-    margin-left: 220px;
+    /*margin-left: 220px;*/
 }
 
-.content-title {
-    padding-top: 30px;
-    font-size: 32px;
-    font-weight: 300;
-    color: #666;
-    margin: 0;
-}
-
+.content-title,
 .content-top {
     padding-top: 30px;
     height: 100px;
+    background-color: #D9E0E7;
+}
+
+.content-title {
+    font-size: 26px;
+    font-weight: 200;
+    color: #666;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.content-breadcrumb {
+    display: block;
+    margin-top: 8px;
+    color: #888;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.content-breadcrumb a {
+    margin-right: 5px;
+}
+
+.content-breadcrumb a:after {
+    content: "/";
+    margin-left: 5px;
+}
+
+.content-top {
     text-align: right;
+}
+
+.content-body {
+    margin-top: 20px;
 }
 
 /* form */
@@ -487,3 +530,10 @@ body {
     width: 100%;
     border: 3px solid #333;
 }
+
+/* <backstage bar> */
+#header #bsBar_account #bsBar_apps span:hover,
+#header #bsBar_account #bsBar_apps span:active {
+    color: black;
+}
+/* </backstage bar> */
