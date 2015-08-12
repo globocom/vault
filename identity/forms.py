@@ -3,6 +3,7 @@
 from django import forms
 from django.forms.fields import ChoiceField
 
+from vault.models import Area
 
 BOOLEAN_CHOICES = ((True, 'Yes'), (False, 'No'))
 
@@ -57,6 +58,12 @@ class UpdateUserForm(UserForm):
 
 class ProjectForm(forms.Form):
 
+    def __init__(self, user, *args, **kwargs):
+      super(ProjectForm, self).__init__(*args, **kwargs)
+
+      self.fields['groups'] = forms.ModelMultipleChoiceField(label=u'Times', required=True,
+        queryset=user.groups.all())
+
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
@@ -68,3 +75,6 @@ class ProjectForm(forms.Form):
     enabled = forms.BooleanField(label=u'Enabled', required=True,
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
+
+    areas = forms.ModelChoiceField(label=u'Area', required=True,
+        queryset=Area.objects.all())
