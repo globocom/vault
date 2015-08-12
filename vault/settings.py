@@ -119,6 +119,11 @@ DATABASES = {
     }
 }
 
+# Dashboard
+DASHBOARD_WIDGETS = (
+    'identity.widgets.ProjectsWidget',
+)
+
 # Keystone
 OPENSTACK_API_VERSIONS = {
     "identity": 2

@@ -1,7 +1,7 @@
 {% extends "vault/base.html" %}
 
 {% load staticfiles %}
-{% load selectproject %}
+{% load render_widgets %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -23,7 +23,7 @@
 {% block content %}
 
 
-{% selectproject %}
+{% render_widgets %}
 
 
 <div class="top row">
