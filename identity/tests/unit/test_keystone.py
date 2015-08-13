@@ -3,8 +3,10 @@
 from unittest import TestCase
 from mock import patch
 
+from django.conf import settings
+
 from identity.keystone import Keystone, UnauthorizedProject
-from identity.tests.fakes import FakeKeystone, UserFactory
+from identity.tests.fakes import FakeKeystone, UserFactory, ProjectFactory, FakeResource
 from vault.tests.fakes import fake_request
 
 
@@ -13,11 +15,7 @@ class TestKeystoneV2(TestCase):
 
     @patch('identity.keystone.Keystone._keystone_conn')
     def setUp(self, mock_keystone_conn):
-
         self.mock_keystone_conn = mock_keystone_conn
-
-        patch('identity.keystone.settings',
-            KEYSTONE_VERSION=2).start()
 
         self.user = UserFactory()
 
@@ -37,7 +35,6 @@ class TestKeystoneV2(TestCase):
 
     @patch('identity.keystone.GroupProjects.objects.filter')
     def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock):
-
         # Se este mock retorna uma lista nao vazia, significa que o time do project
         # usuario possui permissao no project
         mock.return_value = [1]
@@ -49,7 +46,6 @@ class TestKeystoneV2(TestCase):
 
     @patch('identity.keystone.GroupProjects.objects.filter')
     def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self, mock):
-
         # Se este mock retorna uma lista  vazia, significa que o time do project
         # usuario NAO possui permissao no project
         mock.return_value = []
@@ -57,15 +53,52 @@ class TestKeystoneV2(TestCase):
 
         self.assertRaises(UnauthorizedProject, Keystone, self.request, 'tenant_id')
 
-    # def test_get_endpoint_keystone_v2(self):
-    #     self.conn = Keystone(self.request)
-    #     self.assertEqual(self.conn._get_keystone_endpoint(), u'https://adminURL.com:35357/v2.0')
+    @patch('identity.keystone.GroupProjects.objects.filter')
+    @patch('identity.keystone.Project.objects.get')
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.Keystone.project_create')
+    @patch('identity.keystone.Keystone.user_create')
+    @patch('identity.keystone.AreaProjects')
+    @patch('identity.keystone.GroupProjects')
+    def test_vault_create_project(self, mock_go, mock_ap, mock_key_user, mock_key_proj, mock_key_conn, mock_project, _):
+        mock_project.return_value = ProjectFactory()
 
-    # def test_user_get_v2(self):
-    #     self.conn = Keystone(self.request)
-    #     user_managed = self.conn.user_get(self.request.user)
-    #     self.assertEqual(user_managed.project_id, self.request.user.tenantId)
+        project_id = 'abcdefghiklmnopq'
+        project_name = 'project_test'
+        project_desc = 'project description'
 
+        mock_key_proj.return_value = ProjectFactory(id=project_id, name=project_name)
+        mock_key_user.return_value = FakeResource(n=project_id, name=project_name)
+
+        keystone = Keystone(self.request, 'tenant_name')
+
+        keystone.vault_create_project(project_name, 1, 1, description=project_desc)
+
+        # Criacao do Project
+        mock_key_proj.assert_called_with(project_name, description=project_desc, enabled=True)
+
+        # Criacao do User
+        mock_key_user.assert_called_with(name='u_{}'.format(project_name),
+                                         password='password',
+                                         project=project_id,
+                                         role=settings.ROLE_BOLADONA)
+
+
+        mock_go.assert_called_with(group=1, project=project_id)
+        self.assertTrue(mock_go.return_value.save.called)
+
+        mock_ap.assert_called_with(area=1, project=project_id)
+        self.assertTrue(mock_go.return_value.save.called)
+
+
+        # def test_get_endpoint_keystone_v2(self):
+        #     self.conn = Keystone(self.request)
+        #     self.assertEqual(self.conn._get_keystone_endpoint(), u'https://adminURL.com:35357/v2.0')
+
+        # def test_user_get_v2(self):
+        #     self.conn = Keystone(self.request)
+        #     user_managed = self.conn.user_get(self.request.user)
+        #     self.assertEqual(user_managed.project_id, self.request.user.tenantId)
 
 # class TestKeystoneV3(TestCase):
 #     """ Test keystone version 3 """

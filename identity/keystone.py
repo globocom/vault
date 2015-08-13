@@ -6,7 +6,7 @@ from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
 
-from vault.models import GroupProjects, Project
+from vault.models import GroupProjects, Project, AreaProjects
 
 
 log = logging.getLogger(__name__)
@@ -136,8 +136,8 @@ class Keystone(object):
     def user_delete(self, user_id):
         return self.conn.users.delete(user_id)
 
-    def project_create(self, request, name, domain_id='default',
-                       description=None, enabled=True):
+    def project_create(self, name, domain_id='default', description=None,
+                       enabled=True):
         conn = self._project_manager()
 
         if settings.KEYSTONE_VERSION < 3:
@@ -188,3 +188,25 @@ class Keystone(object):
             return self.conn.roles.remove_user_role(user, role, project)
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
+
+    def vault_create_project(self, name, group_id, area_id, description=None,
+                             enabled=True,):
+        """
+        Metodo que faz o processo completo de criacao de project no vault:
+        Cria projeta, cria um usuario, e vincula com a role swiftoperator
+        """
+        project = self.project_create(name, description=description,
+                                      enabled=enabled)
+
+        user = self.user_create(name='u_{}'.format(name),
+                                password='password',
+                                role=settings.ROLE_BOLADONA,
+                                project=project.id)
+
+        # Salva o project no time correspondente
+        gp = GroupProjects(group=group_id, project=project.id)
+        gp.save()
+
+        # Salva o project na area correspondente
+        ap = AreaProjects(area=area_id, project=project.id)
+        ap.save()

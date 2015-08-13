@@ -135,3 +135,5 @@ else:
 USERNAME_BOLADAO = os.getenv('USERNAME_BOLADAO', 'storm')
 PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm')
 PROJECT_BOLADAO = os.getenv('PROJECT_BOLADAO', 'infra')
+# ID da role swiftoperator
+ROLE_BOLADONA = os.getenv('ROLE_BOLADONA', 'c573d07d11ed4f75a7cae8e7527eb1ed')
