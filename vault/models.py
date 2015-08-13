@@ -26,6 +26,9 @@ class Project(models.Model):
         managed = False
         db_table = 'project'
 
+    def __unicode__(self):
+        return " %s" % (self.name)
+
 
 # Vault
 class Area(models.Model):
