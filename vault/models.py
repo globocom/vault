@@ -51,9 +51,10 @@ class GroupProjects(models.Model):
     class Meta:
         db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
+        verbose_name_plural = 'Times (Groups) & Projetos'
 
     def __unicode__(self):
-        return " Time %s - Account %s" % (self.group, self.project)
+        return " Time (Group) %s - Projeto %s" % (self.group, self.project)
 
 class AreaProjects(models.Model):
     area = models.ForeignKey(Area)
@@ -62,7 +63,8 @@ class AreaProjects(models.Model):
     class Meta:
         db_table = 'vault_area_projects'
         unique_together = (('project', 'area'),)
+        verbose_name_plural = 'Areas & Projetos'
 
     def __unicode__(self):
-        return " Area %s - Account %s" % (self.area, self.project)
+        return " Area %s - Projeto %s" % (self.area, self.project)
 
