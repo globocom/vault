@@ -4,55 +4,61 @@ from unittest import TestCase
 from mock import patch
 
 from identity.keystone import Keystone, UnauthorizedProject
-from identity.tests.fakes import FakeKeystone, UserFactory
+from identity.tests.fakes import FakeKeystone, UserFactory, ProjectFactory
 from vault.tests.fakes import fake_request
 
 
 class TestKeystoneV2(TestCase):
     """ Test keystone version 2 """
 
-    @patch('identity.keystone.Keystone._keystone_conn')
-    def setUp(self, mock_keystone_conn):
+    #@patch('identity.keystone.Keystone._keystone_conn')
+    def setUp(self):
 
-        self.mock_keystone_conn = mock_keystone_conn
-
-        patch('identity.keystone.settings',
-            KEYSTONE_VERSION=2).start()
+        #self.mock_keystone_conn = mock_keystone_conn
 
         self.user = UserFactory()
 
         self.request = fake_request(user=self.user)
 
-        mock_keystone_conn.return_value = FakeKeystone(self.request)
+        #mock_keystone_conn.return_value = FakeKeystone(self.request)
 
     def tearDown(self):
         patch.stopall()
 
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_superuser_creates_keystone_conn(self, mock):
-        mock.return_value = None
+    def test_superuser_creates_keystone_conn(self, mock_filter, mock_project, _):
+        mock_filter.return_value = None
+        mock_project.return_value = ProjectFactory()
         self.conn = Keystone(self.request, 'tenant_id')
-
         self.assertTrue(isinstance(self.conn, Keystone))
 
+
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock):
+    def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock_filter, mock_project, _):
 
         # Se este mock retorna uma lista nao vazia, significa que o time do project
         # usuario possui permissao no project
-        mock.return_value = [1]
+        mock_filter.return_value = [1]
+        mock_project.return_value = ProjectFactory()
 
         self.request.user.is_superuser = False
         self.conn = Keystone(self.request, 'tenant_id')
 
         self.assertTrue(isinstance(self.conn, Keystone))
 
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self, mock):
+    def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self, mock_filter, mock_project, _):
 
         # Se este mock retorna uma lista  vazia, significa que o time do project
         # usuario NAO possui permissao no project
-        mock.return_value = []
+        mock_filter.return_value = []
+        mock_project.return_value = ProjectFactory()
         self.request.user.is_superuser = False
 
         self.assertRaises(UnauthorizedProject, Keystone, self.request, 'tenant_id')

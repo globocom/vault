@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import factory
 from django.contrib.auth.models import User, Group
+from vault.models import Project
 
 class FakeResource(object):
     """ Fake Keystone Resource (e.g. User, Project, Role) """
@@ -62,3 +63,7 @@ class UserFactory(factory.Factory):
             # A list of groups were passed in, use them
             for group in extracted:
                 self.groups.add(group)
+
+class ProjectFactory(factory.Factory):
+    class Meta:
+        model = Project
