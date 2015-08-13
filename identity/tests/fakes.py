@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import factory
 from django.contrib.auth.models import User, Group
+from vault.models import Project
 
 from vault.models import Project
 

@@ -199,6 +199,7 @@ body {
     text-transform: uppercase;
 }
 
+.breadcrumbs,
 .content-breadcrumb {
     display: block;
     margin-top: 8px;
@@ -213,7 +214,7 @@ body {
 }
 
 .content-breadcrumb a:after {
-    content: "/";
+    content: "›";
     margin-left: 5px;
 }
 

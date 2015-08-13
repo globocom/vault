@@ -119,6 +119,12 @@ DATABASES = {
     }
 }
 
+# Dashboard
+DASHBOARD_WIDGETS = (
+    'identity.widgets.ProjectsWidget',
+)
+
+# Keystone
 KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
 KEYSTONE_VERSION = 2
 
