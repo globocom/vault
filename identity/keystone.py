@@ -201,7 +201,7 @@ class Keystone(object):
             project = self.project_create(name, description=description,
                                           enabled=enabled)
         except exceptions.Forbidden:
-            return {'status': 403, 'reason': 'Admin required'}
+            return {'status': False, 'reason': 'Admin required'}
 
         user_password = Keystone.create_password()
 
@@ -212,18 +212,24 @@ class Keystone(object):
                                     project=project.id)
         except exceptions.Forbidden:
             self.project_delete(project.id)
-            return {'status': 403, 'reason': 'Admin required'}
+            return {'status': False, 'reason': 'Admin required'}
 
-        # Salva o project no time correspondente
-        gp = GroupProjects(group=group_id, project=project.id)
-        gp.save()
+        try:
+            # Salva o project no time correspondente
+            gp = GroupProjects(group=group_id, project=project.id)
+            gp.save()
+        except Exception as e:
+            self.project_delete(project.id)
+            self.user_delete(user.id)
+
+            return {'status': False, 'reason': 'Fail to save on database'}
 
         # Salva o project na area correspondente
         ap = AreaProjects(area=area_id, project=project.id)
         ap.save()
 
         return {
-            'status': 200,
+            'status': True,
             'project': project,
             'user': user,
             'password': user_password
