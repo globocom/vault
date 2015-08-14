@@ -7,9 +7,9 @@ import logging
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
+from keystoneclient.openstack.common.apiclient import exceptions
 
 from vault.models import GroupProjects, Project, AreaProjects
-
 
 log = logging.getLogger(__name__)
 
@@ -197,8 +197,11 @@ class Keystone(object):
         Metodo que faz o processo completo de criacao de project no vault:
         Cria projeta, cria um usuario, e vincula com a role swiftoperator
         """
-        project = self.project_create(name, description=description,
-                                      enabled=enabled)
+        try:
+            project = self.project_create(name, description=description,
+                                          enabled=enabled)
+        except exceptions.Forbidden:
+            return {'status': 403, 'reason': 'Admin required'}
 
         user_password = Keystone.create_password()
 

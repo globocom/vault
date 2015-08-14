@@ -2,6 +2,7 @@
 
 from unittest import TestCase
 from mock import patch
+from keystoneclient.openstack.common.apiclient import exceptions
 
 from django.conf import settings
 
@@ -102,7 +103,32 @@ class TestKeystoneV2(TestCase):
         self.assertTrue(mock_go.return_value.save.called)
 
         mock_ap.assert_called_with(area=1, project=project_id)
-        self.assertTrue(mock_go.return_value.save.called)
+        self.assertTrue(mock_go.return_value.save.called)\
+
+    @patch('identity.keystone.GroupProjects.objects.filter')
+    @patch('identity.keystone.Project.objects.get')
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.Keystone.project_create')
+    @patch('identity.keystone.Keystone.user_create')
+    def test_vault_create_project_fail_on_project_create(self, mock_key_user, mock_key_proj, mock_key_conn, mock_project, _):
+        mock_project.return_value = ProjectFactory()
+
+        project_id = 'abcdefghiklmnopq'
+        project_name = 'project_test'
+        project_desc = 'project description'
+
+        mock_key_proj.side_effect = exceptions.Forbidden
+        mock_key_user.return_value = FakeResource(n=project_id, name=project_name)
+
+        keystone = Keystone(self.request, 'tenant_name')
+
+        expected = {'status': 403, 'reason': 'Admin required'}
+        computed = keystone.vault_create_project(project_name, 1, 1, description=project_desc)
+
+        self.assertEqual(computed, expected)
+
+        # Criacao de user nao pode ocorrer quando hover falha na criacao do project
+        self.assertFalse(mock_key_user.called)
 
     def test_create_password(self):
 
