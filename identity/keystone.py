@@ -205,10 +205,14 @@ class Keystone(object):
 
         user_password = Keystone.create_password()
 
-        user = self.user_create(name='u_{}'.format(name),
-                                password=user_password,
-                                role=settings.ROLE_BOLADONA,
-                                project=project.id)
+        try:
+            user = self.user_create(name='u_{}'.format(name),
+                                    password=user_password,
+                                    role=settings.ROLE_BOLADONA,
+                                    project=project.id)
+        except exceptions.Forbidden:
+            self.project_delete(project.id)
+            return {'status': 403, 'reason': 'Admin required'}
 
         # Salva o project no time correspondente
         gp = GroupProjects(group=group_id, project=project.id)
@@ -217,6 +221,13 @@ class Keystone(object):
         # Salva o project na area correspondente
         ap = AreaProjects(area=area_id, project=project.id)
         ap.save()
+
+        return {
+            'status': 200,
+            'project': project,
+            'user': user,
+            'password': user_password
+        }
 
     @staticmethod
     def create_password():
