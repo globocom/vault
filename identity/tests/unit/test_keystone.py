@@ -70,9 +70,10 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Keystone._keystone_conn')
     @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.user_create')
+    @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.AreaProjects')
     @patch('identity.keystone.GroupProjects')
-    def test_vault_create_project(self, mock_go, mock_ap, mock_key_user, mock_key_proj, mock_key_conn, mock_project, _):
+    def test_vault_create_project(self, mock_go, mock_ap, mock_key_pass, mock_key_user, mock_key_proj, mock_key_conn, mock_project, _):
         mock_project.return_value = ProjectFactory()
 
         project_id = 'abcdefghiklmnopq'
@@ -81,6 +82,7 @@ class TestKeystoneV2(TestCase):
 
         mock_key_proj.return_value = ProjectFactory(id=project_id, name=project_name)
         mock_key_user.return_value = FakeResource(n=project_id, name=project_name)
+        mock_key_pass.return_value = 'password'
 
         keystone = Keystone(self.request, 'tenant_name')
 
@@ -102,7 +104,11 @@ class TestKeystoneV2(TestCase):
         mock_ap.assert_called_with(area=1, project=project_id)
         self.assertTrue(mock_go.return_value.save.called)
 
+    def test_create_password(self):
 
+        computed = Keystone.create_password()
+
+        self.assertTrue(isinstance(computed, str))
         # def test_get_endpoint_keystone_v2(self):
         #     self.conn = Keystone(self.request)
         #     self.assertEqual(self.conn._get_keystone_endpoint(), u'https://adminURL.com:35357/v2.0')

@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+import random
+import string
 
 import logging
 
@@ -198,8 +200,10 @@ class Keystone(object):
         project = self.project_create(name, description=description,
                                       enabled=enabled)
 
+        user_password = Keystone.create_password()
+
         user = self.user_create(name='u_{}'.format(name),
-                                password='password',
+                                password=user_password,
                                 role=settings.ROLE_BOLADONA,
                                 project=project.id)
 
@@ -210,3 +214,8 @@ class Keystone(object):
         # Salva o project na area correspondente
         ap = AreaProjects(area=area_id, project=project.id)
         ap.save()
+
+    @staticmethod
+    def create_password():
+        caracteres = string.ascii_letters + string.digits + '!@#$%&*_'
+        return ''.join(random.choice(caracteres) for x in range(12))
