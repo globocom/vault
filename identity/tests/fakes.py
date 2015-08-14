@@ -40,7 +40,7 @@ class FakeKeystone:
 
 
 # factories.py
-class GroupFactory(factory.django.DjangoModelFactory):
+class GroupFactory(factory.Factory):
     class Meta:
         model = Group
 

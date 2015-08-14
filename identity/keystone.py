@@ -191,7 +191,7 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    def vault_create_project(self, name, group_id, area_id, description=None,
+    def vault_create_project(self, name, group, area_id, description=None,
                              enabled=True,):
         """
         Metodo que faz o processo completo de criacao de project no vault:
@@ -216,7 +216,7 @@ class Keystone(object):
 
         try:
             # Salva o project no time correspondente
-            gp = GroupProjects(group=group_id, project=project.id)
+            gp = GroupProjects(group=group, project=project)
             gp.save()
         except Exception as e:
             self.project_delete(project.id)
