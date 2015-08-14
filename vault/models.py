@@ -46,7 +46,7 @@ class Area(models.Model):
 
 class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'vault_group_projects'
@@ -58,7 +58,7 @@ class GroupProjects(models.Model):
 
 class AreaProjects(models.Model):
     area = models.ForeignKey(Area)
-    project = models.ForeignKey(Project, unique=True)
+    project = models.ForeignKey(Project, unique=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'vault_area_projects'
