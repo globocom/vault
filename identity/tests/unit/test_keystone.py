@@ -153,6 +153,7 @@ class TestKeystoneV2(TestCase):
     def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, _):
 
         fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
+
         mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db
@@ -166,20 +167,35 @@ class TestKeystoneV2(TestCase):
         self.assertEqual(computed, expected)
 
         mock_project_delete.assert_called_with(self.project.id)
+
         mock_user_delete.assert_called_with(fake_user.id)
 
     @patch('identity.keystone.AreaProjects')
     @patch('identity.keystone.GroupProjects.objects.filter')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_gp_save, mock_gp_objects, mock_areaprojects):
+    @patch('identity.keystone.Keystone.project_delete')
+    @patch('identity.keystone.Keystone.user_create')
+    @patch('identity.keystone.Keystone.user_delete')
+
+    def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_user_delete, mock_user_create, mock_project_delete, mock_gp_save, mock_gp_objects, mock_areaprojects):
         mock_areaprojects.side_effect = Exception
 
         mock_gp_objects.return_value = []
         project_name = 'project_test'
+
+        fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
+
+        mock_user_create.return_value = fake_user
+
         keystone = Keystone(self.request, 'tenant_name')
         result = keystone.vault_create_project(project_name, self.group, self.area)
         expected = {'status': False, 'reason': 'Unable to assign project to area'}
         self.assertEqual(result, expected)
+
+        mock_project_delete.assert_called_with(self.project.id)
+        mock_user_delete.assert_called_with(fake_user.id)
+
+        #FALTA LIMPAR AREAGROUP
 
 
     def test_create_password(self):
