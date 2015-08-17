@@ -18,116 +18,108 @@ class TestKeystoneV2(TestCase):
         self.user = UserFactory()
         self.request = fake_request(user=self.user)
 
+        project_id = 'abcdefghiklmnopq'
+        project_name = 'project_test'
+        project_desc = 'project description'
+
+        self.project = ProjectFactory(id=project_id, name=project_name, description=project_desc)
+        self.mock_project_create = patch('identity.keystone.Keystone.project_create').start()
+        self.mock_project_create.return_value = self.project
+
+        self.mock_project_get = patch('identity.keystone.Project.objects.get').start()
+        self.mock_project_get.return_value = ProjectFactory()
+
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
+
         self.group = GroupFactory(id=1)
         self.area = AreaFactory(id=1)
 
     def tearDown(self):
+        self.mock_project_get.stop()
+        self.mock_project_create.stop()
+
+        self.mock_keystone_conn.stop()
+
         patch.stopall()
 
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_superuser_creates_keystone_conn(self, mock_filter, mock_project, _):
+    def test_superuser_creates_keystone_conn(self, mock_filter):
         mock_filter.return_value = None
-        mock_project.return_value = ProjectFactory()
         self.conn = Keystone(self.request, 'tenant_id')
         self.assertTrue(isinstance(self.conn, Keystone))
 
 
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock_filter, mock_project, _):
+    def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock_filter):
 
         # Se este mock retorna uma lista nao vazia, significa que o time do project
         # usuario possui permissao no project
         mock_filter.return_value = [1]
-        mock_project.return_value = ProjectFactory()
 
         self.request.user.is_superuser = False
         self.conn = Keystone(self.request, 'tenant_id')
 
         self.assertTrue(isinstance(self.conn, Keystone))
 
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
-    def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self, mock_filter, mock_project, _):
+    def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self, mock_filter):
 
         # Se este mock retorna uma lista  vazia, significa que o time do project
         # usuario NAO possui permissao no project
         mock_filter.return_value = []
-        mock_project.return_value = ProjectFactory()
         self.request.user.is_superuser = False
 
         self.assertRaises(UnauthorizedProject, Keystone, self.request, 'tenant_id')
 
     @patch('identity.keystone.GroupProjects.objects.filter')
-    @patch('identity.keystone.Project.objects.get')
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.AreaProjects')
     @patch('identity.keystone.GroupProjects')
-    def test_vault_create_project(self, mock_gp, mock_ap, mock_key_pass, mock_key_user, mock_project_create, __, mock_project, _):
-        mock_project.return_value = ProjectFactory()
+    def test_vault_create_project(self, mock_gp, mock_ap, mock_key_pass, mock_key_user, _):
 
-        project_id = 'abcdefghiklmnopq'
-        project_name = 'project_test'
-        project_desc = 'project description'
-
-        mock_project_create.return_value = ProjectFactory(id=project_id, name=project_name)
-        mock_key_user.return_value = FakeResource(n=project_id, name='u_{}'.format(project_name))
+        mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_key_pass.return_value = 'password'
 
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {
             'status': True,
-            'project': mock_project_create.return_value,
+            'project': self.mock_project_create.return_value,
             'user': mock_key_user.return_value,
             'password': mock_key_pass.return_value,
         }
 
-        computed = keystone.vault_create_project(project_name, self.group, self.area, description=project_desc)
+        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
 
         # Criacao do Project
-        mock_project_create.assert_called_with(project_name, description=project_desc, enabled=True)
+        self.mock_project_create.assert_called_with(self.project.name, description=self.project.description, enabled=True)
 
         # Criacao do User
-        mock_key_user.assert_called_with(name='u_{}'.format(project_name),
+        mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
                                          password='password',
-                                         project=project_id,
+                                         project=self.project.id,
                                          role=settings.ROLE_BOLADONA)
 
-        mock_gp.assert_called_with(group=self.group, project=mock_project_create.return_value)
+        mock_gp.assert_called_with(group=self.group, project=self.project)
         self.assertTrue(mock_gp.return_value.save.called)
 
-        mock_ap.assert_called_with(area=self.area, project=mock_project_create.return_value )
+        mock_ap.assert_called_with(area=self.area, project=self.project)
         self.assertTrue(mock_gp.return_value.save.called)
 
         self.assertEqual(computed, expected)
 
     @patch('identity.keystone.GroupProjects.objects.filter')
-    @patch('identity.keystone.Project.objects.get')
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.user_create')
-    def test_vault_create_project_forbidden_on_project_create(self, mock_key_user, mock_key_proj, __, mock_project, _):
-        mock_project.return_value = ProjectFactory()
+    def test_vault_create_project_forbidden_on_project_create(self, mock_key_user, _):
 
-        project_id = 'abcdefghiklmnopq'
-        project_name = 'project_test'
-        project_desc = 'project description'
-
-        mock_key_proj.side_effect = exceptions.Forbidden
-        mock_key_user.return_value = FakeResource(n=project_id, name='u_{}'.format(project_name))
+        self.mock_project_create.side_effect = exceptions.Forbidden
+        mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
 
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Admin required'}
-        computed = keystone.vault_create_project(project_name, self.group, self.area, description=project_desc)
+        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
@@ -135,48 +127,32 @@ class TestKeystoneV2(TestCase):
         self.assertFalse(mock_key_user.called)
 
     @patch('identity.keystone.GroupProjects.objects.filter')
-    @patch('identity.keystone.Project.objects.get')
-    @patch('identity.keystone.Keystone._keystone_conn')
     @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
-    def test_vault_create_project_forbidden_on_user_create(self, mock_key_user, mock_project_delete, mock_project_create, __, mock_project, _):
-        mock_project.return_value = ProjectFactory()
+    def test_vault_create_project_forbidden_on_user_create(self, mock_key_user, mock_project_delete, mock_project_create, _):
 
-        project_id = 'abcdefghiklmnopq'
-        project_name = 'project_test'
-        project_desc = 'project description'
-
-        mock_project_create.return_value = ProjectFactory(id=project_id, name=project_name)
+        mock_project_create.return_value = ProjectFactory(id=self.project.id, name=self.project.name)
         mock_key_user.side_effect = exceptions.Forbidden
 
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Admin required'}
-        computed = keystone.vault_create_project(project_name, self.group, self.area, description=project_desc)
+        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
         # Se falhou o cadastro de usuario, o project devera ser deletado
-        mock_project_delete.assert_called_with(project_id)
+        mock_project_delete.assert_called_with(self.project.id)
 
     @patch('identity.keystone.GroupProjects.objects.filter')
-    @patch('identity.keystone.Project.objects.get')
-    @patch('identity.keystone.Keystone._keystone_conn')
-    @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, mock_project_create, __, mock_project, _):
-        mock_project.return_value = ProjectFactory()
+    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, _):
 
-        project_id = 'abcdefghiklmnopq'
-        project_name = 'project_test'
-        project_desc = 'project description'
-
-        mock_project_create.return_value = ProjectFactory(id=project_id, name=project_name)
-        fake_user = FakeResource(n=project_id, name='u_{}'.format(project_name))
+        fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db
@@ -185,22 +161,19 @@ class TestKeystoneV2(TestCase):
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Unable to assign project to group'}
-        computed = keystone.vault_create_project(project_name, self.group, self.area, description=project_desc)
+        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
-        mock_project_delete.assert_called_with(project_id)
+        mock_project_delete.assert_called_with(self.project.id)
         mock_user_delete.assert_called_with(fake_user.id)
 
-    @patch('identity.keystone.Keystone._keystone_conn')
     @patch('identity.keystone.AreaProjects')
-    @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.GroupProjects.objects.filter')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_gp_save, mock_gp_objects, mock_project, mock_areaprojects, mock_keystone_conn):
-        mock_keystone_conn.return_value.tenants.create.return_value = ProjectFactory()
+    def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_gp_save, mock_gp_objects, mock_areaprojects):
         mock_areaprojects.side_effect = Exception
-        mock_project.return_value = ProjectFactory()
+
         mock_gp_objects.return_value = []
         project_name = 'project_test'
         keystone = Keystone(self.request, 'tenant_name')
