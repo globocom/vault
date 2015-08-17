@@ -166,7 +166,7 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Keystone.project_create')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_key_user, mock_project_create, __, mock_project, _):
+    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_key_user, mock_project_create, mock_keystone_conn, mock_project, _):
         mock_project.return_value = ProjectFactory()
 
         project_id = 'abcdefghiklmnopq'
@@ -174,24 +174,27 @@ class TestKeystoneV2(TestCase):
         project_desc = 'project description'
 
         mock_project_create.return_value = ProjectFactory(id=project_id, name=project_name)
-        mock_key_user.return_value = FakeResource(n=project_id, name='u_{}'.format(project_name))
+        fake_user = FakeResource(n=project_id, name='u_{}'.format(project_name))
+        mock_key_user.return_value = fake_user
 
         # Excecao ao salvar no db
         mock_gp_save.side_effect = Exception
 
         keystone = Keystone(self.request, 'tenant_name')
 
-        expected = {'status': False, 'reason': 'Fail to save on database'}
+        expected = {'status': False, 'reason': 'Unable to assign project to group'}
         computed = keystone.vault_create_project(project_name, self.group, 1, description=project_desc)
 
         self.assertEqual(computed, expected)
 
+        mock_keystone_conn.return_value.tenants.delete.assert_called_with(project_id)
+        mock_keystone_conn.return_value.users.delete.assert_called_with(fake_user.id)
 
-    @patch ('identity.keystone.Keystone._keystone_conn')
-    @patch ('identity.keystone.AreaProjects')
-    @patch ('identity.keystone.Project.objects.get')
-    @patch ('identity.keystone.GroupProjects.objects.filter')
-    @patch ('identity.keystone.GroupProjects.save')
+    @patch('identity.keystone.Keystone._keystone_conn')
+    @patch('identity.keystone.AreaProjects')
+    @patch('identity.keystone.Project.objects.get')
+    @patch('identity.keystone.GroupProjects.objects.filter')
+    @patch('identity.keystone.GroupProjects.save')
     def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_gp_save, mock_gp_objects, mock_project, mock_areaprojects, mock_keystone_conn):
         mock_keystone_conn.return_value.tenants.create.return_value = ProjectFactory()
         mock_areaprojects.side_effect = Exception

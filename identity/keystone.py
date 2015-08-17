@@ -199,7 +199,6 @@ class Keystone(object):
         associa a um time e associa a uma area.
         """
         try:
-            import ipdb; ipdb.set_trace()
             project = self.project_create(project_name, description=description,
                                           enabled=enabled)
         except exceptions.Forbidden:
@@ -222,11 +221,9 @@ class Keystone(object):
             gp.save()
 
         except Exception as e:
-            print e.message
             self.project_delete(project.id)
             self.user_delete(user.id)
-
-
+            return {'status': False, 'reason': 'Unable to assign project to group'}
 
         # Salva o project na area correspondente
         try:
@@ -235,8 +232,6 @@ class Keystone(object):
 
         except Exception as e:
             return {'status': False, 'reason': 'Unable to assign project to area'}
-
-
 
         return {
             'status': True,
