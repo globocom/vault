@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 
 class BaseWidget(object):
     title = 'Widget'
+    subtitle = ''
     description = 'Widget Description'
     content_template = 'dashboard/widgets/content.html'
 
@@ -18,6 +19,7 @@ class BaseWidget(object):
         widget_context = self.get_widget_context()
         widget_context.update({
             'title': self.title,
+            'subtitle': self.subtitle if self.subtitle != '' else self.title,
             'description': self.description,
             'content_template': self.content_template
         })

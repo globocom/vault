@@ -1,3 +1,4 @@
+# coding: utf-8
 
 from django import template
 from django.conf import settings
@@ -19,14 +20,14 @@ def render_widgets(parser, token):
 class RenderWidgets(template.Node):
 
     def render(self, context):
-        content = []
+        content = ['<ul class="dashboard-widgets">']
 
         for item in settings.DASHBOARD_WIDGETS:
             WidgetClass = self._get_widget_cls(item)
             widget = WidgetClass(context)
             content.append(widget.render())
 
-        return ''.join(content)
+        return ''.join(content) + '</ul>'
 
     def _get_widget_cls(self, cl):
         d = cl.rfind(".")

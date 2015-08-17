@@ -1,9 +1,14 @@
-<li class="widget full">
-  <div class="widget-info">
-    <h3>{{ title }}</h3>
-    <p>{{ description }}</p>
+<li class="widget full row">
+  <div class="col-md-2">
+    <div class="widget-info">
+      <strong class="widget-title">{{ title }}</strong>
+      <p class="widget-description">{{ description }}</p>
+    </div>
   </div>
-  <div class="widget-content">
-    {% include content_template %}
+  <div class="col-md-10">
+    <div class="widget-content">
+      <div class="widget-content-bar">{{ subtitle }}</div>
+      {% include content_template %}
+    </div>
   </div>
 </li>
