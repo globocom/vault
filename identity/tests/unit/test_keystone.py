@@ -7,7 +7,7 @@ from keystoneclient.openstack.common.apiclient import exceptions
 from django.conf import settings
 
 from identity.keystone import Keystone, UnauthorizedProject
-from identity.tests.fakes import FakeKeystone, UserFactory, ProjectFactory, GroupFactory, FakeResource
+from identity.tests.fakes import FakeKeystone, UserFactory, ProjectFactory, GroupFactory, FakeResource, AreaFactory
 from vault.tests.fakes import fake_request
 
 
@@ -19,6 +19,7 @@ class TestKeystoneV2(TestCase):
         self.request = fake_request(user=self.user)
 
         self.group = GroupFactory(id=1)
+        self.area = AreaFactory(id=1)
 
     def tearDown(self):
         patch.stopall()
@@ -99,7 +100,6 @@ class TestKeystoneV2(TestCase):
                                          password='password',
                                          project=project_id,
                                          role=settings.ROLE_BOLADONA)
-
 
         mock_gp.assert_called_with(group=self.group, project=mock_project_create.return_value)
         self.assertTrue(mock_gp.return_value.save.called)
@@ -186,23 +186,22 @@ class TestKeystoneV2(TestCase):
 
         self.assertEqual(computed, expected)
 
-    #
-    # @patch ('identity.keystone.Keystone._keystone_conn')
-    # @patch ('identity.keystone.AreaProjects')
-    # @patch ('identity.keystone.Project.objects.get')
-    # @patch ('identity.keystone.GroupProjects.objects.filter')
-    # @patch ('identity.keystone.GroupProjects.objects.filter')
-    # def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_groupprojects, mock_project, mock_areaprojects, _):
-    #     mock_areaprojects.side_effect = Exception
-    #     mock_project.return_value = ProjectFactory()
-    #     mock_groupprojects.return_value = []
-    #     project_name = 'project_test'
-    #     import ipdb; ipdb.set_trace()
-    #     keystone = Keystone(self.request, 'tenant_name')
-    #     result = keystone.vault_create_project(project_name, 1, 1)
-    #     expected = {'status': False, 'reason': 'Unable to assign project to area'}
-    #     self.assertEqual(result, expected)
 
+    @patch ('identity.keystone.Keystone._keystone_conn')
+    @patch ('identity.keystone.AreaProjects')
+    @patch ('identity.keystone.Project.objects.get')
+    @patch ('identity.keystone.GroupProjects.objects.filter')
+    @patch ('identity.keystone.GroupProjects.save')
+    def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_gp_save, mock_gp_objects, mock_project, mock_areaprojects, mock_keystone_conn):
+        mock_keystone_conn.return_value.tenants.create.return_value = ProjectFactory()
+        mock_areaprojects.side_effect = Exception
+        mock_project.return_value = ProjectFactory()
+        mock_gp_objects.return_value = []
+        project_name = 'project_test'
+        keystone = Keystone(self.request, 'tenant_name')
+        result = keystone.vault_create_project(project_name, self.group, self.area)
+        expected = {'status': False, 'reason': 'Unable to assign project to area'}
+        self.assertEqual(result, expected)
 
 
     def test_create_password(self):

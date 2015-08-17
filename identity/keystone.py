@@ -191,7 +191,7 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    def vault_create_project(self, name, group, area_id, description=None,
+    def vault_create_project(self, project_name, group, area, description=None,
                              enabled=True,):
         """
         Metodo que faz o processo completo de criacao de project no vault:
@@ -199,6 +199,7 @@ class Keystone(object):
         associa a um time e associa a uma area.
         """
         try:
+            import ipdb; ipdb.set_trace()
             project = self.project_create(project_name, description=description,
                                           enabled=enabled)
         except exceptions.Forbidden:
@@ -217,20 +218,25 @@ class Keystone(object):
 
         try:
             # Salva o project no time correspondente
-            import ipdb; ipdb.set_trace()
-            group = Group.objects.get(id=group_id)
-            group_project = GroupProjects(group, project=project.id)
-            group_project.save()
+            gp = GroupProjects(group=group, project=project)
+            gp.save()
+
         except Exception as e:
             print e.message
             self.project_delete(project.id)
             self.user_delete(user.id)
 
-            return {'status': False, 'reason': 'Fail to save on database'}
+
 
         # Salva o project na area correspondente
-        ap = AreaProjects(area=area_id, project=project.id)
-        ap.save()
+        try:
+            ap = AreaProjects(area=area, project=project)
+            ap.save()
+
+        except Exception as e:
+            return {'status': False, 'reason': 'Unable to assign project to area'}
+
+
 
         return {
             'status': True,
