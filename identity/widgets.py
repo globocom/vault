@@ -1,3 +1,4 @@
+# coding: utf-8
 
 from django.template.loader import render_to_string
 
@@ -7,7 +8,8 @@ from vault.models import GroupProjects
 
 class ProjectsWidget(BaseWidget):
     title = "Projects"
-    description = "Projects Description"
+    subtitle = "Object Storage"
+    description = "Relação de projetos gerenciados pelo seu time"
     content_template = 'identity/select_project.html'
 
     def get_widget_context(self):

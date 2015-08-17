@@ -9,7 +9,7 @@ from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
-from vault.models import GroupProjects, Project, AreaProjects
+from vault.models import GroupProjects, Project, AreaProjects, Group
 
 log = logging.getLogger(__name__)
 
@@ -191,14 +191,16 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    def vault_create_project(self, name, group_id, area_id, description=None,
+    # TODO: Este metodo esta fazendo muitas operacoes. Avaliar se vale a pena quebrar em metodos menores
+    def vault_create_project(self, project_name, group, area, description=None,
                              enabled=True,):
         """
         Metodo que faz o processo completo de criacao de project no vault:
-        Cria projeta, cria um usuario, e vincula com a role swiftoperator
+        Cria projeto, cria um usuario, vincula com a role swiftoperator,
+        associa a um time e associa a uma area.
         """
         try:
-            project = self.project_create(name, description=description,
+            project = self.project_create(project_name, description=description,
                                           enabled=enabled)
         except exceptions.Forbidden:
             return {'status': False, 'reason': 'Admin required'}
@@ -206,7 +208,7 @@ class Keystone(object):
         user_password = Keystone.create_password()
 
         try:
-            user = self.user_create(name='u_{}'.format(name),
+            user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
                                     role=settings.ROLE_BOLADONA,
                                     project=project.id)
@@ -216,17 +218,21 @@ class Keystone(object):
 
         try:
             # Salva o project no time correspondente
-            gp = GroupProjects(group=group_id, project=project.id)
+            gp = GroupProjects(group=group, project=project)
             gp.save()
+
         except Exception as e:
             self.project_delete(project.id)
             self.user_delete(user.id)
-
-            return {'status': False, 'reason': 'Fail to save on database'}
+            return {'status': False, 'reason': 'Unable to assign project to group'}
 
         # Salva o project na area correspondente
-        ap = AreaProjects(area=area_id, project=project.id)
-        ap.save()
+        try:
+            ap = AreaProjects(area=area, project=project)
+            ap.save()
+
+        except Exception as e:
+            return {'status': False, 'reason': 'Unable to assign project to area'}
 
         return {
             'status': True,

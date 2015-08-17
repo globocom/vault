@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
 import factory
 from django.contrib.auth.models import User, Group
-from vault.models import Project
 
-from vault.models import Project
+from vault.models import Project, Area
 
 
 class FakeResource(object):
@@ -40,7 +39,7 @@ class FakeKeystone:
 
 
 # factories.py
-class GroupFactory(factory.django.DjangoModelFactory):
+class GroupFactory(factory.Factory):
     class Meta:
         model = Group
 
@@ -73,3 +72,8 @@ class ProjectFactory(factory.Factory):
 
     class Meta:
         model = Project
+
+class AreaFactory(factory.Factory):
+
+    class Meta:
+        model = Area

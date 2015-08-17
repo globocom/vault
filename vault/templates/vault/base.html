@@ -39,31 +39,9 @@
   </ul>
 </header>
 
-<!-- <nav id="sidebar">
-  <div class="user-info">
-    <i class="icon-user fa fa-user"></i>
-    {{ logged_user.username }}<br />
-    <a class="logout-btn" href="{{ logout_url }}">logout&nbsp;<i class="icon fa fa-sign-out"></i></a>
-  </div>
 
-  <ul class="menu">
-    <li><a href="{% url "dashboard" %}"><i class="icon fa fa-dashboard"></i>Dashboard</a></li>
-    {% if has_identity %}
-      <li class="open">
-        <a href="#" class="group">
-          <i class="icon fa fa-key"></i>Identity
-          <i class="plus fa fa-angle-left"></i>
-          <i class="minus fa fa-angle-down"></i>
-        </a>
-        <ul>
-          <li><a href="{% url "users" %}"><i class="icon fa fa-caret-right"></i>Users</a></li>
-          <li><a href="{% url "projects" %}"><i class="icon fa fa-caret-right"></i>Projects</a></li>
-        </ul>
-      </li>
-    {% endif %}
-    <li><a href="{% url "containerview" %}"><i class="icon fa fa-hdd-o"></i>Storage</a></li>
-  </ul>
-</nav> -->
+{% include "dashboard/sidebar.html" %}
+
 
 <section id="content" class="container-fluid">
   <div class="row">
