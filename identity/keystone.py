@@ -232,6 +232,8 @@ class Keystone(object):
             ap.save()
 
         except Exception as e:
+            self.project_delete(project.id)
+            self.user_delete(user.id)
             return {'status': False, 'reason': 'Unable to assign project to area'}
 
         return {

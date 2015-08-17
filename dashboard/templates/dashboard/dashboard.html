@@ -10,66 +10,16 @@
 {% endblock %}
 
 {% block content_title %}Dashboard{% endblock %}
-{% block content_breadcrumb %}<a href="/">Home</a>{% endblock %}
+{% block content_breadcrumb %}<span>Home</span>{% endblock %}
 
 
 {% block content_top %}
-  <a href="{% url "admin:index" %}" class="btn btn-primary">
-    <i class="fa fa-cogs icon-white"></i>&nbsp;&nbsp;Admin
-  </a>
+  {{ block.super }}
 {% endblock %}
 
 
 {% block content %}
-
-
-{% render_widgets %}
-
-
-<div class="top row">
-  {% if widget_users_data %}
-
-    <div class="col-md-6">
-
-      {% with widget_users_data as data %}
-      <div class="widget widget-users">
-        <i class="icon fa fa-users"></i>
-        <span class="number">{{ data.total_users }}</span>
-        <span class="info">total&nbsp;users</span>
-        <div class="base">
-          <a href="{{ data.url }}">View <i class="fa fa-chevron-circle-right "></i></a>
-        </div>
-      </div>
-      {% endwith %}
-
-    </div>
-
-  {% endif %}
-
-  {% if widget_storage_data %}
-    <div class="col-md-6">
-
-      {% with widget_storage_data as data %}
-      <div class="widget widget-storage">
-        <h3><i class="icon fa fa-hdd-o"></i> Storage</h3>
-        <ul>
-          <li>Containers <span class="number">{{ data.containers }}</span></li>
-          <li>Objects <span class="number">{{ data.objects }}</span></li>
-          <li>Total Size <span class="number">{{ data.size|filesizeformat }}</span></li>
-        </ul>
-        <div class="base">
-          <a href="{{ data.url }}">View <i class="fa fa-chevron-circle-right "></i></a>
-        </div>
-      </div>
-      {% endwith %}
-
-    </div>
-  {% endif %}
-</div>
-
-<div class="middle row"></div>
-<div class="base row"></div>
-
+  {% render_widgets %}
 {% endblock %}
 
 {% block js_bottom %}{% endblock %}

@@ -1,11 +1,22 @@
-<ul class="selectproject">
-  {% for project in projects %}
-  <li data-project-id="{{ project.id }}">
-    <strong>{{ project.name }}</strong>
-    {% if project.description %}{{ project.description }}{% endif %}
+<style>
+.select-project { width: 100%; }
+.select-project tr { border-bottom: 1px dotted #aaa; }
+.select-project tr:last-child { border-bottom: none }
+.select-project td { padding: 3px 0 4px; }
+.select-project .name { font-size: 18px; }
+.select-project .tools { text-align: right; }
+</style>
 
-    <a href="#" class="set-project btn btn-primary" data-project-id="{{ project.id }}">Set Project</a>
-    <a href="#" class="edit btn btn-primary">Edit</a>
-  </li>
+<table class="select-project">
+  {% for project in projects %}
+  <tr data-project-id="{{ project.id }}">
+    <td class="name">
+      <a href="/set-project/{{ project.id }}/?next=/storage/"
+         title="{% if project.description %}{{ project.description }}{% endif %}">{{ project.name }}</a>
+    </td>
+    <td class="tools">
+      <a href="/project/{{ project.id }}" class="project-edit btn btn-default btn-xs">edit</a>
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>

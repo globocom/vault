@@ -122,10 +122,11 @@ DATABASES = {
 # Dashboard
 DASHBOARD_WIDGETS = (
     'identity.widgets.ProjectsWidget',
+    'dashboard.widgets.BaseWidget',
 )
 
 # Keystone
-KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
+KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL', 'https://auth.s3.dev.globoi.com:5000/v2.0')
 KEYSTONE_VERSION = 2
 
 # When versioning is enabled in a container named <container>, another
