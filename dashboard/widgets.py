@@ -4,8 +4,8 @@ from django.template.loader import render_to_string
 
 
 class BaseWidget(object):
-    title = 'Widget'
-    subtitle = ''
+    title = 'Widget Title'
+    subtitle = 'Widget Subtitle'
     description = 'Widget Description'
     content_template = 'dashboard/widgets/content.html'
 

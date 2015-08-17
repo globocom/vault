@@ -32,36 +32,41 @@
 
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
 
-<!-- Container -->
-<!-- <div id="container"> -->
-
-
 <div class="loading">
   <div class="loading-content">Processing<br>
   <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
   </div>
 </div>
 
-
 {% if not is_popup %}
 
-<!-- Header -->
-<header id="header" class="navbar navbar-default">
-  <div class="navbar-header">
-    <a href="{% url "dashboard" %}" class="navbar-brand logo">
-      {% block branding %}Vault{% endblock %}
-    </a>
-  </div>
+  {% include "vault/header.html" %}
+  {% include "dashboard/sidebar.html" %}
 
-  <ul class="nav navbar-nav navbar-right">
-    {% backstage_bar_html %}
-  </ul>
-</header>
+{% endif %}
 
-<!--     <div id="header">
-        <div id="branding">
+<!-- Content -->
+<section id="content" class="container-fluid">
+  <div class="row">
+
+    <h2 class="content-title col-md-6">
+      {% block content_title %}
+        {% if title %}{{ title }}{% endif %}
+      {% endblock %}
+
+      {% block breadcrumbs %}
+        <div class="breadcrumbs">
+          <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+          {% if title %} &rsaquo; {{ title }}{% endif %}
         </div>
-        {% if user.is_active and user.is_staff %}
+      {% endblock %}
+    </h2>
+
+    <div class="content-top col-md-6">
+      {% block pretitle %}{% endblock %}
+      {% block content_top %}{% endblock %}
+
+        <!-- {% if user.is_active and user.is_staff %}
         <div id="user-tools">
             {% block welcome-msg %}
                 {% trans 'Welcome,' %}
@@ -70,52 +75,16 @@
             {% block userlinks %}
                 {% url 'django-admindocs-docroot' as docsroot %}
                 {% if docsroot %}
-                    <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+                    <a class="btn btn-default" href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
                 {% endif %}
                 {% if user.has_usable_password %}
-                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+                <a class="btn btn-default" href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
                 {% endif %}
-                <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                <a class="btn btn-default" href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
             {% endblock %}
         </div>
         {% endif %}
-        {% block nav-global %}{% endblock %}
-    </div> -->
-    <!-- END Header -->
-
-{% endif %}
-
-<!-- messages -->
-<ul class="messages"></ul>
-
-<script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'vault/js/base.js' %}"></script>
-
-
-<!-- Content -->
-
-<section id="content" class="container-fluid">
-  <div class="row">
-
-    <h2 class="content-title col-md-6">
-      {% block content_title %}
-        {% if title %}{{ title }}{% endif %}
-      {% endblock %}
-      <!-- <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span> -->
-
-{% block breadcrumbs %}
-  <div class="breadcrumbs">
-    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-    {% if title %} &rsaquo; {{ title }}{% endif %}
-  </div>
-{% endblock %}
-
-    </h2>
-
-    <div class="content-top col-md-6">
-      {% block pretitle %}{% endblock %}
-
-      {% block content_top %}{% endblock %}
+        {% block nav-global %}{% endblock %} -->
     </div>
 
     <div class="content-body col-md-12">
@@ -128,18 +97,23 @@
 
   </div>
 </section>
-
-
-<div id="content" class="">
-</div>
 <!-- END Content -->
 
-    {% block footer %}<div id="footer"></div>{% endblock %}
+{% block footer %}<div id="footer"></div>{% endblock %}
 
-<!-- </div> -->
-<!-- END Container -->
+<!-- messages -->
+<ul class="messages"></ul>
 
-{% backstage_bar_js %}
+{% if messages %}
+<script>
+{% for message in messages %}
+  Base.Messages.show('{{ message|capfirst }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
+{% endfor %}
+</script>
+{% endif %}
+
+<script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vault/js/base.js' %}"></script>
 
 </body>
 </html>
