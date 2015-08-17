@@ -26,6 +26,9 @@ class Project(models.Model):
         managed = False
         db_table = 'project'
 
+    def __unicode__(self):
+        return " %s" % (self.name)
+
 
 # Vault
 class Area(models.Model):
@@ -38,23 +41,30 @@ class Area(models.Model):
         db_table = 'vault_area'
 
     def __unicode__(self):
-        return " %s - %s" % (self.name, self.description)
+        return " %s" % (self.name)
 
 
 class GroupProjects(models.Model):
     group = models.ForeignKey(Group)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'vault_group_projects'
         unique_together = (('project', 'group'),)
+        verbose_name_plural = 'Times (Groups) & Projetos'
 
+    def __unicode__(self):
+        return " Time (Group) %s - Projeto %s" % (self.group, self.project)
 
 class AreaProjects(models.Model):
     area = models.ForeignKey(Area)
-    project = models.ForeignKey(Project, unique=True)
+    project = models.ForeignKey(Project, unique=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'vault_area_projects'
         unique_together = (('project', 'area'),)
+        verbose_name_plural = 'Areas & Projetos'
+
+    def __unicode__(self):
+        return " Area %s - Projeto %s" % (self.area, self.project)
 

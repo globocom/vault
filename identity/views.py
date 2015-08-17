@@ -201,6 +201,13 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
         page = self.request.GET.get('page', 1)
 
         try:
+            keystone.project_create('lixao')
+        except Exception, e:
+            print e
+
+        import ipdb;ipdb.set_trace()
+
+        try:
             projects = sorted(keystone.project_list(),
                                 key=lambda l: l.name.lower())
             context['projects'] = utils.generic_pagination(projects, page)
@@ -213,13 +220,14 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
 
 
 class BaseProjectView(SuperUserMixin, FormView):
-    form_class = ProjectForm
+    # form_class = ProjectForm
     success_url = reverse_lazy('projects')
 
     def __init__(self):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
+
         # self.keystone = Keystone(request)
         # form = self.get_form(self.form_class)
         form = ProjectForm(request.user)
@@ -233,9 +241,6 @@ class BaseProjectView(SuperUserMixin, FormView):
         form = kwargs.get('form')
 
         request = kwargs.get('request')
-
-        context['user_groups'] = request.user.groups.all()
-        context['areas'] = Area.objects.all()
 
         if not project_id:
             project_id = form.data.get('id')
@@ -263,7 +268,8 @@ class CreateProjectViewOriginal(BaseProjectView):
 
     def post(self, request, *args, **kwargs):
         self.keystone = Keystone(self.request)
-        form = self.get_form(self.form_class)
+        # form = self.get_form(self.form_class)
+        form = ProjectForm(request.user)
 
         if form.is_valid():
             post = request.POST

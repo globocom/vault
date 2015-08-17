@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
+import random
+import string
 
 import logging
 
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
+from keystoneclient.openstack.common.apiclient import exceptions
 
-from vault.models import GroupProjects, Project
-
+from vault.models import GroupProjects, Project, AreaProjects, Group
 
 log = logging.getLogger(__name__)
 
@@ -136,8 +138,8 @@ class Keystone(object):
     def user_delete(self, user_id):
         return self.conn.users.delete(user_id)
 
-    def project_create(self, request, name, domain_id='default',
-                       description=None, enabled=True):
+    def project_create(self, name, domain_id='default', description=None,
+                       enabled=True):
         conn = self._project_manager()
 
         if settings.KEYSTONE_VERSION < 3:
@@ -188,3 +190,57 @@ class Keystone(object):
             return self.conn.roles.remove_user_role(user, role, project)
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
+
+    def vault_create_project(self, project_name, group, area, description=None,
+                             enabled=True,):
+        """
+        Metodo que faz o processo completo de criacao de project no vault:
+        Cria projeto, cria um usuario, vincula com a role swiftoperator,
+        associa a um time e associa a uma area.
+        """
+        try:
+            project = self.project_create(project_name, description=description,
+                                          enabled=enabled)
+        except exceptions.Forbidden:
+            return {'status': False, 'reason': 'Admin required'}
+
+        user_password = Keystone.create_password()
+
+        try:
+            user = self.user_create(name='u_{}'.format(project_name),
+                                    password=user_password,
+                                    role=settings.ROLE_BOLADONA,
+                                    project=project.id)
+        except exceptions.Forbidden:
+            self.project_delete(project.id)
+            return {'status': False, 'reason': 'Admin required'}
+
+        try:
+            # Salva o project no time correspondente
+            gp = GroupProjects(group=group, project=project)
+            gp.save()
+
+        except Exception as e:
+            self.project_delete(project.id)
+            self.user_delete(user.id)
+            return {'status': False, 'reason': 'Unable to assign project to group'}
+
+        # Salva o project na area correspondente
+        try:
+            ap = AreaProjects(area=area, project=project)
+            ap.save()
+
+        except Exception as e:
+            return {'status': False, 'reason': 'Unable to assign project to area'}
+
+        return {
+            'status': True,
+            'project': project,
+            'user': user,
+            'password': user_password
+        }
+
+    @staticmethod
+    def create_password():
+        caracteres = string.ascii_letters + string.digits + '!@#$%&*_'
+        return ''.join(random.choice(caracteres) for x in range(12))

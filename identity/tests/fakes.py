@@ -2,6 +2,9 @@
 import factory
 from django.contrib.auth.models import User, Group
 
+from vault.models import Project, Area
+
+
 class FakeResource(object):
     """ Fake Keystone Resource (e.g. User, Project, Role) """
     def __init__(self, n=0, name=None):
@@ -31,11 +34,12 @@ class FakeKeystone:
         self.users.update = lambda user, **kwargs: None
         self.roles.get = lambda id: FakeResource(id)
         self.tenants.get = lambda a: FakeResource(1)
+        self.tenants.create = lambda name, domain_id='default', description=None, enabled=True: None
         self.projects.get = lambda a: FakeResource(1)
 
 
 # factories.py
-class GroupFactory(factory.django.DjangoModelFactory):
+class GroupFactory(factory.Factory):
     class Meta:
         model = Group
 
@@ -62,3 +66,14 @@ class UserFactory(factory.Factory):
             # A list of groups were passed in, use them
             for group in extracted:
                 self.groups.add(group)
+
+
+class ProjectFactory(factory.Factory):
+
+    class Meta:
+        model = Project
+
+class AreaFactory(factory.Factory):
+
+    class Meta:
+        model = Area
