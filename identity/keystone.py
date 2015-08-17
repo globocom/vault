@@ -191,7 +191,7 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    def vault_create_project(self, project_name, group_id, area_id, description=None,
+    def vault_create_project(self, name, group, area_id, description=None,
                              enabled=True,):
         """
         Metodo que faz o processo completo de criacao de project no vault:

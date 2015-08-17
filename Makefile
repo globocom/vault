@@ -5,8 +5,7 @@ export CPPFLAGS=-Qunused-arguments
 
 CWD="`pwd`"
 PROJECT_NAME = vault
-PROJECT_HOME ?= $(CWD)
-
+PROJECT_HOME = $(CWD)
 
 clean:
 	@echo "Cleaning up *.pyc files"
