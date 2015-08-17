@@ -191,6 +191,7 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
+    # TODO: Este metodo esta fazendo muitas operacoes. Avaliar se vale a pena quebrar em metodos menores
     def vault_create_project(self, project_name, group, area, description=None,
                              enabled=True,):
         """

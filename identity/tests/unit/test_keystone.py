@@ -168,7 +168,7 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, mock_project_create, mock_keystone_conn, mock_project, _):
+    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, mock_project_create, __, mock_project, _):
         mock_project.return_value = ProjectFactory()
 
         project_id = 'abcdefghiklmnopq'
