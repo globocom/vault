@@ -9,7 +9,7 @@ from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
-from vault.models import GroupProjects, Project, AreaProjects
+from vault.models import GroupProjects, Project, AreaProjects, Group
 
 log = logging.getLogger(__name__)
 
@@ -191,14 +191,15 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    def vault_create_project(self, name, group_id, area_id, description=None,
+    def vault_create_project(self, project_name, group_id, area_id, description=None,
                              enabled=True,):
         """
         Metodo que faz o processo completo de criacao de project no vault:
-        Cria projeta, cria um usuario, e vincula com a role swiftoperator
+        Cria projeto, cria um usuario, vincula com a role swiftoperator,
+        associa a um time e associa a uma area.
         """
         try:
-            project = self.project_create(name, description=description,
+            project = self.project_create(project_name, description=description,
                                           enabled=enabled)
         except exceptions.Forbidden:
             return {'status': False, 'reason': 'Admin required'}
@@ -206,7 +207,7 @@ class Keystone(object):
         user_password = Keystone.create_password()
 
         try:
-            user = self.user_create(name='u_{}'.format(name),
+            user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
                                     role=settings.ROLE_BOLADONA,
                                     project=project.id)
@@ -216,9 +217,12 @@ class Keystone(object):
 
         try:
             # Salva o project no time correspondente
-            gp = GroupProjects(group=group_id, project=project.id)
-            gp.save()
+            import ipdb; ipdb.set_trace()
+            group = Group.objects.get(id=group_id)
+            group_project = GroupProjects(group, project=project.id)
+            group_project.save()
         except Exception as e:
+            print e.message
             self.project_delete(project.id)
             self.user_delete(user.id)
 

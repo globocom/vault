@@ -184,6 +184,25 @@ class TestKeystoneV2(TestCase):
 
         self.assertEqual(computed, expected)
 
+    #
+    # @patch ('identity.keystone.Keystone._keystone_conn')
+    # @patch ('identity.keystone.AreaProjects')
+    # @patch ('identity.keystone.Project.objects.get')
+    # @patch ('identity.keystone.GroupProjects.objects.filter')
+    # @patch ('identity.keystone.GroupProjects.objects.filter')
+    # def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_groupprojects, mock_project, mock_areaprojects, _):
+    #     mock_areaprojects.side_effect = Exception
+    #     mock_project.return_value = ProjectFactory()
+    #     mock_groupprojects.return_value = []
+    #     project_name = 'project_test'
+    #     import ipdb; ipdb.set_trace()
+    #     keystone = Keystone(self.request, 'tenant_name')
+    #     result = keystone.vault_create_project(project_name, 1, 1)
+    #     expected = {'status': False, 'reason': 'Unable to assign project to area'}
+    #     self.assertEqual(result, expected)
+
+
+
     def test_create_password(self):
 
         computed = Keystone.create_password()
