@@ -164,9 +164,11 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Project.objects.get')
     @patch('identity.keystone.Keystone._keystone_conn')
     @patch('identity.keystone.Keystone.project_create')
+    @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
+    @patch('identity.keystone.Keystone.user_delete')
     @patch('identity.keystone.GroupProjects.save')
-    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_key_user, mock_project_create, mock_keystone_conn, mock_project, _):
+    def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save, mock_user_delete, mock_user_create, mock_project_delete, mock_project_create, mock_keystone_conn, mock_project, _):
         mock_project.return_value = ProjectFactory()
 
         project_id = 'abcdefghiklmnopq'
@@ -175,7 +177,7 @@ class TestKeystoneV2(TestCase):
 
         mock_project_create.return_value = ProjectFactory(id=project_id, name=project_name)
         fake_user = FakeResource(n=project_id, name='u_{}'.format(project_name))
-        mock_key_user.return_value = fake_user
+        mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db
         mock_gp_save.side_effect = Exception
@@ -187,8 +189,8 @@ class TestKeystoneV2(TestCase):
 
         self.assertEqual(computed, expected)
 
-        mock_keystone_conn.return_value.tenants.delete.assert_called_with(project_id)
-        mock_keystone_conn.return_value.users.delete.assert_called_with(fake_user.id)
+        mock_project_delete.assert_called_with(project_id)
+        mock_user_delete.assert_called_with(fake_user.id)
 
     @patch('identity.keystone.Keystone._keystone_conn')
     @patch('identity.keystone.AreaProjects')
