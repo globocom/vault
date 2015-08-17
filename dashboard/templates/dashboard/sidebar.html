@@ -1,0 +1,8 @@
+<!-- sidebar -->
+<nav id="sidebar">
+  <ul class="buttons">
+    <li><a href="{% url "dashboard" %}" title="Home"><i class="icon fa fa-home"></i></a></li>
+    <li><a href="{% url "admin:index" %}" title="Admin"><i class="icon fa fa-cogs"></i></a></li>
+    <li><a class="logout" href="{{ logout_url }}" title="Logout"><i class="icon fa fa-power-off"></i></a></li>
+  </ul>
+</nav>

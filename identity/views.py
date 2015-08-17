@@ -205,8 +205,6 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
         except Exception, e:
             print e
 
-        import ipdb;ipdb.set_trace()
-
         try:
             projects = sorted(keystone.project_list(),
                                 key=lambda l: l.name.lower())

@@ -1,0 +1,20 @@
+{% load backstage_bar %}
+
+<!-- header -->
+<header id="header" class="navbar navbar-default">
+  <ul class="nav navbar-nav navbar-left">
+    <a href="#" class="btn-menu-bars"><i class="icon-menu fa fa-bars"></i></a>
+  </ul>
+
+  <div class="navbar-header">
+    <a href="{% url "dashboard" %}" class="navbar-brand logo">
+      {% block branding %}Vault{% endblock %}
+    </a>
+  </div>
+
+  <ul class="nav navbar-nav navbar-right">
+    {% backstage_bar_html %}
+  </ul>
+</header>
+
+{% backstage_bar_js %}
