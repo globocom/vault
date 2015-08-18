@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 'managed': False,
             },
             bases=(models.Model,),
-        ),        
+        ),
 
         migrations.CreateModel(
             name='Area',
@@ -55,5 +55,5 @@ class Migration(migrations.Migration):
                 'db_table': 'vault_area',
             },
             bases=(models.Model,),
-        )        
+        )
     ]

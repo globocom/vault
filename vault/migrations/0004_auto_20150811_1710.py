@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     # projects do Keystone. E nao eh possivel especificar isto no migrations
     # padrao
     query = (
-        "CREATE TABLE `vault_area_projects` ("
+          "CREATE TABLE `vault_area_projects` ("
           "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,"
           "`area_id` int(11) NOT NULL,"
           "`project_id` varchar(64) NOT NULL DEFAULT '',"
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
           "KEY `area_id_2` (`area_id`),"
           "CONSTRAINT `area_projects_ibfk_2` FOREIGN KEY (`area_id`) REFERENCES `vault_area` (`id`),"
           "CONSTRAINT `area_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)"
-        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+          ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     )
 
     state_operations = [
@@ -49,4 +49,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(query, state_operations=state_operations),
     ]
-

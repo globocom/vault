@@ -73,6 +73,7 @@ class ProjectFactory(factory.Factory):
     class Meta:
         model = Project
 
+
 class AreaFactory(factory.Factory):
 
     class Meta:

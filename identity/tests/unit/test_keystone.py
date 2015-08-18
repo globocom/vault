@@ -48,7 +48,6 @@ class TestKeystoneV2(TestCase):
         self.conn = Keystone(self.request, 'tenant_id')
         self.assertTrue(isinstance(self.conn, Keystone))
 
-
     @patch('identity.keystone.GroupProjects.objects.filter')
     def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock_filter):
 
@@ -176,7 +175,6 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
-
     def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_user_delete, mock_user_create, mock_project_delete, mock_gp_save, mock_gp_objects, mock_areaprojects):
         mock_areaprojects.side_effect = Exception
 
@@ -195,8 +193,7 @@ class TestKeystoneV2(TestCase):
         mock_project_delete.assert_called_with(self.project.id)
         mock_user_delete.assert_called_with(fake_user.id)
 
-        #FALTA LIMPAR AREAGROUP
-
+        # FALTA LIMPAR AREAGROUP
 
     def test_create_password(self):
 

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
     # projects do Keystone. E nao eh possivel especificar isto no migrations
     # padrao
     query = (
-        "CREATE TABLE `group_projects` ("
+          "CREATE TABLE `group_projects` ("
           "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,"
           "`group_id` int(11) NOT NULL,"
           "`project_id` varchar(64) NOT NULL DEFAULT '',"
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
           "KEY `group_id_2` (`group_id`),"
           "CONSTRAINT `group_projects_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),"
           "CONSTRAINT `group_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)"
-        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+          ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     )
 
     state_operations = [
