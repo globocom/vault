@@ -1,3 +1,3 @@
 [run]
 branch = True
-omit = */tests/*, manage.py, vault/wsgi.py
+omit = */tests/*, manage.py, vault/wsgi.py, */migrations/*
