@@ -27,7 +27,7 @@ class RenderWidgets(template.Node):
             widget = WidgetClass(context)
             content.append(widget.render())
 
-        return ''.join(content) + '</ul>'
+        return '{}</ul>'.format(''.join(content))
 
     def _get_widget_cls(self, cl):
         d = cl.rfind(".")

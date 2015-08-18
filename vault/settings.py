@@ -121,7 +121,7 @@ DATABASES = {
 
 # Dashboard
 DASHBOARD_WIDGETS = (
-    'identity.widgets.ProjectsWidget',
+    'swiftbrowser.widgets.ProjectsWidget',
     'dashboard.widgets.BaseWidget',
 )
 
