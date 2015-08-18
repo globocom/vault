@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Group
 
+
 # Keystone
 class Domain(models.Model):
     id = models.CharField(primary_key=True, max_length=64)
@@ -56,6 +57,7 @@ class GroupProjects(models.Model):
     def __unicode__(self):
         return " Time (Group) %s - Projeto %s" % (self.group, self.project)
 
+
 class AreaProjects(models.Model):
     area = models.ForeignKey(Area)
     project = models.ForeignKey(Project, unique=True, on_delete=models.CASCADE)
@@ -67,4 +69,3 @@ class AreaProjects(models.Model):
 
     def __unicode__(self):
         return " Area %s - Projeto %s" % (self.area, self.project)
-

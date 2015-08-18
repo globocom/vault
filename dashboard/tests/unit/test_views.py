@@ -2,13 +2,11 @@
 
 from unittest import TestCase
 from mock import patch
-
 from vault.tests.fakes import fake_request
 from dashboard.views import DashboardView
 
 
 class DashboardTest(TestCase):
-
 
     def setUp(self):
         self.view = DashboardView.as_view()
@@ -28,7 +26,6 @@ class DashboardTest(TestCase):
 
             def __init__(self, project):
                 self.project = project
-
 
         mock_projects.return_value = [DummyGP(1), DummyGP(2)]
 
