@@ -201,11 +201,6 @@ class ListProjectView(LoginRequiredMixin, TemplateView):
         page = self.request.GET.get('page', 1)
 
         try:
-            keystone.project_create('lixao')
-        except Exception, e:
-            print e
-
-        try:
             projects = sorted(keystone.project_list(),
                                 key=lambda l: l.name.lower())
             context['projects'] = utils.generic_pagination(projects, page)
