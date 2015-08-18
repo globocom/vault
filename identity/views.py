@@ -221,7 +221,7 @@ class BaseProjectView(SuperUserMixin, FormView):
 
     def get(self, request, *args, **kwargs):
 
-        # self.keystone = Keystone(request)
+        self.keystone = Keystone(request)
         # form = self.get_form(self.form_class)
         form = ProjectForm(request.user)
         context = self.get_context_data(form=form, request=request, **kwargs)
