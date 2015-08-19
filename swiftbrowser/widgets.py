@@ -9,7 +9,7 @@ from vault.models import GroupProjects
 class ProjectsWidget(BaseWidget):
     title = "Projects"
     subtitle = "Object Storage"
-    description = "Relação de projetos gerenciados pelo seu time"
+    description = "Relacao de projetos gerenciados pelo seu time"
     content_template = 'swiftbrowser/select_project.html'
 
     def get_widget_context(self):
