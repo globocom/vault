@@ -46,7 +46,7 @@ class ListProjectTest(TestCase):
         mock_project_list.side_effect = Exception()
 
         self.request.user.is_authenticated = lambda: True
-        self.request.user.token = FakeToken
+        self.request.user.is_superuser = True
 
         response = self.view(self.request)
         msgs = [msg for msg in self.request._messages]
@@ -69,7 +69,7 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        self.request.user.token = FakeToken
+        # self.request.user.token = FakeToken
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -82,7 +82,7 @@ class CreateProjectTest(TestCase):
 
     def test_create_project_needs_authentication(self):
         self.request.user.is_authenticated = lambda: False
-        self.request.user.token = None
+        # self.request.user.token = None
 
         response = self.view(self.request)
 
@@ -191,7 +191,7 @@ class UpdateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        self.request.user.token = FakeToken
+        # self.request.user.token = FakeToken
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -210,13 +210,13 @@ class UpdateProjectTest(TestCase):
 
         self.assertIn('tenants', str(response))
 
-    @patch('identity.keystone.settings', KEYSTONE_VERSION=3)
-    @patch('identity.keystone.Keystone._keystone_conn')
-    def test_project_manager_v3(self, mock_keystone_conn, mock_settings):
-        conn = Keystone(self.request)
-        response = conn._project_manager()
-
-        self.assertIn('projects', str(response))
+    # @patch('identity.keystone.settings', KEYSTONE_VERSION=3)
+    # @patch('identity.keystone.Keystone._keystone_conn')
+    # def test_project_manager_v3(self, mock_keystone_conn, mock_settings):
+    #     conn = Keystone(self.request)
+    #     response = conn._project_manager()
+    #
+    #     self.assertIn('projects', str(response))
 
     @patch('identity.keystone.Keystone.project_update')
     def test_project_update_method_was_called(self, mock):

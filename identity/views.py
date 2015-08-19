@@ -196,26 +196,6 @@ class DeleteUserView(BaseUserView):
         return HttpResponseRedirect(self.success_url)
 
 
-class ListProjectView(LoginRequiredMixin, TemplateView):
-    template_name = "identity/projects.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(ListProjectView, self).get_context_data(**kwargs)
-        keystone = Keystone(self.request)
-        page = self.request.GET.get('page', 1)
-
-        try:
-            projects = sorted(keystone.project_list(),
-                                key=lambda l: l.name.lower())
-            context['projects'] = utils.generic_pagination(projects, page)
-        except Exception as e:
-            log.exception('Exception: %s' % e)
-            messages.add_message(self.request, messages.ERROR,
-                                 "Unable to list projects")
-
-        return context
-
-
 class BaseProjectView(SuperUserMixin, FormView):
     # form_class = ProjectForm
     success_url = reverse_lazy('projects')
@@ -256,6 +236,27 @@ class BaseProjectView(SuperUserMixin, FormView):
                 context['roles'] = sorted(roles, key=lambda l: l.name.lower())
             except Exception as e:
                 log.exception('Exception: %s' % e)
+
+        return context
+
+
+# class ListProjectView(LoginRequiredMixin, TemplateView):
+class ListProjectView(BaseProjectView):
+    template_name = "identity/projects.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ListProjectView, self).get_context_data(**kwargs)
+        keystone = Keystone(self.request)
+        page = self.request.GET.get('page', 1)
+
+        try:
+            projects = sorted(keystone.project_list(),
+                                key=lambda l: l.name.lower())
+            context['projects'] = utils.generic_pagination(projects, page)
+        except Exception as e:
+            log.exception('Exception: %s' % e)
+            messages.add_message(self.request, messages.ERROR,
+                                 "Unable to list projects")
 
         return context
 
