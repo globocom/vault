@@ -206,7 +206,7 @@ class BaseProjectView(SuperUserMixin, FormView):
         # form = self.get_form(self.form_class)
         form = ProjectForm(request.user)
         context = self.get_context_data(form=form, request=request, **kwargs)
-
+        
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
