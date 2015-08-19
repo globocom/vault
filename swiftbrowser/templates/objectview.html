@@ -25,8 +25,8 @@
   <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
 {% endblock %}
 
-{% block content %}
-  <ul class="breadcrumb">
+{% block content_breadcrumb %}
+  <ul class="breadcrumbs">
     <li><a href="{% url "containerview" %}">Containers</a></li>
     <li>
       {% if prefix %}
@@ -45,7 +45,9 @@
     </li>
     {% endfor %}
   </ul>
+{% endblock %}
 
+{% block content %}
   <div class="panel panel-default">
     <table class="items-list table table-bordered table-striped table-hover">
       <thead>

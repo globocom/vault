@@ -48,7 +48,6 @@ class TestKeystoneV2(TestCase):
         self.conn = Keystone(self.request, 'tenant_id')
         self.assertTrue(isinstance(self.conn, Keystone))
 
-
     @patch('identity.keystone.GroupProjects.objects.filter')
     def test_regular_user_creates_keystone_conn_on_a_allowed_project(self, mock_filter):
 
@@ -194,7 +193,7 @@ class TestKeystoneV2(TestCase):
         mock_project_delete.assert_called_with(self.project.id)
         mock_user_delete.assert_called_with(fake_user.id)
 
-        #FALTA LIMPAR AREAGROUP
+        # FALTA LIMPAR AREAGROUP
 
     def test_create_password(self):
 

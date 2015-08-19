@@ -59,9 +59,9 @@ class UpdateUserForm(UserForm):
 class ProjectForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
-      super(ProjectForm, self).__init__(*args, **kwargs)
+        super(ProjectForm, self).__init__(*args, **kwargs)
 
-      self.fields['groups'] = forms.ModelMultipleChoiceField(label=u'Times', required=True,
+        self.fields['groups'] = forms.ModelMultipleChoiceField(label=u'Times', required=True,
         queryset=user.groups.all())
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)

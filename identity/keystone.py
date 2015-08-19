@@ -20,7 +20,7 @@ class UnauthorizedProject(Exception):
         self.value = value
 
     def __str__(self):
-         return repr(self.value)
+        return repr(self.value)
 
 
 class Keystone(object):
@@ -163,11 +163,7 @@ class Keystone(object):
 
     def project_list(self):
         conn = self._project_manager()
-
-        if self.user.is_superuser:
-            return conn.list()
-        else:
-            return conn.list(user=self.user.id)
+        return conn.list()
 
     def project_get(self, project_id):
         conn = self._project_manager()

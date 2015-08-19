@@ -2,6 +2,7 @@
 
 import syslog
 
+
 class ActionNotFound(Exception):
     pass
 
@@ -24,6 +25,5 @@ class ActionLogger(object):
 
         syslog.syslog(syslog.LOG_INFO, msg)
 
-    
     def savedb(self, audit):
         audit.save()
