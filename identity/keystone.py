@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+
 import random
 import string
 
@@ -10,6 +11,7 @@ from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
 from vault.models import GroupProjects, Project, AreaProjects, Group
+
 
 log = logging.getLogger(__name__)
 

@@ -20,6 +20,7 @@ from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
 from vault.models import Area
 from vault import utils
 
+
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 

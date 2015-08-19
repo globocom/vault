@@ -27,7 +27,6 @@ class TestSwiftbrowser(TestCase):
 
         self.request = fake_request(user=self.user)
         self.request.session['project_id'] = 'fakeid'
-        self.request.build_absolute_uri = lambda: '/'
 
     def tearDown(self):
         patch.stopall()

@@ -24,6 +24,7 @@ from actionlogger import ActionLogger
 from identity.keystone import Keystone
 from vault.utils import update_default_context
 
+
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
