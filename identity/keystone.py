@@ -10,8 +10,10 @@ from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
 from vault.models import GroupProjects, Project, AreaProjects, Group
+from actionlogger import ActionLogger
 
 log = logging.getLogger(__name__)
+actionlog = ActionLogger()
 
 
 class UnauthorizedProject(Exception):

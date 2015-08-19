@@ -9,6 +9,7 @@ from swiftbrowser.widgets import ProjectsWidget
 
 class DummyGP(object):
     project = None
+
     def __init__(self, project):
         self.project = project
 
@@ -28,8 +29,6 @@ class SwftbrowserWidgetsTest(TestCase):
 
         prjwidget = ProjectsWidget({})
         content = prjwidget.render()
-
-        import ipdb; ipdb.set_trace()
 
         template = self.view(self.request)
 

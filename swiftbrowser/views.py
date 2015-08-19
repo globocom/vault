@@ -10,6 +10,7 @@ import urlparse
 import json
 
 from actionlogger import ActionLogger
+from actionlogger.models import Audit
 
 from django.conf import settings
 from django.contrib import messages
@@ -70,6 +71,10 @@ def containerview(request):
         'account_stat': account_stat,
         'containers': utils.generic_pagination(containers, page),
     })
+
+    audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.CONTAINERS, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
+
     return render_to_response('containerview.html', context,
                               context_instance=RequestContext(request))
 
@@ -98,6 +103,9 @@ def create_container(request):
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, 'Access denied.')
+
+        audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.CONTAINERS + '-' + container, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+        actionlog.savedb(audit)
 
         return redirect(containerview)
 
@@ -141,6 +149,9 @@ def delete_container(request, container, force=True):
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         return False
+
+    audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.CONTAINERS + '-' + container, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
 
     return True
 
@@ -187,6 +198,9 @@ def objectview(request, container, prefix=None):
         'prefix': prefix,
         'prefixes': prefixes,
     })
+
+    audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.OBJECTS + '-' + container + '-' + object_list, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
 
     return render_to_response("objectview.html", context,
                               context_instance=RequestContext(request))
@@ -242,6 +256,9 @@ def upload(request, container, prefix=None):
         'prefixes': prefixes,
     })
 
+    audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECTS + '-' + container, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
+
     return render_to_response('upload_form.html', context,
                               context_instance=RequestContext(request))
 
@@ -285,6 +302,9 @@ def create_object(request, container, prefix=None):
             log.error(msg)
             messages.add_message(request, messages.ERROR, msg)
 
+    audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.OBJECTS + '-' + obj, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
+
     if prefix:
         return redirect(objectview, container=container, prefix=prefix)
     else:
@@ -304,6 +324,9 @@ def download(request, container, objectname):
     url = '{0}/{1}/{2}'.format(storage_url, container, objectname)
 
     res = requests.get(url, headers=headers, verify=not settings.SWIFT_INSECURE)
+
+    audit = Audit(user=request.user.username, action=Audit.DOWNLOAD, item=Audit.OBJECTS + '-' + objectname, through=Audit.VAULT + '-' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
 
     return HttpResponse(res.content, content_type=res.headers['content-type'])
 

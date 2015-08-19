@@ -10,12 +10,25 @@ class Audit(models.Model):
     ADD = 'Adicionar'
     UPDATE = 'Atualizar'
     DELETE = 'Apagar'
+    LIST = 'Listar'
+    UPLOAD = 'Upload'
+    DOWNLOAD = 'Download'
 
     # THROUGHTS
     VAULT = 'Vault'
     DASHBOARD = 'Dashboard'
     IDENTITY = 'Identity'
     SWIFTBROWSER = 'SwiftBrowser'
+    DJANGO = 'Django'
+
+    # ITENS
+    USERS = 'Usuarios'
+    PROJECTS = 'Projetos'
+    AREAS = 'Areas'
+    TIMES = 'Times'
+    USER_ROLES = 'User_Role'
+    CONTAINERS = 'Containers'
+    OBJECTS = 'Objects'
 
     NOW = datetime.datetime.now()
 
