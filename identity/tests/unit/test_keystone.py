@@ -206,9 +206,8 @@ class TestKeystoneV2(TestCase):
     def test_return_find_u_user(self, mock_project_get, mock_user_list):
         mock_project_get.return_value = ProjectFactory(id='abcde', name='infra')
         mock_user_list.return_value = UserFactory(id='abcde', username='u_project_test')
-        
+
         keystone = Keystone(self.request, 'tenant_id')
-        
+
         fake_user = 'u_{}'.format(self.project.name)
         self.assertEqual(fake_user, mock_user_list.return_value.username)
-
