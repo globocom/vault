@@ -14,6 +14,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
+from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
@@ -126,6 +127,9 @@ class CreateUserView(BaseUserView):
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created user')
                 actionlog.log(request.user.username, 'create', user)
+                import ipdb; ipdb.set_trace();
+                audit = Audit(user=request.user.username,action=Audit.ADD,item=post.get('name'),created_at=Audit.NOW)
+                actionlog.savedb(audit)
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
