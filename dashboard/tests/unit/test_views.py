@@ -12,19 +12,23 @@ class DashboardTest(TestCase):
     def setUp(self):
         self.view = DashboardView.as_view()
         self.request = fake_request(method='GET')
+        self.request.META.update({
+            'SERVER_NAME': 'globo.com',
+            'SERVER_PORT': '80'
+        })
         self.request.user.is_authenticated = lambda: True
 
     def tearDown(self):
         patch.stopall()
 
-    def test_deshboard_needs_authentication(self):
+    def test_dashboard_needs_authentication(self):
         self.request.user.is_authenticated = lambda: False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('dashboard.views.GroupProjects.objects.filter')
-    def test_check_projects_in_context(self, mock_projects):
-        mock_projects.return_value = [DummyGP(1), DummyGP(2)]
-        template = self.view(self.request)
+    def test_show_dashboard(self):
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(template.context_data['projects'], [1, 2])
+        response.render()
+        self.assertIn('Dashboard', response.content)

@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
 
 from unittest import TestCase
 from mock import patch
@@ -19,9 +19,6 @@ class SwftbrowserWidgetsTest(TestCase):
     def setUp(self):
         self.request = fake_request(method='GET')
         self.request.user.is_authenticated = lambda: True
-
-    def tearDown(self):
-        patch.stopall()
 
     @patch('swiftbrowser.widgets.GroupProjects.objects.filter')
     def test_check_projects_in_context_of_projects_widget(self, mock_projects):

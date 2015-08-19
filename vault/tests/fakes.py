@@ -20,6 +20,8 @@ def fake_request(path='/', method='GET', user=None, extra={}):
     req.user = user or AnonymousUser()
     req.user.project_id = 1
 
+    req.build_absolute_uri = lambda x=None: '/'
+
     # for sessions middleware
     req.session = SessionStore()
     req.session['project_id'] = 1

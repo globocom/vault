@@ -20,6 +20,7 @@ from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
 from vault import utils
 
+
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
@@ -221,7 +222,7 @@ class BaseProjectView(SuperUserMixin, FormView):
         # form = self.get_form(self.form_class)
         form = ProjectForm(request.user)
         context = self.get_context_data(form=form, request=request, **kwargs)
-
+        
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):

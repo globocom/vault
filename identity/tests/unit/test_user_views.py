@@ -16,7 +16,6 @@ class ListUserTest(TestCase):
         self.view = ListUserView.as_view()
 
         self.request = fake_request(method='GET')
-        self.request.build_absolute_uri = lambda: '/'
         self.request.user.is_superuser = True
 
         patch('identity.keystone.Keystone._keystone_conn',
@@ -63,7 +62,6 @@ class CreateUserTest(TestCase):
         self.view = CreateUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -201,7 +199,6 @@ class UpdateUserTest(TestCase):
         self.view = UpdateUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -329,7 +326,6 @@ class DeleteUserTest(TestCase):
         self.view = DeleteUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
