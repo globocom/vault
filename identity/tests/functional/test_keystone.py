@@ -92,13 +92,13 @@ class TestKeystoneV2(TestCase, KeystoneBase):
         response = cli.post('/auth/login/', {
             'username': os.getenv('VAULT_TEST_USER'),
             'password': os.getenv('VAULT_TEST_PASS'),
-            'region': settings.OPENSTACK_KEYSTONE_URL
+            'region': 'Region1'
         })
 
         self.request = fake_request()
-        self.request.user.token = FakeToken(cli.session['token'].id)
-        self.request.user.service_catalog = cli.session['token'].serviceCatalog
-        self.request.user.is_superuser = True
+        # self.request.user.token = FakeToken(cli.session['token'].id)
+        # self.request.user.service_catalog = cli.session['token'].serviceCatalog
+        # self.request.user.is_superuser = True
 
         self.keystone = Keystone(self.request)
 
