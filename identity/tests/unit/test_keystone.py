@@ -176,7 +176,6 @@ class TestKeystoneV2(TestCase):
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
-
     def test_vault_create_project_fail_to_save_project_to_team_on_db(self, mock_user_delete, mock_user_create, mock_project_delete, mock_gp_save, mock_gp_objects, mock_areaprojects):
         mock_areaprojects.side_effect = Exception
 
@@ -197,9 +196,20 @@ class TestKeystoneV2(TestCase):
 
         #FALTA LIMPAR AREAGROUP
 
-
     def test_create_password(self):
 
         computed = Keystone.create_password()
 
         self.assertTrue(isinstance(computed, str))
+
+    @patch('identity.keystone.Keystone.user_list')
+    @patch('identity.keystone.Keystone.project_get')
+    def test_return_find_u_user(self, mock_project_get, mock_user_list):
+        mock_project_get.return_value = ProjectFactory(id='abcde', name='infra')
+        mock_user_list.return_value = UserFactory(id='abcde', username='u_project_test')
+        
+        keystone = Keystone(self.request, 'tenant_id')
+        
+        fake_user = 'u_{}'.format(self.project.name)
+        self.assertEqual(fake_user, mock_user_list.return_value.username)
+

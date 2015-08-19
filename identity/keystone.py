@@ -248,9 +248,8 @@ class Keystone(object):
         Metodo que recebe o id do project e busca o usuario que tenha o nome u_<project_name> 
         e retorna este usuario.
         """
-        conn = self._project_manager()
-        project = conn.get(project_id)
-        users = self.conn.users.list(project.id)
+        project = self.project_get(project_id)
+        users = self.user_list(project.id)
 
         for user in users:
             if user.username == 'u_{}'.format(project.name):
