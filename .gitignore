@@ -7,3 +7,4 @@ actions.log
 vault_static/
 #pycharm
 .idea/
+.pycharm-venv
