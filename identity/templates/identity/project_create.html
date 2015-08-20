@@ -51,10 +51,11 @@
         </div>
 
       </div>
-
+      {% if show_roles %}
       <div class="col-md-6">
         {% include "identity/_project_members.html" %}
       </div>
+        {% endif %}
     </fieldset>
 
     <fieldset class="base">

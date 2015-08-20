@@ -17,7 +17,7 @@ from actionlogger import ActionLogger
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
-from vault.models import Area
+from vault.models import Area, Group
 from vault import utils
 
 log = logging.getLogger(__name__)
@@ -193,7 +193,6 @@ class DeleteUserView(BaseUserView):
 
 
 class BaseProjectView(SuperUserMixin, FormView):
-    # form_class = ProjectForm
     success_url = reverse_lazy('projects')
 
     def __init__(self):
@@ -201,19 +200,24 @@ class BaseProjectView(SuperUserMixin, FormView):
 
     def get(self, request, *args, **kwargs):
 
-        self.keystone = Keystone(request)
-        # form = self.get_form(self.form_class)
-        form = ProjectForm(request.user)
+        form = ProjectForm(initial={'user': request.user})
+
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
+
+        request = kwargs.get('request')
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project_id = kwargs.get('project_id')
         form = kwargs.get('form')
 
-        request = kwargs.get('request')
+        self.keystone = Keystone(request)
+
+        # Mostra a gerencia de roles qd for superuser acessando admin
+        context['show_roles'] = request.user.is_superuser and \
+                                request.path[0:15] == '/admin/project/'
 
         if not project_id:
             project_id = form.data.get('id')
@@ -224,19 +228,22 @@ class BaseProjectView(SuperUserMixin, FormView):
             context['idendity_project_id'] = project_id
             context['has_id'] = True
 
-            try:
-                users = self.keystone.user_list()
-                context['users'] = sorted(users, key=lambda l: l.name.lower())
+            if context['show_roles']:
+                try:
+                    users = self.keystone.user_list()
+                    context['users'] = sorted(users, key=lambda l: l.name.lower())
 
-                roles = self.keystone.role_list()
-                context['roles'] = sorted(roles, key=lambda l: l.name.lower())
-            except Exception as e:
-                log.exception('Exception: %s' % e)
+                    roles = self.keystone.role_list()
+                    context['roles'] = sorted(roles, key=lambda l: l.name.lower())
+                except Exception as e:
+                    log.exception('Exception: %s' % e)
 
         return context
 
+    def dispatch(self, *args, **kwargs):
+        return super(BaseProjectView, self).dispatch(*args, **kwargs)
 
-# class ListProjectView(LoginRequiredMixin, TemplateView):
+
 class ListProjectView(BaseProjectView):
     template_name = "identity/projects.html"
 
@@ -262,7 +269,6 @@ class CreateProjectViewOriginal(BaseProjectView):
 
     def post(self, request, *args, **kwargs):
         self.keystone = Keystone(self.request)
-        # form = self.get_form(self.form_class)
         form = ProjectForm(request.user)
 
         if form.is_valid():
@@ -299,22 +305,26 @@ class CreateProjectView(BaseProjectView):
     success_url = reverse_lazy('projects')
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
-        form = self.get_form(self.form_class)
+        form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         if form.is_valid():
+            keystone = Keystone(request)
             post = request.POST
             enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
+
+            # group = Group.objects.get(id=post.get('groups'))
+            # area = Area.objects.get(id=post.get('areas'))
 
             if description == '':
                 description = None
 
             try:
-                project = self.keystone.project_create(request,
-                                                       post.get('name'),
-                                                       description=description,
-                                                       enabled=enabled)
+                project = keystone.vault_create_project(post.get('name'),
+                                                        post.get('groups'),
+                                                        post.get('areas'),
+                                                        description=description,
+                                                        enabled=enabled)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created project')

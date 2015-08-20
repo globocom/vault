@@ -89,7 +89,7 @@ class Keystone(object):
 
     @sensitive_variables('password')
     def user_create(self, name=None, email=None, password=None,
-                    project=None, enabled=None, domain=None, role=None):
+                    project=None, enabled=True, domain=None, role=None):
 
         if settings.KEYSTONE_VERSION < 3:
             user = self.conn.users.create(name, password, email, project, enabled)
@@ -188,8 +188,8 @@ class Keystone(object):
             return self.conn.roles.revoke(role, user=user, project=project)
 
     # TODO: Este metodo esta fazendo muitas operacoes. Avaliar se vale a pena quebrar em metodos menores
-    def vault_create_project(self, project_name, group, area, description=None,
-                             enabled=True,):
+    def vault_create_project(self, project_name, group_id, area_id, description=None,
+                             enabled=True):
         """
         Metodo que faz o processo completo de criacao de project no vault:
         Cria projeto, cria um usuario, vincula com a role swiftoperator,
@@ -214,7 +214,7 @@ class Keystone(object):
 
         try:
             # Salva o project no time correspondente
-            gp = GroupProjects(group=group, project=project)
+            gp = GroupProjects(group_id=group_id, project_id=project.id)
             gp.save()
 
         except Exception as e:
@@ -224,7 +224,7 @@ class Keystone(object):
 
         # Salva o project na area correspondente
         try:
-            ap = AreaProjects(area=area, project=project)
+            ap = AreaProjects(area_id=area_id, project_id=project.id)
             ap.save()
 
         except Exception as e:
