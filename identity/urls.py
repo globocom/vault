@@ -11,8 +11,7 @@ urlpatterns = patterns('',
     # Admin
    url(r'^admin/projects/$', ListProjectView.as_view(), name='projects'),
    url(r'^admin/project/add/?$', CreateProjectView.as_view(), name='add_project'),
-   url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', UpdateProjectView.as_view(),
-        name='edit_project'),
+   url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', UpdateProjectView.as_view(), name='edit_project'),
 
     # Users
     url(r'^users/?$', ListUserView.as_view(), name='users'),
