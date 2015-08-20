@@ -11,9 +11,7 @@ class SetProjectTest(TestCase):
 
     def setUp(self):
         self.view = SetProjectView.as_view()
-
         self.request = fake_request(method='GET')
-        self.request.build_absolute_uri = lambda: '/'
 
     def tearDown(self):
         patch.stopall()

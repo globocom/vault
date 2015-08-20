@@ -15,7 +15,6 @@ class BaseAjaxTestCase(TestCase):
         self.view = self.view_class.as_view()
 
         self.request = fake_request(method='POST')
-        self.request.build_absolute_uri = lambda: '/'
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.token = FakeToken

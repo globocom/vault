@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+
 import random
 import string
 
@@ -10,8 +11,11 @@ from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
 from vault.models import GroupProjects, Project, AreaProjects, Group
+from actionlogger import ActionLogger
+
 
 log = logging.getLogger(__name__)
+actionlog = ActionLogger()
 
 
 class UnauthorizedProject(Exception):
@@ -238,6 +242,18 @@ class Keystone(object):
             'user': user,
             'password': user_password
         }
+
+    def return_find_u_user(self, project_id):
+        """
+        Metodo que recebe o id do project e busca o usuario que tenha o nome u_<project_name>
+        e retorna este usuario.
+        """
+        project = self.project_get(project_id)
+        users = self.user_list(project.id)
+
+        for user in users:
+            if user.username == 'u_{}'.format(project.name):
+                return user
 
     @staticmethod
     def create_password():

@@ -14,9 +14,7 @@ class ListProjectTest(TestCase):
 
     def setUp(self):
         self.view = ListProjectView.as_view()
-
         self.request = fake_request(method='GET')
-        self.request.build_absolute_uri = lambda: '/'
 
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
@@ -26,7 +24,6 @@ class ListProjectTest(TestCase):
 
     def test_list_projects_needs_authentication(self):
         response = self.view(self.request)
-
         self.assertEqual(response.status_code, 302)
 
     def test_show_project_list(self):
@@ -34,7 +31,8 @@ class ListProjectTest(TestCase):
               Mock(return_value=[FakeResource(1)])).start()
 
         self.request.user.is_authenticated = lambda: True
-        self.request.user.token = FakeToken
+        self.request.user.is_superuser = True
+        # self.request.user.token = FakeToken
 
         response = self.view(self.request)
         response.render()
@@ -62,7 +60,6 @@ class CreateProjectTest(TestCase):
         self.view = CreateProjectView.as_view()
 
         self.request = fake_request(method='GET')
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -184,7 +181,6 @@ class UpdateProjectTest(TestCase):
         self.view = UpdateProjectView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'

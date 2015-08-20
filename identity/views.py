@@ -14,11 +14,15 @@ from django.views.decorators.debug import sensitive_post_parameters
 from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
+from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
+
 from vault.models import Area, Group
+
 from vault import utils
+
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -39,6 +43,9 @@ class ListUserView(SuperUserMixin, TemplateView):
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
+
+        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        actionlog.savedb(audit)
 
         return context
 
@@ -126,6 +133,10 @@ class CreateUserView(BaseUserView):
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created user')
                 actionlog.log(request.user.username, 'create', user)
+
+                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                actionlog.savedb(audit)
+
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
@@ -163,6 +174,10 @@ class UpdateUserView(BaseUserView):
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully updated user')
                 actionlog.log(request.user.username, 'update', user)
+
+                audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                actionlog.savedb(audit)
+
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
@@ -184,6 +199,11 @@ class DeleteUserView(BaseUserView):
                                  'Successfully deleted user')
             actionlog.log(request.user.username, 'delete',
                           'user_id: %s' % kwargs.get('user_id'))
+
+            user = self.keystone.user_get(kwargs.get('user_id'))
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(request, messages.ERROR,
@@ -261,6 +281,9 @@ class ListProjectView(BaseProjectView):
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list projects")
 
+        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.PROJECTS, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        actionlog.savedb(audit)
+
         return context
 
 
@@ -293,6 +316,9 @@ class CreateProjectViewOriginal(BaseProjectView):
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when create project")
+
+            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
 
             return self.form_valid(form)
         else:
@@ -335,6 +361,9 @@ class CreateProjectView(BaseProjectView):
                 messages.add_message(request, messages.ERROR,
                                      "Error when create project")
 
+            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -365,10 +394,14 @@ class UpdateProjectView(BaseProjectView):
                                      'Successfully updated project')
 
                 actionlog.log(request.user.username, 'update', project)
+
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when update project")
+
+            audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
 
             return self.form_valid(form)
         else:
@@ -387,10 +420,18 @@ class DeleteProjectView(BaseProjectView):
 
             actionlog.log(request.user.username, 'delete',
                           'project_id: %s' % kwargs.get('project_id'))
+
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.PROJECT + ' - ' + kwargs.get('project_id'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(request, messages.ERROR,
                                  'Error when delete project')
+
+            project = self.keystone.project_get(kwargs.get('project_id'))
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=project.description, through=Audit.VAULT + '-' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
 
         return HttpResponseRedirect(self.success_url)
 
@@ -416,6 +457,9 @@ class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
                         'username': user.username,
                         'roles': self.get_user_roles(user, project_id)
                     })
+
+            audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.USER_ROLES, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
 
             return self.render_to_response(context)
 
@@ -444,6 +488,10 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
         try:
             self.keystone.add_user_role(project=project, role=role, user=user)
+
+            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER_ROLES + ' - ' + user.username + ' - ' + project.description + ' - ' + role, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return self.render_to_response(context)
 
         except Conflict as e:
@@ -470,6 +518,10 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
         try:
             self.keystone.remove_user_role(project=project, role=role, user=user)
+
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER_ROLES + ' - ' + user.username + ' - ' + project.description + ' - ' + role, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return self.render_to_response(context)
 
         except Exception as e:

@@ -21,8 +21,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 
 from actionlogger import ActionLogger
-from identity.keystone import Keystone
+from actionlogger.models import Audit
+
 from vault.utils import update_default_context
+
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -92,6 +94,9 @@ class SetProjectView(LoginRequiredMixin, View):
             log.exception('Exception: %s' % err)
             messages.add_message(request, messages.ERROR,
                                  'Unable to change your project.')
+
+        audit = Audit(user=request.user.username, action=Audit.SWITCH, item=' user ' + request.user.username + ' - ' + Audit.PROJECT + ' - ' + ' project_id ' + str(request.session['project_id']), through=Audit.VAULT, created_at=Audit.NOW)
+        actionlog.savedb(audit)
 
         return http_redirect
 
