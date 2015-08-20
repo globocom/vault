@@ -8,13 +8,14 @@ import datetime
 class Audit(models.Model):
     # ACTIONS
     ADD = 'Cadastrou'
-    UPDATE = 'Atualizou'
+    UPDATE = 'Atualizou / Editou'
     DELETE = 'Removeu'
     LIST = 'Listou / Visualizou'
     UPLOAD = 'Realizou upload'
     DOWNLOAD = 'Realizou Download'
     ENABLE = 'Habilitou'
     DISABLE = 'Desabilitou'
+    SWITCH = 'Alternou'
 
     # THROUGHTS and MODULES
     VAULT = 'Vault'
