@@ -7,14 +7,16 @@ import datetime
 
 class Audit(models.Model):
     # ACTIONS
-    ADD = 'Adicionar'
-    UPDATE = 'Atualizar'
-    DELETE = 'Apagar'
-    LIST = 'Listar'
-    UPLOAD = 'Upload'
-    DOWNLOAD = 'Download'
+    ADD = 'Cadastrou'
+    UPDATE = 'Atualizou'
+    DELETE = 'Removeu'
+    LIST = 'Listou / Visualizou'
+    UPLOAD = 'Realizou upload'
+    DOWNLOAD = 'Realizou Download'
+    ENABLE = 'Habilitou'
+    DISABLE = 'Desabilitou'
 
-    # THROUGHTS
+    # THROUGHTS and MODULES
     VAULT = 'Vault'
     DASHBOARD = 'Dashboard'
     IDENTITY = 'Identity'
@@ -23,12 +25,22 @@ class Audit(models.Model):
 
     # ITENS
     USERS = 'Usuarios'
+    USER = 'Usuario'
     PROJECTS = 'Projetos'
+    PROJECT = 'Projeto'
     AREAS = 'Areas'
-    TIMES = 'Times'
-    USER_ROLES = 'User_Role'
+    AREA = 'Area'
+    TEAMS = 'Times'
+    TEAMS = 'Time'
+    USER_ROLES = 'Usuario e Permissionamento'
     CONTAINERS = 'Containers'
-    OBJECTS = 'Objects'
+    CONTAINER = 'Container'
+    OBJECTS = 'Objectos'
+    OBJECT = 'Objeto'
+    PSEUDO_FOLDER = 'PseudoFolder'
+    ACL = 'ACL'
+    METADATA = 'Metadado'
+    VERSIONING = 'Versionamento'
 
     NOW = datetime.datetime.now()
 
