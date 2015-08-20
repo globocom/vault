@@ -58,11 +58,12 @@ class UpdateUserForm(UserForm):
 
 class ProjectForm(forms.Form):
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
 
-        self.fields['groups'] = forms.ModelMultipleChoiceField(label=u'Times', required=True,
-        queryset=user.groups.all())
+        user = kwargs.get('initial').get('user')
+
+        self.fields['groups'].queryset = user.groups.all()
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -78,3 +79,5 @@ class ProjectForm(forms.Form):
 
     areas = forms.ModelChoiceField(label=u'Area', required=True,
         queryset=Area.objects.all())
+
+    groups = forms.ModelChoiceField(label=u'Time', required=True, queryset=None)

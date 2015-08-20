@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 
-from unittest import TestCase
-
+from django.test import Client
 from mock import Mock, patch
+from unittest import TestCase
 
 from identity.keystone import Keystone
 from identity.tests.fakes import FakeResource, FakeToken

@@ -89,7 +89,7 @@ class TestKeystoneV2(TestCase):
             'password': mock_key_pass.return_value,
         }
 
-        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
+        computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         # Criacao do Project
         self.mock_project_create.assert_called_with(self.project.name, description=self.project.description, enabled=True)
@@ -100,10 +100,10 @@ class TestKeystoneV2(TestCase):
                                          project=self.project.id,
                                          role=settings.ROLE_BOLADONA)
 
-        mock_gp.assert_called_with(group=self.group, project=self.project)
+        mock_gp.assert_called_with(group_id=1, project_id=self.project.id)
         self.assertTrue(mock_gp.return_value.save.called)
 
-        mock_ap.assert_called_with(area=self.area, project=self.project)
+        mock_ap.assert_called_with(area_id=1, project_id=self.project.id)
         self.assertTrue(mock_gp.return_value.save.called)
 
         self.assertEqual(computed, expected)
@@ -118,7 +118,7 @@ class TestKeystoneV2(TestCase):
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Admin required'}
-        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
+        computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
@@ -137,7 +137,7 @@ class TestKeystoneV2(TestCase):
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Admin required'}
-        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
+        computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
@@ -161,7 +161,7 @@ class TestKeystoneV2(TestCase):
         keystone = Keystone(self.request, 'tenant_name')
 
         expected = {'status': False, 'reason': 'Unable to assign project to group'}
-        computed = keystone.vault_create_project(self.project.name, self.group, self.area, description=self.project.description)
+        computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)
 
