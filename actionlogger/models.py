@@ -45,10 +45,10 @@ class Audit(models.Model):
     NOW = datetime.datetime.now()
 
     id = models.AutoField(primary_key=True)
-    user = models.CharField(max_length=30, null=False, blank=False)
-    action = models.CharField(max_length=30, null=False, blank=False)
-    item = models.CharField(max_length=30, null=False, blank=False)
-    through = models.CharField(max_length=30, default='vault')
+    user = models.CharField(max_length=60, null=False, blank=False)
+    action = models.CharField(max_length=60, null=False, blank=False)
+    item = models.TextField(max_length=255, null=False, blank=False)
+    through = models.TextField(max_length=255, default='vault')
     created_at = models.DateField(auto_now=True)
 
     class Meta:
