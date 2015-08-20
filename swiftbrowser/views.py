@@ -256,7 +256,7 @@ def upload(request, container, prefix=None):
         'prefixes': prefixes,
     })
 
-    audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
     actionlog.savedb(audit)
 
     return render_to_response('upload_form.html', context,
