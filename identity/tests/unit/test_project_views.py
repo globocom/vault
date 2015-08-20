@@ -5,7 +5,7 @@ from mock import Mock, patch
 from unittest import TestCase
 
 from identity.keystone import Keystone
-from identity.tests.fakes import FakeResource, FakeToken
+from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from vault.tests.fakes import fake_request
 
@@ -19,10 +19,14 @@ class ListProjectTest(TestCase):
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
+        patch('identity.views.Audit.save',
+              Mock(return_value=None)).start()
+
     def tearDown(self):
         patch.stopall()
 
     def test_list_projects_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
@@ -32,7 +36,6 @@ class ListProjectTest(TestCase):
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.is_superuser = True
-        # self.request.user.token = FakeToken
 
         response = self.view(self.request)
         response.render()
@@ -72,6 +75,9 @@ class CreateProjectTest(TestCase):
               Mock(return_value=None)).start()
 
         patch('identity.keystone.Keystone._keystone_conn',
+              Mock(return_value=None)).start()
+
+        patch('identity.views.Audit.save',
               Mock(return_value=None)).start()
 
     def tearDown(self):
@@ -146,29 +152,29 @@ class CreateProjectTest(TestCase):
 
         self.assertIn('This field is required', response.content)
 
-    @patch('identity.keystone.Keystone.project_create')
+    @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_method_was_called(self, mock):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc'})
+        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc', 'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        response = self.view(self.request)
+        _ = self.view(self.request)
 
-        mock.assert_called_with(self.request, 'aaa', enabled=True, description='desc')
+        mock.assert_called_with('aaa', 1, 1, enabled=True, description='desc')
 
-    @patch('identity.keystone.Keystone.project_create')
-    def test_project_create_view_exception(self, mock_project_create):
-        mock_project_create.side_effect = Exception()
+    @patch('identity.keystone.Keystone.vault_create_project')
+    def test_project_create_view_exception(self, mock):
+        mock.side_effect = Exception
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc'})
+        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc', 'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        response = self.view(self.request)
+        _ = self.view(self.request)
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
@@ -187,7 +193,9 @@ class UpdateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        # self.request.user.token = FakeToken
+
+        patch('identity.views.Audit.save',
+              Mock(return_value=None)).start()
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -197,22 +205,6 @@ class UpdateProjectTest(TestCase):
 
     def tearDown(self):
         patch.stopall()
-
-    @patch('identity.keystone.settings', KEYSTONE_VERSION=2)
-    @patch('identity.keystone.Keystone._keystone_conn')
-    def test_project_manager_v2(self, mock_keystone_conn, mock_settings):
-        conn = Keystone(self.request)
-        response = conn._project_manager()
-
-        self.assertIn('tenants', str(response))
-
-    # @patch('identity.keystone.settings', KEYSTONE_VERSION=3)
-    # @patch('identity.keystone.Keystone._keystone_conn')
-    # def test_project_manager_v3(self, mock_keystone_conn, mock_settings):
-    #     conn = Keystone(self.request)
-    #     response = conn._project_manager()
-    #
-    #     self.assertIn('projects', str(response))
 
     @patch('identity.keystone.Keystone.project_update')
     def test_project_update_method_was_called(self, mock):
@@ -228,10 +220,10 @@ class UpdateProjectTest(TestCase):
 
         post = self.request.POST.copy()
         post.update({'name': 'bbb', 'enabled': True,
-                     'description': 'desc', 'id': 1})
+                     'description': 'desc', 'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        response = self.view(self.request)
+        _ = self.view(self.request)
 
         mock.assert_called_with(project, enabled=True, description='desc',
                                 name='bbb')
