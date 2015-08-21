@@ -3,6 +3,7 @@ import factory
 from django.contrib.auth.models import User, Group
 
 from vault.models import Project, Area
+import datetime
 
 
 class FakeResource(object):

@@ -42,7 +42,7 @@ class ListUserView(SuperUserMixin, TemplateView):
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
 
-        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT_IDENTITY, created_at=Audit.NOW)
         actionlog.savedb(audit)
 
         return context
@@ -132,7 +132,7 @@ class CreateUserView(BaseUserView):
                                      'Successfully created user')
                 actionlog.log(request.user.username, 'create', user)
 
-                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT_IDENTITY, created_at=Audit.NOW)
                 actionlog.savedb(audit)
 
             except Exception as e:
@@ -173,7 +173,7 @@ class UpdateUserView(BaseUserView):
                                      'Successfully updated user')
                 actionlog.log(request.user.username, 'update', user)
 
-                audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.name, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
                 actionlog.savedb(audit)
 
             except Exception as e:
@@ -199,7 +199,7 @@ class DeleteUserView(BaseUserView):
                           'user_id: %s' % kwargs.get('user_id'))
 
             user = self.keystone.user_get(kwargs.get('user_id'))
-            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER + ' - ' + user.name, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
             actionlog.savedb(audit)
 
         except Exception as e:
@@ -344,13 +344,14 @@ class CreateProjectView(BaseProjectView):
                                      'Successfully created project')
 
                 actionlog.log(request.user.username, 'create', project)
+
+                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('description'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                actionlog.savedb(audit)
+
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when create project")
-
-            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-            actionlog.savedb(audit)
 
             return self.form_valid(form)
         else:
