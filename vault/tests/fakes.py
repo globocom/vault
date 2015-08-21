@@ -17,7 +17,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: "Group #%s" % n)
 
-
+# TODO: Carregando grupos reais do banco; corrigir para carregar GroupFactory
 class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
