@@ -5,6 +5,7 @@ from unittest import TestCase
 
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
+from identity.tests.fakes import GroupFactory
 from vault.tests.fakes import fake_request
 import datetime
 
@@ -77,6 +78,7 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
+        self.request.user.groups = [GroupFactory(id=1)]
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -145,10 +147,8 @@ class CreateProjectTest(TestCase):
 
         self.assertIn('This field is required', response.content)
 
-    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.vault_create_project')
-    def test_project_create_method_was_called(self, mock, mock_audit_save):
-
+    def test_project_create_method_was_called(self, mock):
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
@@ -156,15 +156,8 @@ class CreateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        mock_audit_save.ADD = 'Cadastrou'
-        mock_audit_save.PROJECT = 'Projeto'
-        mock_audit_save.VAULT = 'Vault'
-        mock_audit_save.IDENTITY = 'Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         _ = self.view(self.request)
 
-        # mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.ADD, item=mock_audit_save.PROJECT + ' - Project1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
     @patch('identity.keystone.Keystone.vault_create_project')

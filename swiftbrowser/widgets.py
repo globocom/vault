@@ -15,6 +15,7 @@ class ProjectsWidget(BaseWidget):
 
     def get_widget_context(self):
         user = self.context.get('logged_user')
+
         groups = user.groups.all()
         group_projects = GroupProjects.objects.filter(group__in=groups)
 
