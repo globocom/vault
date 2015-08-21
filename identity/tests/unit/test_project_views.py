@@ -1,10 +1,8 @@
 # -*- coding:utf-8 -*-
 
-from django.test import Client
 from mock import Mock, patch
 from unittest import TestCase
 
-from identity.keystone import Keystone
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from vault.tests.fakes import fake_request
@@ -69,7 +67,6 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        # self.request.user.token = FakeToken
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -85,7 +82,6 @@ class CreateProjectTest(TestCase):
 
     def test_create_project_needs_authentication(self):
         self.request.user.is_authenticated = lambda: False
-        # self.request.user.token = None
 
         response = self.view(self.request)
 
@@ -158,7 +154,8 @@ class CreateProjectTest(TestCase):
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc', 'areas': 1, 'groups': 1})
+        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc',
+                     'areas': 1, 'groups': 1})
         self.request.POST = post
 
         _ = self.view(self.request)
@@ -171,7 +168,8 @@ class CreateProjectTest(TestCase):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc', 'areas': 1, 'groups': 1})
+        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc',
+                     'areas': 1, 'groups': 1})
         self.request.POST = post
 
         _ = self.view(self.request)
