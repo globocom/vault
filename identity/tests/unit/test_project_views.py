@@ -7,6 +7,7 @@ from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from identity.tests.fakes import GroupFactory
 from vault.tests.fakes import fake_request
+import datetime
 
 
 class ListProjectTest(TestCase):
@@ -29,14 +30,23 @@ class ListProjectTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    def test_show_project_list(self):
+    @patch('identity.views.Audit')
+    def test_show_project_list(self, mock_audit_save):
         patch('identity.keystone.Keystone.project_list',
               Mock(return_value=[FakeResource(1)])).start()
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.is_superuser = True
 
+        mock_audit_save.LIST = 'Listou / Visualizou'
+        mock_audit_save.PROJECTS = 'Projetos'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         response = self.view(self.request)
+
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.LIST, item=mock_audit_save.PROJECTS, through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         response.render()
 
         self.assertIn('<td>FakeResource1</td>', response.content)
@@ -146,7 +156,7 @@ class CreateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        response = self.view(self.request)
+        _ = self.view(self.request)
 
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
@@ -165,6 +175,14 @@ class CreateProjectTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(msgs[0].message, 'Error when create project')
+
+    def test_superuser_creating_project_at_admin_must_see_role_box(self):
+        self.request.user.is_authenticated = lambda: True
+        self.request.path = '/admin/project/add'
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('add-user-role', response.content)
 
 
 class UpdateProjectTest(TestCase):
@@ -192,8 +210,9 @@ class UpdateProjectTest(TestCase):
     def tearDown(self):
         patch.stopall()
 
+    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.project_update')
-    def test_project_update_method_was_called(self, mock):
+    def test_project_update_method_was_called(self, mock, mock_audit_save):
 
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {'name': project.name}
@@ -209,7 +228,15 @@ class UpdateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
+        mock_audit_save.UPDATE = 'Atualizou / Editou'
+        mock_audit_save.PROJECT = 'Projeto'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         _ = self.view(self.request)
 
+        # audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        # mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.UPDATE, item=mock_audit_save.PROJECT + ' - Project1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(project, enabled=True, description='desc',
                                 name='bbb')
