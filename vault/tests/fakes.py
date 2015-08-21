@@ -9,6 +9,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.messages.storage import default_storage
 from django.contrib.sessions.backends.db import SessionStore
 
+
 # factories.py
 class GroupFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -16,6 +17,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
         strategy = factory.BUILD_STRATEGY
 
     name = factory.Sequence(lambda n: "Group #%s" % n)
+
 
 # TODO: Carregando grupos reais do banco; corrigir para carregar GroupFactory
 class UserFactory(factory.django.DjangoModelFactory):
