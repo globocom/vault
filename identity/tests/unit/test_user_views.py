@@ -4,8 +4,6 @@
 from unittest import TestCase
 from mock import Mock, patch
 
-from actionlogger.models import Audit
-
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
