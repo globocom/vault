@@ -17,7 +17,7 @@ from actionlogger import ActionLogger
 from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
-from vault.views import SuperUserMixin, JSONResponseMixin
+from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
 from vault import utils
 
@@ -210,7 +210,7 @@ class DeleteUserView(BaseUserView):
         return HttpResponseRedirect(self.success_url)
 
 
-class BaseProjectView(SuperUserMixin, FormView):
+class BaseProjectView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('projects')
 
     def __init__(self):
@@ -229,8 +229,6 @@ class BaseProjectView(SuperUserMixin, FormView):
         project_id = kwargs.get('project_id')
         form = kwargs.get('form')
 
-        self.keystone = Keystone(request)
-
         # Mostra a gerencia de roles qd for superuser acessando admin
         context['show_roles'] = request.user.is_superuser and \
                                 request.path[0:15] == '/admin/project/'
@@ -239,12 +237,15 @@ class BaseProjectView(SuperUserMixin, FormView):
             project_id = form.data.get('id')
 
         if project_id:
+
+            self.keystone = Keystone(request)
             project = self.keystone.project_get(project_id)
             form.initial = project.to_dict()
             context['idendity_project_id'] = project_id
             context['has_id'] = True
 
             if context['show_roles']:
+
                 try:
                     users = self.keystone.user_list()
                     context['users'] = sorted(users, key=lambda l: l.name.lower())

@@ -183,13 +183,45 @@ class CreateProjectTest(TestCase):
         self.assertGreater(len(msgs), 0)
         self.assertEqual(msgs[0].message, 'Error when create project')
 
-    def test_superuser_creating_project_at_admin_must_see_role_box(self):
+    def test_superuser_creating_project_at_admin_must_see_box_role(self):
+        """
+        Tela admin de criacao de projeto deve exibir o box de roles quando
+        acessado por um superusuario (teoricamente somente o superusuario vera
+        esta tela)
+        """
         self.request.user.is_authenticated = lambda: True
         self.request.path = '/admin/project/add'
         response = self.view(self.request)
         response.render()
 
+        self.assertTrue(response.context_data.get('show_roles'))
         self.assertIn('add-user-role', response.content)
+
+    def test_superuser_creating_project_must_NOT_see_box_role(self):
+        """
+        Tela padrao de criacao de projeto deve ser igual tanto para usuario como
+        superusuario, nao exibindo o box de roles
+        """
+        self.request.path = '/project/add'
+        response = self.view(self.request)
+        response.render()
+
+        self.assertFalse(response.context_data.get('show_roles'))
+        self.assertNotIn('add-user-role', response.content)
+
+    def test_common_user_creating_project_must_NOT_see_box_role(self):
+        """
+        Tela padrao de criacao de projeto deve ser igual tanto para usuario como
+        superusuario, nao exibindo o box de roles
+        """
+        self.request.user.is_superuser = False
+        self.request.path = '/project/add'
+
+        response = self.view(self.request)
+        response.render()
+
+        self.assertFalse(response.context_data.get('show_roles'))
+        self.assertNotIn('add-user-role', response.content)
 
 
 class UpdateProjectTest(TestCase):
@@ -213,6 +245,9 @@ class UpdateProjectTest(TestCase):
 
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
+
+        self.post_content = {'name': 'bbb', 'description': 'desc',
+                             'enabled': True, 'areas': 1, 'groups': 1}
 
     def tearDown(self):
         patch.stopall()
@@ -247,3 +282,28 @@ class UpdateProjectTest(TestCase):
         # mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.UPDATE, item=mock_audit_save.PROJECT + ' - Project1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(project, enabled=True, description='desc',
                                 name='bbb')
+
+    def test_update_validating_name_field_blank(self):
+        project = FakeResource(1, 'project1')
+        project.to_dict = lambda: {'name': project.name}
+        project.default_project_id = 1
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        self.request.method = 'POST'
+
+        post = self.request.POST.copy()
+        post.update({
+            'name': '',
+            'id': 1,
+            'description': 'description',
+            'groups': 1,
+            'areas': 1})
+
+        self.request.POST = post
+
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('This field is required', response.content)
