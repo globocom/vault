@@ -29,8 +29,8 @@ class ListUserTest(TestCase):
         patch.stopall()
 
     def test_list_users_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
         response = self.view(self.request)
-
         self.assertEqual(response.status_code, 302)
 
     @patch('identity.views.Audit')

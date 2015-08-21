@@ -24,9 +24,7 @@ class SwftbrowserWidgetsTest(TestCase):
     def test_check_projects_in_context_of_projects_widget(self, mock_projects):
         mock_projects.return_value = [DummyGP(1), DummyGP(2)]
 
-        prjwidget = ProjectsWidget({})
-        content = prjwidget.render()
+        prjwidget = ProjectsWidget({'logged_user': self.request.user})
+        context = prjwidget.get_widget_context()
 
-        template = self.view(self.request)
-
-        self.assertEqual(template.context_data['projects'], [1, 2])
+        self.assertEqual(context['projects'], [1, 2])

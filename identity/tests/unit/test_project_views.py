@@ -5,6 +5,7 @@ from unittest import TestCase
 
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
+from identity.tests.fakes import GroupFactory
 from vault.tests.fakes import fake_request
 
 
@@ -67,6 +68,7 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
+        self.request.user.groups = [GroupFactory(id=1)]
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -137,7 +139,6 @@ class CreateProjectTest(TestCase):
 
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_method_was_called(self, mock):
-
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
@@ -145,7 +146,7 @@ class CreateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        _ = self.view(self.request)
+        response = self.view(self.request)
 
         mock.assert_called_with('aaa', 1, 1, description='desc')
 

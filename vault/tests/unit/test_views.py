@@ -12,6 +12,7 @@ class SetProjectTest(TestCase):
     def setUp(self):
         self.view = SetProjectView.as_view()
         self.request = fake_request(method='GET')
+        self.request.user.is_authenticated = lambda: False
 
     def tearDown(self):
         patch.stopall()
