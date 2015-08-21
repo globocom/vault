@@ -165,6 +165,14 @@ class CreateProjectTest(TestCase):
         self.assertGreater(len(msgs), 0)
         self.assertEqual(msgs[0].message, 'Error when create project')
 
+    def test_superuser_creating_project_at_admin_must_see_role_box(self):
+        self.request.user.is_authenticated = lambda: True
+        self.request.path = '/admin/project/add'
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('add-user-role', response.content)
+
 
 class UpdateProjectTest(TestCase):
 
