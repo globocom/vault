@@ -362,7 +362,7 @@ class UpdateProjectView(BaseProjectView):
     template_name = "identity/project_edit.html"
 
     def post(self, request, *args, **kwargs):
-        # form = self.get_form(self.form_class)
+
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         if form.is_valid():
