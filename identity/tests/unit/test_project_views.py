@@ -87,17 +87,6 @@ class CreateProjectTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_enabled_field_is_a_select_tag(self):
-        from django.forms.widgets import Select
-        enabled_field = CreateProjectView.form_class.base_fields['enabled']
-
-        self.assertIsInstance(enabled_field.widget, Select)
-
-    def test_ensure_enabled_field_initial_value_is_true(self):
-        enabled_field = CreateProjectView.form_class.base_fields['enabled']
-
-        self.assertTrue(enabled_field)
-
     def test_validating_description_field_blank(self):
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {
@@ -113,7 +102,6 @@ class CreateProjectTest(TestCase):
         post = self.request.POST.copy()
         post.update({
             'name': 'Project1',
-            'enabled': True,
             'id': 1,
             'description': ''})
         self.request.POST = post
@@ -138,7 +126,6 @@ class CreateProjectTest(TestCase):
         post = self.request.POST.copy()
         post.update({
             'name': '',
-            'enabled': True,
             'id': 1,
             'description': 'description'})
         self.request.POST = post
@@ -154,13 +141,13 @@ class CreateProjectTest(TestCase):
         self.request.method = 'POST'
         post = self.request.POST.copy()
 
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc',
+        post.update({'name': 'aaa', 'description': 'desc',
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
         _ = self.view(self.request)
 
-        mock.assert_called_with('aaa', 1, 1, enabled=True, description='desc')
+        mock.assert_called_with('aaa', 1, 1, description='desc')
 
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_view_exception(self, mock):
@@ -168,8 +155,8 @@ class CreateProjectTest(TestCase):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
-        post.update({'name': 'aaa', 'enabled': True, 'description': 'desc',
-                     'areas': 1, 'groups': 1})
+        post.update({'name': 'aaa', 'description': 'desc', 'areas': 1,
+                     'groups': 1})
         self.request.POST = post
 
         _ = self.view(self.request)
@@ -217,8 +204,8 @@ class UpdateProjectTest(TestCase):
         self.request.method = 'POST'
 
         post = self.request.POST.copy()
-        post.update({'name': 'bbb', 'enabled': True,
-                     'description': 'desc', 'areas': 1, 'groups': 1})
+        post.update({'name': 'bbb', 'description': 'desc', 'enabled': True,
+                     'areas': 1, 'groups': 1})
         self.request.POST = post
 
         _ = self.view(self.request)

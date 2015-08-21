@@ -73,7 +73,7 @@ class ProjectForm(forms.Form):
     description = forms.CharField(label='Description', required=True,
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
 
-    enabled = forms.BooleanField(label=u'Enabled', required=True,
+    enabled = forms.BooleanField(label=u'Enabled', required=False,
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
 

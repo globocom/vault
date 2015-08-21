@@ -329,7 +329,6 @@ class CreateProjectView(BaseProjectView):
         if form.is_valid():
             keystone = Keystone(request)
             post = request.POST
-            enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
 
             if description == '':
@@ -339,8 +338,7 @@ class CreateProjectView(BaseProjectView):
                 project = keystone.vault_create_project(post.get('name'),
                                                         post.get('groups'),
                                                         post.get('areas'),
-                                                        description=description,
-                                                        enabled=enabled)
+                                                        description=description)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created project')
