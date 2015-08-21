@@ -17,9 +17,7 @@ from actionlogger import ActionLogger
 from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
-from vault.views import LoginRequiredMixin, SuperUserMixin, JSONResponseMixin
-
-from vault.models import Area, Group
+from vault.views import SuperUserMixin, JSONResponseMixin
 
 from vault import utils
 
@@ -221,13 +219,11 @@ class BaseProjectView(SuperUserMixin, FormView):
     def get(self, request, *args, **kwargs):
 
         form = ProjectForm(initial={'user': request.user})
-
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
-
         request = kwargs.get('request')
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project_id = kwargs.get('project_id')
@@ -260,9 +256,6 @@ class BaseProjectView(SuperUserMixin, FormView):
 
         return context
 
-    def dispatch(self, *args, **kwargs):
-        return super(BaseProjectView, self).dispatch(*args, **kwargs)
-
 
 class ListProjectView(BaseProjectView):
     template_name = "identity/projects.html"
@@ -287,42 +280,42 @@ class ListProjectView(BaseProjectView):
         return context
 
 
-class CreateProjectViewOriginal(BaseProjectView):
-    template_name = "identity/project_create.html"
-
-    def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
-        form = ProjectForm(request.user)
-
-        if form.is_valid():
-            post = request.POST
-            enabled = False if post.get('enabled') in ('False', '0') else True
-            description = post.get('description')
-
-            if description == '':
-                description = None
-
-            try:
-                project = self.keystone.project_create(request,
-                                                       post.get('name'),
-                                                       description=description,
-                                                       enabled=enabled)
-
-                messages.add_message(request, messages.SUCCESS,
-                                     'Successfully created project')
-
-                actionlog.log(request.user.username, 'create', project)
-            except Exception as e:
-                log.exception('Exception: %s' % e)
-                messages.add_message(request, messages.ERROR,
-                                     "Error when create project")
-
-            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-            actionlog.savedb(audit)
-
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+# class CreateProjectViewOriginal(BaseProjectView):
+#     template_name = "identity/project_create.html"
+#
+#     def post(self, request, *args, **kwargs):
+#         self.keystone = Keystone(request)
+#         form = ProjectForm(request.user)
+#
+#         if form.is_valid():
+#             post = request.POST
+#             enabled = False if post.get('enabled') in ('False', '0') else True
+#             description = post.get('description')
+#
+#             if description == '':
+#                 description = None
+#
+#             try:
+#                 project = self.keystone.project_create(request,
+#                                                        post.get('name'),
+#                                                        description=description,
+#                                                        enabled=enabled)
+#
+#                 messages.add_message(request, messages.SUCCESS,
+#                                      'Successfully created project')
+#
+#                 actionlog.log(request.user.username, 'create', project)
+#             except Exception as e:
+#                 log.exception('Exception: %s' % e)
+#                 messages.add_message(request, messages.ERROR,
+#                                      "Error when create project")
+#
+#             audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+#             actionlog.savedb(audit)
+#
+#             return self.form_valid(form)
+#         else:
+#             return self.form_invalid(form)
 
 
 class CreateProjectView(BaseProjectView):
@@ -336,11 +329,7 @@ class CreateProjectView(BaseProjectView):
         if form.is_valid():
             keystone = Keystone(request)
             post = request.POST
-            enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
-
-            # group = Group.objects.get(id=post.get('groups'))
-            # area = Area.objects.get(id=post.get('areas'))
 
             if description == '':
                 description = None
@@ -349,8 +338,7 @@ class CreateProjectView(BaseProjectView):
                 project = keystone.vault_create_project(post.get('name'),
                                                         post.get('groups'),
                                                         post.get('areas'),
-                                                        description=description,
-                                                        enabled=enabled)
+                                                        description=description)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created project')
@@ -366,17 +354,19 @@ class CreateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            return self.form_invalid(form)
+            # return self.form_invalid(form)
+            return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
 class UpdateProjectView(BaseProjectView):
     template_name = "identity/project_edit.html"
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
-        form = self.get_form(self.form_class)
+        # form = self.get_form(self.form_class)
+        form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         if form.is_valid():
+            keystone = Keystone(self.request)
             post = request.POST
             enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
@@ -385,8 +375,8 @@ class UpdateProjectView(BaseProjectView):
                 description = None
 
             try:
-                project = self.keystone.project_get(post.get('id'))
-                self.keystone.project_update(project, name=post.get('name'),
+                project = keystone.project_get(post.get('id'))
+                keystone.project_update(project, name=post.get('name'),
                                              description=description,
                                              enabled=enabled)
 
@@ -405,7 +395,8 @@ class UpdateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            return self.form_invalid(form)
+            # return self.form_invalid(form)
+            return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
 class DeleteProjectView(BaseProjectView):

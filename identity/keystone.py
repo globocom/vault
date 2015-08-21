@@ -192,8 +192,7 @@ class Keystone(object):
             return self.conn.roles.revoke(role, user=user, project=project)
 
     # TODO: Este metodo esta fazendo muitas operacoes. Avaliar se vale a pena quebrar em metodos menores
-    def vault_create_project(self, project_name, group_id, area_id, description=None,
-                             enabled=True):
+    def vault_create_project(self, project_name, group_id, area_id, description=None):
         """
         Metodo que faz o processo completo de criacao de project no vault:
         Cria projeto, cria um usuario, vincula com a role swiftoperator,
@@ -201,7 +200,7 @@ class Keystone(object):
         """
         try:
             project = self.project_create(project_name, description=description,
-                                          enabled=enabled)
+                                          enabled=True)
         except exceptions.Forbidden:
             return {'status': False, 'reason': 'Admin required'}
 
