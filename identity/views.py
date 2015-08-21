@@ -326,9 +326,6 @@ class CreateProjectView(BaseProjectView):
     def post(self, request, *args, **kwargs):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
-        import ipdb
-        ipdb.set_trace()
-
         if form.is_valid():
             keystone = Keystone(request)
             post = request.POST
