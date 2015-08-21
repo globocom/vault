@@ -6,6 +6,7 @@ from unittest import TestCase
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from vault.tests.fakes import fake_request
+import datetime
 
 
 class ListProjectTest(TestCase):
@@ -28,14 +29,23 @@ class ListProjectTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    def test_show_project_list(self):
+    @patch('identity.views.Audit')
+    def test_show_project_list(self, mock_audit_save):
         patch('identity.keystone.Keystone.project_list',
               Mock(return_value=[FakeResource(1)])).start()
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.is_superuser = True
 
+        mock_audit_save.LIST = 'Listou / Visualizou'
+        mock_audit_save.PROJECTS = 'Projetos'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         response = self.view(self.request)
+
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.LIST, item=mock_audit_save.PROJECTS, through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         response.render()
 
         self.assertIn('<td>FakeResource1</td>', response.content)
@@ -135,8 +145,9 @@ class CreateProjectTest(TestCase):
 
         self.assertIn('This field is required', response.content)
 
+    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.vault_create_project')
-    def test_project_create_method_was_called(self, mock):
+    def test_project_create_method_was_called(self, mock, mock_audit_save):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -145,8 +156,15 @@ class CreateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
+        mock_audit_save.ADD = 'Cadastrou'
+        mock_audit_save.PROJECT = 'Projeto'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         _ = self.view(self.request)
 
+        # mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.ADD, item=mock_audit_save.PROJECT + ' - Project1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
     @patch('identity.keystone.Keystone.vault_create_project')

@@ -326,6 +326,9 @@ class CreateProjectView(BaseProjectView):
     def post(self, request, *args, **kwargs):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
+        import ipdb
+        ipdb.set_trace()
+
         if form.is_valid():
             keystone = Keystone(request)
             post = request.POST
@@ -344,13 +347,14 @@ class CreateProjectView(BaseProjectView):
                                      'Successfully created project')
 
                 actionlog.log(request.user.username, 'create', project)
+
+                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('description'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                actionlog.savedb(audit)
+
             except Exception as e:
                 log.exception('Exception: %s' % e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when create project")
-
-            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-            actionlog.savedb(audit)
 
             return self.form_valid(form)
         else:
