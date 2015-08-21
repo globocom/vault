@@ -267,7 +267,6 @@ class UpdateUserTest(TestCase):
 
         self.request.method = 'POST'
 
-        # audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
         mock_audit_save.UPDATE = 'Atualizou / Editou'
         mock_audit_save.USER = 'Usuario'
         mock_audit_save.VAULT = 'Vault'
@@ -379,13 +378,21 @@ class DeleteUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
+    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_delete')
-    def test_user_delete_method_was_called(self, mock_user_delete):
+    def test_user_delete_method_was_called(self, mock_user_delete, mock_audit_save):
         patch('identity.keystone.Keystone.user_get',
               Mock(return_value=FakeResource(1, 'user1'))).start()
 
+        mock_audit_save.DELETE = 'Removeu'
+        mock_audit_save.USER = 'Usuario'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         response = self.view(self.request, user_id=1)
 
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.DELETE, item=mock_audit_save.USER + ' - user1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock_user_delete.assert_called_with(1)
 
     @patch('identity.keystone.Keystone.user_delete')

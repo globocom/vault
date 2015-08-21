@@ -199,7 +199,7 @@ class DeleteUserView(BaseUserView):
                           'user_id: %s' % kwargs.get('user_id'))
 
             user = self.keystone.user_get(kwargs.get('user_id'))
-            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.USER + ' - ' + user.name, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
             actionlog.savedb(audit)
 
         except Exception as e:
