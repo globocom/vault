@@ -173,7 +173,7 @@ class UpdateUserView(BaseUserView):
                                      'Successfully updated user')
                 actionlog.log(request.user.username, 'update', user)
 
-                audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.name, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
                 actionlog.savedb(audit)
 
             except Exception as e:

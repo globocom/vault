@@ -190,7 +190,6 @@ class CreateUserTest(TestCase):
 
         response = self.view(self.request)
 
-        # audit = Audit(user=self.request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
         mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.ADD, item=mock_audit_save.USER + ' - aaa', through=mock_audit_save.VAULT_IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(name='aaa', enabled=True,
             project=1, role=1, password='aaa', email='a@a.net', domain=None)
@@ -244,8 +243,9 @@ class UpdateUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
+    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_update')
-    def test_user_update_method_was_called(self, mock_user_update):
+    def test_user_update_method_was_called(self, mock_user_update, mock_audit_save):
 
         patch('identity.keystone.Keystone.project_list',
             Mock(return_value=[FakeResource(1, 'project1')])).start()
@@ -267,12 +267,20 @@ class UpdateUserTest(TestCase):
 
         self.request.method = 'POST'
 
+        # audit = Audit(user=self.request.user.username, action=Audit.UPDATE, item=Audit.USER + ' - ' + user.username, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        mock_audit_save.UPDATE = 'Atualizou / Editou'
+        mock_audit_save.USER = 'Usuario'
+        mock_audit_save.VAULT = 'Vault'
+        mock_audit_save.IDENTITY = 'Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         post = self.request.POST.copy()
         post.update({'id': 1, 'name': 'aaa', 'project': 1})
         self.request.POST = post
 
         response = self.view(self.request)
 
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.UPDATE, item=mock_audit_save.USER + ' - user1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock_user_update.assert_called_with(user, name='aaa', project=project,
                                             domain=None, enabled=True,
                                             password=None, email=None)
