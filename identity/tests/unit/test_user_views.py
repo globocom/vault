@@ -4,10 +4,14 @@
 from unittest import TestCase
 from mock import Mock, patch
 
+from actionlogger.models import Audit
+
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView)
+
+import datetime
 
 
 class ListUserTest(TestCase):
@@ -29,14 +33,22 @@ class ListUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_show_user_list(self):
+    @patch('identity.views.Audit')
+    def test_show_user_list(self, mock_audit_save):
         patch('identity.keystone.Keystone.user_list',
               Mock(return_value=[FakeResource(1)])).start()
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.token = FakeToken
 
+        mock_audit_save.LIST = 'Listou / Visualizou'
+        mock_audit_save.USERS = 'Usuarios'
+        mock_audit_save.VAULT_IDENTITY = 'Vault - Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         response = self.view(self.request)
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.LIST, item=mock_audit_save.USERS, through=mock_audit_save.VAULT_IDENTITY, created_at=mock_audit_save.NOW)
+
         response.render()
 
         self.assertIn('<td>FakeResource1</td>', response.content)
@@ -160,8 +172,9 @@ class CreateUserTest(TestCase):
 
         self.assertIn('Enter a valid email address', response.content)
 
+    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_create')
-    def test_user_create_method_was_called(self, mock):
+    def test_user_create_method_was_called(self, mock, mock_audit_save):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -170,8 +183,15 @@ class CreateUserTest(TestCase):
                      'email': 'a@a.net'})
         self.request.POST = post
 
+        mock_audit_save.ADD = 'Cadastrou'
+        mock_audit_save.USER = 'Usuario'
+        mock_audit_save.VAULT_IDENTITY = 'Vault - Identity'
+        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         response = self.view(self.request)
 
+        # audit = Audit(user=self.request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.ADD, item=mock_audit_save.USER + ' - aaa', through=mock_audit_save.VAULT_IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(name='aaa', enabled=True,
             project=1, role=1, password='aaa', email='a@a.net', domain=None)
 

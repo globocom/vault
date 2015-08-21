@@ -44,7 +44,7 @@ class ListUserView(SuperUserMixin, TemplateView):
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
 
-        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT_IDENTITY, created_at=Audit.NOW)
         actionlog.savedb(audit)
 
         return context
@@ -134,7 +134,7 @@ class CreateUserView(BaseUserView):
                                      'Successfully created user')
                 actionlog.log(request.user.username, 'create', user)
 
-                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+                audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.USER + ' - ' + post.get('name'), through=Audit.VAULT_IDENTITY, created_at=Audit.NOW)
                 actionlog.savedb(audit)
 
             except Exception as e:
