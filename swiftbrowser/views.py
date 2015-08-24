@@ -10,7 +10,6 @@ import urlparse
 import json
 
 from actionlogger import ActionLogger
-from actionlogger.models import Audit
 
 from django.conf import settings
 from django.contrib import messages
@@ -72,9 +71,6 @@ def containerview(request):
         'containers': utils.generic_pagination(containers, page),
     })
 
-    audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.CONTAINERS, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
-
     return render_to_response('containerview.html', context,
                               context_instance=RequestContext(request))
 
@@ -103,9 +99,6 @@ def create_container(request):
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, 'Access denied.')
-
-        audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.CONTAINER + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
 
         return redirect(containerview)
 
@@ -161,10 +154,6 @@ def delete_container_view(request, container):
     response = delete_container(request, container)
     if response:
         messages.add_message(request, messages.SUCCESS, "Container deleted.")
-
-        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.CONTAINER + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
     else:
         messages.add_message(request, messages.ERROR, 'Access denied.')
 
@@ -202,9 +191,6 @@ def objectview(request, container, prefix=None):
         'prefixes': prefixes,
     })
 
-    audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.OBJECT + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
-
     return render_to_response("objectview.html", context,
                               context_instance=RequestContext(request))
 
@@ -237,14 +223,8 @@ def upload(request, container, prefix=None):
     if not key:
         messages.add_message(request, messages.ERROR, 'Access denied.')
         if prefix:
-            audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
-
             return redirect(objectview, container=container, prefix=prefix)
         else:
-            audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
-
             return redirect(objectview, container=container)
 
     hmac_body = '%s\n%s\n%s\n%s\n%s' % (path, redirect_url, max_file_size,
@@ -265,8 +245,7 @@ def upload(request, container, prefix=None):
         'prefixes': prefixes,
     })
 
-    audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
+    actionlog.log(request.user.username, "upload", swift_url)
 
     return render_to_response('upload_form.html', context,
                               context_instance=RequestContext(request))
@@ -279,7 +258,6 @@ def create_object(request, container, prefix=None):
     obj = request.FILES.get('file1')
 
     if obj:
-
         content = obj.read()
         content_type = obj.content_type
 
@@ -311,9 +289,6 @@ def create_object(request, container, prefix=None):
             log.error(msg)
             messages.add_message(request, messages.ERROR, msg)
 
-    audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.OBJECT + ' - ' + str(obj), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
-
     if prefix:
         return redirect(objectview, container=container, prefix=prefix)
     else:
@@ -334,8 +309,7 @@ def download(request, container, objectname):
 
     res = requests.get(url, headers=headers, verify=not settings.SWIFT_INSECURE)
 
-    audit = Audit(user=request.user.username, action=Audit.DOWNLOAD, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
+    actionlog.log(request.user.username, "download", objectname)
 
     return HttpResponse(res.content, content_type=res.headers['content-type'])
 
@@ -355,14 +329,8 @@ def delete_object_view(request, container, objectname):
 
     if prefix:
         prefix += '/'
-        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
         return redirect(objectview, container=container, prefix=prefix)
     else:
-        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
         return redirect(objectview, container=container)
 
 
@@ -386,9 +354,6 @@ def delete_object(request, container, objectname):
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         return False
-
-    audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
 
     return True
 
@@ -440,8 +405,7 @@ def delete_pseudofolder(request, container, pseudofolder):
     if prefix:
         prefix += '/'
 
-    audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.PSEUDO_FOLDER + ' - ' + pseudofolder, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
+    actionlog.log(request.user.username, "delete", pseudofolder)
 
     if prefix:
         return redirect(objectview, container=container, prefix=prefix)
@@ -483,14 +447,10 @@ def create_pseudofolder(request, container, prefix=None):
             messages.add_message(request, messages.ERROR, 'Access denied.')
 
         if prefix:
-            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PSEUDO_FOLDER + ' - ' + request.POST.get('foldername', None), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
-
+            actionlog.log(request.user.username, "create", pseudofolder)
             return redirect(objectview, container=container, prefix=prefix)
 
-        audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PSEUDO_FOLDER + ' - ' + request.POST.get('foldername', None), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
+        actionlog.log(request.user.username, "create", pseudofolder)
         return redirect(objectview, container=container)
 
     prefixes = prefix_list(prefix)
@@ -501,9 +461,6 @@ def create_pseudofolder(request, container, prefix=None):
         'prefixes': prefixes,
         'form': form,
     })
-
-    audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PSEUDO_FOLDER + ' - ' + request.POST.get('foldername', None), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
 
     return render_to_response('create_pseudofolder.html', context,
                             context_instance=RequestContext(request))
@@ -546,8 +503,7 @@ def edit_acl(request, container):
                 messages.add_message(request, messages.SUCCESS,
                                     'ACLs updated')
 
-                audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.ACL + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-                actionlog.savedb(audit)
+                actionlog.log(request.user.username, "update", 'headers: %s, container: %s' % (headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
@@ -582,11 +538,11 @@ def edit_acl(request, container):
                 client.post_container(storage_url, auth_token,
                               container, headers=headers, http_conn=http_conn)
 
-                audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.ACL + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-                actionlog.savedb(audit)
-
                 messages.add_message(request, messages.SUCCESS,
                                     'ACL removed.')
+
+                actionlog.log(request.user.username, "delete", 'headers: %s, container: %s' % (headers, container))
+
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
                 messages.add_message(request, messages.ERROR,
@@ -622,9 +578,6 @@ def edit_acl(request, container):
         'public': public
     })
 
-    audit = Audit(user=request.user.username, action=Audit. UPDATE, item=Audit.ACL + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
-
     return render_to_response('edit_acl.html', context,
                               context_instance=RequestContext(request))
 
@@ -650,13 +603,6 @@ def metadataview(request, container, objectname=None):
         status = 200
     else:
         status = 404
-
-    if objectname:
-        audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.METADATA + ' - ' + container + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-    else:
-        audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.METADATA + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
 
     return HttpResponse(content,
                         content_type='application/json',
@@ -705,9 +651,6 @@ def object_versioning(request, container, prefix=None):
             'prefixes': prefixes,
         })
 
-        audit = Audit(user=request.user.username, action=Audit.LIST, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
         return render_to_response('container_versioning.html',
                                   dictionary=context,
                                   context_instance=RequestContext(request))
@@ -718,12 +661,10 @@ def object_versioning(request, container, prefix=None):
 
         if action == 'enable':
             enable_versioning(request, container)
-            audit = Audit(user=request.user.username, action=Audit.ENABLE, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
+            actionlog.log(request.user.username, "enable", 'Versioning. Container: %s' container)
         elif action == 'disable':
             disable_versioning(request, container)
-            audit = Audit(user=request.user.username, action=Audit.DISABLE, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
+            actionlog.log(request.user.username, "disable", 'Versioning. Container: %s' container)
         else:
             messages.add_message(request, messages.ERROR, 'Action is required.')
 
@@ -747,9 +688,6 @@ def enable_versioning(request, container):
                              http_conn=http_conn)
         actionlog.log(request.user.username, "create", version_location)
 
-        audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.VERSIONING + ' - ' + version_location, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, 'Access denied.')
@@ -762,10 +700,7 @@ def enable_versioning(request, container):
                                 container,
                                 headers=header,
                                 http_conn=http_conn)
-        actionlog.log(request.user.username, "update", container)
-
-        audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-        actionlog.savedb(audit)
+        actionlog.log(request.user.username, "update", version_location)
 
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
@@ -805,9 +740,6 @@ def disable_versioning(request, container):
                                   headers={'x-versions-location': ''},
                                   http_conn=http_conn)
             actionlog.log(request.user.username, "update", container)
-
-            audit = Audit(user=request.user.username, action=Audit.DISABLE, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-            actionlog.savedb(audit)
 
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
