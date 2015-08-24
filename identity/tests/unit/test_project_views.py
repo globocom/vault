@@ -5,7 +5,8 @@ from unittest import TestCase
 
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
-from identity.tests.fakes import GroupFactory
+from identity.tests.fakes import GroupFactory, AreaProjectsFactory, \
+    GroupProjectsFactory
 from vault.tests.fakes import fake_request
 import datetime
 
@@ -245,9 +246,8 @@ class UpdateProjectTest(TestCase):
     def tearDown(self):
         patch.stopall()
 
-    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.project_update')
-    def test_project_update_method_was_called(self, mock, mock_audit_save):
+    def test_project_update_method_was_called(self, mock):
 
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {'name': project.name}
@@ -263,16 +263,8 @@ class UpdateProjectTest(TestCase):
                      'areas': 1, 'groups': 1})
         self.request.POST = post
 
-        mock_audit_save.UPDATE = 'Atualizou / Editou'
-        mock_audit_save.PROJECT = 'Projeto'
-        mock_audit_save.VAULT = 'Vault'
-        mock_audit_save.IDENTITY = 'Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         _ = self.view(self.request)
 
-        # audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-        # mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.UPDATE, item=mock_audit_save.PROJECT + ' - Project1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(project, enabled=True, description='desc',
                                 name='bbb')
 
@@ -300,3 +292,30 @@ class UpdateProjectTest(TestCase):
         response.render()
 
         self.assertIn('This field is required', response.content)
+
+    @patch('identity.views.GroupProjects.objects.get')
+    @patch('identity.views.AreaProjects.objects.get')
+    def test_initial_data_loaded(self, mock_ap, mock_gp):
+        group_id = 123
+        area_id = 456
+
+        mock_gp.return_value = GroupProjectsFactory(id=1, group_id=group_id)
+        mock_ap.return_value = AreaProjectsFactory(id=2, area_id=area_id)
+
+        project = FakeResource(1, 'project1')
+        project.default_project_id = 1
+        project.description = 'description'
+        project.to_dict = lambda: {'name': project.name,
+                                   'description': project.description}
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        response = self.view(self.request, project_id='project_id')
+
+        computed_form = response.context_data['form']
+
+        self.assertEqual(computed_form.initial['name'], project.name)
+        self.assertEqual(computed_form.initial['description'], project.description)
+        self.assertEqual(computed_form.initial['groups'], group_id)
+        self.assertEqual(computed_form.initial['areas'], area_id)

@@ -242,6 +242,38 @@ class Keystone(object):
             'password': user_password
         }
 
+    def vault_update_project(self, project_id, project_name, group_id, area_id, **kwargs):
+        project = self.project_get(project_id)
+
+        description = kwargs.get('description', '')
+        enabled = kwargs.get('enabled', True)
+
+        try:
+            new_project = self.project_update(project,
+                                              name=project_name,
+                                              description=description,
+                                              enabled=enabled)
+        except exceptions.Forbidden:
+            return {'status': False, 'reason': 'Admin required'}
+
+        GroupProjects.objects.filter(project_id=project_id).delete()
+
+        try:
+            # Salva o project no time correspondente
+            gp = GroupProjects(group_id=group_id, project_id=project_id)
+            gp.save()
+        except Exception as e:
+            return {'status': False, 'reason': 'Unable to assign project to group'}
+
+        AreaProjects.objects.filter(project_id=project_id).delete()
+
+        try:
+            # Salva o project na areacorrespondente
+            ap = AreaProjects(area_id=area_id, project_id=project_id)
+            ap.save()
+        except Exception as e:
+            return {'status': False, 'reason': 'Unable to assign project to group'}
+
     def return_find_u_user(self, project_id):
         """
         Metodo que recebe o id do project e busca o usuario que tenha o nome u_<project_name>

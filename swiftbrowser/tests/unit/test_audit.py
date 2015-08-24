@@ -269,5 +269,4 @@ class TestSwiftbrowserAudit(TestCase):
         container = 'fakecontainer'
         views.disable_versioning(self.request, container)
 
-        # audit = Audit(user=request.user.username, action=Audit.DISABLE, item=Audit.VERSIONING + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
         self.mock_audit_save.assert_called_with(user=self.request.user.username, action=self.mock_audit_save.DISABLE, item=self.mock_audit_save.VERSIONING + ' - fakecontainer', through=self.mock_audit_save.VAULT + ' - ' + self.mock_audit_save.SWIFTBROWSER, created_at=self.mock_audit_save.NOW)
