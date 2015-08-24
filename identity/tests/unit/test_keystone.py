@@ -7,7 +7,7 @@ from keystoneclient.openstack.common.apiclient import exceptions
 from django.conf import settings
 
 from identity.keystone import Keystone, UnauthorizedProject
-from identity.tests.fakes import FakeKeystone, UserFactory, ProjectFactory, GroupFactory, FakeResource, AreaFactory
+from identity.tests.fakes import UserFactory, ProjectFactory, GroupFactory, FakeResource, AreaFactory
 from vault.tests.fakes import fake_request
 
 
@@ -26,8 +26,17 @@ class TestKeystoneV2(TestCase):
         self.mock_project_create = patch('identity.keystone.Keystone.project_create').start()
         self.mock_project_create.return_value = self.project
 
-        self.mock_project_get = patch('identity.keystone.Project.objects.get').start()
-        self.mock_project_get.return_value = ProjectFactory()
+        self.mock_project_update = patch('identity.keystone.Keystone.project_update').start()
+        self.mock_project_update.return_value = self.project
+
+        fake_project = FakeResource(n='abcdefg', name='fake_project')
+        fake_project.description = 'desc do fake'
+
+        self.mock_project_get = patch('identity.keystone.Keystone.project_get').start()
+        self.mock_project_get.return_value = fake_project
+
+        self.mock_model_project_get = patch('identity.keystone.Project.objects.get').start()
+        self.mock_model_project_get.return_value = ProjectFactory()
 
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
 
@@ -211,3 +220,47 @@ class TestKeystoneV2(TestCase):
 
         fake_user = 'u_{}'.format(self.project.name)
         self.assertEqual(fake_user, mock_user_list.return_value.username)
+
+    @patch('identity.keystone.GroupProjects.objects.filter')
+    @patch('identity.keystone.AreaProjects')
+    @patch('identity.keystone.GroupProjects')
+    def test_vault_update_project(self, mock_gp, mock_ap, _):
+
+        group_id = 123
+        area_id = 456
+
+        keystone = Keystone(self.request, 'tenant_name')
+
+        fake_project = self.mock_project_get.return_value
+
+        expected = {
+            'status': True,
+            'project': self.mock_project_update.return_value,
+        }
+
+        computed = keystone.vault_update_project(self.project.id,
+                                           self.project.name,
+                                           group_id,
+                                           area_id,
+                                           description=self.project.description)
+
+        # Update do Project
+        self.mock_project_update.assert_called_with(fake_project,
+                                                    name=self.project.name,
+                                                    description=self.project.description,
+                                                    enabled=True)
+
+        mock_gp.objects.filter.assert_called_with(project_id=self.project.id)
+        self.assertTrue(mock_gp.objects.filter.return_value.delete.called)
+
+        mock_gp.assert_called_with(group_id=group_id, project_id=self.project.id)
+        self.assertTrue(mock_gp.return_value.save.called)
+
+        mock_ap.objects.filter.assert_called_with(project_id=self.project.id)
+        self.assertTrue(mock_ap.objects.filter.return_value.delete.called)
+
+        mock_ap.assert_called_with(area_id=area_id, project_id=self.project.id)
+        self.assertTrue(mock_ap.return_value.save.called)
+
+
+        # self.assertEqual(computed, expected)

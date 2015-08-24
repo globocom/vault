@@ -49,7 +49,7 @@ class BaseWidget(object):
 
     # def _widget_storage(self):
     #     storage_url = get_admin_url(self.request)
-    #     auth_token = self.request.user.token.id
+    #     auth_token = get_token_id(request)
     #     http_conn = client.http_connection(storage_url,
     #                                        insecure=settings.SWIFT_INSECURE)
     #     try:
