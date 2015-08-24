@@ -9,8 +9,6 @@ from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView)
 
-import datetime
-
 
 class ListUserTest(TestCase):
 
@@ -39,13 +37,7 @@ class ListUserTest(TestCase):
         self.request.user.is_authenticated = lambda: True
         self.request.user.token = FakeToken
 
-        mock_audit_save.LIST = 'Listou / Visualizou'
-        mock_audit_save.USERS = 'Usuarios'
-        mock_audit_save.VAULT_IDENTITY = 'Vault - Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         response = self.view(self.request)
-        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.LIST, item=mock_audit_save.USERS, through=mock_audit_save.VAULT_IDENTITY, created_at=mock_audit_save.NOW)
 
         response.render()
 
@@ -170,9 +162,8 @@ class CreateUserTest(TestCase):
 
         self.assertIn('Enter a valid email address', response.content)
 
-    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_create')
-    def test_user_create_method_was_called(self, mock, mock_audit_save):
+    def test_user_create_method_was_called(self, mock):
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -181,14 +172,8 @@ class CreateUserTest(TestCase):
                      'email': 'a@a.net'})
         self.request.POST = post
 
-        mock_audit_save.ADD = 'Cadastrou'
-        mock_audit_save.USER = 'Usuario'
-        mock_audit_save.VAULT_IDENTITY = 'Vault - Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         response = self.view(self.request)
 
-        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.ADD, item=mock_audit_save.USER + ' - aaa', through=mock_audit_save.VAULT_IDENTITY, created_at=mock_audit_save.NOW)
         mock.assert_called_with(name='aaa', enabled=True,
             project=1, role=1, password='aaa', email='a@a.net', domain=None)
 
@@ -241,9 +226,8 @@ class UpdateUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_update')
-    def test_user_update_method_was_called(self, mock_user_update, mock_audit_save):
+    def test_user_update_method_was_called(self, mock_user_update):
 
         patch('identity.keystone.Keystone.project_list',
             Mock(return_value=[FakeResource(1, 'project1')])).start()
@@ -265,19 +249,12 @@ class UpdateUserTest(TestCase):
 
         self.request.method = 'POST'
 
-        mock_audit_save.UPDATE = 'Atualizou / Editou'
-        mock_audit_save.USER = 'Usuario'
-        mock_audit_save.VAULT = 'Vault'
-        mock_audit_save.IDENTITY = 'Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         post = self.request.POST.copy()
         post.update({'id': 1, 'name': 'aaa', 'project': 1})
         self.request.POST = post
 
         response = self.view(self.request)
 
-        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.UPDATE, item=mock_audit_save.USER + ' - user1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock_user_update.assert_called_with(user, name='aaa', project=project,
                                             domain=None, enabled=True,
                                             password=None, email=None)
@@ -376,21 +353,13 @@ class DeleteUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.views.Audit')
     @patch('identity.keystone.Keystone.user_delete')
-    def test_user_delete_method_was_called(self, mock_user_delete, mock_audit_save):
+    def test_user_delete_method_was_called(self, mock_user_delete):
         patch('identity.keystone.Keystone.user_get',
               Mock(return_value=FakeResource(1, 'user1'))).start()
 
-        mock_audit_save.DELETE = 'Removeu'
-        mock_audit_save.USER = 'Usuario'
-        mock_audit_save.VAULT = 'Vault'
-        mock_audit_save.IDENTITY = 'Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         response = self.view(self.request, user_id=1)
 
-        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.DELETE, item=mock_audit_save.USER + ' - user1', through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         mock_user_delete.assert_called_with(1)
 
     @patch('identity.keystone.Keystone.user_delete')
