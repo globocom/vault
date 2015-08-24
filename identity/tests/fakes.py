@@ -79,10 +79,12 @@ class AreaFactory(factory.Factory):
     class Meta:
         model = Area
 
+
 class GroupProjectsFactory(factory.Factory):
 
     class Meta:
         model = GroupProjects
+
 
 class AreaProjectsFactory(factory.Factory):
 
