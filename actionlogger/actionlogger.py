@@ -3,6 +3,7 @@
 import syslog
 from models import Audit
 
+
 class ActionNotFound(Exception):
     pass
 

@@ -262,5 +262,4 @@ class TestKeystoneV2(TestCase):
         mock_ap.assert_called_with(area_id=area_id, project_id=self.project.id)
         self.assertTrue(mock_ap.return_value.save.called)
 
-
         # self.assertEqual(computed, expected)

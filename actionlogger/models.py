@@ -19,4 +19,4 @@ class Audit(models.Model):
         db_table = 'vault_audit'
 
     def __unicode__(self):
-        return " %s - %s - %s - %s - %s " % (self.user, self.action, self.item, self.through, self.created_at)
+        return " %s - %s - %s - %s " % (self.user, self.action, self.item, self.created_at)
