@@ -24,9 +24,7 @@ class TestSwiftbrowser(TestCase):
         self.user = fakes.FakeUser(1, 'user')
         self.user.is_superuser = True
         self.user.is_authenticated = lambda: True
-
         self.request = fake_request(user=self.user)
-        self.request.session['project_id'] = 'fakeid'
 
     def tearDown(self):
         patch.stopall()

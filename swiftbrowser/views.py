@@ -447,10 +447,10 @@ def create_pseudofolder(request, container, prefix=None):
             messages.add_message(request, messages.ERROR, 'Access denied.')
 
         if prefix:
-            actionlog.log(request.user.username, "create", pseudofolder)
+            actionlog.log(request.user.username, "create", foldername)
             return redirect(objectview, container=container, prefix=prefix)
 
-        actionlog.log(request.user.username, "create", pseudofolder)
+        actionlog.log(request.user.username, "create", foldername)
         return redirect(objectview, container=container)
 
     prefixes = prefix_list(prefix)
@@ -661,10 +661,10 @@ def object_versioning(request, container, prefix=None):
 
         if action == 'enable':
             enable_versioning(request, container)
-            actionlog.log(request.user.username, "enable", 'Versioning. Container: %s' container)
+            actionlog.log(request.user.username, "enable", 'Versioning. Container: %s' % container)
         elif action == 'disable':
             disable_versioning(request, container)
-            actionlog.log(request.user.username, "disable", 'Versioning. Container: %s' container)
+            actionlog.log(request.user.username, "disable", 'Versioning. Container: %s' % container)
         else:
             messages.add_message(request, messages.ERROR, 'Action is required.')
 

@@ -59,10 +59,41 @@ def fake_request(path='/', method='GET', user=None, extra={}):
     req.build_absolute_uri = lambda x=None: '/'
 
     # for sessions middleware
-    req.session = SessionStore()
-    req.session['project_id'] = 1
+    req.session = build_fake_session()
 
     # for messages middleware
     req._messages = default_storage(req)
 
     return req
+
+
+def build_fake_session():
+    fake_session = SessionStore()
+    fake_session['project_id'] = 1
+    fake_session['service_catalog'] = [
+            {
+                u'endpoints': [{
+                    u'adminURL': u'https://fakeurl',
+                    u'region': u'RegionOne',
+                    u'id': u'fakeid',
+                    u'internalURL': u'https://fakeurl',
+                    u'publicURL': u'http://fakepublicurl'
+                }],
+                u'endpoints_links': [],
+                u'type': u'object-store',
+                u'name': u'swift'
+            },
+            {
+                u'endpoints': [{
+                    u'adminURL': u'https://fakeurl',
+                    u'region': u'RegionOne',
+                    u'id': u'fakeid',
+                    u'internalURL': u'https://fakeurl',
+                    u'publicURL': u'https://fakeurl',
+                }],
+                u'endpoints_links': [],
+                u'type': u'identity',
+                u'name': u'keystone'
+            }
+        ]
+    return fake_session

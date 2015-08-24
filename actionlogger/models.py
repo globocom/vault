@@ -12,7 +12,7 @@ class Audit(models.Model):
     user = models.CharField(max_length=60, null=False, blank=False)
     action = models.CharField(max_length=60, null=False, blank=False)
     item = models.TextField(max_length=255, null=False, blank=False)
-    # through = models.TextField(max_length=255, default='vault')
+    through = models.TextField(max_length=255, default='vault')
     created_at = models.DateTimeField(auto_now=True, default=NOW)
 
     class Meta:

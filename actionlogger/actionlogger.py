@@ -13,7 +13,7 @@ class ActionLogger(object):
 
     def __init__(self):
         self.audit = Audit()
-        self._actions = {'create': 'Cadastrou',
+        self._actions = {'create': 'Criou',
                          'update': 'Atualizou',
                          'delete': 'Removeu',
                          'upload': 'Realizou Upload',
@@ -25,13 +25,14 @@ class ActionLogger(object):
         if action not in self._actions.keys():
             raise ActionNotFound('Invalid action: "%s"' % action)
 
+        self.audit.user = str(user)
+        self.audit.action = self._actions[action]
+        self.audit.item = str(item)
+        self.audit.save()
+
         msg = 'User (%s) %s: %s' % (str(user),
                                     self._actions[action],
                                     str(item))
 
-        self.audit.user = str(user)
-        self.audit.action = self._actions[action]
-        self.audit.item = str(item)
-
         syslog.syslog(syslog.LOG_INFO, msg)
-        self.audit.save()
+
