@@ -120,16 +120,6 @@ class SetProjectView(LoginRequiredMixin, View):
             messages.add_message(request, messages.ERROR,
                                  'Unable to change your project.')
 
-        audit = Audit(user=request.user.username,
-                      action=Audit.SWITCH,
-                      item='user %s - %s - project_id %s' % (request.user.username,
-                                                             Audit.PROJECT,
-                                                             str(request.session['project_id'])),
-                      through=Audit.VAULT,
-                      created_at=Audit.NOW)
-
-        actionlog.savedb(audit)
-
         return http_redirect
 
 
