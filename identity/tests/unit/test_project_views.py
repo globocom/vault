@@ -39,15 +39,8 @@ class ListProjectTest(TestCase):
         self.request.user.is_authenticated = lambda: True
         self.request.user.is_superuser = True
 
-        mock_audit_save.LIST = 'Listou / Visualizou'
-        mock_audit_save.PROJECTS = 'Projetos'
-        mock_audit_save.VAULT = 'Vault'
-        mock_audit_save.IDENTITY = 'Identity'
-        mock_audit_save.NOW = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-
         response = self.view(self.request)
 
-        mock_audit_save.assert_called_with(user=self.request.user.username, action=mock_audit_save.LIST, item=mock_audit_save.PROJECTS, through=mock_audit_save.VAULT + ' - ' + mock_audit_save.IDENTITY, created_at=mock_audit_save.NOW)
         response.render()
 
         self.assertIn('<td>FakeResource1</td>', response.content)
