@@ -444,6 +444,9 @@ def create_pseudofolder(request, container, prefix=None):
                                        insecure=settings.SWIFT_INSECURE)
 
     form = PseudoFolderForm(request.POST or None)
+    import ipdb
+    ipdb.set_trace()
+
     if form.is_valid():
         foldername = request.POST.get('foldername', None)
         if prefix:
@@ -467,7 +470,13 @@ def create_pseudofolder(request, container, prefix=None):
             messages.add_message(request, messages.ERROR, 'Access denied.')
 
         if prefix:
+            audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PSEUDO_FOLDER + ' - ' + request.POST.get('foldername', None), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return redirect(objectview, container=container, prefix=prefix)
+
+        audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PSEUDO_FOLDER + ' - ' + request.POST.get('foldername', None), through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+        actionlog.savedb(audit)
 
         return redirect(objectview, container=container)
 
@@ -599,6 +608,9 @@ def edit_acl(request, container):
         'acls': acls,
         'public': public
     })
+
+    audit = Audit(user=request.user.username, action=Audit. UPDATE, item=Audit.ACL + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+    actionlog.savedb(audit)
 
     return render_to_response('edit_acl.html', context,
                               context_instance=RequestContext(request))
