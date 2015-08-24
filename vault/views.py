@@ -7,8 +7,6 @@ Vault Generic Views
 import json
 import logging
 
-from openstack_auth.views import switch
-
 from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
 
@@ -23,11 +21,39 @@ from django.http import HttpResponse, HttpResponseRedirect
 from actionlogger import ActionLogger
 from actionlogger.models import Audit
 
+from identity.keystone import Keystone
 from vault.utils import update_default_context
+from vault.models import Project
 
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
+
+
+def switch(request, project_id):
+    if project_id is None:
+        raise ValueError("Missing 'project_id'")
+
+    referer_url = request.META.get('HTTP_REFERER')
+    next_url = request.GET.get('next')
+
+    if next_url is None:
+        next_url = referer_url
+
+    try:
+        project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist as err:
+        messages.add_message(request, messages.ERROR, "Can't find this project")
+        log.exception('Exception: %s' % err)
+        return HttpResponseRedirect(referer_url)
+
+    keystone = Keystone(request, project.name)
+
+    request.session['project_id'] = project_id
+    request.session['service_catalog'] = keystone.conn.service_catalog.get_data()
+    request.session['auth_token'] = keystone.conn.auth_token
+
+    return HttpResponseRedirect(next_url)
 
 
 class LoginRequiredMixin(object):
@@ -89,13 +115,19 @@ class SetProjectView(LoginRequiredMixin, View):
             messages.add_message(request, messages.INFO,
                                  'Project changed.')
         except ValueError as err:
-            http_redirect = HttpResponseRedirect(
-                                        request.META.get('HTTP_REFERER'))
+            http_redirect = HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             log.exception('Exception: %s' % err)
             messages.add_message(request, messages.ERROR,
                                  'Unable to change your project.')
 
-        audit = Audit(user=request.user.username, action=Audit.SWITCH, item=' user ' + request.user.username + ' - ' + Audit.PROJECT + ' - ' + ' project_id ' + str(request.session['project_id']), through=Audit.VAULT, created_at=Audit.NOW)
+        audit = Audit(user=request.user.username,
+                      action=Audit.SWITCH,
+                      item='user %s - %s - project_id %s' % (request.user.username,
+                                                             Audit.PROJECT,
+                                                             str(request.session['project_id'])),
+                      through=Audit.VAULT,
+                      created_at=Audit.NOW)
+
         actionlog.savedb(audit)
 
         return http_redirect

@@ -15,8 +15,10 @@ log = logging.getLogger(__name__)
 # TODO: Ajustar para ser compliance com v3
 def get_admin_url(request):
     final_url = None
-    if request.user.service_catalog:
-        for service in request.user.service_catalog:
+    service_catalog = request.session.get('service_catalog')
+
+    if service_catalog:
+        for service in service_catalog:
             if service['type'] == 'object-store':
                 final_url = service['endpoints'][0]['adminURL']
 
@@ -29,9 +31,12 @@ def get_admin_url(request):
 
 def get_public_url(request):
     """ Retrieve public URL """
+
     final_url = None
-    if request.user.service_catalog:
-        for service in request.user.service_catalog:
+    service_catalog = request.session.get('service_catalog')
+
+    if service_catalog:
+        for service in service_catalog:
             if service['type'] == 'object-store':
                 final_url = service['endpoints'][0]['publicURL']
 
@@ -40,6 +45,10 @@ def get_public_url(request):
                       final_url)
 
     return str(final_url)
+
+
+def get_token_id(request):
+    return request.session.get('auth_token')
 
 
 def replace_hyphens(olddict):
