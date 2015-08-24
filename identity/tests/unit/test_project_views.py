@@ -6,7 +6,7 @@ from unittest import TestCase
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from identity.tests.fakes import GroupFactory, AreaProjectsFactory, \
-    GroupProjectsFactory
+    GroupProjectsFactory, AreaFactory
 from vault.tests.fakes import fake_request
 import datetime
 
@@ -93,7 +93,13 @@ class CreateProjectTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_validating_description_field_blank(self):
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_description_field_blank(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {
             'name': project.name,
@@ -111,13 +117,18 @@ class CreateProjectTest(TestCase):
             'id': 1,
             'description': ''})
         self.request.POST = post
-
         response = self.view(self.request)
         response.render()
 
         self.assertIn('This field is required', response.content)
 
-    def test_validating_name_field_blank(self):
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_name_field_blank(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {
             'name': project.name,
@@ -261,7 +272,13 @@ class UpdateProjectTest(TestCase):
         mock.assert_called_with(project.id , project.name, 1, 1,
                                 description='desc', enabled=True)
 
-    def test_update_validating_name_field_blank(self):
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_update_validating_name_field_blank(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {'name': project.name}
         project.default_project_id = 1
