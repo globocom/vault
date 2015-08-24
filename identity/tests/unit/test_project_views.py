@@ -8,7 +8,6 @@ from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from identity.tests.fakes import GroupFactory, AreaProjectsFactory, \
     GroupProjectsFactory, AreaFactory
 from vault.tests.fakes import fake_request
-import datetime
 
 
 class ListProjectTest(TestCase):
