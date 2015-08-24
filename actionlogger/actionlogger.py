@@ -35,4 +35,3 @@ class ActionLogger(object):
                                     str(item))
 
         syslog.syslog(syslog.LOG_INFO, msg)
-
