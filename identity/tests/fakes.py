@@ -2,8 +2,7 @@
 import factory
 from django.contrib.auth.models import User, Group
 
-from vault.models import Project, Area
-import datetime
+from vault.models import Project, Area, GroupProjects, AreaProjects
 
 
 class FakeResource(object):
@@ -79,3 +78,13 @@ class AreaFactory(factory.Factory):
 
     class Meta:
         model = Area
+
+class GroupProjectsFactory(factory.Factory):
+
+    class Meta:
+        model = GroupProjects
+
+class AreaProjectsFactory(factory.Factory):
+
+    class Meta:
+        model = AreaProjects

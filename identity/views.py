@@ -17,9 +17,11 @@ from actionlogger import ActionLogger
 from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
-from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
 from vault import utils
+from vault.models import GroupProjects, AreaProjects
+from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
+
 
 
 log = logging.getLogger(__name__)
@@ -241,6 +243,13 @@ class BaseProjectView(LoginRequiredMixin, FormView):
             self.keystone = Keystone(request)
             project = self.keystone.project_get(project_id)
             form.initial = project.to_dict()
+
+            group_project = GroupProjects.objects.get(project_id=project_id)
+            area_project = AreaProjects.objects.get(project_id=project_id)
+
+            form.initial['groups'] = group_project.group_id
+            form.initial['areas'] = area_project.area_id
+
             context['idendity_project_id'] = project_id
             context['has_id'] = True
 
