@@ -258,7 +258,7 @@ class UpdateProjectTest(TestCase):
 
         _ = self.view(self.request)
 
-        mock.assert_called_with(project.id , project.name, 1, 1,
+        mock.assert_called_with(project.id, project.name, 1, 1,
                                 description='desc', enabled=True)
 
     def test_update_validating_name_field_blank(self):

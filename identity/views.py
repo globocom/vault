@@ -43,9 +43,6 @@ class ListUserView(SuperUserMixin, TemplateView):
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
 
-        audit = Audit(user=self.request.user.username, action=Audit.LIST, item=Audit.USERS, through=Audit.VAULT_IDENTITY, created_at=Audit.NOW)
-        actionlog.savedb(audit)
-
         return context
 
 
@@ -371,14 +368,12 @@ class UpdateProjectView(BaseProjectView):
             desc = post.get('description')
             enabled = post.get('enabled')
 
-
-
             if description == '':
                 description = None
 
             try:
                 project = keystone.project_get(post.get('id'))
-                keystone.vault_update_project (project.id, project.name,
+                keystone.vault_update_project(project.id, project.name,
                                                group_id, area_id, description=desc,
                                                enabled=enabled)
 

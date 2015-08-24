@@ -3,6 +3,7 @@
 import syslog
 from models import Audit
 
+
 class ActionNotFound(Exception):
     pass
 
@@ -16,9 +17,9 @@ class ActionLogger(object):
                          'update': 'Atualizou',
                          'delete': 'Removeu',
                          'upload': 'Realizou Upload',
-                         'download' : 'Realizou Download',
-                         'enable'  : 'Habilitou',
-                         'disable' : 'Desabilitou'}
+                         'download': 'Realizou Download',
+                         'enable': 'Habilitou',
+                         'disable': 'Desabilitou'}
 
     def log(self, user, action, item):
         if action not in self._actions.keys():
