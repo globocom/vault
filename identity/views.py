@@ -366,15 +366,21 @@ class UpdateProjectView(BaseProjectView):
             keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
+            group_id = post.get('groups')
+            area_id = post.get('areas')
+            desc = post.get('description')
+            enabled = post.get('enabled')
+
+
 
             if description == '':
                 description = None
 
             try:
                 project = keystone.project_get(post.get('id'))
-                keystone.project_update(project, name=post.get('name'),
-                                             description=description,
-                                             enabled=enabled)
+                keystone.vault_update_project (project.id, project.name,
+                                               group_id, area_id, description=desc,
+                                               enabled=enabled)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully updated project')
