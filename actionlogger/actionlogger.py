@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import syslog
-
+from models import Audit
 
 class ActionNotFound(Exception):
     pass
@@ -11,9 +11,14 @@ class ActionLogger(object):
     """ A wrapper to log actions """
 
     def __init__(self):
-        self._actions = {'create': 'CREATED',
-                         'update': 'UPDATED',
-                         'delete': 'DELETED'}
+        self.audit = Audit()
+        self._actions = {'create': 'Cadastrou',
+                         'update': 'Atualizou',
+                         'delete': 'Removeu',
+                         'upload': 'Realizou Upload',
+                         'download' : 'Realizou Download',
+                         'enable'  : 'Habilitou',
+                         'disable' : 'Desabilitou'}
 
     def log(self, user, action, item):
         if action not in self._actions.keys():
@@ -23,7 +28,9 @@ class ActionLogger(object):
                                     self._actions[action],
                                     str(item))
 
-        syslog.syslog(syslog.LOG_INFO, msg)
+        self.audit.user = str(user)
+        self.audit.action = self._actions[action]
+        self.audit.item = str(item)
 
-    def savedb(self, audit):
-        audit.save()
+        syslog.syslog(syslog.LOG_INFO, msg)
+        self.audit.save()
