@@ -23,7 +23,6 @@ from vault.models import GroupProjects, AreaProjects
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
 
-
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
