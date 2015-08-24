@@ -133,6 +133,7 @@ def delete_container(request, container, force=True):
                                            auth_token,
                                            container,
                                            http_conn=http_conn)
+
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             return False
@@ -150,18 +151,20 @@ def delete_container(request, container, force=True):
         log.exception('Exception: {0}'.format(err))
         return False
 
-    audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.CONTAINER + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
-    actionlog.savedb(audit)
-
     return True
 
 
 @login_required
 def delete_container_view(request, container):
     """ Deletes a container """
+
     response = delete_container(request, container)
     if response:
         messages.add_message(request, messages.SUCCESS, "Container deleted.")
+
+        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.CONTAINER + ' - ' + container, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+        actionlog.savedb(audit)
+
     else:
         messages.add_message(request, messages.ERROR, 'Access denied.')
 
@@ -234,8 +237,14 @@ def upload(request, container, prefix=None):
     if not key:
         messages.add_message(request, messages.ERROR, 'Access denied.')
         if prefix:
+            audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return redirect(objectview, container=container, prefix=prefix)
         else:
+            audit = Audit(user=request.user.username, action=Audit.UPLOAD, item=Audit.OBJECT + ' - ' + swift_url, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return redirect(objectview, container=container)
 
     hmac_body = '%s\n%s\n%s\n%s\n%s' % (path, redirect_url, max_file_size,
@@ -346,8 +355,14 @@ def delete_object_view(request, container, objectname):
 
     if prefix:
         prefix += '/'
+        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+        actionlog.savedb(audit)
+
         return redirect(objectview, container=container, prefix=prefix)
     else:
+        audit = Audit(user=request.user.username, action=Audit.DELETE, item=Audit.OBJECT + ' - ' + objectname, through=Audit.VAULT + ' - ' + Audit.SWIFTBROWSER, created_at=Audit.NOW)
+        actionlog.savedb(audit)
+
         return redirect(objectview, container=container)
 
 
@@ -444,8 +459,6 @@ def create_pseudofolder(request, container, prefix=None):
                                        insecure=settings.SWIFT_INSECURE)
 
     form = PseudoFolderForm(request.POST or None)
-    import ipdb
-    ipdb.set_trace()
 
     if form.is_valid():
         foldername = request.POST.get('foldername', None)
