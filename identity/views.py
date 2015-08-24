@@ -375,9 +375,9 @@ class UpdateProjectView(BaseProjectView):
 
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
+        post = request.POST
         if form.is_valid():
             keystone = Keystone(self.request)
-            post = request.POST
             enabled = False if post.get('enabled') in ('False', '0') else True
             description = post.get('description')
             group_id = post.get('groups')
@@ -412,6 +412,9 @@ class UpdateProjectView(BaseProjectView):
             return self.form_valid(form)
         else:
             # return self.form_invalid(form)
+            audit = Audit(user=request.user.username, action=Audit.UPDATE, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
+            actionlog.savedb(audit)
+
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
