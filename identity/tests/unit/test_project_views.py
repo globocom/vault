@@ -246,8 +246,8 @@ class UpdateProjectTest(TestCase):
     def tearDown(self):
         patch.stopall()
 
-    @patch('identity.keystone.Keystone.project_update')
-    def test_project_update_method_was_called(self, mock):
+    @patch('identity.keystone.Keystone.vault_update_project')
+    def test_vault_update_project_method_was_called(self, mock):
 
         project = FakeResource(1, 'project1')
         project.to_dict = lambda: {'name': project.name}
@@ -265,8 +265,8 @@ class UpdateProjectTest(TestCase):
 
         _ = self.view(self.request)
 
-        mock.assert_called_with(project, enabled=True, description='desc',
-                                name='bbb')
+        mock.assert_called_with(project.id , project.name, 1, 1,
+                                description='desc', enabled=True)
 
     def test_update_validating_name_field_blank(self):
         project = FakeResource(1, 'project1')
