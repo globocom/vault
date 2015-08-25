@@ -245,9 +245,6 @@ class TestKeystonePermissionToConnect(TestCase):
 
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
 
-        self.group = GroupFactory(id=1)
-        self.area = AreaFactory(id=1)
-
     def tearDown(self):
         self.mock_keystone_conn.stop()
         patch.stopall()
