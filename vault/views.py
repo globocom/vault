@@ -10,7 +10,6 @@ import logging
 from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View

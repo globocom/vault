@@ -6,7 +6,7 @@ from unittest import TestCase
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from identity.tests.fakes import GroupFactory, AreaProjectsFactory, \
-    GroupProjectsFactory, AreaFactory
+    GroupProjectsFactory
 from vault.tests.fakes import fake_request
 
 

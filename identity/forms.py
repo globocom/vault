@@ -3,7 +3,6 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms.fields import ChoiceField
-from django.core import validators
 
 from vault.models import Area
 
