@@ -122,7 +122,6 @@ DATABASES = {
 # Dashboard
 DASHBOARD_WIDGETS = (
     'swiftbrowser.widgets.ProjectsWidget',
-    'dashboard.widgets.BaseWidget',
 )
 
 # Keystone

@@ -6,12 +6,13 @@
 {% block title %}Storage{% endblock %}
 
 {% block content_title %}Storage{% endblock %}
-{% block content %}
-  <ul class="breadcrumb">
-    <li><a href="{% url "containerview" %}">Containers</a></li>
-    <li>Add ACL to container {{container}}</li>
-  </ul>
 
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+  <span>Add ACL to container {{ container }}</span>
+{% endblock %}
+
+{% block content %}
   {% include "addacl_modal.html" %}
 
   <div class="panel panel-default">
