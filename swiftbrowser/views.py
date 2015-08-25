@@ -686,6 +686,7 @@ def enable_versioning(request, container):
                              auth_token,
                              version_location,
                              http_conn=http_conn)
+
         actionlog.log(request.user.username, "create", version_location)
 
     except client.ClientException as err:
