@@ -19,7 +19,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 
 from actionlogger import ActionLogger
-from actionlogger.models import Audit
 
 from identity.keystone import Keystone
 from vault.utils import update_default_context

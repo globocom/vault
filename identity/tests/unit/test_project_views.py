@@ -19,9 +19,6 @@ class ListProjectTest(TestCase):
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
-        patch('identity.views.Audit.save',
-              Mock(return_value=None)).start()
-
     def tearDown(self):
         patch.stopall()
 
@@ -30,8 +27,7 @@ class ListProjectTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.views.Audit')
-    def test_show_project_list(self, mock_audit_save):
+    def test_show_project_list(self):
         patch('identity.keystone.Keystone.project_list',
               Mock(return_value=[FakeResource(1)])).start()
 
@@ -77,9 +73,6 @@ class CreateProjectTest(TestCase):
               Mock(return_value=None)).start()
 
         patch('identity.keystone.Keystone._keystone_conn',
-              Mock(return_value=None)).start()
-
-        patch('identity.views.Audit.save',
               Mock(return_value=None)).start()
 
     def tearDown(self):
@@ -233,9 +226,6 @@ class UpdateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-
-        patch('identity.views.Audit.save',
-              Mock(return_value=None)).start()
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
