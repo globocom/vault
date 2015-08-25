@@ -151,6 +151,65 @@ class CreateProjectTest(TestCase):
 
         self.assertIn('This field is required', response.content)
 
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_description_field_whitespaces(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
+        project = FakeResource(1, 'project1')
+        project.to_dict = lambda: {
+            'name': project.name,
+            'description': project.description
+        }
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        self.request.method = 'POST'
+
+        post = self.request.POST.copy()
+        post.update({
+            'name': 'Project1',
+            'id': 1,
+            'description': '   '})
+        self.request.POST = post
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('Project description cannot be empty.', response.content)
+
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_name_field_non_alphanumeric(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
+        project = FakeResource(1, 'project1')
+        project.to_dict = lambda: {
+            'name': project.name,
+            'description': project.description
+        }
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        self.request.method = 'POST'
+
+        post = self.request.POST.copy()
+        post.update({
+            'name': 'valor inválido',
+            'id': 1,
+            'description': 'description'})
+        self.request.POST = post
+
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('Project Name must be an alphanumeric.', response.content)
+
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_method_was_called(self, mock):
         self.request.method = 'POST'

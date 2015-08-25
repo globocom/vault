@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 
 from django import forms
+from django.core.validators import RegexValidator
 from django.forms.fields import ChoiceField
+from django.core import validators
 
 from vault.models import Area
 
@@ -68,7 +70,11 @@ class ProjectForm(forms.Form):
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}),validators=[
+        RegexValidator('^[a-zA-Z0-9_]*$',
+            message='Project Name must be an alphanumeric.'
+        ),
+    ])
 
     description = forms.CharField(label='Description', required=True,
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
@@ -81,3 +87,11 @@ class ProjectForm(forms.Form):
         queryset=Area.objects.all())
 
     groups = forms.ModelChoiceField(label=u'Time', required=True, queryset=None)
+
+    def clean_description(self):
+        if 'description' in self.data:
+            description = self.data['description']
+            if len(description.strip()) == 0:
+                raise forms.ValidationError('Project description cannot be empty.')
+
+            return self.data['description']
