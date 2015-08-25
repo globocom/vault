@@ -16,6 +16,11 @@ class ListProjectTest(TestCase):
         self.view = ListProjectView.as_view()
         self.request = fake_request(method='GET')
 
+        self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+
+        self.mock_area = patch('identity.forms.Area.objects.all').start()
+        self.mock_area.return_value = [AreaFactory(id=1)]
+
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
@@ -71,10 +76,15 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        self.request.user.groups = [GroupFactory(id=1)]
+        # self.request.user.groups = [GroupFactory(id=1)]
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
+
+        self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+
+        self.mock_area = patch('identity.forms.Area.objects.all').start()
+        self.mock_area.return_value = [AreaFactory(id=1)]
 
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
@@ -240,6 +250,10 @@ class UpdateProjectTest(TestCase):
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
 
+        self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+        self.mock_area = patch('identity.forms.Area.objects.all').start()
+        self.mock_area.return_value = [AreaFactory(id=1)]
+
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
@@ -248,6 +262,7 @@ class UpdateProjectTest(TestCase):
 
     def tearDown(self):
         patch.stopall()
+
 
     @patch('identity.keystone.Keystone.vault_update_project')
     def test_vault_update_project_method_was_called(self, mock):

@@ -56,6 +56,7 @@ class UpdateUserForm(UserForm):
         self.fields['project'].widget.attrs['disabled'] = True
 
 
+
 class ProjectForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -63,7 +64,14 @@ class ProjectForm(forms.Form):
 
         user = kwargs.get('initial').get('user')
 
-        self.fields['groups'].queryset = user.groups.all()
+        groups = [('', '-----')]
+        groups += [(group.id, group.name) for group in user.groups.all()]
+
+        areas = [('', '-----')]
+        areas += [(area.id, area.name) for area in Area.objects.all()]
+
+        self.fields['groups'].choices = groups
+        self.fields['areas'].choices = areas
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -77,7 +85,6 @@ class ProjectForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
 
-    areas = forms.ModelChoiceField(label=u'Area', required=True,
-        queryset=Area.objects.all())
+    areas = forms.ChoiceField(label=u'Area', required=True, choices=())
 
-    groups = forms.ModelChoiceField(label=u'Time', required=True, queryset=None)
+    groups = forms.ChoiceField(label=u'Time', required=True, choices=())

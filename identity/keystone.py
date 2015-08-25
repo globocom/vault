@@ -32,25 +32,28 @@ class Keystone(object):
 
     def __init__(self, request, tenant_name=None):
         self.token = request.session.get('token', None)
+        self.request = request
 
         if tenant_name:
             self.tenant_name = tenant_name
         else:
             self.tenant_name = getattr(settings, 'PROJECT_BOLADAO')
 
-        project = Project.objects.get(name=self.tenant_name)
-        groups = request.user.groups.all()
+        self._is_allowed_to_connect()
 
-        # Talvez nao seja o melhor local para esta verificacao
+        self.conn = self._keystone_conn(request)
+
+    def _is_allowed_to_connect(self):
+        project = Project.objects.get(name=self.tenant_name)
+        groups = self.request.user.groups.all()
+
         group_projects = GroupProjects.objects.filter(group__in=groups,
                                                       project_id=project.id)
 
         # Pode autenticar se project pertence ao time do usuario, ou o usuario
         # eh superuser
-        if not group_projects and not request.user.is_superuser:
+        if not group_projects and not self.request.user.is_superuser:
             raise UnauthorizedProject('Usuario sem permissao neste project')
-
-        self.conn = self._keystone_conn(request)
 
     def _keystone_conn(self, request):
 

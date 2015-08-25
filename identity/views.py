@@ -275,44 +275,6 @@ class ListProjectView(BaseProjectView):
         return context
 
 
-# class CreateProjectViewOriginal(BaseProjectView):
-#     template_name = "identity/project_create.html"
-#
-#     def post(self, request, *args, **kwargs):
-#         self.keystone = Keystone(request)
-#         form = ProjectForm(request.user)
-#
-#         if form.is_valid():
-#             post = request.POST
-#             enabled = False if post.get('enabled') in ('False', '0') else True
-#             description = post.get('description')
-#
-#             if description == '':
-#                 description = None
-#
-#             try:
-#                 project = self.keystone.project_create(request,
-#                                                        post.get('name'),
-#                                                        description=description,
-#                                                        enabled=enabled)
-#
-#                 messages.add_message(request, messages.SUCCESS,
-#                                      'Successfully created project')
-#
-#                 actionlog.log(request.user.username, 'create', project)
-#             except Exception as e:
-#                 log.exception('Exception: %s' % e)
-#                 messages.add_message(request, messages.ERROR,
-#                                      "Error when create project")
-#
-#             audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-#             actionlog.savedb(audit)
-#
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
-
-
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
@@ -359,6 +321,7 @@ class UpdateProjectView(BaseProjectView):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         post = request.POST
+
         if form.is_valid():
             keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
