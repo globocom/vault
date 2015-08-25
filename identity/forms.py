@@ -70,11 +70,7 @@ class ProjectForm(forms.Form):
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}),validators=[
-        RegexValidator('^[a-zA-Z0-9_]*$',
-            message='Project Name must be an alphanumeric.'
-        ),
-    ])
+        widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message='Project Name must be an alphanumeric.'), ])
 
     description = forms.CharField(label='Description', required=True,
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
