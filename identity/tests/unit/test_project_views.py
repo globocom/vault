@@ -5,8 +5,8 @@ from unittest import TestCase
 
 from identity.tests.fakes import FakeResource
 from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
-from identity.tests.fakes import GroupFactory, AreaProjectsFactory, \
-    GroupProjectsFactory, AreaFactory
+from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
+    GroupProjectsFactory
 from vault.tests.fakes import fake_request
 
 
@@ -24,9 +24,6 @@ class ListProjectTest(TestCase):
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
-        patch('identity.views.Audit.save',
-              Mock(return_value=None)).start()
-
     def tearDown(self):
         patch.stopall()
 
@@ -35,8 +32,7 @@ class ListProjectTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.views.Audit')
-    def test_show_project_list(self, mock_audit_save):
+    def test_show_project_list(self):
         patch('identity.keystone.Keystone.project_list',
               Mock(return_value=[FakeResource(1)])).start()
 
@@ -87,9 +83,6 @@ class CreateProjectTest(TestCase):
         self.mock_area.return_value = [AreaFactory(id=1)]
 
         patch('identity.keystone.Keystone._keystone_conn',
-              Mock(return_value=None)).start()
-
-        patch('identity.views.Audit.save',
               Mock(return_value=None)).start()
 
     def tearDown(self):
@@ -160,6 +153,65 @@ class CreateProjectTest(TestCase):
         response.render()
 
         self.assertIn('This field is required', response.content)
+
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_description_field_whitespaces(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
+        project = FakeResource(1, 'project1')
+        project.to_dict = lambda: {
+            'name': project.name,
+            'description': project.description
+        }
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        self.request.method = 'POST'
+
+        post = self.request.POST.copy()
+        post.update({
+            'name': 'Project1',
+            'id': 1,
+            'description': '   '})
+        self.request.POST = post
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('Project description cannot be empty.', response.content)
+
+    @patch('identity.views.AreaProjects.objects.get')
+    @patch('identity.views.GroupProjects.objects.get')
+    def test_validating_name_field_non_alphanumeric(self, mock_gp, mock_ap):
+
+        mock_gp.return_value = GroupProjectsFactory.build(group_id=1, project_id=1)
+        mock_ap.return_value = AreaProjectsFactory.build(area_id=1, project_id=1)
+
+        project = FakeResource(1, 'project1')
+        project.to_dict = lambda: {
+            'name': project.name,
+            'description': project.description
+        }
+
+        patch('identity.keystone.Keystone.project_get',
+              Mock(return_value=project)).start()
+
+        self.request.method = 'POST'
+
+        post = self.request.POST.copy()
+        post.update({
+            'name': 'valor inválido',
+            'id': 1,
+            'description': 'description'})
+        self.request.POST = post
+
+        response = self.view(self.request)
+        response.render()
+
+        self.assertIn('Project Name must be an alphanumeric.', response.content)
 
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_method_was_called(self, mock):
@@ -243,9 +295,6 @@ class UpdateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-
-        patch('identity.views.Audit.save',
-              Mock(return_value=None)).start()
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()

@@ -29,8 +29,7 @@ class ListUserTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.views.Audit')
-    def test_show_user_list(self, mock_audit_save):
+    def test_show_user_list(self):
         patch('identity.keystone.Keystone.user_list',
               Mock(return_value=[FakeResource(1)])).start()
 

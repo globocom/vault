@@ -26,25 +26,22 @@
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <ul class="breadcrumbs">
-    <li><a href="{% url "containerview" %}">Containers</a></li>
-    <li>
-      {% if prefix %}
-        <a class="u" href="{% url "objectview" container=container %}">{{container}}</a>
-      {% else %}
-        {{container}}
-      {% endif %}
-    </li>
-    {% for prefix in prefixes %}
-    <li>
-      {% if forloop.counter < prefixes|length %}
+  <a href="{% url "containerview" %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url "objectview" container=container %}">{{container}}</a>
+  {% else %}
+    {{ container }}
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
       <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
-      {% else %}
-      {{prefix.display_name}}
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
 {% endblock %}
 
 {% block content %}

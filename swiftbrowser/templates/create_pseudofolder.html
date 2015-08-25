@@ -4,16 +4,16 @@
 
 {% block content_title %}Storage{% endblock %}
 
-{% block content %}
-  <ul class="breadcrumb">
-    <li><a href="{% url "containerview" %}">Containers</a></li>
-    <li><a class="u" href="{% url "objectview" container=container %}">{{container}}</a></li>
-    {% for prefix in prefixes %}
-    <li><a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a></li>
-    {% endfor %}
-    <li>Create Pseudofolder</li>
-  </ul>
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+  <a class="u" href="{% url "objectview" container=container %}">{{ container }}</a>
+  {% for prefix in prefixes %}
+    <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+  {% endfor %}
+  <span>Create Pseudofolder</span>
+{% endblock %}
 
+{% block content %}
   <form method="POST" class="form-box project-form">
     {% csrf_token %}
     <fieldset class="content">

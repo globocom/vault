@@ -10,7 +10,6 @@ import logging
 from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View
@@ -19,7 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 
 from actionlogger import ActionLogger
-from actionlogger.models import Audit
 
 from identity.keystone import Keystone
 from vault.utils import update_default_context
@@ -31,6 +29,9 @@ actionlog = ActionLogger()
 
 
 def switch(request, project_id):
+    """
+    Switch session parameters to project with project_id
+    """
     if project_id is None:
         raise ValueError("Missing 'project_id'")
 
@@ -50,6 +51,7 @@ def switch(request, project_id):
     keystone = Keystone(request, project.name)
 
     request.session['project_id'] = project_id
+    request.session['project_name'] = project.name
     request.session['service_catalog'] = keystone.conn.service_catalog.get_data()
     request.session['auth_token'] = keystone.conn.auth_token
 
@@ -105,15 +107,10 @@ class SetProjectView(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
-        """
-        Set project_id on session and switch the user auth to this project
-        """
         request.session['project_id'] = kwargs.get('project_id')
 
         try:
             http_redirect = switch(request, kwargs.get('project_id'))
-            messages.add_message(request, messages.INFO,
-                                 'Project changed.')
         except ValueError as err:
             http_redirect = HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             log.exception('Exception: %s' % err)
@@ -129,7 +126,6 @@ class OAuthVaultCallback(OAuthBackstageCallback):
         return reverse('dashboard')
 
     def get_login_redirect(self, provider, user, access, new=False):
-
         # Dashboard do admin
         return reverse('dashboard')
 
