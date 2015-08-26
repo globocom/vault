@@ -96,3 +96,11 @@ class ProjectForm(forms.Form):
                 raise forms.ValidationError('Project description cannot be empty.')
 
             return self.data['description']
+
+class DeleteProjectConfirm(forms.Form):
+
+    user = forms.CharField(label='User', required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    password = forms.CharField(label='Password', required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))

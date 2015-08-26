@@ -15,7 +15,7 @@ from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
 from identity.keystone import Keystone
-from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
+from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
 
 from vault import utils
 from vault.models import GroupProjects, AreaProjects
@@ -308,7 +308,6 @@ class CreateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
@@ -324,11 +323,9 @@ class UpdateProjectView(BaseProjectView):
         if form.is_valid():
             keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
-            description = post.get('description')
             group_id = post.get('groups')
             area_id = post.get('areas')
-            desc = post.get('description')
-            enabled = post.get('enabled')
+            description = post.get('description')
 
             if description == '':
                 description = None
@@ -336,8 +333,9 @@ class UpdateProjectView(BaseProjectView):
             try:
                 project = keystone.project_get(post.get('id'))
                 keystone.vault_update_project(project.id, project.name,
-                                               group_id, area_id, description=desc,
-                                               enabled=enabled)
+                                              group_id, area_id,
+                                              description=description,
+                                              enabled=enabled)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully updated project')
@@ -351,30 +349,35 @@ class UpdateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
 class DeleteProjectView(BaseProjectView):
+    template_name = "identity/project_delete_confirm.html"
 
     def get(self, request, *args, **kwargs):
+        form = DeleteProjectConfirm()
+        return self.render_to_response({'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
         self.keystone = Keystone(request)
+       return HttpResponseRedirect('http://www.globo.com')
 
-        try:
-            self.keystone.project_delete(kwargs.get('project_id'))
-            messages.add_message(request, messages.SUCCESS,
-                                 'Successfully deleted project')
 
-            actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
 
-        except Exception as e:
-            log.exception('Exception: %s' % e)
-            messages.add_message(request, messages.ERROR,
-                                 'Error when delete project')
+    #   try:
+    #       self.keystone.project_delete(kwargs.get('project_id'))
+    #       messages.add_message(request, messages.SUCCESS,
+    #                            'Successfully deleted project')
 
-            project = self.keystone.project_get(kwargs.get('project_id'))
-
-        return HttpResponseRedirect(self.success_url)
+    #       actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
+    #   except Exception as e:
+    #       log.exception('Exception: %s' % e)
+    #       messages.add_message(request, messages.ERROR,
+    #                            'Error when delete project')
+    #       project = self.keystone.project_get(kwargs.get('project_id'))
+    #   return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
