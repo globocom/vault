@@ -15,7 +15,6 @@ from django.views.decorators.debug import sensitive_post_parameters
 from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
-from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
 
