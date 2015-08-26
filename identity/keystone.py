@@ -10,7 +10,7 @@ from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
-from vault.models import GroupProjects, Project, AreaProjects, Group
+from vault.models import GroupProjects, Project, AreaProjects
 from actionlogger import ActionLogger
 
 
@@ -30,9 +30,16 @@ class UnauthorizedProject(Exception):
 class Keystone(object):
     """ return an authenticated keystone client """
 
-    def __init__(self, request, tenant_name=None):
+    def __init__(self, request, username=None, password=None, tenant_name=None):
         self.token = request.session.get('token', None)
         self.request = request
+
+        if username and password:
+            self.username = username
+            self.password = password
+        else:
+            self.username = getattr(settings, 'USERNAME_BOLADAO')
+            self.password = getattr(settings, 'PASSWORD_BOLADAO')
 
         if tenant_name:
             self.tenant_name = tenant_name
@@ -67,8 +74,8 @@ class Keystone(object):
         if self.token:
             kwargs['token'] = self.token
         else:
-            kwargs['username'] = getattr(settings, 'USERNAME_BOLADAO')
-            kwargs['password'] = getattr(settings, 'PASSWORD_BOLADAO')
+            kwargs['username'] = self.username
+            kwargs['password'] = self.password
 
         conn = client.Client(**kwargs)
 
@@ -99,10 +106,12 @@ class Keystone(object):
                     project=None, enabled=True, domain=None, role=None):
 
         if settings.KEYSTONE_VERSION < 3:
-            user = self.conn.users.create(name, password, email, project, enabled)
+            user = self.conn.users.create(name, password, email,
+                                          project, enabled)
         else:
             user = self.conn.users.create(name, password=password, email=email,
-                                  project=project, enabled=enabled, domain=domain)
+                                          project=project, enabled=enabled,
+                                          domain=domain)
 
         # Assign role and project to user
         if project is not None and role is not None:
@@ -127,7 +136,7 @@ class Keystone(object):
             if password:
                 self.user_update_password(user, password)
         else:
-            # Se senha for /False/, retira do dicionario para nao atualizar com /False/
+            # Se senha for /False/, retira para nao atualizar com /False/
             if not data['password']:
                 data.pop('password')
 
@@ -160,7 +169,8 @@ class Keystone(object):
         conn = self._project_manager()
 
         if settings.KEYSTONE_VERSION < 3:
-            return conn.update(project.id, data['name'], data['description'], data['enabled'])
+            return conn.update(project.id, data['name'],
+                               data['description'], data['enabled'])
         else:
             return conn.update(project, **data)
 
@@ -194,8 +204,9 @@ class Keystone(object):
         else:
             return self.conn.roles.revoke(role, user=user, project=project)
 
-    # TODO: Este metodo esta fazendo muitas operacoes. Avaliar se vale a pena quebrar em metodos menores
-    def vault_create_project(self, project_name, group_id, area_id, description=None):
+    # TODO: Este metodo esta fazendo muitas operacoes. Avaliar refatoracao
+    def vault_create_project(self, project_name, group_id, area_id,
+                             description=None):
         """
         Metodo que faz o processo completo de criacao de project no vault:
         Cria projeto, cria um usuario, vincula com a role swiftoperator,
@@ -226,7 +237,9 @@ class Keystone(object):
         except Exception as e:
             self.project_delete(project.id)
             self.user_delete(user.id)
-            return {'status': False, 'reason': 'Unable to assign project to group'}
+            return {
+                'status': False,
+                'reason': 'Unable to assign project to group'}
 
         # Salva o project na area correspondente
         try:
@@ -236,7 +249,9 @@ class Keystone(object):
         except Exception as e:
             self.project_delete(project.id)
             self.user_delete(user.id)
-            return {'status': False, 'reason': 'Unable to assign project to area'}
+            return {
+                'status': False,
+                'reason': 'Unable to assign project to area'}
 
         return {
             'status': True,
@@ -245,7 +260,8 @@ class Keystone(object):
             'password': user_password
         }
 
-    def vault_update_project(self, project_id, project_name, group_id, area_id, **kwargs):
+    def vault_update_project(self, project_id, project_name, group_id, area_id,
+                             **kwargs):
         project = self.project_get(project_id)
 
         description = kwargs.get('description', '')
@@ -266,7 +282,9 @@ class Keystone(object):
             gp = GroupProjects(group_id=group_id, project_id=project_id)
             gp.save()
         except Exception as e:
-            return {'status': False, 'reason': 'Unable to assign project to group'}
+            return {
+                'status': False,
+                'reason': 'Unable to assign project to group'}
 
         AreaProjects.objects.filter(project_id=project_id).delete()
 
@@ -275,7 +293,14 @@ class Keystone(object):
             ap = AreaProjects(area_id=area_id, project_id=project_id)
             ap.save()
         except Exception as e:
-            return {'status': False, 'reason': 'Unable to assign project to group'}
+            return {
+                'status': False,
+                'reason': 'Unable to assign project to group'}
+
+        return {
+            'status': True,
+            'project': new_project,
+        }
 
     def return_find_u_user(self, project_id):
         """

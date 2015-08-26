@@ -7,16 +7,89 @@ from keystoneclient.openstack.common.apiclient import exceptions
 from django.conf import settings
 
 from identity.keystone import Keystone, UnauthorizedProject
-from identity.tests.fakes import UserFactory, ProjectFactory, GroupFactory, FakeResource, AreaFactory
+from identity.tests.fakes import UserFactory, ProjectFactory, GroupFactory, \
+    FakeResource, AreaFactory
 from vault.tests.fakes import fake_request
+
+
+class TestKeystoneConnection(TestCase):
+    """
+    Teste de casos de conexao com o Keystone. Separado dos demais testes, pois
+    o metodo de conexao esta mockado nos outros casos.
+    """
+
+    def setUp(self):
+        self.request = fake_request()
+
+        self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+        self.mock_keystone_client = patch('identity.keystone.client').start()
+
+    def tearDown(self):
+        self.mock_keystone_is_allowed.stop()
+
+    def test_connection_with_username_and_password(self):
+        _ = Keystone(self.request, tenant_name='fake_tenant', username='fake_user', password='secret')
+
+        expected = {
+            'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
+            'auth_url': getattr(settings, 'KEYSTONE_URL'),
+            'insecure': True,
+            'tenant_name': 'fake_tenant',
+            'username': 'fake_user',
+            'password': 'secret'
+        }
+
+        self.mock_keystone_client.Client.assert_called_with(**expected)
+
+    def test_connection_with_NO_username_nor_password(self):
+        _ = Keystone(self.request, tenant_name='fake_tenant')
+
+        expected = {
+            'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
+            'auth_url': getattr(settings, 'KEYSTONE_URL'),
+            'insecure': True,
+            'tenant_name': 'fake_tenant',
+            'username': getattr(settings, 'USERNAME_BOLADAO'),
+            'password': getattr(settings, 'PASSWORD_BOLADAO')
+        }
+
+        self.mock_keystone_client.Client.assert_called_with(**expected)
+
+    def test_connection_with_token(self):
+        self.request.session['token'] = 'fake_token'
+        _ = Keystone(self.request, tenant_name='fake_tenant')
+
+        expected = {
+            'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
+            'auth_url': getattr(settings, 'KEYSTONE_URL'),
+            'insecure': True,
+            'tenant_name': 'fake_tenant',
+            'token': 'fake_token',
+        }
+
+        self.mock_keystone_client.Client.assert_called_with(**expected)
+
+    def test_connection_with_NO_tenant_name(self):
+        self.request.session['token'] = 'fake_token'
+        _ = Keystone(self.request)
+
+        expected = {
+            'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
+            'auth_url': getattr(settings, 'KEYSTONE_URL'),
+            'insecure': True,
+            'tenant_name': getattr(settings, 'PROJECT_BOLADAO'),
+            'token': 'fake_token',
+        }
+
+        self.mock_keystone_client.Client.assert_called_with(**expected)
 
 
 class TestKeystoneV2(TestCase):
     """ Test keystone version 2 """
 
     def setUp(self):
-        self.user = UserFactory()
-        self.request = fake_request(user=self.user)
+        # self.user = UserFactory()
+        self.request = fake_request()
 
         project_id = 'abcdefghiklmnopq'
         project_name = 'project_test'
@@ -226,7 +299,7 @@ class TestKeystoneV2(TestCase):
         mock_ap.assert_called_with(area_id=area_id, project_id=self.project.id)
         self.assertTrue(mock_ap.return_value.save.called)
 
-        # self.assertEqual(computed, expected)
+        self.assertEqual(computed, expected)
 
 
 class TestKeystonePermissionToConnect(TestCase):
