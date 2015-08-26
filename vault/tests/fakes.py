@@ -3,6 +3,7 @@
 import factory
 
 from StringIO import StringIO
+from mock import Mock
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.contrib.auth.models import User, Group
@@ -12,6 +13,7 @@ from django.contrib.sessions.backends.db import SessionStore
 
 # factories.py
 class GroupFactory(factory.django.DjangoModelFactory):
+
     class Meta:
         model = Group
         strategy = factory.BUILD_STRATEGY
@@ -53,7 +55,14 @@ def fake_request(path='/', method='GET', user=None, extra={}):
 
     req = WSGIRequest(params)
     # req.user = user or AnonymousUser()
-    req.user = user or UserFactory(groups=[GroupFactory()])
+    # req.user = user or UserFactory(groups=[GroupFactory()])
+    mock_user = Mock()
+    mock_user.id = ''
+    mock_user.first_name = 'mock_user'
+    mock_user.is_superuser = True
+    mock_user.groups.all = lambda: [GroupFactory(id=1)]
+
+    req.user = mock_user
     req.user.project_id = 1
 
     req.build_absolute_uri = lambda x=None: '/'

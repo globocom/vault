@@ -69,6 +69,7 @@ def get_container():
 
 class FakeResource(object):
     """ Fake Keystone Resource (e.g. User, Project, Role) """
+
     def __init__(self, n=0, name=None):
         self.id = n
         self.name = name if name else "FakeResource%d" % n
@@ -79,6 +80,7 @@ class FakeResource(object):
 
 class FakeToken(object):
     """ Fake Keystone Token """
+
     def __init__(self, id="faketokenid"):
         self.id = id
 
@@ -93,34 +95,6 @@ class FakeUser(AnonymousUser):
         self.username = name if name else "FakeUser%d" % n
         self.enabled = True
         self.description = ''
-        self.project_id = 1
-        self.token = FakeToken()
-        self.service_catalog = [
-            {
-                u'endpoints': [{
-                    u'adminURL': u'https://fakeurl',
-                    u'region': u'RegionOne',
-                    u'id': u'fakeid',
-                    u'internalURL': u'https://fakeurl',
-                    u'publicURL': u'http://fakepublicurl'
-                }],
-                u'endpoints_links': [],
-                u'type': u'object-store',
-                u'name': u'swift'
-            },
-            {
-                u'endpoints': [{
-                    u'adminURL': u'https://fakeurl',
-                    u'region': u'RegionOne',
-                    u'id': u'fakeid',
-                    u'internalURL': u'https://fakeurl',
-                    u'publicURL': u'https://fakeurl',
-                }],
-                u'endpoints_links': [],
-                u'type': u'identity',
-                u'name': u'keystone'
-            }
-        ]
 
 
 class FakeRequestResponse(object):

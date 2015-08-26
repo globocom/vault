@@ -15,7 +15,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
@@ -39,6 +39,10 @@ actionlog = ActionLogger()
 @login_required
 def containerview(request):
     """ Returns a list of all containers in current account. """
+
+    if not request.session.get('project_id'):
+        messages.add_message(request, messages.ERROR, 'Select a project')
+        return HttpResponseRedirect(reverse('dashboard'))
 
     storage_url = get_admin_url(request)
     auth_token = get_token_id(request)

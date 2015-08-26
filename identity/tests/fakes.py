@@ -41,6 +41,7 @@ class FakeKeystone:
 # factories.py
 class GroupFactory(factory.Factory):
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = Group
 
     name = factory.Sequence(lambda n: "Group #%s" % n)
@@ -49,6 +50,7 @@ class GroupFactory(factory.Factory):
 class UserFactory(factory.Factory):
 
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = User
 
     pk = 1
@@ -71,22 +73,26 @@ class UserFactory(factory.Factory):
 class ProjectFactory(factory.Factory):
 
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = Project
 
 
 class AreaFactory(factory.Factory):
 
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = Area
 
 
 class GroupProjectsFactory(factory.Factory):
 
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = GroupProjects
 
 
 class AreaProjectsFactory(factory.Factory):
 
     class Meta:
+        strategy = factory.BUILD_STRATEGY
         model = AreaProjects
