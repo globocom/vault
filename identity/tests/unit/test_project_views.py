@@ -282,10 +282,6 @@ class CreateProjectTest(TestCase):
         self.assertFalse(response.context_data.get('show_roles'))
         self.assertNotIn('add-user-role', response.content)
 
-    def test_create_success_screen(self):
-
-        response = self.view(self.request)
-
 
 class UpdateProjectTest(TestCase):
 
