@@ -8,7 +8,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
-from django.core.urlresolvers import resolve
 
 from django.views.decorators.debug import sensitive_post_parameters
 
@@ -207,8 +206,8 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
-        if request.resolver_match != None and request.resolver_match.url_name == 'edit_project':
-            form = ProjectForm(initial={'user': request.user, 'action':'update'})
+        if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
+            form = ProjectForm(initial={'user': request.user, 'action': 'update'})
         else:
             form = ProjectForm(initial={'user': request.user})
 
@@ -348,7 +347,6 @@ class UpdateProjectView(BaseProjectView):
 
             except Exception as e:
                 log.exception('Exception: %s' % e)
-                print(e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when update project")
 
