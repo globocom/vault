@@ -1,14 +1,13 @@
 # -*- coding:utf-8 -*-
 
 import mock
-
-from django.core.urlresolvers import reverse
 from mock import patch
 from unittest import TestCase
 
 import swiftclient
-
 from swiftclient import client
+
+from django.core.urlresolvers import reverse
 
 from swiftbrowser.tests import fakes
 from swiftbrowser import views
@@ -105,6 +104,15 @@ class TestSwiftbrowser(TestCase):
         response = views.object_versioning(self.request)
 
         self.assertEqual(response.status_code, 302)
+
+    @patch('swiftbrowser.views.client.get_account')
+    def test_containerview_redirect_to_dashboard_without_project_in_session(self, mock_get_account):
+        mock_get_account.return_value = fakes.get_account()
+        self.request.session['project_id'] = None
+        response = views.containerview(self.request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('dashboard'))
 
     @patch('swiftbrowser.views.client.get_account')
     def test_containerview_list_containters(self, mock_get_account):
