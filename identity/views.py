@@ -313,7 +313,6 @@ class CreateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
@@ -329,11 +328,9 @@ class UpdateProjectView(BaseProjectView):
         if form.is_valid():
             keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
-            description = post.get('description')
             group_id = post.get('groups')
             area_id = post.get('areas')
-            desc = post.get('description')
-            enabled = post.get('enabled')
+            description = post.get('description')
 
             if description == '':
                 description = None
@@ -341,8 +338,9 @@ class UpdateProjectView(BaseProjectView):
             try:
                 project = keystone.project_get(post.get('id'))
                 keystone.vault_update_project(project.id, project.name,
-                                               group_id, area_id, description=desc,
-                                               enabled=enabled)
+                                              group_id, area_id,
+                                              description=description,
+                                              enabled=enabled)
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully updated project')
@@ -357,7 +355,6 @@ class UpdateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
 
