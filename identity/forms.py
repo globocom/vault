@@ -54,7 +54,7 @@ class UpdateUserForm(UserForm):
         for field in ('password', 'password_confirm', 'project'):
             self.fields[field].required = False
 
-        self.fields['project'].widget.attrs['disabled'] = True
+        self.fields['project'].widget.attrs['disabled'] = 'True'
 
 
 class ProjectForm(forms.Form):
@@ -103,3 +103,12 @@ class ProjectForm(forms.Form):
                 raise forms.ValidationError('Project description cannot be empty.')
 
             return self.data['description']
+
+
+class DeleteProjectConfirm(forms.Form):
+
+    user = forms.CharField(label='User', required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    password = forms.CharField(label='Password', required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))

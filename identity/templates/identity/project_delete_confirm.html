@@ -1,0 +1,41 @@
+{% extends "vault/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Delete Project Confirm{% endblock %}
+{% block content_title %}Delete Project Confirm
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <form action="" class="form-box project-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    {{ form.id }}
+
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+          {{ form.user.label_tag }}
+          {{ form.user }}
+          {{ form.user.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-danger" type="submit">Delete Project Confirm</button>
+      </div>
+    </fieldset>
+
+  </form>
+{% endblock %}
