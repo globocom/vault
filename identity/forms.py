@@ -3,7 +3,6 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms.fields import ChoiceField
-from django.core import validators
 
 from vault.models import Area
 
@@ -65,16 +64,26 @@ class ProjectForm(forms.Form):
 
         user = kwargs.get('initial').get('user')
 
-        self.fields['groups'].queryset = user.groups.all()
+        action = kwargs.get('initial').get('action')
+        if action == 'update' and user.is_superuser is False:
+            self.fields['name'].widget.attrs['readonly'] = 'True'
+            self.fields['action'].initial = 'update'
+
+        groups = [('', '-----')]
+        groups += [(group.id, group.name) for group in user.groups.all()]
+
+        areas = [('', '-----')]
+        areas += [(area.id, area.name) for area in Area.objects.all()]
+
+        self.fields['groups'].choices = groups
+        self.fields['areas'].choices = areas
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
+    action = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     name = forms.CharField(label='Project Name', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}),validators=[
-        RegexValidator('^[a-zA-Z0-9_]*$',
-            message='Project Name must be an alphanumeric.'
-        ),
-    ])
+        widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message='Project Name must be an alphanumeric.'), ])
 
     description = forms.CharField(label='Description', required=True,
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
@@ -83,10 +92,9 @@ class ProjectForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
 
-    areas = forms.ModelChoiceField(label=u'Area', required=True,
-        queryset=Area.objects.all())
+    areas = forms.ChoiceField(label=u'Area', required=True, choices=())
 
-    groups = forms.ModelChoiceField(label=u'Time', required=True, queryset=None)
+    groups = forms.ChoiceField(label=u'Time', required=True, choices=())
 
     def clean_description(self):
         if 'description' in self.data:

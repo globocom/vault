@@ -208,7 +208,7 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
-        if request.resolver_match.url_name == 'edit_project':
+        if request.resolver_match != None and request.resolver_match.url_name == 'edit_project':
             form = ProjectForm(initial={'user': request.user, 'action':'update'})
         else:
             form = ProjectForm(initial={'user': request.user})
