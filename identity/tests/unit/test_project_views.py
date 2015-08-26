@@ -312,7 +312,6 @@ class UpdateProjectTest(TestCase):
     def tearDown(self):
         patch.stopall()
 
-
     @patch('identity.keystone.Keystone.vault_update_project')
     def test_vault_update_project_method_was_called(self, mock):
 

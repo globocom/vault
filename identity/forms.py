@@ -97,6 +97,7 @@ class ProjectForm(forms.Form):
 
             return self.data['description']
 
+
 class DeleteProjectConfirm(forms.Form):
 
     user = forms.CharField(label='User', required=True,
