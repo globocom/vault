@@ -15,7 +15,7 @@ from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
 from identity.keystone import Keystone
-from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
+from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
 
 from vault import utils
 from vault.models import GroupProjects, AreaProjects
@@ -393,25 +393,31 @@ class UpdateProjectView(BaseProjectView):
 
 
 class DeleteProjectView(BaseProjectView):
+    template_name = "identity/project_delete_confirm.html"
 
     def get(self, request, *args, **kwargs):
+        form = DeleteProjectConfirm()
+        return self.render_to_response({'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
         self.keystone = Keystone(request)
+       return HttpResponseRedirect('http://www.globo.com')
 
-        try:
-            self.keystone.project_delete(kwargs.get('project_id'))
-            messages.add_message(request, messages.SUCCESS,
-                                 'Successfully deleted project')
 
-            actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
 
-        except Exception as e:
-            log.exception('Exception: %s' % e)
-            messages.add_message(request, messages.ERROR,
-                                 'Error when delete project')
+    #   try:
+    #       self.keystone.project_delete(kwargs.get('project_id'))
+    #       messages.add_message(request, messages.SUCCESS,
+    #                            'Successfully deleted project')
 
-            project = self.keystone.project_get(kwargs.get('project_id'))
-
-        return HttpResponseRedirect(self.success_url)
+    #       actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
+    #   except Exception as e:
+    #       log.exception('Exception: %s' % e)
+    #       messages.add_message(request, messages.ERROR,
+    #                            'Error when delete project')
+    #       project = self.keystone.project_get(kwargs.get('project_id'))
+    #   return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):

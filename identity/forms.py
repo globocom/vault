@@ -62,7 +62,7 @@ class ProjectForm(forms.Form):
         super(ProjectForm, self).__init__(*args, **kwargs)
 
         user = kwargs.get('initial').get('user')
-
+        #import ipdb; ipdb.set_trace()
         self.fields['groups'].queryset = user.groups.all()
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -81,3 +81,11 @@ class ProjectForm(forms.Form):
         queryset=Area.objects.all())
 
     groups = forms.ModelChoiceField(label=u'Time', required=True, queryset=None)
+
+class DeleteProjectConfirm(forms.Form):
+
+    user = forms.CharField(label='User', required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    password = forms.CharField(label='Password', required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
