@@ -3,12 +3,8 @@
 import os
 from unittest import TestCase
 
-from django.conf import settings
 from identity.keystone import Keystone
-from identity.tests.fakes import FakeToken
 from vault.tests.fakes import fake_request
-
-from django.test.client import Client
 
 
 # class TestKeystoneV2(TestCase):

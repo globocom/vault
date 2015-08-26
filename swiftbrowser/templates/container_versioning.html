@@ -4,9 +4,9 @@
 {% load lastpart %}
 {% load dateconv %}
 
-{% block title %}Storage{% endblock %}
+{% block title %}Storage - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Storage - {{ project_name }}{% endblock %}
 
 {% block content_top %}
   {% if version_location %}
@@ -18,28 +18,26 @@
   {% endif %}
 {% endblock %}
 
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url "object_versioning" container=container %}">Object versions from {{ container }}</a>
+  {% else %}
+    Object versions from {{ container }}
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url "object_versioning" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
 
 {% block content %}
-  <ul class="breadcrumb">
-    <li><a href="{% url "containerview" %}">Containers</a></li>
-    <li>
-      {% if prefix %}
-        <a class="u" href="{% url "object_versioning" container=container %}">Object versions from {{ container }}</a>
-      {% else %}
-        Object versions from {{ container }}
-      {% endif %}
-    </li>
-    {% for prefix in prefixes %}
-    <li>
-      {% if forloop.counter < prefixes|length %}
-      <a href="{% url "object_versioning" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
-      {% else %}
-      {{prefix.display_name}}
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-
   {% if version_location %}
   <div class="panel panel-default">
   <table class="items-list table table-bordered table-striped table-hover">
