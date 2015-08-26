@@ -65,9 +65,16 @@ class ProjectForm(forms.Form):
 
         user = kwargs.get('initial').get('user')
 
+        action = kwargs.get('initial').get('action')
+        if action == 'update' and user.is_superuser is False:
+            self.fields['name'].widget.attrs['readonly'] = 'True'
+            self.fields['action'].initial = 'update'
+
         self.fields['groups'].queryset = user.groups.all()
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    action = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}),validators=[

@@ -8,12 +8,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
+from django.core.urlresolvers import resolve
 
 from django.views.decorators.debug import sensitive_post_parameters
 
 from keystoneclient.exceptions import Conflict
 
 from actionlogger import ActionLogger
+from actionlogger.models import Audit
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm
 
@@ -206,8 +208,11 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
+        if request.resolver_match.url_name == 'edit_project':
+            form = ProjectForm(initial={'user': request.user, 'action':'update'})
+        else:
+            form = ProjectForm(initial={'user': request.user})
 
-        form = ProjectForm(initial={'user': request.user})
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
@@ -274,44 +279,6 @@ class ListProjectView(BaseProjectView):
         return context
 
 
-# class CreateProjectViewOriginal(BaseProjectView):
-#     template_name = "identity/project_create.html"
-#
-#     def post(self, request, *args, **kwargs):
-#         self.keystone = Keystone(request)
-#         form = ProjectForm(request.user)
-#
-#         if form.is_valid():
-#             post = request.POST
-#             enabled = False if post.get('enabled') in ('False', '0') else True
-#             description = post.get('description')
-#
-#             if description == '':
-#                 description = None
-#
-#             try:
-#                 project = self.keystone.project_create(request,
-#                                                        post.get('name'),
-#                                                        description=description,
-#                                                        enabled=enabled)
-#
-#                 messages.add_message(request, messages.SUCCESS,
-#                                      'Successfully created project')
-#
-#                 actionlog.log(request.user.username, 'create', project)
-#             except Exception as e:
-#                 log.exception('Exception: %s' % e)
-#                 messages.add_message(request, messages.ERROR,
-#                                      "Error when create project")
-#
-#             audit = Audit(user=request.user.username, action=Audit.ADD, item=Audit.PROJECT + ' - ' + post.get('name'), through=Audit.VAULT + ' - ' + Audit.IDENTITY, created_at=Audit.NOW)
-#             actionlog.savedb(audit)
-#
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
-
-
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
@@ -358,6 +325,7 @@ class UpdateProjectView(BaseProjectView):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         post = request.POST
+
         if form.is_valid():
             keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
@@ -383,6 +351,7 @@ class UpdateProjectView(BaseProjectView):
 
             except Exception as e:
                 log.exception('Exception: %s' % e)
+                print(e)
                 messages.add_message(request, messages.ERROR,
                                      "Error when update project")
 

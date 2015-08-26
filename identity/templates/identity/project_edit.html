@@ -21,6 +21,7 @@
   <form action="" class="form-box project-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
     {{ form.id }}
+    {{ form.action }}
 
     <fieldset class="content">
       <div class="col-md-6">
