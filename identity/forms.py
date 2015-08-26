@@ -54,7 +54,7 @@ class UpdateUserForm(UserForm):
         for field in ('password', 'password_confirm', 'project'):
             self.fields[field].required = False
 
-        self.fields['project'].widget.attrs['disabled'] = True
+        self.fields['project'].widget.attrs['disabled'] = 'True'
 
 
 class ProjectForm(forms.Form):
