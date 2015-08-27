@@ -3,7 +3,7 @@
 import logging
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
@@ -206,8 +206,11 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
+        if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
+            form = ProjectForm(initial={'user': request.user, 'action': 'update'})
+        else:
+            form = ProjectForm(initial={'user': request.user})
 
-        form = ProjectForm(initial={'user': request.user})
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
@@ -273,6 +276,23 @@ class ListProjectView(BaseProjectView):
 
         return context
 
+
+class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
+    template_name = 'identity/project_create_success.html'
+
+    def get(self, request, *args, **kwargs):
+
+        context = self.get_context_data(request=request, **kwargs)
+
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateProjectSuccessView, self).get_context_data(**kwargs)
+
+        request = kwargs.get('request')
+        context['project_info'] = request.session.get('project_info')
+
+        return context
 
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"

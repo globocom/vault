@@ -54,7 +54,7 @@ class UpdateUserForm(UserForm):
         for field in ('password', 'password_confirm', 'project'):
             self.fields[field].required = False
 
-        self.fields['project'].widget.attrs['disabled'] = True
+        self.fields['project'].widget.attrs['disabled'] = 'True'
 
 
 class ProjectForm(forms.Form):
@@ -63,6 +63,11 @@ class ProjectForm(forms.Form):
         super(ProjectForm, self).__init__(*args, **kwargs)
 
         user = kwargs.get('initial').get('user')
+
+        action = kwargs.get('initial').get('action')
+        if action == 'update' and user.is_superuser is False:
+            self.fields['name'].widget.attrs['readonly'] = 'True'
+            self.fields['action'].initial = 'update'
 
         groups = [('', '-----')]
         groups += [(group.id, group.name) for group in user.groups.all()]
@@ -74,6 +79,8 @@ class ProjectForm(forms.Form):
         self.fields['areas'].choices = areas
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    action = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message='Project Name must be an alphanumeric.'), ])
@@ -96,6 +103,7 @@ class ProjectForm(forms.Form):
                 raise forms.ValidationError('Project description cannot be empty.')
 
             return self.data['description']
+
 
 class DeleteProjectConfirm(forms.Form):
 
