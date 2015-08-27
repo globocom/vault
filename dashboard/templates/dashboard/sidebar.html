@@ -3,7 +3,7 @@
   <ul class="buttons">
     <li><a href="{% url "dashboard" %}" title="Home"><i class="icon fa fa-home"></i></a></li>
     <li>
-      {% if is_superuser %}
+      {% if user.is_staff and user.is_superuser %}
       <a href="{% url "admin:index" %}" title="Admin"><i class="icon fa fa-cogs"></i></a>
       {% else %}
       <span><i class="icon fa fa-cogs"></i></span>

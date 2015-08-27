@@ -49,7 +49,7 @@ class ListUserView(SuperUserMixin, TemplateView):
 
 class BaseUserView(SuperUserMixin, FormView):
     form_class = UserForm
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('admin_list_users')
 
     def __init__(self):
         self.keystone = None

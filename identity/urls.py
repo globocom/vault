@@ -6,18 +6,18 @@ from identity import views
 
 
 urlpatterns = patterns('',
-    # Admin
-    url(r'^admin/projects/$', views.ListProjectView.as_view(), name='projects'),
-    url(r'^admin/project/add/?$', views.CreateProjectView.as_view(), name='add_project'),
-    url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectView.as_view(),
+   # Admin
+   url(r'^admin/projects/$', views.ListProjectView.as_view(), name='admin_projects'),
+   url(r'^admin/project/add/?$', views.CreateProjectView.as_view(), name='admin_add_project'),
+   url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectView.as_view(),
        name='edit_project'),
 
-    # Users
-    url(r'^users/?$', views.ListUserView.as_view(), name='users'),
-    url(r'^user/add/?$', views.CreateUserView.as_view(), name='add_user'),
-    url(r'^user/(?P<user_id>[\w\-]+)/?$', views.UpdateUserView.as_view(),
+   # Users
+   url(r'^users/?$', views.ListUserView.as_view(), name='admin_list_users'),
+   url(r'^user/add/?$', views.CreateUserView.as_view(), name='admin_add_user'),
+   url(r'^user/(?P<user_id>[\w\-]+)/?$', views.UpdateUserView.as_view(),
        name='edit_user'),
-    url(r'^user/delete/(?P<user_id>[\w\-]+)/?$', views.DeleteUserView.as_view(),
+   url(r'^user/delete/(?P<user_id>[\w\-]+)/?$', views.DeleteUserView.as_view(),
        name='delete_user'),
 
     # Projects

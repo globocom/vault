@@ -127,7 +127,6 @@ class TestKeystoneV2(TestCase):
     def test_keystone_create_user_with_no_role(self, mock_add_user_role):
         """ Cadastra usuario sem setar role para nenhum project """
 
-
         keystone = Keystone(self.request, 'tenant_name')
         keystone.user_create('name', email='email@email.com',
                              password='password', project_id='project_id',
