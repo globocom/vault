@@ -8,6 +8,7 @@ import logging
 
 from swiftclient import client
 
+from django.conf import settings
 
 log = logging.getLogger(__name__)
 
@@ -148,3 +149,69 @@ def remove_duplicates_from_acl(acls):
     cleaned_entries = list(set(entries))
     acls = ','.join(cleaned_entries)
     return acls
+
+def get_account_containers(storage_url, auth_token):
+    """ List all containers in an account"""
+    container_list = []
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    _, containers = client.get_account(storage_url, auth_token,
+                                                      http_conn=http_conn)
+
+    for container in containers:
+        container_list.append(container['name'])
+
+    return container_list
+
+def get_container_objects(container, storage_url, auth_token):
+    object_list = []
+    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
+
+    _, objects = client.get_container(storage_url,
+                                           auth_token,
+                                           container,
+                                           http_conn=http_conn)
+
+    for object in objects:
+        object_list.append(object['name'])
+
+    return object_list
+
+def delete_container_and_objects(container, storage_url, auth_token, force=False):
+    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
+    objects = get_container_objects(container, storage_url, auth_token)
+
+    for obj in objects:
+        client.delete_object(storage_url,
+                      token=auth_token,
+                      container=container,
+                      name=obj,
+                      http_conn=http_conn)
+
+    try:
+        client.delete_container(storage_url, auth_token,
+                                container, http_conn=http_conn)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        return False
+
+    return True
+
+def delete_swift_account(storage_url, auth_token):
+    """"""
+    containers = get_account_containers(storage_url, auth_token)
+
+    try:
+        for container in containers:
+            delete_container_and_objects(container, storage_url, auth_token, force=True)
+
+    #http_conn = client.HTTPConnection(storage_url, insecure=settings.SWIFT_INSECURE)
+    #
+    #try:
+    #   http_conn.request('DELETE', storage_url)
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        return False
+
+    return True

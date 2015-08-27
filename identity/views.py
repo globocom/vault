@@ -13,6 +13,8 @@ from django.views.decorators.debug import sensitive_post_parameters
 
 from keystoneclient.exceptions import Conflict
 
+from swiftbrowser.utils import get_admin_url, delete_swift_account
+
 from actionlogger import ActionLogger
 from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
@@ -381,26 +383,43 @@ class DeleteProjectView(BaseProjectView):
 
     def post(self, request, *args, **kwargs):
         keystone = Keystone(request)
+
         post = request.POST
         user = post.get('user')
         password = post.get('password')
         project_id = self.kwargs.get('project_id')
         project_name = keystone.project_get(project_id).name
         keystone_app = Keystone(request, username=user, password=password, tenant_name=project_name)
-        form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
+
+        storage_url = get_admin_url(request)
+        auth_token = keystone_app.conn.auth_token
 
         try:
-            keystone_app.project_delete(kwargs.get('project_id'))
-            messages.add_message(request, messages.SUCCESS,
-                                 'Successfully deleted project')
+            delete_swift_account(storage_url, auth_token)
+            keystone.project_delete(kwargs.get('project_id'))
+            messages.add_message(request, messages.SUCCESS, 'Successfully deleted containers')
 
-            actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(request, messages.ERROR,
-                                 'Error when delete project')
-            #project = keystone_app.project_get(kwargs.get('project_id'))
+                                 'Error when delete containers')
         return HttpResponseRedirect(self.success_url)
+
+        form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
+
+
+        #try:
+#
+        #    messages.add_message(request, messages.SUCCESS,
+        #                         'Successfully deleted project')
+#
+        #    actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
+        #except Exception as e:
+        #    log.exception('Exception: %s' % e)
+        #    messages.add_message(request, messages.ERROR,
+        #                         'Error when delete project')
+        #    #project = keystone_app.project_get(kwargs.get('project_id'))
+        #return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
