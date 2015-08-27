@@ -319,7 +319,6 @@ class CreateProjectSuccessTest(TestCase):
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
         self.mock_keystone_conn = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
 
-
     @patch('identity.keystone.Keystone.get_endpoints')
     def test_render_success_create_page(self, mock_get_endpoints):
 
