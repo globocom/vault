@@ -7,7 +7,7 @@
 {% block content_title %}Users{% endblock %}
 
 {% block content_top %}
-  <a href="{% url "add_user" %}" class="create-user btn btn-primary">
+  <a href="{% url 'admin_add_user' %}" class="create-user btn btn-primary">
     <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;Create User
   </a>
 {% endblock %}
@@ -30,7 +30,7 @@
         <td>{{ user.email }}</td>
         <td>{{ user.enabled }}</td>
         <td>
-          <a href="{% url "edit_user" user.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
+          <a href="{% url 'edit_user' user.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
         </td>
       </tr>
       {% endfor %}

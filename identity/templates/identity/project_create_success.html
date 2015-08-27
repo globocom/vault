@@ -1,0 +1,24 @@
+{% extends "vault/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Project Created!{% endblock %}
+{% block content_title %}Project Created!{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+    <div class="panel panel-default">
+        <span>
+            Username: {{ project_info.user.name }} <br>
+            Password: {{ project_info.user_password }}
+        </span>
+    </div>
+
+{% endblock %}
+
+{% block js_bottom %}
+{% endblock %}

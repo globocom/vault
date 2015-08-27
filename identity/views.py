@@ -3,7 +3,7 @@
 import logging
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
@@ -47,7 +47,7 @@ class ListUserView(SuperUserMixin, TemplateView):
 
 class BaseUserView(SuperUserMixin, FormView):
     form_class = UserForm
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('admin_list_users')
 
     def __init__(self):
         self.keystone = None
@@ -122,8 +122,8 @@ class CreateUserView(BaseUserView):
             try:
                 user = self.keystone.user_create(name=post.get('name'),
                     email=post.get('email'), password=post.get('password'),
-                    project=post.get('project'), enabled=enabled,
-                    domain=post.get('domain'), role=post.get('role'))
+                    project_id=post.get('project'), enabled=enabled,
+                    domain=post.get('domain'), role_id=post.get('role'))
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created user')
@@ -206,8 +206,11 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         self.keystone = None
 
     def get(self, request, *args, **kwargs):
+        if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
+            form = ProjectForm(initial={'user': request.user, 'action': 'update'})
+        else:
+            form = ProjectForm(initial={'user': request.user})
 
-        form = ProjectForm(initial={'user': request.user})
         context = self.get_context_data(form=form, request=request, **kwargs)
 
         return self.render_to_response(context)
@@ -270,6 +273,24 @@ class ListProjectView(BaseProjectView):
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list projects")
+
+        return context
+
+
+class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
+    template_name = 'identity/project_create_success.html'
+
+    def get(self, request, *args, **kwargs):
+
+        context = self.get_context_data(request=request, **kwargs)
+
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateProjectSuccessView, self).get_context_data(**kwargs)
+
+        request = kwargs.get('request')
+        context['project_info'] = request.session.get('project_info')
 
         return context
 
@@ -360,24 +381,27 @@ class DeleteProjectView(BaseProjectView):
         return self.render_to_response({'form': form})
 
     def post(self, request, *args, **kwargs):
+        keystone = Keystone(request)
+        post = request.POST
+        user = post.get('user')
+        password = post.get('password')
+        project_id = self.kwargs.get('project_id')
+        project_name = keystone.project_get(project_id).name
+        keystone_app = Keystone(request, username=user, password=password, tenant_name=project_name)
         form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
-        self.keystone = Keystone(request)
-        return HttpResponseRedirect('http://www.globo.com')
 
+        try:
+            keystone_app.project_delete(kwargs.get('project_id'))
+            messages.add_message(request, messages.SUCCESS,
+                                 'Successfully deleted project')
 
-
-    #   try:
-    #       self.keystone.project_delete(kwargs.get('project_id'))
-    #       messages.add_message(request, messages.SUCCESS,
-    #                            'Successfully deleted project')
-
-    #       actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
-    #   except Exception as e:
-    #       log.exception('Exception: %s' % e)
-    #       messages.add_message(request, messages.ERROR,
-    #                            'Error when delete project')
-    #       project = self.keystone.project_get(kwargs.get('project_id'))
-    #   return HttpResponseRedirect(self.success_url)
+            actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
+        except Exception as e:
+            log.exception('Exception: %s' % e)
+            messages.add_message(request, messages.ERROR,
+                                 'Error when delete project')
+            # project = keystone_app.project_get(kwargs.get('project_id'))
+        return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):

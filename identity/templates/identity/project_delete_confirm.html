@@ -11,6 +11,8 @@
 {% endblock %}
 
 {% block content %}
+  <span style="color:#b92c28"><H4>TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!</H4></span>
+
   <form action="" class="form-box project-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
     {{ form.id }}

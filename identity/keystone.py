@@ -102,25 +102,30 @@ class Keystone(object):
         return self._user_manager(user)
 
     @sensitive_variables('password')
-    def user_create(self, name=None, email=None, password=None,
-                    project=None, enabled=True, domain=None, role=None):
+    def user_create(self, name, email=None, password=None, enabled=True,
+                    domain=None, project_id=None, role_id=None,
+                    set_role_to_admin=False):
 
         if settings.KEYSTONE_VERSION < 3:
-            user = self.conn.users.create(name, password, email,
-                                          project, enabled)
+            user = self.conn.users.create(name, password, email, project_id,
+                                          enabled)
         else:
             user = self.conn.users.create(name, password=password, email=email,
-                                          project=project, enabled=enabled,
+                                          project=project_id, enabled=enabled,
                                           domain=domain)
 
         # Assign role and project to user
-        if project is not None and role is not None:
-            role = self.role_get(role)
-            project = self.project_get(project)
+        if project_id is not None and role_id is not None:
+            role = self.role_get(role_id)
+            project = self.project_get(project_id)
 
             # V2 a role '_member_' eh vinculada automaticamente
-            if settings.KEYSTONE_VERSION > 2 or role.name != '_member_':
-                self.add_user_role(user, project, role)
+            # if settings.KEYSTONE_VERSION > 2 or role.name != '_member_':
+            self.add_user_role(user, project, role)
+
+            if set_role_to_admin:
+                admin_user = self.user_get(self.conn.user_id)
+                self.add_user_role(admin_user, project, role)
 
         return user
 
@@ -129,7 +134,7 @@ class Keystone(object):
 
         if settings.KEYSTONE_VERSION < 3:
             password = data.pop('password')
-            project = data.pop('project')
+            # project = data.pop('project')
 
             user = self.conn.users.update(user, **data)
 
@@ -165,14 +170,14 @@ class Keystone(object):
                                 description=description,
                                 enabled=enabled)
 
-    def project_update(self, project, **data):
+    def project_update(self, project, **kwargs):
         conn = self._project_manager()
 
         if settings.KEYSTONE_VERSION < 3:
-            return conn.update(project.id, data['name'],
-                               data['description'], data['enabled'])
+            return conn.update(project.id, kwargs['name'],
+                               kwargs['description'], kwargs['enabled'])
         else:
-            return conn.update(project, **data)
+            return conn.update(project, **kwargs)
 
     def project_delete(self, project_id):
         conn = self._project_manager()
@@ -223,8 +228,9 @@ class Keystone(object):
         try:
             user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
-                                    role=settings.ROLE_BOLADONA,
-                                    project=project.id)
+                                    role_id=settings.ROLE_BOLADONA,
+                                    project_id=project.id,
+                                    set_role_to_admin=True)
         except exceptions.Forbidden:
             self.project_delete(project.id)
             return {'status': False, 'reason': 'Admin required'}
@@ -289,7 +295,7 @@ class Keystone(object):
         AreaProjects.objects.filter(project_id=project_id).delete()
 
         try:
-            # Salva o project na areacorrespondente
+            # Salva o project na area correspondente
             ap = AreaProjects(area_id=area_id, project_id=project_id)
             ap.save()
         except Exception as e:

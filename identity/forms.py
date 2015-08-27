@@ -64,6 +64,11 @@ class ProjectForm(forms.Form):
 
         user = kwargs.get('initial').get('user')
 
+        action = kwargs.get('initial').get('action')
+        if action == 'update' and user.is_superuser is False:
+            self.fields['name'].widget.attrs['readonly'] = 'True'
+            self.fields['action'].initial = 'update'
+
         groups = [('', '-----')]
         groups += [(group.id, group.name) for group in user.groups.all()]
 
@@ -74,6 +79,8 @@ class ProjectForm(forms.Form):
         self.fields['areas'].choices = areas
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    action = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     name = forms.CharField(label='Project Name', required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message='Project Name must be an alphanumeric.'), ])
@@ -97,10 +104,16 @@ class ProjectForm(forms.Form):
 
             return self.data['description']
 
+
 class DeleteProjectConfirm(forms.Form):
 
     user = forms.CharField(label='User', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Confirme o usuario do projeto',
+                                      }
+                               ))
 
     password = forms.CharField(label='Password', required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                          'placeholder': 'Confirme a senha '}
+                                   ))
