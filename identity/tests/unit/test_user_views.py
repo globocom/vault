@@ -174,7 +174,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
 
         mock.assert_called_with(name='aaa', enabled=True,
-            project=1, role=1, password='aaa', email='a@a.net', domain=None)
+            project_id=1, role_id=1, password='aaa', email='a@a.net', domain=None)
 
     @patch('identity.keystone.Keystone.user_create')
     def test_create_user_view_exception(self, mock_user_create):
