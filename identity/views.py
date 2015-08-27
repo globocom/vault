@@ -294,6 +294,7 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
 
         return context
 
+
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
@@ -399,7 +400,7 @@ class DeleteProjectView(BaseProjectView):
             log.exception('Exception: %s' % e)
             messages.add_message(request, messages.ERROR,
                                  'Error when delete project')
-            #project = keystone_app.project_get(kwargs.get('project_id'))
+            # project = keystone_app.project_get(kwargs.get('project_id'))
         return HttpResponseRedirect(self.success_url)
 
 
