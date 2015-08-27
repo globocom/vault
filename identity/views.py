@@ -266,6 +266,8 @@ class ListProjectView(BaseProjectView):
         keystone = Keystone(self.request)
         page = self.request.GET.get('page', 1)
 
+        context['is_admin'] = self.request.path[0:16] == '/admin/projects/'
+
         try:
             projects = sorted(keystone.project_list(),
                                 key=lambda l: l.name.lower())

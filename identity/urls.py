@@ -10,7 +10,7 @@ urlpatterns = patterns('',
    url(r'^admin/projects/$', views.ListProjectView.as_view(), name='admin_projects'),
    url(r'^admin/project/add/?$', views.CreateProjectView.as_view(), name='admin_add_project'),
    url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectView.as_view(),
-       name='edit_project'),
+       name='admin_edit_project'),
 
    # Users
    url(r'^users/?$', views.ListUserView.as_view(), name='admin_list_users'),
