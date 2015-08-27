@@ -360,24 +360,27 @@ class DeleteProjectView(BaseProjectView):
         return self.render_to_response({'form': form})
 
     def post(self, request, *args, **kwargs):
+        keystone = Keystone(request)
+        post = request.POST
+        user = post.get('user')
+        password = post.get('password')
+        project_id = self.kwargs.get('project_id')
+        project_name = keystone.project_get(project_id).name
+        keystone_app = Keystone(request, username=user, password=password, tenant_name=project_name)
         form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
-        self.keystone = Keystone(request)
-       return HttpResponseRedirect('http://www.globo.com')
 
+        try:
+            keystone_app.project_delete(kwargs.get('project_id'))
+            messages.add_message(request, messages.SUCCESS,
+                                 'Successfully deleted project')
 
-
-    #   try:
-    #       self.keystone.project_delete(kwargs.get('project_id'))
-    #       messages.add_message(request, messages.SUCCESS,
-    #                            'Successfully deleted project')
-
-    #       actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
-    #   except Exception as e:
-    #       log.exception('Exception: %s' % e)
-    #       messages.add_message(request, messages.ERROR,
-    #                            'Error when delete project')
-    #       project = self.keystone.project_get(kwargs.get('project_id'))
-    #   return HttpResponseRedirect(self.success_url)
+            actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
+        except Exception as e:
+            log.exception('Exception: %s' % e)
+            messages.add_message(request, messages.ERROR,
+                                 'Error when delete project')
+            #project = keystone_app.project_get(kwargs.get('project_id'))
+        return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
