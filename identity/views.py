@@ -362,7 +362,7 @@ class DeleteProjectView(BaseProjectView):
     def post(self, request, *args, **kwargs):
         form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
         self.keystone = Keystone(request)
-       return HttpResponseRedirect('http://www.globo.com')
+        return HttpResponseRedirect('http://www.globo.com')
 
 
 
