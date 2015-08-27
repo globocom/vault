@@ -9,14 +9,21 @@ from vault.models import GroupProjects
 class ProjectsWidget(BaseWidget):
     title = "Projects"
     subtitle = "Object Storage"
+    non_renderable_template = 'swiftbrowser/widgets/non_renderable.html'
     # TODO: revisar problema de unicode (cedilha e til)
     description = "Relacao de projetos gerenciados pelo seu time"
-    content_template = 'swiftbrowser/select_project.html'
+    content_template = 'swiftbrowser/widgets/select_project.html'
+
+    def __init__(self, context):
+        self.user = context.get('logged_user')
+        return super(ProjectsWidget, self).__init__(context)
 
     def get_widget_context(self):
-        user = self.context.get('logged_user')
-
-        groups = user.groups.all()
+        groups = self.user.groups.all()
         group_projects = GroupProjects.objects.filter(group__in=groups)
 
         return {'projects': [gp.project for gp in group_projects]}
+
+    @property
+    def renderable(self):
+        return self.user.groups.count() > 0

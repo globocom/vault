@@ -48,7 +48,7 @@ def switch(request, project_id):
         log.exception('Exception: %s' % err)
         return HttpResponseRedirect(referer_url)
 
-    keystone = Keystone(request, project.name)
+    keystone = Keystone(request, tenant_name=project.name)
 
     request.session['project_id'] = project_id
     request.session['project_name'] = project.name

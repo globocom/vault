@@ -510,3 +510,36 @@ body {
     color: #333;
 }
 /* </backstage bar> */
+
+.bubble {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    position: relative;
+    width: auto;
+    min-height: 100px;
+    padding: 0px;
+    background-color: #FFF8DC;
+    padding: 10px;
+    width: 400px;
+    margin-left:50px;
+    border-radius: 15px;
+    border-top-left-radius: 0;
+}
+
+.bubble:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 90%;
+    left: -25px;
+    border-style: solid;
+    border-width: 0px 25px 25px 0;
+    border-color: transparent #FFF8DC;
+    display: block;
+    width: 0;
+    z-index: 1;
+}
+
+.bubble span {
+    font-size: 20px;
+    font-weight: bold;
+}

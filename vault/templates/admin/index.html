@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_static %}
+{% load i18n admin_static projectsandusers %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
 
@@ -11,6 +11,8 @@
 
 {% block content %}
 <div id="content-main">
+
+{% show_projectsandusers %}
 
 {% if app_list %}
 

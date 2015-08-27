@@ -32,7 +32,11 @@
         <td>{{ project.description }}</td>
         <td>{{ project.enabled }}</td>
         <td>
+          {% if is_admin %}
+          <a href="{% url "admin_edit_project" project.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
+          {% else %}
           <a href="{% url "edit_project" project.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
