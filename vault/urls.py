@@ -4,13 +4,16 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from vault.views import SetProjectView, OAuthVaultCallback, \
-                        OAuthVaultRedirect
+                        OAuthVaultRedirect, accounts_logout
 
 
 urlpatterns = patterns('',
     url(r'^', include('dashboard.urls')),
     url(r'^', include('identity.urls')),
     url(r'^storage/', include('swiftbrowser.urls')),
+
+    # sobreescrevendo admin:logout
+    url(r'^admin/logout/$', accounts_logout),
 
     # Admin
     url(r'^admin/', include(admin.site.urls)),

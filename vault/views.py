@@ -10,6 +10,7 @@ import logging
 from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View
@@ -132,3 +133,7 @@ class OAuthVaultCallback(OAuthBackstageCallback):
 
 class OAuthVaultRedirect(OAuthBackstageRedirect):
     pass
+
+
+def accounts_logout(request):
+    return HttpResponseRedirect(settings.LOGOUT_URL)
