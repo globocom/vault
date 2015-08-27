@@ -8,6 +8,7 @@ class BaseWidget(object):
     subtitle = 'Widget Subtitle'
     description = 'Widget Description'
     content_template = 'dashboard/widgets/content.html'
+    non_renderable_template = 'dashboard/widgets/non_renderable.html'
 
     def __init__(self, context):
         self.context = context
@@ -23,13 +24,21 @@ class BaseWidget(object):
             'description': self.description,
             'content_template': self.content_template
         })
-
         return widget_context
 
     def render(self):
-        return render_to_string('dashboard/widgets/full.html',
+        return render_to_string(self._get_widget_template(),
                                 self._full_context())
 
+    @property
+    def renderable(self):
+        return True
+
+    def _get_widget_template(self):
+        if self.renderable:
+            return 'dashboard/widgets/full.html'
+        else:
+            return self.non_renderable_template
 
 # def _widget_users(self):
     #     users = []

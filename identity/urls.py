@@ -8,14 +8,14 @@ from identity.views import (ListUserView, ListProjectView, CreateUserView,
 
 urlpatterns = patterns('',
                        # Admin
-                       url(r'^admin/projects/$', ListProjectView.as_view(), name='projects'),
-                       url(r'^admin/project/add/?$', CreateProjectView.as_view(), name='add_project'),
+                       url(r'^admin/projects/$', ListProjectView.as_view(), name='admin_projects'),
+                       url(r'^admin/project/add/?$', CreateProjectView.as_view(), name='admin_add_project'),
                        url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', UpdateProjectView.as_view(),
                            name='edit_project'),
 
                        # Users
-                       url(r'^users/?$', ListUserView.as_view(), name='users'),
-                       url(r'^user/add/?$', CreateUserView.as_view(), name='add_user'),
+                       url(r'^users/?$', ListUserView.as_view(), name='admin_list_users'),
+                       url(r'^user/add/?$', CreateUserView.as_view(), name='admin_add_user'),
                        url(r'^user/(?P<user_id>[\w\-]+)/?$', UpdateUserView.as_view(),
                            name='edit_user'),
                        url(r'^user/delete/(?P<user_id>[\w\-]+)/?$', DeleteUserView.as_view(),

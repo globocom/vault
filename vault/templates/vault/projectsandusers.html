@@ -1,0 +1,18 @@
+{% if user.is_superuser and user.is_staff %}
+<div class="app-projectsandusers module panel panel-default">
+        <table class="items-list table table-bordered table-striped table-hover">
+        <caption>
+            Projects and Users
+        </caption>
+            <tbody><tr class="model-projectsandusers">
+                <th scope="row"><a href="{% url 'admin_projects' %}">Projects</a></th>
+                <td><a href="{% url 'admin_add_project' %}" class="addlink btn btn-xs btn-default">Add</a></td>
+            </tr>
+            <tr class="model-projectsandusers">
+                <th scope="row"><a href="{% url 'admin_list_users' %}">Users</a></th>
+                <td><a href="{% url 'admin_add_user' %}" class="addlink btn btn-xs btn-default">Add</a></td>
+            </tr>
+        </tbody></table>
+        </div>
+
+{% endif %}
