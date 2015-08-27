@@ -3,9 +3,7 @@
 from django.conf.urls import patterns, url
 
 from identity import views
-# from identity.views import (ListUserView, ListProjectView, CreateUserView,
-#                             UpdateUserView, DeleteUserView, CreateProjectView, UpdateProjectView,
-#                             DeleteProjectView, ListUserRoleView, AddUserRoleView, DeleteUserRoleView)
+
 
 urlpatterns = patterns('',
     # Admin
@@ -25,8 +23,8 @@ urlpatterns = patterns('',
     # Projects
     url(r'^projects/', views.ListProjectView.as_view(), name='projects'),
     url(r'^project/add/?$', views.CreateProjectView.as_view(), name='add_project'),
-    url(r'^project/created/', views.CreateProjectSuccessView.as_view(),
-       name='success_project'),
+    url(r'^project/created/?$', views.CreateProjectSuccessView.as_view(),
+       name='create_project_success'),
     url(r'^project/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectView.as_view(),
        name='edit_project'),
     url(r'^project/delete/(?P<project_id>[\w\-]+)/?$', views.DeleteProjectView.as_view(),

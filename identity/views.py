@@ -2,8 +2,10 @@
 
 import logging
 
+from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
@@ -229,7 +231,6 @@ class BaseProjectView(LoginRequiredMixin, FormView):
             project_id = form.data.get('id')
 
         if project_id:
-
             self.keystone = Keystone(request)
             project = self.keystone.project_get(project_id)
             form.initial = project.to_dict()
@@ -290,7 +291,18 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
         context = super(CreateProjectSuccessView, self).get_context_data(**kwargs)
 
         request = kwargs.get('request')
+
         context['project_info'] = request.session.get('project_info')
+        context['project_info']['auth_url'] = settings.KEYSTONE_URL
+
+        project_name = context['project_info']['project_name']
+        user_name = context['project_info']['user_name']
+        password = context['project_info']['user_password']
+
+        keystone = Keystone(request, username=user_name, password=password,
+                            tenant_name=project_name)
+
+        context['project_info']['endpoints'] = keystone.get_endpoints()
 
         return context
 
@@ -311,23 +323,32 @@ class CreateProjectView(BaseProjectView):
             if description == '':
                 description = None
 
-            try:
-                project = keystone.vault_create_project(post.get('name'),
-                                                        post.get('groups'),
-                                                        post.get('areas'),
-                                                        description=description)
+            response = keystone.vault_create_project(post.get('name'),
+                                                 post.get('groups'),
+                                                 post.get('areas'),
+                                                 description=description)
 
-                messages.add_message(request, messages.SUCCESS,
-                                     'Successfully created project')
-
-                actionlog.log(request.user.username, 'create', project)
-
-            except Exception as e:
-                log.exception('Exception: %s' % e)
+            # Houve falha no cadastro
+            if not response.get('status'):
+                log.exception('Exception: {}'.format(response.get('status')))
                 messages.add_message(request, messages.ERROR,
                                      "Error when create project")
 
-            return self.form_valid(form)
+                return self.render_to_response(self.get_context_data(form=form, request=request))
+
+            project = response.get('project')
+            user = response.get('user')
+
+            actionlog.log(request.user.username, 'create', project)
+            actionlog.log(request.user.username, 'create', user)
+
+            request.session['project_info'] = {
+                'user_name': user.name,
+                'project_name': project.name,
+                'user_password': response.get('password')
+            }
+
+            return redirect('create_project_success')
         else:
             return self.render_to_response(self.get_context_data(form=form, request=request))
 
@@ -353,6 +374,7 @@ class UpdateProjectView(BaseProjectView):
 
             try:
                 project = keystone.project_get(post.get('id'))
+
                 keystone.vault_update_project(project.id, project.name,
                                               group_id, area_id,
                                               description=description,

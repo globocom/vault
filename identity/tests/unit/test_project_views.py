@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+from django.conf import settings
 from mock import Mock, patch
 from unittest import TestCase
 
@@ -225,9 +226,29 @@ class CreateProjectTest(TestCase):
 
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
+    # Este tratamento foi alterado na view
+    # @patch('identity.keystone.Keystone.vault_create_project')
+    # def test_project_create_view_exception(self, mock):
+    #     mock.side_effect = Exception
+    #
+    #     self.request.method = 'POST'
+    #     post = self.request.POST.copy()
+    #     post.update({'name': 'aaa', 'description': 'desc', 'areas': 1,
+    #                  'groups': 1})
+    #     self.request.POST = post
+    #
+    #     _ = self.view(self.request)
+    #     msgs = [msg for msg in self.request._messages]
+    #
+    #     self.assertGreater(len(msgs), 0)
+    #     self.assertEqual(msgs[0].message, 'Error when create project')
+
     @patch('identity.keystone.Keystone.vault_create_project')
-    def test_project_create_view_exception(self, mock):
-        mock.side_effect = Exception
+    def test_project_create_return_status_false(self, mock):
+        mock.return_value = {
+            'status': False,
+            'reason': 'Blah'
+        }
 
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -295,10 +316,27 @@ class CreateProjectSuccessTest(TestCase):
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
 
-    def test_render_success_create_page(self):
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
 
+
+    @patch('identity.keystone.Keystone.get_endpoints')
+    def test_render_success_create_page(self, mock_get_endpoints):
+
+        mock_get_endpoints.return_value = {
+            'adminURL': 'https://adminURL',
+            'publicURL': 'https://publicURL',
+            'internalURL': 'https://internalURL',
+        }
+
+        # project_create_result = {
+        #     'user': FakeResource('abc', name='fake_user'),
+        #     'project': FakeResource('edf', name='fake_project'),
+        #     'user_password': 'secret'
+        # }
         project_create_result = {
-            'user': FakeResource('abc', name='fake_user'),
+            'user_name': 'fake_user',
+            'project_name': 'fake_project',
             'user_password': 'secret'
         }
 
@@ -315,11 +353,18 @@ class CreateProjectSuccessTest(TestCase):
         # Verifica se o retorno de criacao do project esta na sessao
         self.assertEqual(context_data['project_info'], project_create_result)
 
-        user = context_data['project_info'].get('user')
+        user_name = context_data['project_info'].get('user_name')
         password = context_data['project_info'].get('user_password')
+        auth_url = context_data['project_info'].get('auth_url')
+        endpoints = context_data['project_info'].get('endpoints')
 
-        self.assertIn(user.name, response.content)
+        self.assertIn(user_name, response.content)
         self.assertIn(password, response.content)
+        self.assertIn(auth_url, response.content)
+
+        self.assertIn(endpoints.get('adminURL'), response.content)
+        self.assertIn(endpoints.get('publicURL'), response.content)
+        self.assertIn(endpoints.get('internalURL'), response.content)
 
 
 class UpdateProjectTest(TestCase):

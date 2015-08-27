@@ -13,8 +13,12 @@
 
     <div class="panel panel-default">
         <span>
-            Username: {{ project_info.user.name }} <br>
-            Password: {{ project_info.user_password }}
+            Username: {{ project_info.user_name }} <br>
+            Password: {{ project_info.user_password }} <br>
+            Auth URL: {{ project_info.auth_url }} <br>
+            admin URL: {{ project_info.endpoints.adminURL }} <br>
+            public URL: {{project_info.endpoints.publicURL }} <br>
+            internal URL: {{ project_info.endpoints.internalURL }}
         </span>
     </div>
 
