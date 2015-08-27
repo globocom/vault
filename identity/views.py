@@ -122,8 +122,8 @@ class CreateUserView(BaseUserView):
             try:
                 user = self.keystone.user_create(name=post.get('name'),
                     email=post.get('email'), password=post.get('password'),
-                    project=post.get('project'), enabled=enabled,
-                    domain=post.get('domain'), role=post.get('role'))
+                    project_id=post.get('project'), enabled=enabled,
+                    domain=post.get('domain'), role_id=post.get('role'))
 
                 messages.add_message(request, messages.SUCCESS,
                                      'Successfully created user')
