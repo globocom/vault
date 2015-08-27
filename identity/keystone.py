@@ -324,3 +324,14 @@ class Keystone(object):
     def create_password():
         caracteres = string.ascii_letters + string.digits + '!@#$%&*_'
         return ''.join(random.choice(caracteres) for x in range(12))
+
+    def get_endpoints(self):
+
+        service_catalog = self.conn.service_catalog
+        urls = service_catalog.get_endpoints(service_type='object-store')
+
+        return {
+            'adminURL': urls['object-store'][0].get('adminURL'),
+            'publicURL': urls['object-store'][0].get('publicURL'),
+            'internalURL': urls['object-store'][0].get('internalURL'),
+        }
