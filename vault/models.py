@@ -46,7 +46,7 @@ class Area(models.Model):
 
 
 class GroupProjects(models.Model):
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
     class Meta:
@@ -59,7 +59,7 @@ class GroupProjects(models.Model):
 
 
 class AreaProjects(models.Model):
-    area = models.ForeignKey(Area)
+    area = models.ForeignKey(Area, null=True, on_delete=models.SET_NULL)
     project = models.ForeignKey(Project, unique=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
