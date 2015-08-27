@@ -108,7 +108,12 @@ class ProjectForm(forms.Form):
 class DeleteProjectConfirm(forms.Form):
 
     user = forms.CharField(label='User', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Confirme o usuario do projeto',
+                                      }
+                               ))
 
     password = forms.CharField(label='Password', required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                          'placeholder': 'Confirme a senha '}
+                                   ))

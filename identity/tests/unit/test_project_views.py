@@ -3,8 +3,8 @@
 from mock import Mock, patch
 from unittest import TestCase
 
+from identity import views
 from identity.tests.fakes import FakeResource
-from identity.views import ListProjectView, CreateProjectView, UpdateProjectView
 from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
     GroupProjectsFactory
 from vault.tests.fakes import fake_request
@@ -13,7 +13,7 @@ from vault.tests.fakes import fake_request
 class ListProjectTest(TestCase):
 
     def setUp(self):
-        self.view = ListProjectView.as_view()
+        self.view = views.ListProjectView.as_view()
         self.request = fake_request(method='GET')
 
         self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
@@ -63,7 +63,7 @@ class ListProjectTest(TestCase):
 class CreateProjectTest(TestCase):
 
     def setUp(self):
-        self.view = CreateProjectView.as_view()
+        self.view = views.CreateProjectView.as_view()
 
         self.request = fake_request(method='GET')
         self.request.META.update({
@@ -72,7 +72,6 @@ class CreateProjectTest(TestCase):
         })
         self.request.user.is_superuser = True
         self.request.user.is_authenticated = lambda: True
-        # self.request.user.groups = [GroupFactory(id=1)]
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
@@ -283,10 +282,50 @@ class CreateProjectTest(TestCase):
         self.assertNotIn('add-user-role', response.content)
 
 
+class CreateProjectSuccessTest(TestCase):
+
+    def setUp(self):
+        self.view = views.CreateProjectSuccessView.as_view()
+
+        self.request = fake_request(method='GET')
+        self.request.META.update({
+            'SERVER_NAME': 'globo.com',
+            'SERVER_PORT': '80'
+        })
+        self.request.user.is_superuser = True
+        self.request.user.is_authenticated = lambda: True
+
+    def test_render_success_create_page(self):
+
+        project_create_result = {
+            'user': FakeResource('abc', name='fake_user'),
+            'user_password': 'secret'
+        }
+
+        self.request.session['project_info'] = project_create_result
+
+        response = self.view(self.request)
+        response.render()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Project Created!', response.content)
+
+        context_data = response.context_data
+
+        # Verifica se o retorno de criacao do project esta na sessao
+        self.assertEqual(context_data['project_info'], project_create_result)
+
+        user = context_data['project_info'].get('user')
+        password = context_data['project_info'].get('user_password')
+
+        self.assertIn(user.name, response.content)
+        self.assertIn(password, response.content)
+
+
 class UpdateProjectTest(TestCase):
 
     def setUp(self):
-        self.view = UpdateProjectView.as_view()
+        self.view = views.UpdateProjectView.as_view()
 
         self.request = fake_request()
         self.request.META.update({
