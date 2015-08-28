@@ -19,11 +19,11 @@ class Migration(migrations.Migration):
           "`area_id` int(11) NOT NULL,"
           "`project_id` varchar(64) NOT NULL DEFAULT '',"
           "PRIMARY KEY (`id`),"
-          "UNIQUE KEY `area_id` (`area_id`,`project_id`),"
+          "UNIQUE KEY `project_id_uniq` (`project_id`),"
           "KEY `project_id` (`project_id`),"
           "KEY `area_id_2` (`area_id`),"
-          "CONSTRAINT `area_projects_ibfk_2` FOREIGN KEY (`area_id`) REFERENCES `vault_area` (`id`),"
-          "CONSTRAINT `area_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)"
+          "CONSTRAINT `area_projects_ibfk_2` FOREIGN KEY (`area_id`) REFERENCES `vault_area` (`id`) ON DELETE CASCADE,"
+          "CONSTRAINT `area_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE"
           ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     )
 
@@ -33,16 +33,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('area', models.ForeignKey(to='vault.Area')),
-                ('project', models.ForeignKey(to='vault.Project')),
+                ('project', models.ForeignKey(to='vault.Project', unique=True)),
             ],
             options={
                 'db_table': 'vault_area_projects',
             },
             bases=(models.Model,),
-        ),
-        migrations.AlterUniqueTogether(
-            name='areaprojects',
-            unique_together=set([('project', 'area')]),
         ),
     ]
 
