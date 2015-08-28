@@ -345,7 +345,7 @@ class CreateProjectSuccessTest(TestCase):
         response.render()
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Project Created!', response.content)
+        self.assertIn('Project Created', response.content)
 
         context_data = response.context_data
 
