@@ -2,8 +2,8 @@
 
 {% load staticfiles %}
 
-{% block title %}Project Created!{% endblock %}
-{% block content_title %}Project Created!{% endblock %}
+{% block title %}Project Created{% endblock %}
+{% block content_title %}Project Created{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
@@ -11,16 +11,38 @@
 
 {% block content %}
 
-    <div class="panel panel-default">
-        <span>
-            Username: {{ project_info.user_name }} <br>
-            Password: {{ project_info.user_password }} <br>
-            Auth URL: {{ project_info.auth_url }} <br>
-            admin URL: {{ project_info.endpoints.adminURL }} <br>
-            public URL: {{project_info.endpoints.publicURL }} <br>
-            internal URL: {{ project_info.endpoints.internalURL }}
-        </span>
-    </div>
+  <div class="panel panel-default">
+    <table class="project-created items-list table table-bordered table-striped">
+      <tr>
+        <th>Nome</th>
+        <td>{{ project_info.project_name }}</td>
+      </tr>
+      <tr>
+        <th>Username</th>
+        <td>{{ project_info.user_name }}</td>
+      </tr>
+      <tr>
+        <th>Password</th>
+        <td>{{ project_info.user_password }}</td>
+      </tr>
+      <tr>
+        <th>Auth URL</th>
+        <td>{{ project_info.auth_url }}</td>
+      </tr>
+      <tr>
+        <th>admin URL</th>
+        <td>{{ project_info.endpoints.adminURL }}</td>
+      </tr>
+      <tr>
+        <th>public URL</th>
+        <td>{{project_info.endpoints.publicURL }}</td>
+      </tr>
+      <tr>
+        <th>internal URL</th>
+        <td>{{ project_info.endpoints.internalURL }}</td>
+      </tr>
+    </table>
+  </div>
 
 {% endblock %}
 

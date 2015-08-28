@@ -107,3 +107,7 @@
     float: right;
     margin-top: 10px;
 }
+
+.project-created th {
+    text-align: right;
+}

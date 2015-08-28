@@ -9,10 +9,6 @@
 </style>
 
 <table class="select-project">
-  <tr>
-    <th></th>
-    <th><a href="{% url 'add_project' %}" class="btn btn-xs btn-primary">Create Project</a></th>
-  </tr>
   {% for project in projects %}
   <tr data-project-id="{{ project.id }}">
     <td class="name">

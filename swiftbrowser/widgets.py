@@ -10,7 +10,7 @@ class ProjectsWidget(BaseWidget):
     title = "Projects"
     subtitle = "Object Storage"
     # TODO: revisar problema de unicode (cedilha e til)
-    description = "Relacao de projetos gerenciados pelo seu time"
+    description = 'Relacao de projetos gerenciados pelo seu time'
     content_template = 'swiftbrowser/widgets/select_project.html'
     non_renderable_template = 'swiftbrowser/widgets/non_renderable.html'
 
