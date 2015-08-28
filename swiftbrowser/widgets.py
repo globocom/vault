@@ -9,10 +9,10 @@ from vault.models import GroupProjects
 class ProjectsWidget(BaseWidget):
     title = "Projects"
     subtitle = "Object Storage"
-    non_renderable_template = 'swiftbrowser/widgets/non_renderable.html'
     # TODO: revisar problema de unicode (cedilha e til)
     description = "Relacao de projetos gerenciados pelo seu time"
     content_template = 'swiftbrowser/widgets/select_project.html'
+    non_renderable_template = 'swiftbrowser/widgets/non_renderable.html'
 
     def __init__(self, context):
         self.user = context.get('logged_user')
