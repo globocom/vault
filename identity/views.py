@@ -22,7 +22,7 @@ from identity.keystone import Keystone
 from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
 
 from vault import utils
-from vault.models import GroupProjects, AreaProjects
+from vault.models import GroupProjects, AreaProjects, Project
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
 
@@ -416,13 +416,21 @@ class DeleteProjectView(BaseProjectView):
         project_name = keystone.project_get(project_id).name
         keystone_app = Keystone(request, username=user, password=password, tenant_name=project_name)
 
+        request.session['project_id'] = project_id
+        request.session['project_name'] = project_name
+        request.session['service_catalog'] = keystone_app.conn.service_catalog.get_data()
+        request.session['auth_token'] = keystone_app.conn.auth_token
+
         storage_url = get_admin_url(request)
         auth_token = keystone_app.conn.auth_token
 
         try:
             delete_swift_account(storage_url, auth_token)
             keystone.project_delete(kwargs.get('project_id'))
-            messages.add_message(request, messages.SUCCESS, 'Successfully deleted containers')
+            project_instance = Project.objects.get(id=project_id)
+            project_instance.delete()
+            messages.add_message(request, messages.SUCCESS, 'Successfully deleted project')
+
 
         except Exception as e:
             log.exception('Exception: %s' % e)
