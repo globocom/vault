@@ -433,19 +433,18 @@ class DeleteProjectView(BaseProjectView):
 
         form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
 
-
-        #try:
+        # try:
 #
         #    messages.add_message(request, messages.SUCCESS,
         #                         'Successfully deleted project')
 #
         #    actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
-        #except Exception as e:
+        # except Exception as e:
         #    log.exception('Exception: %s' % e)
         #    messages.add_message(request, messages.ERROR,
         #                         'Error when delete project')
         #    #project = keystone_app.project_get(kwargs.get('project_id'))
-        #return HttpResponseRedirect(self.success_url)
+        # return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):

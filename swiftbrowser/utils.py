@@ -150,6 +150,7 @@ def remove_duplicates_from_acl(acls):
     acls = ','.join(cleaned_entries)
     return acls
 
+
 def get_account_containers(storage_url, auth_token):
     """ List all containers in an account"""
     container_list = []
@@ -164,6 +165,7 @@ def get_account_containers(storage_url, auth_token):
 
     return container_list
 
+
 def get_container_objects(container, storage_url, auth_token):
     object_list = []
     http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
@@ -177,6 +179,7 @@ def get_container_objects(container, storage_url, auth_token):
         object_list.append(object['name'])
 
     return object_list
+
 
 def delete_container_and_objects(container, storage_url, auth_token, force=False):
     http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
@@ -198,6 +201,7 @@ def delete_container_and_objects(container, storage_url, auth_token, force=False
 
     return True
 
+
 def delete_swift_account(storage_url, auth_token):
     """"""
     containers = get_account_containers(storage_url, auth_token)
@@ -206,9 +210,9 @@ def delete_swift_account(storage_url, auth_token):
         for container in containers:
             delete_container_and_objects(container, storage_url, auth_token, force=True)
 
-    #http_conn = client.HTTPConnection(storage_url, insecure=settings.SWIFT_INSECURE)
+    # http_conn = client.HTTPConnection(storage_url, insecure=settings.SWIFT_INSECURE)
     #
-    #try:
+    # try:
     #   http_conn.request('DELETE', storage_url)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
