@@ -513,19 +513,19 @@ body {
 
 .bubble {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #333;
     position: relative;
     width: auto;
-    min-height: 100px;
-    padding: 0px;
-    background-color: #FFF8DC;
-    padding: 10px;
-    width: 400px;
+    min-height: 110px;
+    background-color: #FFF;
+    padding: 20px;
+    width: 60%;
     margin-left:50px;
-    border-radius: 15px;
-    border-top-left-radius: 0;
+    border-radius: 0 5px 5px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.12);
 }
 
-.bubble:after {
+.bubble:before {
     content: "";
     position: absolute;
     top: 0;
@@ -533,13 +533,32 @@ body {
     left: -25px;
     border-style: solid;
     border-width: 0px 25px 25px 0;
-    border-color: transparent #FFF8DC;
+    border-color: transparent #FFF;
     display: block;
     width: 0;
     z-index: 1;
 }
 
-.bubble span {
-    font-size: 20px;
-    font-weight: bold;
+.bubble.warning { background-color: #FFF8DC; }
+.bubble.warning:before { border-color: transparent #FFF8DC; }
+
+.bubble .title {
+    display: block;
+    font-size: 23px;
+    font-weight: normal;
+    margin-bottom: 6px;
+}
+
+.bubble .info {
+    font-size: 16px;
+}
+
+.bubble .icon {
+    float: left;
+    width: 50px;
+    height: 72px;
+    line-height: 72px;
+    font-size: 50px;
+    margin-right: 20px;
+    color: rgba(181, 11, 22, 0.3);
 }

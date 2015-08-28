@@ -40,6 +40,7 @@ class BaseWidget(object):
         else:
             return self.non_renderable_template
 
+
 # def _widget_users(self):
     #     users = []
 
