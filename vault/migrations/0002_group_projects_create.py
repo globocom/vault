@@ -23,8 +23,8 @@ class Migration(migrations.Migration):
           "UNIQUE KEY `group_id` (`group_id`,`project_id`),"
           "KEY `project_id` (`project_id`),"
           "KEY `group_id_2` (`group_id`),"
-          "CONSTRAINT `group_projects_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),"
-          "CONSTRAINT `group_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)"
+          "CONSTRAINT `group_projects_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`) ON DELETE CASCADE,"
+          "CONSTRAINT `group_projects_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE"
           ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     )
 

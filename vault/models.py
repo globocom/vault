@@ -46,8 +46,8 @@ class Area(models.Model):
 
 
 class GroupProjects(models.Model):
-    group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
-    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(Group)
+    project = models.ForeignKey(Project)
 
     class Meta:
         db_table = 'vault_group_projects'
@@ -59,12 +59,11 @@ class GroupProjects(models.Model):
 
 
 class AreaProjects(models.Model):
-    area = models.ForeignKey(Area, null=True, on_delete=models.SET_NULL)
-    project = models.ForeignKey(Project, unique=True, null=True, on_delete=models.SET_NULL)
+    area = models.ForeignKey(Area)
+    project = models.ForeignKey(Project, unique=True)
 
     class Meta:
         db_table = 'vault_area_projects'
-        unique_together = (('project', 'area'),)
         verbose_name_plural = 'Areas & Projetos'
 
     def __unicode__(self):
