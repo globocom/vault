@@ -7,8 +7,8 @@ from vault.models import GroupProjects
 
 
 class ProjectsWidget(BaseWidget):
-    title = "Projects"
-    subtitle = "Object Storage"
+    title = "Object Storage"
+    subtitle = "Projects"
     # TODO: revisar problema de unicode (cedilha e til)
     description = 'Relacao de projetos gerenciados pelo seu time'
     content_template = 'swiftbrowser/widgets/select_project.html'
