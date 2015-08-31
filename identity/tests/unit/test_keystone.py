@@ -159,41 +159,6 @@ class TestKeystoneV2(TestCase):
         keystone.conn.users.create.assert_called_with('name', 'password', 'email@email.com', 'project_id', True)
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
-    @patch('identity.keystone.Keystone.add_user_role')
-    @patch('identity.keystone.Keystone.user_get')
-    @patch('identity.keystone.Keystone.project_get')
-    @patch('identity.keystone.Keystone.role_get')
-    def test_keystone_create_user_and_replicate_role_to_admin(self, mock_role_get, mock_project_get, mock_user_get, mock_add_user_role):
-        """
-        Cadastra usuario e seta role para project, replica a mesma role para
-        o usuario admin do vault/settings
-        """
-
-        mock_user_create = self.mock_keystone_conn.return_value.users.create
-
-        fake_user = FakeResource('user_id', name='user_name')
-        fake_user_admin = FakeResource('user_admin_id', name='admin_user_name')
-        fake_role = FakeResource('role_id', name='role_name')
-        fake_project = FakeResource('project_id', name='project_name')
-
-        mock_user_get.return_value = fake_user_admin
-        mock_user_create.return_value = fake_user
-        mock_role_get.return_value = fake_role
-        mock_project_get.return_value = fake_project
-
-        keystone = Keystone(self.request, 'tenant_name')
-        keystone.user_create('name', email='email@email.com',
-                             password='password', project_id='project_id',
-                             enabled=True, role_id='role_id',
-                             set_role_to_admin=True)
-
-        keystone.conn.users.create.assert_called_with('name', 'password', 'email@email.com', 'project_id', True)
-
-        call_add_user_role = call(fake_user, fake_project, fake_role)
-        call_add_admin_user_role = call(fake_user_admin, fake_project, fake_role)
-
-        mock_add_user_role.assert_has_calls([call_add_user_role, call_add_admin_user_role])
-
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.AreaProjects')
@@ -221,8 +186,7 @@ class TestKeystoneV2(TestCase):
         mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
                                          password='password',
                                          project_id=self.project.id,
-                                         role_id=settings.ROLE_BOLADONA,
-                                         set_role_to_admin=True)
+                                         role_id=settings.ROLE_BOLADONA)
 
         mock_gp.assert_called_with(group_id=1, project_id=self.project.id)
         self.assertTrue(mock_gp.return_value.save.called)

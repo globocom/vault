@@ -103,8 +103,7 @@ class Keystone(object):
 
     @sensitive_variables('password')
     def user_create(self, name, email=None, password=None, enabled=True,
-                    domain=None, project_id=None, role_id=None,
-                    set_role_to_admin=False):
+                    domain=None, project_id=None, role_id=None):
 
         if settings.KEYSTONE_VERSION < 3:
             user = self.conn.users.create(name, password, email, project_id,
@@ -122,10 +121,6 @@ class Keystone(object):
             # V2 a role '_member_' eh vinculada automaticamente
             # if settings.KEYSTONE_VERSION > 2 or role.name != '_member_':
             self.add_user_role(user, project, role)
-
-            if set_role_to_admin:
-                admin_user = self.user_get(self.conn.user_id)
-                self.add_user_role(admin_user, project, role)
 
         return user
 
@@ -229,8 +224,7 @@ class Keystone(object):
             user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
                                     role_id=settings.ROLE_BOLADONA,
-                                    project_id=project.id,
-                                    set_role_to_admin=True)
+                                    project_id=project.id)
         except exceptions.Forbidden:
             self.project_delete(project.id)
             return {'status': False, 'reason': 'Admin required'}
