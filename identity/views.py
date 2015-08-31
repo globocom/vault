@@ -25,7 +25,6 @@ from vault import utils
 from vault.models import GroupProjects, AreaProjects, Project
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
-
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
@@ -430,7 +429,6 @@ class DeleteProjectView(BaseProjectView):
             project_instance = Project.objects.get(id=project_id)
             project_instance.delete()
             messages.add_message(request, messages.SUCCESS, 'Successfully deleted project')
-
 
         except Exception as e:
             log.exception('Exception: %s' % e)
