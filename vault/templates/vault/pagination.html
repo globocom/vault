@@ -1,20 +1,19 @@
 {% load vault_filters %}
 
 <div class="table-pagination">
-  <ul class="pagination">
-    {% if items.paginator.num_pages > 1 %}
-      {% if items.has_previous %}
-        <li><a href="?page=1">&lt;&lt;</a></li>
-        <li><a href="?page={{ items.previous_page_number }}">&lt;</a></li>
-      {% endif %}
+{% if items.paginator.num_pages > 1 %}
+  {% if items.has_previous %}
+    <a href="?page={{ items.previous_page_number }}">
+      <i class="fa fa-angle-left"></i> anterior
+    </a>
+  {% endif %}
 
-          <!-- <li class="active"><a>{{ items.number }}</a></li> -->
-          <li><input id="pag_number" type="text" name="page" value="{{ items.number }}"> of {{ items.paginator.num_pages }}</li>
+  <input id="pag_number" class="form-control" type="text" name="page" value="{{ items.number }}"> de {{ items.paginator.num_pages }}
 
-      {% if items.has_next %}
-        <li><a href="?page={{ items.next_page_number }}">&gt;</a></li>
-        <li><a href="?page={{ items.paginator.num_pages }}">&gt;&gt;</a></li>
-      {% endif %}
-    {% endif %}
-  </ul>
+  {% if items.has_next %}
+    <a href="?page={{ items.next_page_number }}">
+      pr&oacute;ximo <i class="fa fa-angle-right"></i>
+    </a>
+  {% endif %}
+{% endif %}
 </div>

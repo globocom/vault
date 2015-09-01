@@ -124,13 +124,10 @@
       Base.Messages.show('URL copied to clipboard', 'success')
     });
   });
+</script>
 
-$('#pag_number').keypress(function (e) {
-  if (e.which == 13) {
-    window.location=window.location.origin + window.location.pathname + '?page=' + $('#pag_number').val();
-  }
-});
-
+<script>
+  Base.Paginator.init();
 </script>
 {% endblock %}
 
