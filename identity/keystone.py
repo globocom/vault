@@ -31,7 +31,6 @@ class Keystone(object):
     """ return an authenticated keystone client """
 
     def __init__(self, request, username=None, password=None, tenant_name=None):
-        self.token = request.session.get('token', None)
         self.request = request
 
         if username and password:
@@ -69,13 +68,9 @@ class Keystone(object):
             'auth_url': getattr(settings, 'KEYSTONE_URL'),
             'insecure': True,
             'tenant_name': self.tenant_name,
+            'username': self.username,
+            'password': self.password,
         }
-
-        if self.token:
-            kwargs['token'] = self.token
-        else:
-            kwargs['username'] = self.username
-            kwargs['password'] = self.password
 
         conn = client.Client(**kwargs)
 
