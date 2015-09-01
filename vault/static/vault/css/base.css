@@ -562,3 +562,16 @@ body {
     margin-right: 20px;
     color: rgba(181, 11, 22, 0.3);
 }
+
+#pag_number {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857;
+    color: #428BCA;
+    text-decoration: none;
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    width: 42px;
+}

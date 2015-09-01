@@ -4,19 +4,16 @@
   <ul class="pagination">
     {% if items.paginator.num_pages > 1 %}
       {% if items.has_previous %}
-        <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>
+        <li><a href="?page=1">&lt;&lt;</a></li>
+        <li><a href="?page={{ items.previous_page_number }}">&lt;</a></li>
       {% endif %}
 
-      {% for i in items.paginator.num_pages|times %}
-        {% if i == items.number %}
-          <li class="active"><a>{{ i }}</a></li>
-        {% else %}
-          <li><a href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-      {% endfor %}
+          <!-- <li class="active"><a>{{ items.number }}</a></li> -->
+          <li><input id="pag_number" type="text" name="page" value="{{ items.number }}"> of {{ items.paginator.num_pages }}</li>
 
       {% if items.has_next %}
-          <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>
+        <li><a href="?page={{ items.next_page_number }}">&gt;</a></li>
+        <li><a href="?page={{ items.paginator.num_pages }}">&gt;&gt;</a></li>
       {% endif %}
     {% endif %}
   </ul>

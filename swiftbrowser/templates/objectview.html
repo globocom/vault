@@ -113,6 +113,9 @@
   </div>
 {% pagination objects %}
 
+{% endblock %}
+
+{% block js_bottom %}
 <script>
   ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
   var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
@@ -121,6 +124,13 @@
       Base.Messages.show('URL copied to clipboard', 'success')
     });
   });
+
+$('#pag_number').keypress(function (e) {
+  if (e.which == 13) {
+    window.location=window.location.origin + window.location.pathname + '?page=' + $('#pag_number').val();
+  }
+});
+
 </script>
 {% endblock %}
 
