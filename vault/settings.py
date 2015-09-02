@@ -104,7 +104,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # ENV Confs
 
-PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 50)
+PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 10)
 
 ALLOWED_HOSTS = ['*']
 

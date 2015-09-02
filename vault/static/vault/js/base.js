@@ -289,3 +289,30 @@ Base.Metatada = {};
     });
 
 })(window, jQuery);
+
+
+Base.Paginator = {};
+
+(function(window, $) {
+    'use strict';
+
+    var $page_number;
+
+    function init() {
+        $page_number = $('#pag_number');
+        bindEvents();
+    }
+
+    function bindEvents() {
+        $page_number.on('keypress', function(e) {
+            if (e.which == 13) {
+                window.location=window.location.origin + window.location.pathname + '?page=' + $('#pag_number').val();
+            }
+        });
+    }
+
+    $.extend(Base.Paginator, {
+        init: init
+    });
+
+})(window, jQuery);

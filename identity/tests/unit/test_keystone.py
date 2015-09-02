@@ -55,22 +55,7 @@ class TestKeystoneConnection(TestCase):
 
         self.mock_keystone_client.Client.assert_called_with(**expected)
 
-    def test_connection_with_token(self):
-        self.request.session['token'] = 'fake_token'
-        _ = Keystone(self.request, tenant_name='fake_tenant')
-
-        expected = {
-            'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
-            'auth_url': getattr(settings, 'KEYSTONE_URL'),
-            'insecure': True,
-            'tenant_name': 'fake_tenant',
-            'token': 'fake_token',
-        }
-
-        self.mock_keystone_client.Client.assert_called_with(**expected)
-
     def test_connection_with_NO_tenant_name(self):
-        self.request.session['token'] = 'fake_token'
         _ = Keystone(self.request)
 
         expected = {
@@ -78,7 +63,8 @@ class TestKeystoneConnection(TestCase):
             'auth_url': getattr(settings, 'KEYSTONE_URL'),
             'insecure': True,
             'tenant_name': getattr(settings, 'PROJECT_BOLADAO'),
-            'token': 'fake_token',
+            'username': getattr(settings, 'USERNAME_BOLADAO'),
+            'password': getattr(settings, 'PASSWORD_BOLADAO')
         }
 
         self.mock_keystone_client.Client.assert_called_with(**expected)
