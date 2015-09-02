@@ -32,6 +32,16 @@
         </div>
 
         <div class="form-group">
+          <div class="lbl-user">Project User:</div>
+          <input type='text' name='user_project' class="form-control" disabled value='{{ user_project }}' />
+          <a href="#" class="reset-pass btn btn-primary">Reset Password</a><br/>
+          <div class="label-pass">
+            <div class="user_password">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           {{ form.description.label_tag }}
           {{ form.description }}
           {{ form.description.errors }}

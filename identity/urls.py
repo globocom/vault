@@ -37,4 +37,8 @@ urlpatterns = patterns('',
        name='project_delete_user'),
     url(r'^project-list-users/?$', views.ListUserRoleView.as_view(),
        name='project_list_users'),
+
+    url(r'^project/user/updatepass/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectUserPasswordView.as_view(),
+       name='update_pass'),
+
 )

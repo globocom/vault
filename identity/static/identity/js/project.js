@@ -62,6 +62,36 @@ Project.Users = {};
             e.preventDefault();
             removeUserRole($(this).closest('tr'));
         });
+
+        var $form = $('.project-form');
+
+        $form.on('click', '.reset-pass', function(e) {
+            e.preventDefault();
+            resetPassword();
+        });
+
+    }
+
+    function resetPassword() {
+        $.ajax({
+            type: "GET",
+            url: 'user/updatepass/' + options.projectId,
+        })
+        .done(function (data) {
+            showPassword(data);
+        })
+        .fail(function (data) {
+            Base.Messages.show(data.responseJSON.msg, 'error on reset password');
+        });
+    }
+
+    function showPassword(data) {
+        var new_user_password = data['new-password']
+        var $divPassword = $('.user_password');
+        var $labelpass = $('.label-pass')
+
+        $labelpass.html("RESULT: ");
+        $divPassword.html(new_user_password);
     }
 
     function fillUsers() {

@@ -245,6 +245,10 @@ class BaseProjectView(LoginRequiredMixin, FormView):
             context['idendity_project_id'] = project_id
             context['has_id'] = True
 
+            user = self.keystone.return_find_u_user(kwargs.get('project_id'))
+
+            context['user_project'] = user.username
+
             if context['show_roles']:
 
                 try:
@@ -540,3 +544,28 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
             context['msg'] = 'Error removing user'
             log.exception('Exception: %s' % e)
             return self.render_to_response(context, status=500)
+
+
+class UpdateProjectUserPasswordView(View, JSONResponseMixin):
+
+    def get(self, request, *args, **kwargs):
+        self.keystone = Keystone(self.request)
+
+        context = {}
+
+        try:
+            user = self.keystone.return_find_u_user(kwargs.get('project_id'))
+
+            new_password = Keystone.create_password()
+
+            self.keystone.user_update(user, password=new_password)
+
+            context = {'new-password': new_password}
+
+            actionlog.log(request.user.username, 'update', user)
+
+        except Exception as e:
+            log.exception('Exception: %s' % e)
+            messages.add_message(request, messages.ERROR, 'Error when update password user')
+
+        return self.render_to_response(context, status=200)
