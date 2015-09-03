@@ -546,22 +546,20 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
             return self.render_to_response(context, status=500)
 
 
-class UpdateProjectUserPasswordView(View, JSONResponseMixin):
+class UpdateProjectUserPasswordView(LoginRequiredMixin, View, JSONResponseMixin):
 
     def get(self, request, *args, **kwargs):
         self.keystone = Keystone(self.request)
 
         context = {}
-
         try:
             user = self.keystone.return_find_u_user(kwargs.get('project_id'))
-
             new_password = Keystone.create_password()
 
             self.keystone.user_update(user, password=new_password)
-
             context = {'new-password': new_password}
 
+            messages.add_message(request, messages.SUCCESS, 'Successfully created a new password: ' + new_password)
             actionlog.log(request.user.username, 'update', user)
 
         except Exception as e:

@@ -119,17 +119,3 @@
 .reset-pass {
     margin-top:5px;
 }
-
-.user_password {
-    display:block;
-    color:#0080FF;
-    float:right;
-    margin-top: -26px;
-    font
-}
-
-.label-pass {
-    float:right;
-    color:#190707;
-    font-weight: bold;
-}
