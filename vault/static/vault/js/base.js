@@ -110,7 +110,7 @@ Base.Messages = {};
         $container.append($msg);
 
         $msg.fadeIn('fast')
-            .delay(12000)
+            .delay(8000)
             .fadeOut('fast', function() {
                 $(this).remove();
             });
