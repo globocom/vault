@@ -202,7 +202,7 @@ class DeleteUserView(BaseUserView):
         return HttpResponseRedirect(self.success_url)
 
 
-class BaseProjectView(SuperUserMixin, FormView):
+class BaseProjectView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('projects')
 
     def __init__(self):
@@ -263,8 +263,18 @@ class BaseProjectView(SuperUserMixin, FormView):
         return context
 
 
-class ListProjectView(BaseProjectView):
+class ListProjectView(SuperUserMixin, TemplateView):
     template_name = "identity/projects.html"
+
+    def get(self, request, *args, **kwargs):
+        # if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
+        #     form = ProjectForm(initial={'user': request.user, 'action': 'update'})
+        # else:
+        #     form = ProjectForm(initial={'user': request.user})
+
+        context = self.get_context_data(**kwargs)
+
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super(ListProjectView, self).get_context_data(**kwargs)
