@@ -111,3 +111,11 @@
 .project-created th {
     text-align: right;
 }
+
+.lbl-user {
+    margin-bottom:5px;
+}
+
+.reset-pass {
+    margin-top:5px;
+}

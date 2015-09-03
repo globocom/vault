@@ -57,6 +57,7 @@ def fake_request(path='/', method='GET', user=None, extra={}):
 
     req.user = user or AnonymousUser()
     req.user.id = ''
+    req.user.username = 'user'
     req.user.first_name = 'mock_user'
     req.user.is_superuser = True
     req.user.groups.all = lambda: [GroupFactory(id=1)]

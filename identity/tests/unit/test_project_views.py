@@ -79,6 +79,10 @@ class CreateProjectTest(TestCase):
 
         self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
 
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        # Retorna objeto usuário similar ao do request
+        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+
         self.mock_area = patch('identity.forms.Area.objects.all').start()
         self.mock_area.return_value = [AreaFactory(id=1)]
 
@@ -385,6 +389,13 @@ class UpdateProjectTest(TestCase):
         self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
         self.mock_area = patch('identity.forms.Area.objects.all').start()
         self.mock_area.return_value = [AreaFactory(id=1)]
+
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        # Retorna objeto usuário similar ao do request
+        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+
+        self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
+        self.mock_users_list.return_value = [fake_request(method='GET').user]
 
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
