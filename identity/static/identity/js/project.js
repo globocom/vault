@@ -78,16 +78,19 @@ Project.Users = {};
     }
 
     function resetPassword() {
+        var $reset_info = $(".reset-info")
         $.ajax({
             type: "GET",
             url: options.resetPassUrl + options.projectId,
         })
         .done(function (data) {
-            // Show password on top of page
-            location.reload();
+            $reset_info.addClass('visible')
+                       .find('.new-pass')
+                       .text(data.new_password);
+            Base.Messages.show('Successfully created a new password', 'success')
         })
         .fail(function (data) {
-            Base.Messages.show(data.responseJSON, 'Error on reset password');
+            Base.Messages.show('Error on reset password', 'error');
         });
     }
 
