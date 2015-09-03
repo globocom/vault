@@ -89,7 +89,6 @@ class CreateProjectTest(TestCase):
         patch('identity.keystone.Keystone._keystone_conn',
               Mock(return_value=None)).start()
 
-
     def tearDown(self):
         patch.stopall()
 
