@@ -202,7 +202,7 @@ class DeleteUserView(BaseUserView):
         return HttpResponseRedirect(self.success_url)
 
 
-class BaseProjectView(LoginRequiredMixin, FormView):
+class BaseProjectView(SuperUserMixin, FormView):
     success_url = reverse_lazy('projects')
 
     def __init__(self):

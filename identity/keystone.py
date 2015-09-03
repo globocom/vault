@@ -297,6 +297,9 @@ class Keystone(object):
             'project': new_project,
         }
 
+    def vault_delete_project(self, project_id):
+        pass
+
     def return_find_u_user(self, project_id):
         """
         Metodo que recebe o id do project e busca o usuario que tenha o nome u_<project_name>
