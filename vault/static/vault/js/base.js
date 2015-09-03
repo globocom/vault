@@ -306,7 +306,7 @@ Base.Paginator = {};
     function bindEvents() {
         $page_number.on('keypress', function(e) {
             if (e.which == 13) {
-                window.location=window.location.origin + window.location.pathname + '?page=' + $('#pag_number').val();
+                window.location=window.location.origin + window.location.pathname + '?page=' + $page_number.val();
             }
         });
     }
