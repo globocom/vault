@@ -7,7 +7,7 @@ from mock import Mock, patch
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
-                            DeleteUserView)
+                            DeleteUserView, UpdateProjectUserPasswordView)
 
 
 class ListUserTest(TestCase):
@@ -384,3 +384,30 @@ class DeleteUserTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(msgs[0].message, 'Error when delete user')
+
+
+class UpdateProjectUserPasswordTest(TestCase):
+
+    def setUp(self):
+        self.view = UpdateProjectUserPasswordView.as_view()
+
+        self.request = fake_request(method='GET')
+        self.request.user.is_superuser = True
+
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        # Retorna objeto usuário similar ao do request
+        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+
+        self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
+        self.mock_users_list.return_value = [fake_request(method='GET').user]
+
+        patch('identity.keystone.Keystone._keystone_conn',
+              Mock(return_value=None)).start()
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_reset_password_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 302)
