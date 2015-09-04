@@ -462,7 +462,6 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         self.assertEqual('{}', response.content)
-        self.assertEqual(response.status_code, 200)
 
     @patch('identity.keystone.Keystone.return_find_u_user')
     def test_return_user_update_with_exception(self, mock_user_update):
@@ -472,4 +471,3 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         self.assertEqual('{}', response.content)
-        self.assertEqual(response.status_code, 200)
