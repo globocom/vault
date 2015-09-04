@@ -411,3 +411,65 @@ class UpdateProjectUserPasswordTest(TestCase):
         self.request.user.is_authenticated = lambda: False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_was_called(self, mock_find_user):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_find_user.assert_called_with(None)
+
+    @patch('identity.keystone.Keystone.create_password')
+    def test_create_password_was_called(self, mock_create_password):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_create_password.assert_called_with()
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_user_update_was_called(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_with_exception(self, mock_find_u_user):
+        self.request.user.is_authenticated = lambda: True
+        mock_find_u_user.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_user_update_with_exception(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        mock_user_update.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_return_reset_password_with_new_password(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        response = self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+        self.assertIn(password, response.content)
+        self.assertEqual(response.status_code, 200)
