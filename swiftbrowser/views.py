@@ -24,11 +24,12 @@ from hashlib import sha1
 from swiftclient import client
 
 from swiftbrowser.forms import CreateContainerForm, PseudoFolderForm, \
-    AddACLForm
+    AddACLForm, AddCORSForm
 
 from swiftbrowser.utils import replace_hyphens, prefix_list, \
     pseudofolder_object_list, get_temp_key, get_admin_url, \
-    get_acls, remove_duplicates_from_acl, get_public_url, get_token_id
+    get_acls, remove_duplicates_from_acl, get_public_url, get_token_id, \
+    get_cors, remove_duplicates_from_cors
 
 from vault import utils
 
@@ -758,3 +759,95 @@ def disable_versioning(request, container):
     messages.add_message(request, messages.SUCCESS, 'Versioning disabled.')
 
     return True
+
+
+@login_required
+def edit_cors(request, container):
+    """ Edit CORS on given container. """
+
+    storage_url = get_admin_url(request)
+    auth_token = get_token_id(request)
+    http_conn = client.http_connection(storage_url,
+                                        insecure=settings.SWIFT_INSECURE)
+
+    if request.method == 'POST':
+        form = AddCORSForm(request.POST)
+        if form.is_valid():
+            cors = get_cors(storage_url,
+                            auth_token,
+                            container,
+                            http_conn)
+
+            cors = remove_duplicates_from_cors(cors)
+
+            host = form.cleaned_data['host']
+            if host:
+                cors += " {}".format(host)
+
+            headers = {
+                'x-container-meta-access-control-allow-origin': cors.strip()
+            }
+
+            try:
+                client.post_container(storage_url,
+                    auth_token, container, headers=headers, http_conn=http_conn)
+
+                messages.add_message(request, messages.SUCCESS,
+                                    'CORS updated')
+
+                actionlog.log(request.user.username, "update", 'headers: %s, container: %s' % (headers, container))
+
+            except client.ClientException as err:
+                log.exception('Exception: {0}'.format(err))
+                messages.add_message(request, messages.ERROR,
+                                    'CORS update failed')
+
+    if request.method == 'GET':
+        delete = request.GET.get('delete', None)
+        if delete:
+            host = delete.split(' ')
+
+            cors = get_cors(storage_url,
+                            auth_token,
+                            container,
+                            http_conn)
+
+            new_cors = ''
+            for element in cors.split(' '):
+                if element not in host:
+                    new_cors += element
+                    new_cors += ' '
+
+            headers = {
+                'x-container-meta-access-control-allow-origin': new_cors.strip()
+            }
+
+            try:
+                client.post_container(storage_url, auth_token,
+                              container, headers=headers, http_conn=http_conn)
+
+                messages.add_message(request, messages.SUCCESS,
+                                    'CORS removed.')
+
+                actionlog.log(request.user.username, "delete", 'headers: %s, container: %s' % (headers, container))
+
+            except client.ClientException as err:
+                log.exception('Exception: {0}'.format(err))
+                messages.add_message(request, messages.ERROR,
+                                    'CORS update failed.')
+
+    cors = get_cors(storage_url, auth_token, container, http_conn)
+
+    context = utils.update_default_context(request, {
+        'container': container,
+        'session': request.session,
+        'cors': [],
+    })
+
+    if cors != '':
+        cors = remove_duplicates_from_cors(cors)
+        for entry in cors.split(' '):
+            context['cors'].append(entry)
+
+    return render_to_response('edit_cors.html', context,
+                              context_instance=RequestContext(request))

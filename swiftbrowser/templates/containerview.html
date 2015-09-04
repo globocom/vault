@@ -48,14 +48,19 @@
           <div class="dropdown pull-right">
             <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
             <ul class="dropdown-menu">
-                {% url "object_versioning" container=container.name as object_versioning_url %}
-                <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i> Versioning</a></li>
-              {% url "edit_acl" container=container.name as edit_acl_url %}
-              {% if edit_acl_url %}
-                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i> Sharing</a></li>
-                <li class="divider" />
+              {% url "edit_cors" container=container.name as edit_cors_url %}
+              {% if edit_cors_url %}
+                <li><a href="{{ edit_cors_url }}"><i class="fa fa-random"></i>&nbsp;Set CORS</a></li>
               {% endif %}
 
+              {% url "object_versioning" container=container.name as object_versioning_url %}
+              <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i>&nbsp;Versioning</a></li>
+
+              {% url "edit_acl" container=container.name as edit_acl_url %}
+              {% if edit_acl_url %}
+                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i>&nbsp;Sharing</a></li>
+                <li class="divider" />
+              {% endif %}
               <li>
                 <a href="{% url "delete_container" container=container.name %}" onclick="return confirm('Delete container {{container.name}}?');">
                   <i class="fa fa-trash-o"></i> Delete container
