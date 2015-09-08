@@ -1,0 +1,66 @@
+{% extends "vault/base.html" %}
+
+{% load lastpart %}
+{% load dateconv %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+  <span>Set CORS to container {{ container }}</span>
+{% endblock %}
+
+{% block content_top %}
+  <a href="#addcors_modal" data-target="#addcors_modal" data-toggle="modal" class="btn btn-primary">
+    <i class="fa fa-server"></i>&nbsp;&nbsp;Add Host
+  </a>
+{% endblock %}
+
+{% block content %}
+  {% include "addcors_modal.html" %}
+
+  <div class="panel panel-default">
+    <table class="items-list table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th style="width: 1em;" class="hidden-phone"></th>
+          <th>Name</th>
+          <th style="width: 1em;"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for host in cors %}
+      <tr>
+        <td class="hidden-phone"><i class="fa fa-server"></i></td>
+        <td>
+          {{ host }}
+        </td>
+        <td>
+          <a class="btn btn-xs btn-danger" href="{% url "edit_cors" container=container%}?delete={{ host }}"><i class="fa fa-trash-o icon-white"></i></a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">
+          <strong><center>There are no CORS for this container yet. Add a new host by clicking the red button.<center></strong>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block jsadd %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("a").tooltip({
+      'selector': '',
+      'placement': 'bottom'
+    });
+  });
+</script>
+{% endblock %}

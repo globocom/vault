@@ -7,7 +7,7 @@ from mock import Mock, patch
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
-                            DeleteUserView)
+                            DeleteUserView, UpdateProjectUserPasswordView)
 
 
 class ListUserTest(TestCase):
@@ -384,3 +384,90 @@ class DeleteUserTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(msgs[0].message, 'Error when delete user')
+
+
+class UpdateProjectUserPasswordTest(TestCase):
+
+    def setUp(self):
+        self.view = UpdateProjectUserPasswordView.as_view()
+
+        self.request = fake_request(method='GET')
+        self.request.user.is_superuser = True
+
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        # Retorna objeto usuário similar ao do request
+        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+
+        self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
+        self.mock_users_list.return_value = [fake_request(method='GET').user]
+
+        patch('identity.keystone.Keystone._keystone_conn',
+              Mock(return_value=None)).start()
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_reset_password_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 302)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_was_called(self, mock_find_user):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_find_user.assert_called_with(None)
+
+    @patch('identity.keystone.Keystone.create_password')
+    def test_create_password_was_called(self, mock_create_password):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_create_password.assert_called_with()
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_user_update_was_called(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_return_reset_password_with_new_password(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        response = self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+        self.assertIn(password, response.content)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_with_exception(self, mock_find_u_user):
+        self.request.user.is_authenticated = lambda: True
+        mock_find_u_user.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_user_update_with_exception(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        mock_user_update.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)

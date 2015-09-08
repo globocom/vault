@@ -144,12 +144,34 @@ def get_acls(storage_url, auth_token, container, http_conn):
     return (readers, writers)
 
 
+def get_cors(storage_url, auth_token, container, http_conn):
+    """ Returns CORS header of given container. """
+    headers = client.head_container(storage_url,
+                                    auth_token,
+                                    container,
+                                    http_conn=http_conn)
+
+    cors = headers.get('x-container-meta-access-control-allow-origin', '')
+
+    return cors
+
+
+def remove_duplicates(text, separator):
+    """ Removes possible duplicates from a separator-separated list. """
+    entries = text.split(separator)
+    cleaned_entries = list(set(entries))
+    text = separator.join(cleaned_entries)
+    return text
+
+
 def remove_duplicates_from_acl(acls):
     """ Removes possible duplicates from a comma-separated list. """
-    entries = acls.split(',')
-    cleaned_entries = list(set(entries))
-    acls = ','.join(cleaned_entries)
-    return acls
+    return remove_duplicates(acls, ',')
+
+
+def remove_duplicates_from_cors(cors):
+    """ Removes possible duplicates from a space-separated list. """
+    return remove_duplicates(cors, ' ')
 
 
 def get_account_containers(storage_url, auth_token):

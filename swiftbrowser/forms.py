@@ -20,6 +20,11 @@ class AddACLForm(forms.Form):
     write = forms.BooleanField(required=False)
 
 
+class AddCORSForm(forms.Form):
+    """ Form for CORS """
+    host = forms.CharField(max_length=100)
+
+
 class PseudoFolderForm(forms.Form):
     """ Upload form """
     foldername = forms.CharField(label='Pseudofolder Name', max_length=100, required=True,
