@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import mock
-from mock import patch
+from mock import patch, Mock
 from unittest import TestCase
 
 import swiftclient
@@ -779,7 +778,7 @@ class TestSwiftbrowser(TestCase):
         mock_get_account.return_value = fakes.get_account()
 
         patch('swiftbrowser.views.get_temp_key',
-              mock.Mock(return_value=None)).start()
+              Mock(return_value=None)).start()
 
         prefix = ''
         fakecontainer = 'fakecontainer'
@@ -798,7 +797,7 @@ class TestSwiftbrowser(TestCase):
         mock_get_account.return_value = fakes.get_account()
 
         patch('swiftbrowser.views.get_temp_key',
-              mock.Mock(return_value=None)).start()
+              Mock(return_value=None)).start()
 
         prefix = 'prefix/'
         fakecontainer = 'fakecontainer'
@@ -1426,4 +1425,3 @@ class TestSwiftbrowserCORS(TestCase):
         expected_arg = {'x-container-meta-access-control-allow-origin': 'globoi.com'}
 
         self.assertEqual(expected_arg, kargs['headers'])
-
