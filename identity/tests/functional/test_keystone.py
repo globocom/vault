@@ -80,37 +80,37 @@ class KeystoneBase(object):
             self.project = None
 
 
-class TestKeystoneV2(TestCase, KeystoneBase):
-
-    def setUp(self):
-
-        settings.OPENSTACK_API_VERSIONS = {
-            "identity": 2
-        }
-
-        cli = Client()
-        response = cli.post('/auth/login/', {
-            'username': os.getenv('VAULT_TEST_USER'),
-            'password': os.getenv('VAULT_TEST_PASS'),
-            'region': settings.OPENSTACK_KEYSTONE_URL
-        })
-
-        self.request = fake_request()
-        self.request.user.token = FakeToken(cli.session['token'].id)
-        self.request.user.service_catalog = cli.session['token'].serviceCatalog
-        self.request.user.is_superuser = True
-
-        self.keystone = Keystone(self.request)
-
-        self.project = None
-        self.user = None
-
-    def tearDown(self):
-        if self.project is not None:
-            self.project.delete()
-
-        if self.user is not None:
-            self.user.delete()
+# class TestKeystoneV2(TestCase, KeystoneBase):
+#
+#     def setUp(self):
+#
+#         settings.OPENSTACK_API_VERSIONS = {
+#             "identity": 2
+#         }
+#
+#         cli = Client()
+#         response = cli.post('/auth/login/', {
+#             'username': os.getenv('VAULT_TEST_USER'),
+#             'password': os.getenv('VAULT_TEST_PASS'),
+#             'region': settings.OPENSTACK_KEYSTONE_URL
+#         })
+#
+#         self.request = fake_request()
+#         self.request.user.token = FakeToken(cli.session['token'].id)
+#         self.request.user.service_catalog = cli.session['token'].serviceCatalog
+#         self.request.user.is_superuser = True
+#
+#         self.keystone = Keystone(self.request)
+#
+#         self.project = None
+#         self.user = None
+#
+#     def tearDown(self):
+#         if self.project is not None:
+#             self.project.delete()
+#
+#         if self.user is not None:
+#             self.user.delete()
 
 # To teste Keystone V3, we need to update the endpoints urls
 # class TestKeystoneV3(TestCase, KeystoneBase):
