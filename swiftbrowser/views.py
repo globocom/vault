@@ -209,7 +209,7 @@ def upload(request, container, prefix=None):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
-    redirect_url = get_admin_url(request)
+    redirect_url = get_endpoint(request, 'adminURL')
     redirect_url += reverse('objectview', kwargs={'container': container, })
 
     swift_url = storage_url + '/' + container + '/'
