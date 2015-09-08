@@ -204,7 +204,7 @@ class DeleteUserView(BaseUserView):
 
 
 class BaseProjectView(LoginRequiredMixin, FormView):
-    success_url = reverse_lazy('projects')
+    success_url = reverse_lazy('dashboard')
 
     def __init__(self):
         self.keystone = None
