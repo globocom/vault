@@ -14,21 +14,44 @@ log = logging.getLogger(__name__)
 
 
 # TODO: Ajustar para ser compliance com v3
+# def get_admin_url(request):
+# # def get_admin_url(service_catalog, project_id):
+#     final_url = None
+#     service_catalog = request.session.get('service_catalog')
+#
+#     if service_catalog:
+#         for service in service_catalog:
+#             if service['type'] == 'object-store':
+#                 final_url = service['endpoints'][0]['adminURL']
+#
+#     final_url = re.sub(r"\/AUTH_[\w]+\/?$",
+#                       "/AUTH_%s" % request.session.get('project_id'),
+#                       final_url)
+#
+#     return str(final_url)
+
+
 def get_admin_url(request):
-# def get_admin_url(service_catalog, project_id):
-    final_url = None
+    """
+    service_catalog na sessao eh referente a conexao com o project "admin"
+    para retornar a adminURL do "project_id" da sessao, usa-se a adminURL do
+    project "admin", substituindo o project_id
+
+    Isto eh necessario pois a conexao com o Keystone eh sempre com o mesmo
+    project, nao estando disponivel de forma direta a adminURL de um project
+    qualquer
+    """
+
     service_catalog = request.session.get('service_catalog')
+    project_id = request.session.get('project_id')
 
-    if service_catalog:
-        for service in service_catalog:
-            if service['type'] == 'object-store':
-                final_url = service['endpoints'][0]['adminURL']
+    adminURL = service_catalog['adminURL']
 
-    final_url = re.sub(r"\/AUTH_[\w]+\/?$",
-                      "/AUTH_%s" % request.session.get('project_id'),
-                      final_url)
+    _, project_admin_id = adminURL.split('AUTH_')
 
-    return str(final_url)
+    final_url = adminURL.replace(project_admin_id, project_id)
+
+    return final_url
 
 
 def get_public_url(request):
