@@ -4,6 +4,7 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
@@ -267,11 +268,6 @@ class ListProjectView(SuperUserMixin, TemplateView):
     template_name = "identity/projects.html"
 
     def get(self, request, *args, **kwargs):
-        # if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
-        #     form = ProjectForm(initial={'user': request.user, 'action': 'update'})
-        # else:
-        #     form = ProjectForm(initial={'user': request.user})
-
         context = self.get_context_data(**kwargs)
 
         return self.render_to_response(context)
@@ -425,57 +421,53 @@ class DeleteProjectView(BaseProjectView):
         post = request.POST
         user = post.get('user')
         password = post.get('password')
+
         project_id = self.kwargs.get('project_id')
         project_name = keystone.project_get(project_id).name
-        keystone_app = Keystone(request, username=user, password=password, tenant_name=project_name)
+        keystone_app = Keystone(request, username=user, password=password,
+                                tenant_name=project_name)
 
-        request.session['project_id'] = project_id
-        request.session['project_name'] = project_name
-        request.session['service_catalog'] = keystone_app.conn.service_catalog.get_data()
-        request.session['auth_token'] = keystone_app.conn.auth_token
+        if not keystone_app.conn:
+            # Falhou ao auntenticar com as credenciais enviadas pelo usuario
+            messages.add_message(request, messages.ERROR,
+                                 'User or password are incorrect')
+            form = DeleteProjectConfirm(data=request.POST)
+            return self.render_to_response(self.get_context_data(form=form, request=request))
 
-        storage_url = get_admin_url(request)
-        auth_token = keystone_app.conn.auth_token
+        endpoints = keystone_app.get_endpoints()
+
+        storage_url = endpoints['adminURL']
+        auth_token = keystone.conn.auth_token
+
+        swift_del_result = delete_swift_account(storage_url, auth_token)
+
+        if not swift_del_result:
+            messages.add_message(request, messages.ERROR,
+                                 'Error when delete project')
+
+            return HttpResponseRedirect(reverse('edit_project', kwargs={'project_id': project_id}))
 
         try:
-            delete_swift_account(storage_url, auth_token)
-            keystone.project_delete(kwargs.get('project_id'))
-            project_instance = Project.objects.get(id=project_id)
-            project_instance.delete()
+            keystone.vault_delete_project(project_id)
             messages.add_message(request, messages.SUCCESS, 'Successfully deleted project')
 
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(request, messages.ERROR,
                                  'Error when delete project')
-            # project = keystone_app.project_get(kwargs.get('project_id'))
+
         return HttpResponseRedirect(self.success_url)
-
-        form = DeleteProjectConfirm(initial={'user': request.user}, data=request.POST)
-
-        # try:
-#
-        #    messages.add_message(request, messages.SUCCESS,
-        #                         'Successfully deleted project')
-#
-        #    actionlog.log(request.user.username, 'delete', 'project_id: %s' % kwargs.get('project_id'))
-        # except Exception as e:
-        #    log.exception('Exception: %s' % e)
-        #    messages.add_message(request, messages.ERROR,
-        #                         'Error when delete project')
-        #    #project = keystone_app.project_get(kwargs.get('project_id'))
-        # return HttpResponseRedirect(self.success_url)
 
 
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
+        keystone = Keystone(request)
         project_id = request.POST.get('project')
         context = {}
 
         try:
-            project_users = self.keystone.user_list(project=project_id)
+            project_users = keystone.user_list(project=project_id)
 
             context['users'] = []
             unique_users = set()
@@ -506,7 +498,7 @@ class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
+        keystone = Keystone(request)
 
         project = request.POST.get('project')
         role = request.POST.get('role')
@@ -515,7 +507,7 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
         context = {'msg': 'ok'}
 
         try:
-            self.keystone.add_user_role(project=project, role=role, user=user)
+            keystone.add_user_role(project=project, role=role, user=user)
 
             actionlog.log(request.user.username, 'create', 'project: %s, role: %s, user: %s' % (project, role, user))
 
@@ -535,7 +527,7 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
+        keystone = Keystone(request)
 
         project = request.POST.get('project')
         role = request.POST.get('role')
@@ -544,7 +536,7 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
         context = {'msg': 'ok'}
 
         try:
-            self.keystone.remove_user_role(project=project, role=role, user=user)
+            keystone.remove_user_role(project=project, role=role, user=user)
 
             actionlog.log(request.user.username, 'delete', 'project: %s, role: %s, user: %s' % (project, role, user))
 
@@ -559,14 +551,14 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class UpdateProjectUserPasswordView(LoginRequiredMixin, View, JSONResponseMixin):
 
     def get(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
+        keystone = Keystone(self.request)
 
         context = {}
         try:
-            user = self.keystone.return_find_u_user(kwargs.get('project_id'))
+            user = keystone.return_find_u_user(kwargs.get('project_id'))
             new_password = Keystone.create_password()
 
-            self.keystone.user_update(user, password=new_password)
+            keystone.user_update(user, password=new_password)
             context = {'new_password': new_password}
 
             actionlog.log(request.user.username, 'update', user)

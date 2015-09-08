@@ -323,6 +323,46 @@ class TestKeystoneV2(TestCase):
 
         self.assertEqual(computed, expected)
 
+class TestKeystoneDeleteProject(TestCase):
+
+    def setUp(self):
+        self.request = fake_request()
+
+        self.project_id = 'rstuvwxyz'
+        self.user_id = 'abcdefghiklmnopq'
+        self.user_name = 'user_name'
+
+        self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
+
+        self.mock_project_delete = patch('identity.keystone.Keystone.project_delete').start()
+        self.mock_user_delete = patch('identity.keystone.Keystone.user_delete').start()
+
+        self.mock_return_find_u_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        self.mock_return_find_u_user.return_value = FakeResource(self.user_id, name=self.user_name)
+
+    def tearDown(self):
+        self.mock_keystone_is_allowed.stop()
+        self.mock_keystone_conn.stop()
+        self.mock_project_delete.stop()
+        self.mock_user_delete.stop()
+        self.mock_return_find_u_user.stop()
+
+    def test_vault_delete_project(self):
+
+        keystone = Keystone(self.request)
+
+        computed = keystone.vault_delete_project(self.project_id)
+
+        # Delete project
+        self.mock_project_delete.assert_called_with(self.project_id)
+
+        # Find project's user
+        self.mock_return_find_u_user.assert_called_with(self.project_id)
+
+        # Delete user
+        self.mock_user_delete.assert_called_with(self.user_id)
+
 
 class TestKeystonePermissionToConnect(TestCase):
     """

@@ -33,7 +33,7 @@ class Keystone(object):
     def __init__(self, request, username=None, password=None, tenant_name=None):
         self.request = request
 
-        if username and password:
+        if username is not None and password is not None:
             self.username = username
             self.password = password
         else:
@@ -70,9 +70,13 @@ class Keystone(object):
             'tenant_name': self.tenant_name,
             'username': self.username,
             'password': self.password,
+            'timeout': 3,
         }
 
-        conn = client.Client(**kwargs)
+        try:
+            conn = client.Client(**kwargs)
+        except exceptions.AuthorizationFailure:
+            return False
 
         return conn
 
@@ -298,7 +302,13 @@ class Keystone(object):
         }
 
     def vault_delete_project(self, project_id):
-        pass
+
+        user = self.return_find_u_user(project_id)
+
+        if user:
+            self.user_delete(user.id)
+
+        self.project_delete(project_id)
 
     def return_find_u_user(self, project_id):
         """

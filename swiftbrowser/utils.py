@@ -6,15 +6,16 @@ import string
 import random
 import logging
 
-from swiftclient import client
-
 from django.conf import settings
+from swiftclient import client
+from urlparse import urlparse
 
 log = logging.getLogger(__name__)
 
 
 # TODO: Ajustar para ser compliance com v3
 def get_admin_url(request):
+# def get_admin_url(service_catalog, project_id):
     final_url = None
     service_catalog = request.session.get('service_catalog')
 
@@ -181,39 +182,37 @@ def get_container_objects(container, storage_url, auth_token):
     return object_list
 
 
-def delete_container_and_objects(container, storage_url, auth_token, force=False):
-    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
-    objects = get_container_objects(container, storage_url, auth_token)
+def delete_swift_account(storage_url, auth_token):
 
-    for obj in objects:
-        client.delete_object(storage_url,
-                      token=auth_token,
-                      container=container,
-                      name=obj,
-                      http_conn=http_conn)
+    insecure = settings.SWIFT_INSECURE
 
     try:
-        client.delete_container(storage_url, auth_token,
-                                container, http_conn=http_conn)
+        # Criar container vazio para garantir que o account existe no swift
+        http_conn = client.http_connection(storage_url, insecure=insecure)
+
+        client.put_container(storage_url, auth_token, 'dummy_container',
+                             http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception('Fail to create container "dummy_container": {0}'.format(err))
         return False
 
-    return True
-
-
-def delete_swift_account(storage_url, auth_token):
-    """"""
-    containers = get_account_containers(storage_url, auth_token)
-
     try:
-        for container in containers:
-            delete_container_and_objects(container, storage_url, auth_token, force=True)
+        # Deletar o account
+        url = urlparse(storage_url)
+        domain = '{}://{}'.format(url.scheme, url.netloc)
+        path = url.path
 
-    # http_conn = client.HTTPConnection(storage_url, insecure=settings.SWIFT_INSECURE)
-    #
-    # try:
-    #   http_conn.request('DELETE', storage_url)
+        http_conn = client.HTTPConnection(domain, insecure=insecure)
+        headers = {'X-Auth-Token': auth_token}
+
+        resp = http_conn.request('DELETE', path, headers=headers)
+
+        if resp.status_code != 204:
+            log.exception('Fail to delete account {}: status code {}'.format(
+                storage_url, resp.status_code
+            ))
+            return False
+
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         return False
