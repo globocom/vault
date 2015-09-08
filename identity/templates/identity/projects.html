@@ -43,5 +43,11 @@
     </tbody>
   </table>
 </div>
+{% block js_bottom %}
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}
+
 {% pagination projects %}
 {% endblock %}
