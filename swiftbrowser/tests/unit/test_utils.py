@@ -82,5 +82,5 @@ class TestSwiftbrowserUtils(TestCase):
     def test_get_public_url(self):
         user = fakes.FakeUser(1, 'user')
         request = fake_request(user=user)
-        public_url = utils.get_public_url(request)
+        public_url = utils.get_endpoint(request, 'publicURL')
         self.assertEqual(public_url, 'http://fakepublicurl')

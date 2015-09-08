@@ -16,7 +16,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 
 from keystoneclient.exceptions import Conflict
 
-from swiftbrowser.utils import get_admin_url, delete_swift_account
+from swiftbrowser.utils import delete_swift_account
 
 from actionlogger import ActionLogger
 from identity.keystone import Keystone
