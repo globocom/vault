@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content_top %}
-  <a href="{% url "delete_project" idendity_project_id %}" class="delete-project btn btn-danger">Delete Project</a>
+  <a href="{% url "delete_project" idendity_project_id %}" class="btn btn-danger">Delete Project</a>
 {% endblock %}
 
 {% block content %}
@@ -84,10 +84,6 @@
 
 {% block js_bottom %}
 <script>
-
-Base.Forms.init({
-  'delete_btn_class': '.delete-project'
-});
 Project.Users.init({
   'projectId': '{{ idendity_project_id }}',
   'addUrl': '{% url "project_add_user" %}',
