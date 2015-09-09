@@ -252,8 +252,6 @@ def upload(request, container, prefix=None):
         'prefixes': prefixes,
     })
 
-    actionlog.log(request.user.username, "upload", swift_url)
-
     return render_to_response('upload_form.html', context,
                               context_instance=RequestContext(request))
 
