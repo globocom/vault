@@ -18,15 +18,6 @@ log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
 
-class UnauthorizedProject(Exception):
-
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
 class Keystone(object):
     """ return an authenticated keystone client """
 
@@ -45,11 +36,10 @@ class Keystone(object):
         else:
             self.tenant_name = getattr(settings, 'PROJECT_BOLADAO')
 
-        self._is_allowed_to_connect()
-
         self.conn = self._keystone_conn(request)
 
-    def _is_allowed_to_connect(self):
+    def _is_allowed_to_connect(self, blah=None):
+
         project = Project.objects.get(name=self.tenant_name)
         groups = self.request.user.groups.all()
 
@@ -59,9 +49,12 @@ class Keystone(object):
         # Pode autenticar se project pertence ao time do usuario, ou o usuario
         # eh superuser
         if not group_projects and not self.request.user.is_superuser:
-            raise UnauthorizedProject('Usuario sem permissao neste project')
+            msg = 'Permission denied to list this project'
+            raise exceptions.AuthorizationFailure(msg)
 
     def _keystone_conn(self, request):
+
+        self._is_allowed_to_connect()
 
         kwargs = {
             'remote_addr': request.environ.get('REMOTE_ADDR', ''),
