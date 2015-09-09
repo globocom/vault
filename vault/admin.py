@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from vault.models import *
 from django.contrib import admin
 

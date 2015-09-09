@@ -1,6 +1,8 @@
-""" Standalone webinterface for Openstack Swift. """
 # -*- coding: utf-8 -*-
 # pylint:disable=E1101
+
+""" Standalone webinterface for Openstack Swift. """
+
 import hmac
 import logging
 import os

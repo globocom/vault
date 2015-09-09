@@ -1,6 +1,6 @@
+# -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from mock import patch
 
 from dashboard.widgets import BaseWidget
 
