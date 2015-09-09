@@ -25,13 +25,20 @@ class ActionLogger(object):
         if action not in self._actions.keys():
             raise ActionNotFound('Invalid action: "%s"' % action)
 
-        self.audit.user = str(user)
-        self.audit.action = self._actions[action]
-        self.audit.item = str(item)
+        self.audit.user = self.to_str(user)
+        self.audit.action = self.to_str(self._actions[action])
+        self.audit.item = self.to_str(item)
         self.audit.save()
 
-        msg = 'User (%s) %s: %s' % (str(user),
-                                    self._actions[action],
-                                    str(item))
+        msg = 'User ({}) {}: {}'.format(self.to_str(user),
+                                        self.to_str(self._actions[action]),
+                                        self.to_str(item))
 
         syslog.syslog(syslog.LOG_INFO, msg)
+
+    def to_str(self, obj):
+
+        if isinstance(obj, unicode):
+            return unicode(obj)
+        else:
+            return str(obj)
