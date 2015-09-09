@@ -30,6 +30,7 @@ class ActionLogger(object):
         self.audit.item = item
         self.audit.save()
 
+
         msg = 'User {} {} {}'.format(user, self._actions[action], self.to_str(item))
 
         syslog.syslog(syslog.LOG_INFO, msg)
@@ -37,7 +38,7 @@ class ActionLogger(object):
     def to_str(self, obj):
 
         if isinstance(obj, unicode):
-            return unicode(obj)
+            return obj.encode('utf8')
         elif isinstance(obj, str):
             return str(obj)
         else:
