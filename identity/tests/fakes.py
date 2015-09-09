@@ -1,4 +1,5 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+
 import factory
 from django.contrib.auth.models import User, Group
 
