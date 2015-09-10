@@ -227,7 +227,7 @@ class TestKeystoneV2(TestCase):
 
         keystone = Keystone(self.request, tenant_name='tenant_name')
 
-        expected = {'status': False, 'reason': 'Admin required'}
+        expected = {'status': False, 'reason': 'Superuser required.'}
         computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)

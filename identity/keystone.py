@@ -204,8 +204,10 @@ class Keystone(object):
         try:
             project = self.project_create(project_name, description=description,
                                           enabled=True)
+        except exceptions.Conflict:
+            return {'status': False, 'reason': 'Duplicated project name.'}
         except exceptions.Forbidden:
-            return {'status': False, 'reason': 'Admin required'}
+            return {'status': False, 'reason': 'Superuser required.'}
 
         user_password = Keystone.create_password()
 

@@ -336,7 +336,7 @@ class CreateProjectView(BaseProjectView):
             if not response.get('status'):
                 log.exception('Exception: {}'.format(response.get('status')))
                 messages.add_message(request, messages.ERROR,
-                                     "Error when create project")
+                                     response.get('reason'))
 
                 return self.render_to_response(self.get_context_data(form=form, request=request))
 
