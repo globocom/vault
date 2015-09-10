@@ -31,7 +31,7 @@ from swiftbrowser.forms import CreateContainerForm, PseudoFolderForm, \
 from swiftbrowser.utils import replace_hyphens, prefix_list, \
     pseudofolder_object_list, get_temp_key, \
     get_acls, remove_duplicates_from_acl, get_endpoint, get_token_id, \
-    get_cors, remove_duplicates_from_cors
+    get_cors, remove_duplicates_from_cors, to_str
 
 from vault import utils
 
@@ -310,7 +310,7 @@ def download(request, container, objectname):
         'X-Storage-Token': auth_token
     }
 
-    url = '{0}/{1}/{2}'.format(storage_url, container, objectname)
+    url = '{0}/{1}/{2}'.format(storage_url, container, to_str(objectname))
 
     res = requests.get(url, headers=headers, verify=not settings.SWIFT_INSECURE)
 
@@ -596,7 +596,7 @@ def metadataview(request, container, objectname=None):
 
     url = '{0}/{1}'.format(storage_url, container)
     if objectname:
-        url = '{0}/{1}'.format(url, objectname)
+        url = '{0}/{1}'.format(url, to_str(objectname))
 
     response = requests.get(url, headers=headers,
                             verify=not settings.SWIFT_INSECURE)

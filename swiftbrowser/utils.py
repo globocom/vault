@@ -240,3 +240,13 @@ def delete_swift_account(storage_url, auth_token):
         return False
 
     return True
+
+
+def to_str(obj):
+
+    if isinstance(obj, unicode):
+        return obj.encode('utf8')
+    elif isinstance(obj, str):
+        return str(obj)
+    else:
+        return repr(obj)

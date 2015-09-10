@@ -27,7 +27,7 @@ class ActionLogger(object):
 
         self.audit.user = user
         self.audit.action = self._actions[action]
-        self.audit.item = item
+        self.audit.item = self.to_str(item)
         self.audit.save()
 
         msg = 'User {} {} {}'.format(user, self._actions[action], self.to_str(item))
