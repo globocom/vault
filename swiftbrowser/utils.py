@@ -22,16 +22,27 @@ def get_endpoint(request, endpoint_type):
     Isto eh necessario pois a conexao com o Keystone eh sempre com o mesmo
     project, nao estando disponivel de forma direta o service_catalog de um
     project qualquer
-    """
 
+    :param request: http resquest
+    :param endpoint_type: adminURL, publicURL, internalURL
+    :return: endpoint url or None
+
+    """
     service_catalog = request.session.get('service_catalog')
     project_id = request.session.get('project_id')
 
-    adminURL = service_catalog[endpoint_type]
+    if not service_catalog and project_id:
+        raise ValueError('Dados da sessao incompletos.')
 
-    _, project_admin_id = adminURL.split('AUTH_')
+    try:
+        endpoint_on_session = service_catalog.get(endpoint_type)
 
-    final_url = adminURL.replace(project_admin_id, project_id)
+    except KeyError:
+        return None
+
+    _, project_admin_id = endpoint_on_session.split('AUTH_')
+
+    final_url = endpoint_on_session.replace(project_admin_id, project_id)
 
     return final_url
 

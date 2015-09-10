@@ -75,32 +75,11 @@ def fake_request(path='/', method='GET', user=None, extra={}):
 
 def build_fake_session():
     fake_session = SessionStore()
-    fake_session['project_id'] = 1
-    fake_session['service_catalog'] = [
-        {
-            u'endpoints': [{
-                u'adminURL': u'https://fakeurl',
-                u'region': u'RegionOne',
-                u'id': u'fakeid',
-                u'internalURL': u'https://fakeurl',
-                u'publicURL': u'http://fakepublicurl'
-            }],
-            u'endpoints_links': [],
-            u'type': u'object-store',
-            u'name': u'swift'
-        },
-        {
-            u'endpoints': [{
-                u'adminURL': u'https://fakeurl',
-                u'region': u'RegionOne',
-                u'id': u'fakeid',
-                u'internalURL': u'https://fakeurl',
-                u'publicURL': u'https://fakeurl',
-            }],
-            u'endpoints_links': [],
-            u'type': u'identity',
-            u'name': u'keystone'
+    fake_session['project_id'] = '1'
+    fake_session['service_catalog'] = {
+            'adminURL': 'https://fake.api.globoi.com/v1/AUTH_XPTO',
+            'publicURL': 'http://fake.s3.glbimg.com/v1/AUTH_XPTO',
+            'internalURL': 'http://fake.i.s3.glbimg.com/v1/AUTH_XPTO'
         }
-    ]
 
     return fake_session
