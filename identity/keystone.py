@@ -3,19 +3,12 @@
 import random
 import string
 
-import logging
-
 from django.conf import settings
 from django.views.decorators.debug import sensitive_variables
 from keystoneclient.v2_0 import client
 from keystoneclient.openstack.common.apiclient import exceptions
 
 from vault.models import GroupProjects, Project, AreaProjects
-from actionlogger import ActionLogger
-
-
-log = logging.getLogger(__name__)
-actionlog = ActionLogger()
 
 
 class Keystone(object):
@@ -38,7 +31,7 @@ class Keystone(object):
 
         self.conn = self._keystone_conn(request)
 
-    def _is_allowed_to_connect(self, blah=None):
+    def _is_allowed_to_connect(self):
 
         project = Project.objects.get(name=self.tenant_name)
         groups = self.request.user.groups.all()
@@ -66,10 +59,7 @@ class Keystone(object):
             'timeout': 3,
         }
 
-        try:
-            conn = client.Client(**kwargs)
-        except exceptions.AuthorizationFailure:
-            return False
+        conn = client.Client(**kwargs)
 
         return conn
 
@@ -86,8 +76,15 @@ class Keystone(object):
             user.project_id = getattr(user, "tenantId", None)
         return user
 
-    def user_list(self, project=None):
-        return self.conn.users.list(project)
+    def user_list(self, project_id=None):
+        """
+        List project users. If no project is defined, it will list all users.
+
+        :param project_id: string or None
+        :return: list
+        :raises: NotFound if project does not exists
+        """
+        return self.conn.users.list(project_id)
 
     def user_get(self, user_id):
         user = self.conn.users.get(user_id)

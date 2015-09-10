@@ -12,11 +12,15 @@ from backstage_accounts.views import OAuthBackstageCallback,\
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.views.generic.base import View
+from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
+
+from keystoneclient.openstack.common.apiclient import exceptions as \
+    keystone_exceptions
 
 from actionlogger import ActionLogger
 
@@ -62,8 +66,21 @@ def switch(request, project_id):
 class LoginRequiredMixin(object):
     """ Mixin for Class Views that needs a user login """
 
+    def __init__(self):
+        self.keystone = None
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+
+        try:
+            self.keystone = Keystone(request)
+        except keystone_exceptions.AuthorizationFailure as err:
+            log.error(err)
+            msg = 'Object storage authentication failed'
+            messages.add_message(request, messages.SUCCESS, msg)
+
+            return redirect('dashboard')
+
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

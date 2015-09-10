@@ -15,20 +15,21 @@ from vault.tests.fakes import fake_request
 class TestKeystoneConnection(TestCase):
     """
     Teste de casos de conexao com o Keystone. Separado dos demais testes, pois
-    o metodo de conexao esta mockado nos outros casos.
+    o metodo de conexao esta mockado nos outros testes.
     """
 
     def setUp(self):
         self.request = fake_request()
 
         self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
-        self.mock_keystone_client = patch('identity.keystone.client').start()
+        self.mock_keystone_client = patch('identity.keystone.client.Client').start()
 
     def tearDown(self):
         patch.stopall()
 
     def test_connection_with_username_and_password(self):
-        _ = Keystone(self.request, tenant_name='fake_tenant', username='fake_user', password='secret')
+        _ = Keystone(self.request, tenant_name='fake_tenant',
+                     username='fake_user', password='secret')
 
         expected = {
             'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
@@ -40,7 +41,7 @@ class TestKeystoneConnection(TestCase):
             'timeout': 3,
         }
 
-        self.mock_keystone_client.Client.assert_called_with(**expected)
+        self.mock_keystone_client.assert_called_with(**expected)
 
     def test_connection_with_NO_username_nor_password(self):
         _ = Keystone(self.request, tenant_name='fake_tenant')
@@ -55,7 +56,7 @@ class TestKeystoneConnection(TestCase):
             'timeout': 3,
         }
 
-        self.mock_keystone_client.Client.assert_called_with(**expected)
+        self.mock_keystone_client.assert_called_with(**expected)
 
     def test_connection_with_NO_tenant_name(self):
         _ = Keystone(self.request)
@@ -70,14 +71,16 @@ class TestKeystoneConnection(TestCase):
             'timeout': 3,
         }
 
-        self.mock_keystone_client.Client.assert_called_with(**expected)
+        self.mock_keystone_client.assert_called_with(**expected)
 
+    def test_connection_fail_on_client(self):
+        self.mock_keystone_client.side_effect = exceptions.AuthorizationFailure('abc')
+        self.assertRaises(exceptions.AuthorizationFailure, Keystone, self.request)
 
 class TestKeystoneV2(TestCase):
     """ Test keystone version 2 """
 
     def setUp(self):
-        # self.user = UserFactory()
         self.request = fake_request()
 
         project_id = 'abcdefghiklmnopq'
@@ -97,7 +100,6 @@ class TestKeystoneV2(TestCase):
         self.mock_project_get = patch('identity.keystone.Keystone.project_get').start()
         self.mock_project_get.return_value = fake_project
 
-        # self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
 
         self.group = GroupFactory(id=1)
@@ -106,11 +108,49 @@ class TestKeystoneV2(TestCase):
     def tearDown(self):
         patch.stopall()
 
+    def test_user_list_valid_project_id(self):
+        """
+        Testa metodo de listagem de usuario para o caso de um project_id valido
+        que possui usuarios
+        """
+        expected = ['uma', 'lista', 'qualquer']
+
+        self.mock_keystone_conn.return_value.users.list.return_value = expected
+        keystone = Keystone(self.request)
+
+        computed = keystone.user_list(project_id='123454321')
+
+        self.assertEqual(computed, expected)
+
+    def test_user_list_valid_project_id_with_no_user(self):
+        """
+        Testa metodo de listagem de usuario para o caso de um project_id valido
+        que NAO possui usuarios
+        """
+        expected = []
+
+        self.mock_keystone_conn.return_value.users.list.return_value = expected
+        keystone = Keystone(self.request)
+
+        computed = keystone.user_list(project_id='123454321')
+
+        self.assertEqual(computed, expected)
+
+    def test_user_list_invalid_project(self):
+        """
+        Testa metodo de listagem de usuario para o caso de um project_id
+        invalido
+        """
+        self.mock_keystone_conn.return_value.users.list.side_effect = exceptions.NotFound
+        keystone = Keystone(self.request)
+
+        self.assertRaises(exceptions.NotFound, keystone.user_list)
+
     @patch('identity.keystone.Keystone.add_user_role')
     def test_keystone_create_user_with_no_role(self, mock_add_user_role):
         """ Cadastra usuario sem setar role para nenhum project """
 
-        keystone = Keystone(self.request, 'tenant_name')
+        keystone = Keystone(self.request)
         keystone.user_create('name', email='email@email.com',
                              password='password', project_id='project_id',
                              enabled=True)
@@ -328,7 +368,6 @@ class TestKeystoneDeleteProject(TestCase):
         self.user_id = 'abcdefghiklmnopq'
         self.user_name = 'user_name'
 
-        # self.mock_keystone_is_allowed = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
 
         self.mock_project_delete = patch('identity.keystone.Keystone.project_delete').start()
@@ -344,7 +383,7 @@ class TestKeystoneDeleteProject(TestCase):
 
         keystone = Keystone(self.request)
 
-        computed = keystone.vault_delete_project(self.project_id)
+        _ = keystone.vault_delete_project(self.project_id)
 
         # Delete project
         self.mock_project_delete.assert_called_with(self.project_id)

@@ -20,10 +20,11 @@ from swiftbrowser.utils import delete_swift_account
 
 from actionlogger import ActionLogger
 from identity.keystone import Keystone
-from identity.forms import UserForm, CreateUserForm, UpdateUserForm, ProjectForm, DeleteProjectConfirm
+from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
+                            ProjectForm, DeleteProjectConfirm)
 
 from vault import utils
-from vault.models import GroupProjects, AreaProjects, Project
+from vault.models import GroupProjects, AreaProjects
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
 
 log = logging.getLogger(__name__)
@@ -35,16 +36,19 @@ class ListUserView(SuperUserMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ListUserView, self).get_context_data(**kwargs)
-        keystone = Keystone(self.request)
         page = self.request.GET.get('page', 1)
 
+        users = []
+
         try:
-            users = sorted(keystone.user_list(), key=lambda l: l.name.lower())
-            context['users'] = utils.generic_pagination(users, page)
+            users = self.keystone.user_list()
         except Exception as e:
             log.exception('Exception: %s' % e)
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
+
+        sorted_users = sorted(users, key=lambda l: l.name.lower())
+        context['users'] = utils.generic_pagination(sorted_users, page)
 
         return context
 
@@ -52,9 +56,6 @@ class ListUserView(SuperUserMixin, TemplateView):
 class BaseUserView(SuperUserMixin, FormView):
     form_class = UserForm
     success_url = reverse_lazy('admin_list_users')
-
-    def __init__(self):
-        self.keystone = None
 
     def _fill_project_choices(self, form):
         if self.keystone and 'project' in form.fields:
@@ -80,7 +81,6 @@ class BaseUserView(SuperUserMixin, FormView):
         return super(BaseUserView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
         form = self.get_form(self.form_class)
 
         self._fill_project_choices(form)
@@ -112,7 +112,6 @@ class CreateUserView(BaseUserView):
     template_name = "identity/user_create.html"
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
         form = self.get_form(self.form_class)
 
         self._fill_project_choices(form)
@@ -148,7 +147,6 @@ class UpdateUserView(BaseUserView):
     template_name = "identity/user_edit.html"
 
     def post(self, request, *args, **kwargs):
-        self.keystone = Keystone(self.request)
         form = self.get_form(self.form_class)
 
         self._fill_project_choices(form)
@@ -184,7 +182,6 @@ class UpdateUserView(BaseUserView):
 class DeleteUserView(BaseUserView):
 
     def get(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
 
         try:
             self.keystone.user_delete(kwargs.get('user_id'))
@@ -192,8 +189,6 @@ class DeleteUserView(BaseUserView):
                                  'Successfully deleted user')
             actionlog.log(request.user.username, 'delete',
                           'user_id: %s' % kwargs.get('user_id'))
-
-            user = self.keystone.user_get(kwargs.get('user_id'))
 
         except Exception as e:
             log.exception('Exception: %s' % e)
@@ -205,9 +200,6 @@ class DeleteUserView(BaseUserView):
 
 class BaseProjectView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy('dashboard')
-
-    def __init__(self):
-        self.keystone = None
 
     def get(self, request, *args, **kwargs):
         if request.resolver_match is not None and request.resolver_match.url_name == 'edit_project':
@@ -233,7 +225,6 @@ class BaseProjectView(LoginRequiredMixin, FormView):
             project_id = form.data.get('id')
 
         if project_id:
-            self.keystone = Keystone(request)
             project = self.keystone.project_get(project_id)
             form.initial = project.to_dict()
 
@@ -274,13 +265,12 @@ class ListProjectView(SuperUserMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ListProjectView, self).get_context_data(**kwargs)
-        keystone = Keystone(self.request)
         page = self.request.GET.get('page', 1)
 
         context['is_admin'] = self.request.path[0:16] == '/admin/projects/'
 
         try:
-            projects = sorted(keystone.project_list(),
+            projects = sorted(self.keystone.project_list(),
                                 key=lambda l: l.name.lower())
             context['projects'] = utils.generic_pagination(projects, page)
         except Exception as e:
@@ -329,14 +319,13 @@ class CreateProjectView(BaseProjectView):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         if form.is_valid():
-            keystone = Keystone(request)
             post = request.POST
             description = post.get('description')
 
             if description == '':
                 description = None
 
-            response = keystone.vault_create_project(post.get('name'),
+            response = self.keystone.vault_create_project(post.get('name'),
                                                  post.get('groups'),
                                                  post.get('areas'),
                                                  description=description)
@@ -376,7 +365,6 @@ class UpdateProjectView(BaseProjectView):
         post = request.POST
 
         if form.is_valid():
-            keystone = Keystone(self.request)
             enabled = False if post.get('enabled') in ('False', '0') else True
             group_id = post.get('groups')
             area_id = post.get('areas')
@@ -386,9 +374,9 @@ class UpdateProjectView(BaseProjectView):
                 description = None
 
             try:
-                project = keystone.project_get(post.get('id'))
+                project = self.keystone.project_get(post.get('id'))
 
-                keystone.vault_update_project(project.id, project.name,
+                self.keystone.vault_update_project(project.id, project.name,
                                               group_id, area_id,
                                               description=description,
                                               enabled=enabled)
@@ -405,7 +393,8 @@ class UpdateProjectView(BaseProjectView):
 
             return self.form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form, request=request))
+            context = self.get_context_data(form=form, request=request)
+            return self.render_to_response(context)
 
 
 class DeleteProjectView(BaseProjectView):
@@ -416,14 +405,13 @@ class DeleteProjectView(BaseProjectView):
         return self.render_to_response({'form': form})
 
     def post(self, request, *args, **kwargs):
-        keystone = Keystone(request)
 
         post = request.POST
         user = post.get('user')
         password = post.get('password')
 
         project_id = self.kwargs.get('project_id')
-        project_name = keystone.project_get(project_id).name
+        project_name = self.keystone.project_get(project_id).name
         keystone_app = Keystone(request, username=user, password=password,
                                 tenant_name=project_name)
 
@@ -462,12 +450,11 @@ class DeleteProjectView(BaseProjectView):
 class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        keystone = Keystone(request)
         project_id = request.POST.get('project')
         context = {}
 
         try:
-            project_users = keystone.user_list(project=project_id)
+            project_users = self.keystone.user_list(project_id=project_id)
 
             context['users'] = []
             unique_users = set()
@@ -498,7 +485,6 @@ class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        keystone = Keystone(request)
 
         project = request.POST.get('project')
         role = request.POST.get('role')
@@ -507,9 +493,10 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
         context = {'msg': 'ok'}
 
         try:
-            keystone.add_user_role(project=project, role=role, user=user)
+            self.keystone.add_user_role(project=project, role=role, user=user)
 
-            actionlog.log(request.user.username, 'create', 'project: %s, role: %s, user: %s' % (project, role, user))
+            item = 'project: %s, role: %s, user: %s' % (project, role, user)
+            actionlog.log(request.user.username, 'create', item)
 
             return self.render_to_response(context)
 
@@ -527,7 +514,6 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-        keystone = Keystone(request)
 
         project = request.POST.get('project')
         role = request.POST.get('role')
@@ -536,9 +522,10 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
         context = {'msg': 'ok'}
 
         try:
-            keystone.remove_user_role(project=project, role=role, user=user)
+            self.keystone.remove_user_role(project=project, role=role, user=user)
 
-            actionlog.log(request.user.username, 'delete', 'project: %s, role: %s, user: %s' % (project, role, user))
+            item = 'project: %s, role: %s, user: %s' % (project, role, user)
+            actionlog.log(request.user.username, 'delete', item)
 
             return self.render_to_response(context)
 
@@ -551,14 +538,13 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 class UpdateProjectUserPasswordView(LoginRequiredMixin, View, JSONResponseMixin):
 
     def get(self, request, *args, **kwargs):
-        keystone = Keystone(self.request)
 
         context = {}
         try:
-            user = keystone.return_find_u_user(kwargs.get('project_id'))
+            user = self.keystone.return_find_u_user(kwargs.get('project_id'))
             new_password = Keystone.create_password()
 
-            keystone.user_update(user, password=new_password)
+            self.keystone.user_update(user, password=new_password)
             context = {'new_password': new_password}
 
             actionlog.log(request.user.username, 'update', user)
