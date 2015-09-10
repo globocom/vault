@@ -77,6 +77,7 @@ class TestKeystoneConnection(TestCase):
         self.mock_keystone_client.side_effect = exceptions.AuthorizationFailure('abc')
         self.assertRaises(exceptions.AuthorizationFailure, Keystone, self.request)
 
+
 class TestKeystoneV2(TestCase):
     """ Test keystone version 2 """
 
