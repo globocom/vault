@@ -1,6 +1,8 @@
-""" Standalone webinterface for Openstack Swift. """
 # -*- coding: utf-8 -*-
 # pylint:disable=E0611, E1101
+
+""" Standalone webinterface for Openstack Swift. """
+
 import re
 import string
 import random

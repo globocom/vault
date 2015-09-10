@@ -1,6 +1,8 @@
-""" Standalone webinterface for Openstack Swift. """
 # -*- coding: utf-8 -*-
 # pylint:disable=E1101
+
+""" Standalone webinterface for Openstack Swift. """
+
 import hmac
 import logging
 import os
@@ -249,8 +251,6 @@ def upload(request, container, prefix=None):
         'prefix': prefix if prefix is not None else '',
         'prefixes': prefixes,
     })
-
-    actionlog.log(request.user.username, "upload", swift_url)
 
     return render_to_response('upload_form.html', context,
                               context_instance=RequestContext(request))
