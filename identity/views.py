@@ -212,6 +212,7 @@ class BaseProjectView(LoginRequiredMixin, FormView):
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
+
         request = kwargs.get('request')
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project_id = kwargs.get('project_id')
@@ -239,7 +240,8 @@ class BaseProjectView(LoginRequiredMixin, FormView):
 
             user = self.keystone.return_find_u_user(kwargs.get('project_id'))
 
-            context['user_project'] = user.username
+            if user:
+                context['user_project'] = user.username
 
             if context['show_roles']:
 
