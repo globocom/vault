@@ -79,8 +79,35 @@ class TestSwiftbrowserUtils(TestCase):
 
         self.assertIsNone(computed_key)
 
-    def test_get_public_url(self):
+    def test_get_endpoint_urls(self):
         user = fakes.FakeUser(1, 'user')
         request = fake_request(user=user)
+
+        admin_url = utils.get_endpoint(request, 'adminURL')
+        expected_admin_url = 'https://fake.api.globoi.com/v1/AUTH_1'
+
         public_url = utils.get_endpoint(request, 'publicURL')
-        self.assertEqual(public_url, 'http://fakepublicurl')
+        expected_public_url = 'http://fake.s3.glbimg.com/v1/AUTH_1'
+
+        internal_url = utils.get_endpoint(request, 'internalURL')
+        expected_internal_url = 'http://fake.i.s3.glbimg.com/v1/AUTH_1'
+
+        self.assertEqual(admin_url, expected_admin_url)
+        self.assertEqual(public_url, expected_public_url)
+        self.assertEqual(internal_url, expected_internal_url)
+
+    def test_get_endpoint_not_found_return_none(self):
+        user = fakes.FakeUser(1, 'user')
+        request = fake_request(user=user)
+        endpoint = utils.get_endpoint(request, 'Invalid')
+        self.assertEqual(endpoint, None)
+
+    def test_get_endpoint_without_service_catalog(self):
+        user = fakes.FakeUser(1, 'user')
+        request = fake_request(user=user)
+        request.session['service_catalog'] = None
+
+        with self.assertRaises(ValueError):
+            utils.get_endpoint(request, 'internalURL')
+
+
