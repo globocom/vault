@@ -390,7 +390,7 @@ class TestKeystonePermissionToConnect(TestCase):
         self.conn = Keystone(self.request, tenant_name='tenant_name')
 
         self.assertTrue(isinstance(self.conn, Keystone))
-#
+
     def test_regular_user_creates_keystone_conn_on_a_NOT_allowed_project(self):
 
         # Se este mock retorna uma lista  vazia, significa que o time do

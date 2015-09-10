@@ -109,5 +109,3 @@ class TestSwiftbrowserUtils(TestCase):
 
         with self.assertRaises(ValueError):
             utils.get_endpoint(request, 'internalURL')
-
-

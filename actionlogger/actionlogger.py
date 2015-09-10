@@ -30,7 +30,6 @@ class ActionLogger(object):
         self.audit.item = item
         self.audit.save()
 
-
         msg = 'User {} {} {}'.format(user, self._actions[action], self.to_str(item))
 
         syslog.syslog(syslog.LOG_INFO, msg)

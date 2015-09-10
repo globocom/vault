@@ -80,6 +80,6 @@ def build_fake_session():
             'adminURL': 'https://fake.api.globoi.com/v1/AUTH_XPTO',
             'publicURL': 'http://fake.s3.glbimg.com/v1/AUTH_XPTO',
             'internalURL': 'http://fake.i.s3.glbimg.com/v1/AUTH_XPTO'
-        }
+    }
 
     return fake_session
