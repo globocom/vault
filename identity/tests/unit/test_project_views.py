@@ -230,23 +230,6 @@ class CreateProjectTest(TestCase):
 
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
-    # Este tratamento foi alterado na view
-    # @patch('identity.keystone.Keystone.vault_create_project')
-    # def test_project_create_view_exception(self, mock):
-    #     mock.side_effect = Exception
-    #
-    #     self.request.method = 'POST'
-    #     post = self.request.POST.copy()
-    #     post.update({'name': 'aaa', 'description': 'desc', 'areas': 1,
-    #                  'groups': 1})
-    #     self.request.POST = post
-    #
-    #     _ = self.view(self.request)
-    #     msgs = [msg for msg in self.request._messages]
-    #
-    #     self.assertGreater(len(msgs), 0)
-    #     self.assertEqual(msgs[0].message, 'Error when create project')
-
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_return_status_false(self, mock):
         mock.return_value = {
@@ -332,11 +315,6 @@ class CreateProjectSuccessTest(TestCase):
             'internalURL': 'https://internalURL',
         }
 
-        # project_create_result = {
-        #     'user': FakeResource('abc', name='fake_user'),
-        #     'project': FakeResource('edf', name='fake_project'),
-        #     'user_password': 'secret'
-        # }
         project_create_result = {
             'user_name': 'fake_user',
             'project_name': 'fake_project',

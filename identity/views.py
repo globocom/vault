@@ -422,12 +422,14 @@ class DeleteProjectView(BaseProjectView):
             messages.add_message(request, messages.ERROR,
                                  'User or password are incorrect')
             form = DeleteProjectConfirm(data=request.POST)
-            return self.render_to_response(self.get_context_data(form=form, request=request))
+
+            context = self.get_context_data(form=form, request=request)
+            return self.render_to_response(context)
 
         endpoints = keystone_app.get_endpoints()
 
         storage_url = endpoints['adminURL']
-        auth_token = keystone.conn.auth_token
+        auth_token = self.keystone.conn.auth_token
 
         swift_del_result = delete_swift_account(storage_url, auth_token)
 
@@ -438,7 +440,7 @@ class DeleteProjectView(BaseProjectView):
             return HttpResponseRedirect(reverse('edit_project', kwargs={'project_id': project_id}))
 
         try:
-            keystone.vault_delete_project(project_id)
+            self.keystone.vault_delete_project(project_id)
             messages.add_message(request, messages.SUCCESS, 'Successfully deleted project')
 
         except Exception as e:
