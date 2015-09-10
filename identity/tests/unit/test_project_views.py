@@ -12,6 +12,7 @@ from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
 from vault.tests.fakes import fake_request
 
 
+
 class ListProjectTest(TestCase):
 
     def setUp(self):
@@ -481,3 +482,22 @@ class UpdateProjectTest(TestCase):
         self.assertEqual(computed_form.initial['description'], project.description)
         self.assertEqual(computed_form.initial['groups'], group_id)
         self.assertEqual(computed_form.initial['areas'], area_id)
+
+
+class DeleteProjectTest(TestCase):
+
+    def setUp(self):
+        self.view = views.DeleteProjectView.as_view()
+        self.request = fake_request()
+        self.request.user.is_authenticated = lambda: True
+
+        patch('actionlogger.ActionLogger.log',
+              Mock(return_value=None)).start()
+
+        self.project_id = 1
+
+    def test_get_delete_url_return_200(self):
+        response = self.view(self.request)
+        self.assertEqual(200, response.status_code)
+
+
