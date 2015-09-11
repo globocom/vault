@@ -77,6 +77,7 @@ class TestKeystoneConnection(TestCase):
         self.mock_keystone_client.side_effect = exceptions.AuthorizationFailure('abc')
         self.assertRaises(exceptions.AuthorizationFailure, Keystone, self.request)
 
+
 class TestKeystoneV2(TestCase):
     """ Test keystone version 2 """
 
@@ -227,7 +228,7 @@ class TestKeystoneV2(TestCase):
 
         keystone = Keystone(self.request, tenant_name='tenant_name')
 
-        expected = {'status': False, 'reason': 'Admin required'}
+        expected = {'status': False, 'reason': 'Superuser required.'}
         computed = keystone.vault_create_project(self.project.name, 1, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)

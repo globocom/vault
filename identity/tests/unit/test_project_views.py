@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 
-from django.conf import settings
 from mock import Mock, patch
 from unittest import TestCase
+
+from keystoneclient.openstack.common.apiclient import exceptions
 
 from identity import views
 from identity.tests.fakes import FakeResource
@@ -230,23 +231,6 @@ class CreateProjectTest(TestCase):
 
         mock.assert_called_with('aaa', 1, 1, description='desc')
 
-    # Este tratamento foi alterado na view
-    # @patch('identity.keystone.Keystone.vault_create_project')
-    # def test_project_create_view_exception(self, mock):
-    #     mock.side_effect = Exception
-    #
-    #     self.request.method = 'POST'
-    #     post = self.request.POST.copy()
-    #     post.update({'name': 'aaa', 'description': 'desc', 'areas': 1,
-    #                  'groups': 1})
-    #     self.request.POST = post
-    #
-    #     _ = self.view(self.request)
-    #     msgs = [msg for msg in self.request._messages]
-    #
-    #     self.assertGreater(len(msgs), 0)
-    #     self.assertEqual(msgs[0].message, 'Error when create project')
-
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_return_status_false(self, mock):
         mock.return_value = {
@@ -264,7 +248,24 @@ class CreateProjectTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when create project')
+        self.assertEqual(msgs[0].message, 'Blah')
+
+    @patch('identity.keystone.Keystone.project_create')
+    def test_project_create_conflict_on_create_project(self, mock):
+
+        mock.side_effect = exceptions.Conflict
+
+        self.request.method = 'POST'
+        post = self.request.POST.copy()
+        post.update({'name': 'aaa', 'description': 'desc', 'areas': 1,
+                     'groups': 1})
+        self.request.POST = post
+
+        _ = self.view(self.request)
+        msgs = [msg for msg in self.request._messages]
+
+        self.assertGreater(len(msgs), 0)
+        self.assertEqual(msgs[0].message, 'Duplicated project name.')
 
     def test_superuser_creating_project_at_admin_must_see_box_role(self):
         """
@@ -332,11 +333,6 @@ class CreateProjectSuccessTest(TestCase):
             'internalURL': 'https://internalURL',
         }
 
-        # project_create_result = {
-        #     'user': FakeResource('abc', name='fake_user'),
-        #     'project': FakeResource('edf', name='fake_project'),
-        #     'user_password': 'secret'
-        # }
         project_create_result = {
             'user_name': 'fake_user',
             'project_name': 'fake_project',
@@ -485,3 +481,20 @@ class UpdateProjectTest(TestCase):
         self.assertEqual(computed_form.initial['description'], project.description)
         self.assertEqual(computed_form.initial['groups'], group_id)
         self.assertEqual(computed_form.initial['areas'], area_id)
+
+
+class DeleteProjectTest(TestCase):
+
+    def setUp(self):
+        self.view = views.DeleteProjectView.as_view()
+        self.request = fake_request()
+        self.request.user.is_authenticated = lambda: True
+
+        patch('actionlogger.ActionLogger.log',
+              Mock(return_value=None)).start()
+
+        self.project_id = 1
+
+    def test_get_delete_url_return_200(self):
+        response = self.view(self.request)
+        self.assertEqual(200, response.status_code)
