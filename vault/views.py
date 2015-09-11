@@ -17,6 +17,7 @@ from django.views.generic.base import View
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
@@ -152,5 +153,8 @@ class OAuthVaultRedirect(OAuthBackstageRedirect):
     pass
 
 
-def accounts_logout(request):
-    return HttpResponseRedirect(settings.LOGOUT_URL)
+class VaultLogout(View):
+
+    def get(self, request):
+        auth_logout(request)
+        return HttpResponseRedirect(reverse('dashboard'))
