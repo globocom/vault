@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 
 from django.views.decorators.debug import sensitive_post_parameters
 
-from keystoneclient.exceptions import Conflict
+from keystoneclient.openstack.common.apiclient import exceptions
 
 from swiftbrowser.utils import delete_swift_account
 
@@ -414,13 +414,22 @@ class DeleteProjectView(BaseProjectView):
 
         project_id = self.kwargs.get('project_id')
         project_name = self.keystone.project_get(project_id).name
-        keystone_app = Keystone(request, username=user, password=password,
-                                tenant_name=project_name)
 
-        if not keystone_app.conn:
+        try:
+            keystone_app = Keystone(request, username=user, password=password,
+                                tenant_name=project_name)
+        except exceptions.Unauthorized:
             # Falhou ao auntenticar com as credenciais enviadas pelo usuario
+            messages.add_message(request, messages.ERROR, 'Invalid credentials.')
+            form = DeleteProjectConfirm(data=request.POST)
+
+            context = self.get_context_data(form=form, request=request)
+            return self.render_to_response(context)
+
+        except exceptions.AuthorizationFailure:
+            # Nao enviou credenciais
             messages.add_message(request, messages.ERROR,
-                                 'User or password are incorrect')
+                                 'Username and password required.')
             form = DeleteProjectConfirm(data=request.POST)
 
             context = self.get_context_data(form=form, request=request)
@@ -441,7 +450,8 @@ class DeleteProjectView(BaseProjectView):
 
         try:
             self.keystone.vault_delete_project(project_id)
-            messages.add_message(request, messages.SUCCESS, 'Successfully deleted project')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Successfully deleted project.')
 
         except Exception as e:
             log.exception('Exception: %s' % e)
@@ -504,7 +514,7 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
             return self.render_to_response(context)
 
-        except Conflict as e:
+        except exceptions.Conflict as e:
             context['msg'] = 'User already registered with this role'
             log.exception('Conflict: %s' % e)
             return self.render_to_response(context, status=500)
