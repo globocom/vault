@@ -12,7 +12,6 @@ from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
 from vault.tests.fakes import fake_request
 
 
-
 class ListProjectTest(TestCase):
 
     def setUp(self):
@@ -499,5 +498,3 @@ class DeleteProjectTest(TestCase):
     def test_get_delete_url_return_200(self):
         response = self.view(self.request)
         self.assertEqual(200, response.status_code)
-
-
