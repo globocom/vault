@@ -24,7 +24,7 @@ class SetProjectTest(TestCase):
     @patch('vault.views.switch')
     def test_set_new_project_id_to_session(self, mock_switch):
         self.request.user.is_authenticated = lambda: True
-        self.assertEqual(self.request.session.get('project_id'), 1)
+        self.assertEqual(self.request.session.get('project_id'), '1')
 
         response = self.view(self.request, project_id=2)
         self.assertEqual(self.request.session.get('project_id'), 2)
@@ -34,7 +34,7 @@ class SetProjectTest(TestCase):
         self.request.user.is_authenticated = lambda: True
         mock_switch.side_effect = ValueError()
 
-        self.assertEqual(self.request.session.get('project_id'), 1)
+        self.assertEqual(self.request.session.get('project_id'), '1')
 
         response = self.view(self.request, project_id=2)
         self.assertEqual(self.request.session.get('project_id'), 2)

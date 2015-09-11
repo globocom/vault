@@ -10,13 +10,10 @@
 {% endblock %}
 
 {% block content %}
+    <span style="color:#b92c28"><H4>Salve essas informa&ccedil;&otilde;es para utilizar o project criado!</H4></span>
 
   <div class="panel panel-default">
     <table class="project-created items-list table table-bordered table-striped">
-      <tr>
-        <th>Nome</th>
-        <td>{{ project_info.project_name }}</td>
-      </tr>
       <tr>
         <th>Username</th>
         <td>{{ project_info.user_name }}</td>
@@ -30,15 +27,15 @@
         <td>{{ project_info.auth_url }}</td>
       </tr>
       <tr>
-        <th>admin URL</th>
+        <th>Admin URL</th>
         <td>{{ project_info.endpoints.adminURL }}</td>
       </tr>
       <tr>
-        <th>public URL</th>
+        <th>Public URL</th>
         <td>{{project_info.endpoints.publicURL }}</td>
       </tr>
       <tr>
-        <th>internal URL</th>
+        <th>Internal URL</th>
         <td>{{ project_info.endpoints.internalURL }}</td>
       </tr>
     </table>
