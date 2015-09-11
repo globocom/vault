@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from vault.views import SetProjectView, OAuthVaultCallback, \
-                        OAuthVaultRedirect, accounts_logout
+                        OAuthVaultRedirect, VaultLogout
 
 
 urlpatterns = patterns('',
@@ -12,8 +12,9 @@ urlpatterns = patterns('',
     url(r'^', include('identity.urls')),
     url(r'^storage/', include('swiftbrowser.urls')),
 
-    # sobreescrevendo admin:logout
-    url(r'^admin/logout/$', accounts_logout),
+    # sobreescrevendo admin:logout devido ao redirect loop geredo pelo
+    # backstage_accounts (precisa ficar antes do admin)
+    url(r'^admin/logout/$', VaultLogout.as_view(), name='vault_logout'),
 
     # Admin
     url(r'^admin/', include(admin.site.urls)),

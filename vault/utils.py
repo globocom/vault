@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 
 
 def update_default_context(request, context={}):
@@ -11,7 +12,6 @@ def update_default_context(request, context={}):
 
     context.update({
         'logged_user': request.user,
-        'logout_url': settings.LOGOUT_URL,
         'project_id': request.session.get('project_id'),
         'project_name': request.session.get('project_name'),
         'is_superuser': request.user.is_superuser,
