@@ -143,7 +143,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = 'http://fakepublicurl/fakecontainer/obj_pelo_vip.html'
+        expected = '/AUTH_1/fakecontainer/obj_pelo_vip.html'
         self.assertIn(expected, response.content)
 
         expected = '"/storage/download/fakecontainer/ok'

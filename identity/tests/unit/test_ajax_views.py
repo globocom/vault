@@ -62,7 +62,7 @@ class TestListUserRole(BaseAjaxTestCase):
 
         response = self.view(self.request)
 
-        mock_user_list.assert_called_with(project=1)
+        mock_user_list.assert_called_with(project_id=1)
 
     @patch('identity.views.ListUserRoleView.get_user_roles')
     def test_get_user_roles_was_called(self, mock_get_user_roles):
