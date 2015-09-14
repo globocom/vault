@@ -3,7 +3,6 @@
 
 """ Standalone webinterface for Openstack Swift. """
 
-import re
 import string
 import random
 import logging

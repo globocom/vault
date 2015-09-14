@@ -408,35 +408,33 @@ class DeleteProjectView(BaseProjectView):
 
     def post(self, request, *args, **kwargs):
 
-        post = request.POST
-        user = post.get('user')
-        password = post.get('password')
+        form = DeleteProjectConfirm(data=request.POST)
+
+        if not form.is_valid():
+            return self.render_to_response(
+                self.get_context_data(form=form, request=request)
+            )
+
+        user = form.data.get('user')
+        password = form.data.get('password')
 
         project_id = self.kwargs.get('project_id')
         project_name = self.keystone.project_get(project_id).name
 
         try:
-            keystone_app = Keystone(request, username=user, password=password,
-                                tenant_name=project_name)
+            keystone_app = Keystone(request,
+                                    username=user,
+                                    password=password,
+                                    tenant_name=project_name)
         except exceptions.Unauthorized:
             # Falhou ao auntenticar com as credenciais enviadas pelo usuario
-            messages.add_message(request, messages.ERROR, 'Invalid credentials.')
-            form = DeleteProjectConfirm(data=request.POST)
+            messages.add_message(request, messages.ERROR, 'Invalid credentials')
 
-            context = self.get_context_data(form=form, request=request)
-            return self.render_to_response(context)
-
-        except exceptions.AuthorizationFailure:
-            # Nao enviou credenciais
-            messages.add_message(request, messages.ERROR,
-                                 'Username and password required.')
-            form = DeleteProjectConfirm(data=request.POST)
-
-            context = self.get_context_data(form=form, request=request)
-            return self.render_to_response(context)
+            return self.render_to_response(
+                context = self.get_context_data(form=form, request=request)
+            )
 
         endpoints = keystone_app.get_endpoints()
-
         storage_url = endpoints['adminURL']
         auth_token = self.keystone.conn.auth_token
 
