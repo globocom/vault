@@ -35,10 +35,8 @@ def get_endpoint(request, endpoint_type):
     if not service_catalog and project_id:
         raise ValueError('Dados da sessao incompletos.')
 
-    try:
-        endpoint_on_session = service_catalog.get(endpoint_type)
-
-    except KeyError:
+    endpoint_on_session = service_catalog.get(endpoint_type)
+    if endpoint_on_session is None:
         return None
 
     _, project_admin_id = endpoint_on_session.split('AUTH_')
