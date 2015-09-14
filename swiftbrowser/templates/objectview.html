@@ -116,7 +116,11 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
+<script src="{% static 'vendor/js/swfobject.js' %}"></script>
+
 <script>
+if(swfobject.hasFlashPlayerVersion("1")) {
   ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
   var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
   client.on( "ready", function( readyEvent ) {
@@ -124,6 +128,12 @@
       Base.Messages.show('URL copied to clipboard', 'success')
     });
   });
+} else {
+  $(".btn-copy-url").on('click', function (e) {
+    var text = $(this).data('clipboard-text');
+    window.prompt ("Ctrl+C ou Cmd+C, Enter", text);
+  });
+}
 </script>
 
 <script>
