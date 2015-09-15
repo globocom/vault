@@ -73,12 +73,14 @@ class LoginRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
 
+        request.session['project_id'] = kwargs.get('project_id')
+
         try:
             self.keystone = Keystone(request)
         except keystone_exceptions.AuthorizationFailure as err:
             log.error(err)
             msg = 'Object storage authentication failed'
-            messages.add_message(request, messages.SUCCESS, msg)
+            messages.add_message(request, messages.ERROR, msg)
 
             return redirect('dashboard')
 

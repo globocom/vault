@@ -535,7 +535,7 @@ class DeleteProjectTest(TestCase):
 
     @patch('identity.views.Keystone')
     @patch('identity.views.delete_swift_account')
-    def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete):
+    def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete, mock_keystone):
         """
         This test checks if delete_swift_account will be called with the
         project_id storage_url and the "admin" auth_token. They are from
