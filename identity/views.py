@@ -431,7 +431,7 @@ class DeleteProjectView(BaseProjectView):
             messages.add_message(request, messages.ERROR, 'Invalid credentials')
 
             return self.render_to_response(
-                context = self.get_context_data(form=form, request=request)
+                context=self.get_context_data(form=form, request=request)
             )
 
         endpoints = keystone_app.get_endpoints()
