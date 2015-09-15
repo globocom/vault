@@ -33,7 +33,7 @@ class Keystone(object):
 
     def _is_allowed_to_connect(self):
         """
-        Check if user logged can access the project set on session.
+        Check if logged user can access the project set on session.
         If no project was set, it means that it should connect to the "admin"
         project.
         """
