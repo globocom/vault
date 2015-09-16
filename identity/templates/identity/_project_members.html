@@ -1,7 +1,8 @@
 {% load staticfiles %}
+{% load i18n %}
 
 <section id="add-user-role" {% if not has_id %}class="disabled"{% endif %}>
-  <div class="title">Manage Users:</div>
+  <div class="title">{% trans 'Manage Users:' %}</div>
 
   <div class="controls">
     <select class="users">
@@ -26,8 +27,8 @@
     <table class="related-users">
       <thead>
         <tr>
-          <th width="45%">user</th>
-          <th width="45%">role</th>
+          <th width="45%">{% trans 'user' %}</th>
+          <th width="45%">{% trans 'role' %}</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
@@ -36,6 +37,6 @@
   </div>
 
   <div class="lock">
-    <span class="msg-lock">Create project to manage users</span>
+    <span class="msg-lock">{% trans 'Create project to manage users' %}</span>
   </div>
 </section>

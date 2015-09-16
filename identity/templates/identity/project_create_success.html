@@ -1,16 +1,16 @@
 {% extends "vault/base.html" %}
-
+{% load i18n %}
 {% load staticfiles %}
 
-{% block title %}Project Created{% endblock %}
-{% block content_title %}Project Created{% endblock %}
+{% block title %}{% trans 'Project Created' %}{% endblock %}
+{% block content_title %}{% trans 'Project Created' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
 {% block content %}
-    <span style="color:#b92c28"><H4>Salve essas informa&ccedil;&otilde;es para utilizar o project criado!</H4></span>
+    <span style="color:#b92c28"><H4>{% blocktrans %}Salve essas informa&ccedil;&otilde;es para utilizar o project criado!{% endblocktrans %}</H4></span>
 
   <div class="panel panel-default">
     <table class="project-created items-list table table-bordered table-striped">

@@ -5,6 +5,7 @@ from django.core.validators import RegexValidator
 from django.forms.fields import ChoiceField
 
 from vault.models import Area
+from django.utils.translation import ugettext as _
 
 BOOLEAN_CHOICES = ((True, 'Yes'), (False, 'No'))
 
@@ -13,29 +14,29 @@ class UserForm(forms.Form):
 
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-    name = forms.CharField(label='User Name', required=True,
+    name = forms.CharField(label=_('User Name'), required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    email = forms.EmailField(label='Email', required=False,
+    email = forms.EmailField(label=_('Email'), required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    password = forms.CharField(label='Password', required=True,
+    password = forms.CharField(label=_('Password'), required=True,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
-    password_confirm = forms.CharField(label='Confirm Password', required=True,
+    password_confirm = forms.CharField(label=_('Confirm Password'), required=True,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
-    project = ChoiceField(label=u'Primary Project', required=True,
+    project = ChoiceField(label=_('Primary Project'), required=True,
         widget=forms.Select(attrs={'class': 'form-control'}))
 
-    enabled = forms.BooleanField(label=u'Enabled', required=False,
+    enabled = forms.BooleanField(label=_('Enabled'), required=False,
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
 
     def clean_password(self):
         if 'password' in self.data:
             if self.data['password'] != self.data.get('password_confirm', None):
-                raise forms.ValidationError('Passwords did not match')
+                raise forms.ValidationError(_('Passwords did not match'))
 
             return self.data['password']
 
@@ -82,38 +83,38 @@ class ProjectForm(forms.Form):
 
     action = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-    name = forms.CharField(label='Project Name', required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message='Project Name must be an alphanumeric.'), ])
+    name = forms.CharField(label=_('Project Name'), required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[RegexValidator('^[a-zA-Z0-9_]*$', message=_('Project Name must be an alphanumeric.')), ])
 
-    description = forms.CharField(label='Description', required=True,
+    description = forms.CharField(label=_('Description'), required=True,
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
 
-    enabled = forms.BooleanField(label=u'Enabled', required=False,
+    enabled = forms.BooleanField(label=_('Enabled'), required=False,
         widget=forms.Select(attrs={'class': 'form-control'},
                             choices=BOOLEAN_CHOICES), initial=True)
 
-    areas = forms.ChoiceField(label=u'Area', required=True, choices=())
+    areas = forms.ChoiceField(label=_('Area'), required=True, choices=())
 
-    groups = forms.ChoiceField(label=u'Time', required=True, choices=())
+    groups = forms.ChoiceField(label=_('Time'), required=True, choices=())
 
     def clean_description(self):
         if 'description' in self.data:
             description = self.data['description']
             if len(description.strip()) == 0:
-                raise forms.ValidationError('Project description cannot be empty.')
+                raise forms.ValidationError(_('Project description cannot be empty.'))
 
             return self.data['description']
 
 
 class DeleteProjectConfirm(forms.Form):
 
-    user = forms.CharField(label='User', required=True,
+    user = forms.CharField(label=_('User'), required=True,
         widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': 'Confirme o usuario do projeto',
+                                      'placeholder': _('Confirme o usuario do projeto'),
                                       }
                                ))
 
-    password = forms.CharField(label='Password', required=True,
+    password = forms.CharField(label=_('Password'), required=True,
         widget=forms.PasswordInput(attrs={'class': 'form-control',
-                                          'placeholder': 'Confirme a senha '}
+                                          'placeholder': _('Confirme a senha')}
                                    ))

@@ -13,6 +13,7 @@ from swiftbrowser import views
 
 from vault.tests.fakes import fake_request
 from vault import utils
+from django.utils.translation import ugettext as _
 
 
 class TestSwiftbrowser(TestCase):
@@ -205,7 +206,7 @@ class TestSwiftbrowser(TestCase):
         self.assertFalse(mock_logging.called)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('This field is required.', response.content)
+        self.assertIn(_('This field is required.'), response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.log.exception')
     @patch('swiftbrowser.views.client.put_container')
@@ -554,7 +555,7 @@ class TestSwiftbrowser(TestCase):
         response = views.create_pseudofolder(self.request, 'fakecontainer')
 
         self.assertFalse(mock_put_object.called)
-        self.assertIn('This field is required.', response.content)
+        self.assertIn(_('This field is required.'), response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.delete_object')
     def test_view_delete_object_inside_a_container(self, mock_delete_object):

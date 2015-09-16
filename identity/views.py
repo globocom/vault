@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
+from django.utils.translation import ugettext as _
 
 from django.views.decorators.debug import sensitive_post_parameters
 
@@ -43,7 +44,7 @@ class ListUserView(SuperUserMixin, TemplateView):
         try:
             users = self.keystone.user_list()
         except Exception as e:
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(self.request, messages.ERROR,
                                  "Unable to list users")
 
@@ -129,13 +130,13 @@ class CreateUserView(BaseUserView):
                     domain=post.get('domain'), role_id=post.get('role'))
 
                 messages.add_message(request, messages.SUCCESS,
-                                     'Successfully created user')
+                                     _('Successfully created user'))
                 actionlog.log(request.user.username, 'create', user)
 
             except Exception as e:
-                log.exception('Exception: %s' % e)
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     'Error when create user')
+                                     _('Error when create user'))
 
             return self.form_valid(form)
         else:
@@ -166,13 +167,13 @@ class UpdateUserView(BaseUserView):
                     project=project, enabled=enabled, domain=post.get('domain'))
 
                 messages.add_message(request, messages.SUCCESS,
-                                     'Successfully updated user')
+                                     _('Successfully updated user'))
                 actionlog.log(request.user.username, 'update', user)
 
             except Exception as e:
-                log.exception('Exception: %s' % e)
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     'Error when update user')
+                                     _('Error when update user'))
 
             return self.form_valid(form)
         else:
@@ -191,9 +192,9 @@ class DeleteUserView(BaseUserView):
                           'user_id: %s' % kwargs.get('user_id'))
 
         except Exception as e:
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(request, messages.ERROR,
-                                 'Error when delete user')
+                                 _('Error when delete user'))
 
         return HttpResponseRedirect(self.success_url)
 
@@ -252,7 +253,7 @@ class BaseProjectView(LoginRequiredMixin, FormView):
                     roles = self.keystone.role_list()
                     context['roles'] = sorted(roles, key=lambda l: l.name.lower())
                 except Exception as e:
-                    log.exception('Exception: %s' % e)
+                    log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
 
         return context
 
@@ -276,9 +277,9 @@ class ListProjectView(SuperUserMixin, TemplateView):
                                 key=lambda l: l.name.lower())
             context['projects'] = utils.generic_pagination(projects, page)
         except Exception as e:
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(self.request, messages.ERROR,
-                                 "Unable to list projects")
+                                 _('Unable to list projects'))
 
         return context
 
@@ -334,7 +335,7 @@ class CreateProjectView(BaseProjectView):
 
             # Houve falha no cadastro
             if not response.get('status'):
-                log.exception('Exception: {}'.format(response.get('status')))
+                log.exception('{}{}'.format(_('Exception: ').encode('UTF-8'), response.get('status')))
                 messages.add_message(request, messages.ERROR,
                                      response.get('reason'))
 
@@ -384,12 +385,12 @@ class UpdateProjectView(BaseProjectView):
                                               enabled=enabled)
 
                 messages.add_message(request, messages.SUCCESS,
-                                     'Successfully updated project')
+                                     _('Successfully updated project'))
 
                 actionlog.log(request.user.username, 'update', project)
 
             except Exception as e:
-                log.exception('Exception: %s' % e)
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
                                      "Error when update project")
 
@@ -420,7 +421,7 @@ class DeleteProjectView(BaseProjectView):
                                 tenant_name=project_name)
         except exceptions.Unauthorized:
             # Falhou ao auntenticar com as credenciais enviadas pelo usuario
-            messages.add_message(request, messages.ERROR, 'Invalid credentials.')
+            messages.add_message(request, messages.ERROR, _('Invalid credentials.'))
             form = DeleteProjectConfirm(data=request.POST)
 
             context = self.get_context_data(form=form, request=request)
@@ -429,7 +430,7 @@ class DeleteProjectView(BaseProjectView):
         except exceptions.AuthorizationFailure:
             # Nao enviou credenciais
             messages.add_message(request, messages.ERROR,
-                                 'Username and password required.')
+                                 _('Username and password required.'))
             form = DeleteProjectConfirm(data=request.POST)
 
             context = self.get_context_data(form=form, request=request)
@@ -444,19 +445,19 @@ class DeleteProjectView(BaseProjectView):
 
         if not swift_del_result:
             messages.add_message(request, messages.ERROR,
-                                 'Error when delete project')
+                                 _('Error when delete project'))
 
             return HttpResponseRedirect(reverse('edit_project', kwargs={'project_id': project_id}))
 
         try:
             self.keystone.vault_delete_project(project_id)
             messages.add_message(request, messages.SUCCESS,
-                                 'Successfully deleted project.')
+                                 _('Successfully deleted project.'))
 
         except Exception as e:
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(request, messages.ERROR,
-                                 'Error when delete project')
+                                 _('Error when delete project'))
 
         return HttpResponseRedirect(self.success_url)
 
@@ -486,7 +487,7 @@ class ListUserRoleView(SuperUserMixin, View, JSONResponseMixin):
 
         except Exception as e:
             context['msg'] = 'Error listing users'
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
 
             return self.render_to_response(context, status=500)
 
@@ -515,13 +516,13 @@ class AddUserRoleView(SuperUserMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except exceptions.Conflict as e:
-            context['msg'] = 'User already registered with this role'
-            log.exception('Conflict: %s' % e)
+            context['msg'] = _('User already registered with this role')
+            log.exception('{}{}'.format(_('Conflict:'), e))
             return self.render_to_response(context, status=500)
 
         except Exception as e:
-            context['msg'] = 'Error adding user'
-            log.exception('Exception: %s' % e)
+            context['msg'] = _('Error adding user')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
 
@@ -544,8 +545,8 @@ class DeleteUserRoleView(SuperUserMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = 'Error removing user'
-            log.exception('Exception: %s' % e)
+            context['msg'] = _('Error removing user')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
 
@@ -563,6 +564,6 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, View, JSONResponseMixin)
 
             actionlog.log(request.user.username, 'update', user)
         except Exception as e:
-            log.exception('Exception: %s' % e)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
 
         return self.render_to_response(context, status=200)

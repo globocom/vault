@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.translation import ugettext as _
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
     keystone_exceptions
@@ -39,7 +40,7 @@ def switch(request, project_id):
     Switch session parameters to project with project_id
     """
     if project_id is None:
-        raise ValueError("Missing 'project_id'")
+        raise ValueError(_("Missing 'project_id'"))
 
     referer_url = request.META.get('HTTP_REFERER')
     next_url = request.GET.get('next')
@@ -50,7 +51,7 @@ def switch(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
     except Project.DoesNotExist as err:
-        messages.add_message(request, messages.ERROR, "Can't find this project")
+        messages.add_message(request, messages.ERROR, _("Can't find this project"))
         log.exception('Exception: %s' % err)
         return HttpResponseRedirect(referer_url)
 
@@ -77,7 +78,7 @@ class LoginRequiredMixin(object):
             self.keystone = Keystone(request)
         except keystone_exceptions.AuthorizationFailure as err:
             log.error(err)
-            msg = 'Object storage authentication failed'
+            msg = _('Object storage authentication failed')
             messages.add_message(request, messages.SUCCESS, msg)
 
             return redirect('dashboard')

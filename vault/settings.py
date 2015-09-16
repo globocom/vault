@@ -15,6 +15,7 @@ import os
 # Disable HTTPS verification warnings.
 from requests.packages import urllib3
 urllib3.disable_warnings()
+from django.utils.translation import ugettext_lazy as _
 
 PROJECT = 'vault'
 
@@ -31,10 +32,10 @@ INSTALLED_APPS = (
     'dashboard',
     'identity',
     'swiftbrowser',
+    'allaccess',
     'vault',
 
     'backstage_accounts',
-    'allaccess',
 
     'django.contrib.auth',
     'django.contrib.admin',
@@ -54,8 +55,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -73,16 +74,25 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 )
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 ROOT_URLCONF = 'vault.urls'
 
 WSGI_APPLICATION = 'vault.wsgi.application'
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'America/Sao_Paulo'
-
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR.UTF-8'
+LANGUAGES = (
+    ('pt-BR', _('Portuguese')),
+    ('en', _('English')),
+)
+TIME_ZONE = 'America/Sao_Paulo'
 
 STATIC_ROOT = 'vault_static/'
 

@@ -8,7 +8,7 @@ from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView, UpdateProjectUserPasswordView)
-
+from django.utils.translation import ugettext as _
 
 class ListUserTest(TestCase):
 
@@ -54,7 +54,7 @@ class ListUserTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(msgs[0].message, 'Unable to list users')
+        self.assertEqual(msgs[0].message, _('Unable to list users'))
 
 
 class CreateUserTest(TestCase):
@@ -137,7 +137,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('This field is required', response.content)
+        self.assertIn(_('This field is required'), response.content.decode('UTF-8'))
 
     def test_validating_email_field(self):
         user = FakeResource(1, 'user1')
@@ -159,7 +159,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('Enter a valid email address', response.content)
+        self.assertIn(_('Enter a valid email address'), response.content.decode('UTF-8'))
 
     @patch('identity.keystone.Keystone.user_create')
     def test_user_create_method_was_called(self, mock):
@@ -191,7 +191,7 @@ class CreateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when create user')
+        self.assertEqual(msgs[0].message, _('Error when create user'))
 
 
 class UpdateUserTest(TestCase):
@@ -284,7 +284,7 @@ class UpdateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when update user')
+        self.assertEqual(msgs[0].message, _('Error when update user'))
 
     @patch('identity.keystone.Keystone.user_update')
     def test_update_user_change_password_exception(self, mock_user_update):
@@ -317,7 +317,7 @@ class UpdateUserTest(TestCase):
         response = self.view(self.request)
         msgs = [msg for msg in self.request._messages]
 
-        self.assertIn('Passwords did not match', response.rendered_content)
+        self.assertIn(_('Passwords did not match'), response.rendered_content)
         self.assertEqual(len(msgs), 0)
 
 
@@ -370,7 +370,7 @@ class DeleteUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Successfully deleted user')
+        self.assertEqual(msgs[0].message, _('Successfully deleted user'))
 
     @patch('identity.keystone.Keystone.user_delete')
     def test_user_delete_view_exception(self, mock_user_delete):
@@ -383,7 +383,7 @@ class DeleteUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when delete user')
+        self.assertEqual(msgs[0].message, _('Error when delete user'))
 
 
 class UpdateProjectUserPasswordTest(TestCase):

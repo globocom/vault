@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-16 15:22-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: vault/apps.py:9
+msgid "Vault"
+msgstr ""
+
+#: vault/settings.py:92
+msgid "Portuguese"
+msgstr ""
+
+#: vault/settings.py:93
+msgid "English"
+msgstr ""
+
+#: vault/templates/admin/base_site.html:59
+msgid "Home"
+msgstr ""
+
+#: vault/templates/admin/base_site.html:72
+msgid "Welcome,"
+msgstr ""
+
+#: vault/templates/admin/base_site.html:78
+msgid "Documentation"
+msgstr ""
+
+#: vault/templates/admin/base_site.html:81
+msgid "Change password"
+msgstr ""
+
+#: vault/templates/admin/base_site.html:83
+msgid "Log out"
+msgstr ""
+
+#: vault/templates/admin/index.html:23
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: vault/templates/admin/index.html:34
+#: vault/templates/vault/projectsandusers.html:12
+#: vault/templates/vault/projectsandusers.html:16
+msgid "Add"
+msgstr ""
+
+#: vault/templates/admin/index.html:40
+msgid "Change"
+msgstr ""
+
+#: vault/templates/admin/index.html:51
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: vault/templates/vault/projectsandusers.html:8
+msgid "Projects and Users"
+msgstr ""
+
+#: vault/templates/vault/projectsandusers.html:11
+msgid "Projects"
+msgstr ""
+
+#: vault/templates/vault/projectsandusers.html:15
+msgid "Users"
+msgstr ""
+
+#: vault/views.py:43
+msgid "Missing 'project_id'"
+msgstr ""
+
+#: vault/views.py:54
+msgid "Can't find this project"
+msgstr ""
+
+#: vault/views.py:81
+msgid "Object storage authentication failed"
+msgstr ""

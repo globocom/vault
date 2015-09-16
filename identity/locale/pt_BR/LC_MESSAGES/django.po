@@ -1,0 +1,206 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-16 16:45-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt-BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: apps.py:9
+msgid "Identity"
+msgstr "Identity"
+
+#: forms.py:17
+msgid "User Name"
+msgstr "Usuário"
+
+#: forms.py:20
+msgid "Email"
+msgstr "E-mail"
+
+#: forms.py:23 forms.py:117
+msgid "Password"
+msgstr "Senha"
+
+#: forms.py:26
+msgid "Confirm Password"
+msgstr "Confirmação de Senha"
+
+#: forms.py:29
+msgid "Primary Project"
+msgstr "Projeto Primário"
+
+#: forms.py:32 forms.py:92
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: forms.py:39 tests/unit/test_user_views.py:320
+msgid "Passwords did not match"
+msgstr "As senhas não conferem"
+
+#: forms.py:86
+msgid "Project Name"
+msgstr "Projeto Criado."
+
+#: forms.py:87 tests/unit/test_project_views.py:219
+msgid "Project Name must be an alphanumeric."
+msgstr "Nome do projeto deve ser um alfanumerico"
+
+#: forms.py:89
+msgid "Description"
+msgstr "Descrição"
+
+#: forms.py:96
+msgid "Area"
+msgstr "Área"
+
+#: forms.py:98
+msgid "Time"
+msgstr "Time"
+
+#: forms.py:104 tests/unit/test_project_views.py:189
+msgid "Project description cannot be empty."
+msgstr "Descrição do projecto não pode estar vazio."
+
+#: forms.py:111
+msgid "User"
+msgstr "Usuário"
+
+#: forms.py:113
+msgid "Confirme o usuario do projeto"
+msgstr "Confirme o usuario do projeto"
+
+#: forms.py:119
+msgid "Confirme a senha"
+msgstr "Confirme a senha"
+
+#: templates/identity/_project_members.html:5
+msgid "Manage Users:"
+msgstr "Administrar Usuários:"
+
+#: templates/identity/_project_members.html:30
+msgid "user"
+msgstr "usuário"
+
+#: templates/identity/_project_members.html:31
+msgid "role"
+msgstr "role"
+
+#: templates/identity/_project_members.html:40
+msgid "Create project to manage users"
+msgstr "Crie um projeto para manipular usuários"
+
+#: templates/identity/project_create_success.html:5
+#: templates/identity/project_create_success.html:6
+#: tests/unit/test_project_views.py:348
+msgid "Project Created"
+msgstr "Projeto Criado."
+
+#: templates/identity/project_create_success.html:13
+msgid "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
+msgstr "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
+
+#: tests/unit/test_project_views.py:62 views.py:282
+msgid "Unable to list projects"
+msgstr "Não foi possível listar os projetos."
+
+#: tests/unit/test_project_views.py:130 tests/unit/test_project_views.py:160
+#: tests/unit/test_project_views.py:456 tests/unit/test_user_views.py:140
+msgid "This field is required"
+msgstr "Este campo é obrigatório."
+
+#: tests/unit/test_user_views.py:57
+#, fuzzy
+#| msgid "Unable to list projects"
+msgid "Unable to list users"
+msgstr "Não foi possível listar os projetos."
+
+#: tests/unit/test_user_views.py:162
+msgid "Enter a valid email address"
+msgstr "Informe um endereço de email válido"
+
+#: tests/unit/test_user_views.py:194 views.py:139
+msgid "Error when create user"
+msgstr "Erro ao criar usuário."
+
+#: tests/unit/test_user_views.py:287 views.py:176
+msgid "Error when update user"
+msgstr "Erro ao atualizar usuário."
+
+#: tests/unit/test_user_views.py:373
+#, fuzzy
+#| msgid "Successfully created user"
+msgid "Successfully deleted user"
+msgstr "Usuário criado com sucesso."
+
+#: tests/unit/test_user_views.py:386 views.py:197
+msgid "Error when delete user"
+msgstr "Erro ao remover o usuário."
+
+#: views.py:47 views.py:137 views.py:174 views.py:195 views.py:256 views.py:280
+#: views.py:393 views.py:458 views.py:490 views.py:525 views.py:549
+#: views.py:567
+msgid "Exception:"
+msgstr "Exceção:"
+
+#: views.py:133
+msgid "Successfully created user"
+msgstr "Usuário criado com sucesso."
+
+#: views.py:170
+msgid "Successfully updated user"
+msgstr "Usuário atualizado com sucesso."
+
+#: views.py:338
+msgid "Exception: "
+msgstr "Exceção:"
+
+#: views.py:388
+msgid "Successfully updated project"
+msgstr "Projeto atualizado com sucesso."
+
+#: views.py:424
+msgid "Invalid credentials."
+msgstr "Credencias inválidas."
+
+#: views.py:433
+msgid "Username and password required."
+msgstr "Usuário e senha requeridos."
+
+#: views.py:448 views.py:460
+msgid "Error when delete project"
+msgstr "Erro ao remover projeto."
+
+#: views.py:455
+msgid "Successfully deleted project."
+msgstr "Projeto removido com sucesso."
+
+#: views.py:519
+msgid "User already registered with this role"
+msgstr "Usuário já registrado com esse role."
+
+#: views.py:520
+msgid "Conflict:"
+msgstr "Conflito:"
+
+#: views.py:524
+msgid "Error adding user"
+msgstr "Erro ao adicionar usuário."
+
+#: views.py:548
+msgid "Error removing user"
+msgstr "Erro ao remover usuário."
+
+#~ msgid "Duplicated project name."
+#~ msgstr "Nome de projeto duplicado."
