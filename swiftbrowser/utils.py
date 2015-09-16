@@ -10,12 +10,16 @@ import logging
 from urlparse import urlparse
 
 from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 
 from swiftclient import client
+from keystoneclient.openstack.common.apiclient import exceptions as \
+     keystone_exceptions
 
 from vault.views import switch
+from identity.keystone import Keystone
 
 
 log = logging.getLogger(__name__)
@@ -256,8 +260,22 @@ def to_str(obj):
 
 
 def check_project(view_func):
+    """
+    Decorator para mudar o project na sessao para as urls que nao
+    passam pelo set_project
+    """
+
     def _wrapper(request, *args, **kwargs):
         prj_id = request.GET.get('p')
+
+        try:
+            keystone = Keystone(request)
+        except keystone_exceptions.AuthorizationFailure as err:
+            log.error(err)
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 'Object storage authentication failed')
+            return redirect('dashboard')
 
         if prj_id and prj_id != request.session.get('project_id'):
             return switch(request,
