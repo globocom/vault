@@ -62,7 +62,7 @@
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-            <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
+            <a href="{% url "objectview" container=container prefix=obj.prefix %}?p={{ project_id }}"><strong>{{obj.prefix|lastpart}}</strong></a>
             <button class="btn-meta btn btn-sm"
                     data-name="{{ obj.prefix }}"
                     data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">details</button>

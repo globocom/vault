@@ -7,9 +7,6 @@ Vault Generic Views
 import json
 import logging
 
-from backstage_accounts.views import OAuthBackstageCallback,\
-                                     OAuthBackstageRedirect
-
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -21,7 +18,11 @@ from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
-    keystone_exceptions
+     keystone_exceptions
+
+from backstage_accounts.views import OAuthBackstageCallback,\
+                                     OAuthBackstageRedirect
+
 
 from actionlogger import ActionLogger
 
@@ -34,18 +35,26 @@ log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
 
-def switch(request, project_id):
+def _build_next_url(request):
+    n = request.META.get('HTTP_REFERER')
+
+    if request.GET.get('next') is not None:
+        n = request.GET.get('next')
+
+    return n if n is not None else '/'
+
+
+def switch(request, project_id, next_url=None):
     """
     Switch session parameters to project with project_id
     """
     if project_id is None:
         raise ValueError("Missing 'project_id'")
 
-    referer_url = request.META.get('HTTP_REFERER')
-    next_url = request.GET.get('next')
-
-    if next_url is None:
-        next_url = referer_url
+    if next_url is not None:
+        next_url = next_url
+    else:
+        next_url = _build_next_url(request)
 
     try:
         project = Project.objects.get(id=project_id)

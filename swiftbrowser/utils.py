@@ -7,9 +7,16 @@ import string
 import random
 import logging
 
-from django.conf import settings
-from swiftclient import client
 from urlparse import urlparse
+
+from django.conf import settings
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+
+from swiftclient import client
+
+from vault.views import switch
+
 
 log = logging.getLogger(__name__)
 
@@ -240,10 +247,23 @@ def delete_swift_account(storage_url, auth_token):
 
 
 def to_str(obj):
-
     if isinstance(obj, unicode):
         return obj.encode('utf8')
     elif isinstance(obj, str):
         return str(obj)
     else:
         return repr(obj)
+
+
+def check_project(view_func):
+    def _wrapper(request, *args, **kwargs):
+        prj_id = request.GET.get('p')
+
+        if prj_id and prj_id != request.session.get('project_id'):
+            return switch(request,
+                          prj_id,
+                          next_url=request.build_absolute_uri())
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapper
