@@ -40,8 +40,10 @@ class Keystone(object):
 
         project_id = self.request.session.get('project_id')
         if not project_id:
-            project = Project.objects.get(name=self.tenant_name)
-            project_id = project.id
+            # project = Project.objects.get(name=self.tenant_name)
+            # project_id = project.id
+            self.tenant_name = None
+            return
 
         groups = self.request.user.groups.all()
 
