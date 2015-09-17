@@ -7,9 +7,7 @@ Vault Generic Views
 import json
 import logging
 
-from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.views.generic.base import View
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
@@ -41,7 +39,7 @@ def _build_next_url(request):
     if request.GET.get('next') is not None:
         n = request.GET.get('next')
 
-    return n if n is not None else '/'
+    return n if n is not None else reverse('dashboard')
 
 
 def switch(request, project_id, next_url=None):
@@ -90,8 +88,6 @@ class LoginRequiredMixin(object):
             log.error(err)
             msg = 'Object storage authentication failed'
             messages.add_message(request, messages.ERROR, msg)
-
-            return redirect('dashboard')
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
