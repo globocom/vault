@@ -8,7 +8,7 @@ import json
 import logging
 
 from django.contrib import messages
-from django.views.generic.base import View, TemplateView
+from django.views.generic.base import View
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -20,7 +20,6 @@ from keystoneclient.openstack.common.apiclient import exceptions as \
 
 from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
-
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -157,7 +156,6 @@ class OAuthVaultCallback(OAuthBackstageCallback):
         return reverse('dashboard')
 
     def get_login_redirect(self, provider, user, access, new=False):
-        # Dashboard do admin
         return reverse('dashboard')
 
 
