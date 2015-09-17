@@ -86,8 +86,9 @@ class LoginRequiredMixin(object):
             self.keystone = Keystone(request)
         except keystone_exceptions.AuthorizationFailure as err:
             log.error(err)
-            # msg = 'Object storage authentication failed'
-            # messages.add_message(request, messages.ERROR, msg)
+            msg = 'Object storage authentication failed'
+            messages.add_message(request, messages.ERROR, msg)
+            return redirect('dashboard')
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
