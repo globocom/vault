@@ -22,6 +22,9 @@ from backstage_accounts.views import OAuthBackstageCallback,\
                                      OAuthBackstageRedirect
 
 
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 from actionlogger import ActionLogger
 
 from identity.keystone import Keystone
@@ -89,7 +92,7 @@ class LoginRequiredMixin(object):
             msg = 'Object storage authentication failed'
             messages.add_message(request, messages.ERROR, msg)
 
-            return HttpResponseRedirect(reverse('error500'))
+            return handler500(request)
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -169,5 +172,8 @@ class VaultLogout(View):
         return HttpResponseRedirect(reverse('dashboard'))
 
 
-class Error500View(TemplateView):
-    template_name = "vault/error500.html"
+def handler500(request):
+   response = render_to_response('vault/500.html', {},
+                                 context_instance=RequestContext(request))
+   response.status_code = 500
+   return response
