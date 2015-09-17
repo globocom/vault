@@ -8,7 +8,7 @@ import json
 import logging
 
 from django.contrib import messages
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -88,7 +88,8 @@ class LoginRequiredMixin(object):
             log.error(err)
             msg = 'Object storage authentication failed'
             messages.add_message(request, messages.ERROR, msg)
-            return redirect('dashboard')
+
+            return HttpResponseRedirect(reverse('error500'))
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -166,3 +167,7 @@ class VaultLogout(View):
     def get(self, request):
         auth_logout(request)
         return HttpResponseRedirect(reverse('dashboard'))
+
+
+class Error500View(TemplateView):
+    template_name = "vault/error500.html"
