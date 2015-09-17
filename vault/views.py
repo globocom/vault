@@ -62,7 +62,7 @@ def switch(request, project_id, next_url=None):
     except Project.DoesNotExist as err:
         messages.add_message(request, messages.ERROR, "Can't find this project")
         log.exception('Exception: %s' % err)
-        return HttpResponseRedirect(referer_url)
+        return HttpResponseRedirect(next_url)
 
     keystone = Keystone(request)
 
@@ -173,7 +173,7 @@ class VaultLogout(View):
 
 
 def handler500(request):
-   response = render_to_response('vault/500.html', {},
-                                 context_instance=RequestContext(request))
-   response.status_code = 500
-   return response
+    response = render_to_response('500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
