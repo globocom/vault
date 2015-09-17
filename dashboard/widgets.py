@@ -20,7 +20,7 @@ class BaseWidget(object):
         widget_context = self.get_widget_context()
         widget_context.update({
             'title': self.title,
-            'subtitle': self.subtitle if self.subtitle != '' else self.title,
+            'subtitle': self.subtitle,
             'description': self.description,
             'content_template': self.content_template
         })
