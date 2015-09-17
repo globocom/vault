@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from vault.views import SetProjectView, OAuthVaultCallback, \
-                        OAuthVaultRedirect, VaultLogout, Error500View
+                        OAuthVaultRedirect, VaultLogout
 
 
 urlpatterns = patterns('',
@@ -34,6 +34,4 @@ urlpatterns = patterns('',
     # set project_id session
     url(r'^set-project/(?P<project_id>[\w\-]+)/?$', SetProjectView.as_view(),
         name='set_project'),
-
-    url(r'error500', Error500View.as_view(), name='error500'),
 )
