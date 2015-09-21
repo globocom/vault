@@ -153,10 +153,25 @@ LOGGING = {
         },
     },
     'loggers': {
-        '*': {
+        'identity': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'DEBUG',
+            'level': 'INFO',
+        },
+        'vault': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'swiftbrowser': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'dashboard': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
         }
     },
 }
