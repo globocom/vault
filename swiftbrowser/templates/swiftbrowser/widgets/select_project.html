@@ -56,7 +56,7 @@
   {% for project in projects %}
   <li class="col-md-3 col-sm-4" data-project-id="{{ project.id }}">
     <div class="item">
-      <span class="project-label">project</span><br />
+      <span class="project-label">{% trans "project" %}</span><br />
       <a class="name" href="/set-project/{{ project.id }}/?next=/storage/"
          title="{% if project.description %}{{ project.description }}{% endif %}">{{ project.name }}</a>
       <a class="project-edit" href="/project/{{ project.id }}" title="Editar">
