@@ -143,3 +143,20 @@ PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm')
 PROJECT_BOLADAO = os.getenv('PROJECT_BOLADAO', 'infra')
 # ID da role swiftoperator
 ROLE_BOLADONA = os.getenv('ROLE_BOLADONA', 'c573d07d11ed4f75a7cae8e7527eb1ed')
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        }
+    },
+}
