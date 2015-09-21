@@ -175,8 +175,6 @@ msgid "Reset Password"
 msgstr "Resetar Senha"
 
 #: templates/identity/project_edit.html:42
-#, fuzzy
-#| msgid "New Password:"
 msgid "New password:"
 msgstr "Nova Senha:"
 

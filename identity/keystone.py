@@ -32,17 +32,28 @@ class Keystone(object):
         self.conn = self._keystone_conn(request)
 
     def _is_allowed_to_connect(self):
+        """
+        Check if logged user can access the project set on session.
+        If no project was set, it means that it should connect to the "admin"
+        project.
+        """
 
-        project = Project.objects.get(name=self.tenant_name)
+        project_id = self.request.session.get('project_id')
+        if not project_id:
+            # project = Project.objects.get(name=self.tenant_name)
+            # project_id = project.id
+            self.tenant_name = None
+            return
+
         groups = self.request.user.groups.all()
 
         group_projects = GroupProjects.objects.filter(group__in=groups,
-                                                      project_id=project.id)
+                                                      project_id=project_id)
 
         # Pode autenticar se project pertence ao time do usuario, ou o usuario
         # eh superuser
         if not group_projects and not self.request.user.is_superuser:
-            msg = 'Permission denied to list this project'
+            msg = 'Permission denied to manage this project'
             raise exceptions.AuthorizationFailure(msg)
 
     def _keystone_conn(self, request):
@@ -118,7 +129,6 @@ class Keystone(object):
 
         if settings.KEYSTONE_VERSION < 3:
             password = data.pop('password')
-            # project = data.pop('project')
 
             user = self.conn.users.update(user, **data)
 

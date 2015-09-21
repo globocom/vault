@@ -1,18 +1,8 @@
 <li class="widget full row">
-  <div class="col-md-2">
-    <div class="widget-info">
-      <strong class="widget-title">{{ title }}</strong>
-      <p class="widget-description">{{ description }}</p>
-
-      <!-- TEMPORARIO! -->
-      <a href="{% url "add_project" %}" class="btn btn-primary">Create Project</a>
-
-    </div>
-  </div>
-  <div class="col-md-10">
-    <div class="widget-content">
-      <div class="widget-content-bar">{{ subtitle }}</div>
-      {% include content_template %}
-    </div>
-  </div>
+  <!-- <div class="widget-info col-md-12">
+    <span class="widget-title">{{ title }}</span>
+    <span class="widget-subtitle">{{ subtitle }}</span>
+    <p class="widget-description">{{ description }}</p>
+  </div> -->
+  {% include content_template %}
 </li>

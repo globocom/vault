@@ -7,12 +7,7 @@ Vault Generic Views
 import json
 import logging
 
-from backstage_accounts.views import OAuthBackstageCallback,\
-                                     OAuthBackstageRedirect
-
-from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.views.generic.base import View
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
@@ -22,7 +17,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
-    keystone_exceptions
+     keystone_exceptions
+
+from backstage_accounts.views import OAuthBackstageCallback,\
+                                     OAuthBackstageRedirect
+
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from actionlogger import ActionLogger
 
@@ -35,25 +36,33 @@ log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
 
-def switch(request, project_id):
+def _build_next_url(request):
+    n = request.META.get('HTTP_REFERER')
+
+    if request.GET.get('next') is not None:
+        n = request.GET.get('next')
+
+    return n if n is not None else reverse('dashboard')
+
+
+def switch(request, project_id, next_url=None):
     """
     Switch session parameters to project with project_id
     """
     if project_id is None:
         raise ValueError(_("Missing 'project_id'"))
 
-    referer_url = request.META.get('HTTP_REFERER')
-    next_url = request.GET.get('next')
-
-    if next_url is None:
-        next_url = referer_url
+    if next_url is not None:
+        next_url = next_url
+    else:
+        next_url = _build_next_url(request)
 
     try:
         project = Project.objects.get(id=project_id)
     except Project.DoesNotExist as err:
         messages.add_message(request, messages.ERROR, _("Can't find this project"))
         log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
-        return HttpResponseRedirect(referer_url)
+        return HttpResponseRedirect(next_url)
 
     keystone = Keystone(request)
 
@@ -74,14 +83,16 @@ class LoginRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
 
+        request.session['project_id'] = kwargs.get('project_id')
+
         try:
             self.keystone = Keystone(request)
         except keystone_exceptions.AuthorizationFailure as err:
             log.error(err)
             msg = _('Object storage authentication failed')
-            messages.add_message(request, messages.SUCCESS, msg)
+            messages.add_message(request, messages.ERROR, msg)
 
-            return redirect('dashboard')
+            return handler500(request)
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -146,7 +157,6 @@ class OAuthVaultCallback(OAuthBackstageCallback):
         return reverse('dashboard')
 
     def get_login_redirect(self, provider, user, access, new=False):
-        # Dashboard do admin
         return reverse('dashboard')
 
 
@@ -159,3 +169,10 @@ class VaultLogout(View):
     def get(self, request):
         auth_logout(request)
         return HttpResponseRedirect(reverse('dashboard'))
+
+
+def handler500(request):
+    response = render_to_response('500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response

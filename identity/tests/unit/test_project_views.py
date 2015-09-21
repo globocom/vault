@@ -323,7 +323,7 @@ class CreateProjectSuccessTest(TestCase):
         self.request.user.is_authenticated = lambda: True
 
         self.mock_keystone_conn = patch('identity.keystone.Keystone._keystone_conn').start()
-        self.mock_keystone_conn = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
+        self.mock_is_allowed_to_connect = patch('identity.keystone.Keystone._is_allowed_to_connect').start()
 
     @patch('identity.keystone.Keystone.get_endpoints')
     def test_render_success_create_page(self, mock_get_endpoints):
@@ -489,13 +489,79 @@ class DeleteProjectTest(TestCase):
     def setUp(self):
         self.view = views.DeleteProjectView.as_view()
         self.request = fake_request()
+        self.request.method = 'POST'
         self.request.user.is_authenticated = lambda: True
+        post = self.request.POST.copy()
+        post.update({
+            'user': 'teste_user',
+            'password': 'secret'})
+
+        self.request.POST = post
 
         patch('actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
+        #
+        # kwargs = {
+        #     'remote_addr': request.environ.get('REMOTE_ADDR', ''),
+        #     'auth_url': getattr(settings, 'KEYSTONE_URL'),
+        #     'insecure': True,
+        #     'tenant_name': self.tenant_name,
+        #     'username': self.username,
+        #     'password': self.password,
+        #     'timeout': 3,
+        # }
 
-        self.project_id = 1
+        fake_project = FakeResource(n='abcdefg', name='fake_project')
+        fake_project.description = 'desc do fake'
+
+        # Mocking Keystone class used on vault views mixin
+        self.mock_vault_keystone = patch('vault.views.Keystone').start()
+
+        self.mock_project_get = patch('identity.keystone.Keystone.project_get').start()
+        self.mock_project_get.return_value = fake_project
+
+    def tearDown(self):
+        patch.stopall()
 
     def test_get_delete_url_return_200(self):
+        self.request.method = 'GET'
         response = self.view(self.request)
         self.assertEqual(200, response.status_code)
+
+    @patch('identity.views.Keystone')
+    def test_delete_project_connect_with_username_and_password_passed_by_form(self, mock_keystone):
+        _ = self.view(self.request, project_id='12345abcef')
+
+        mock_keystone.asser_called_with(self.request, username='teste_user', password='secret')
+
+    @patch('identity.views.Keystone')
+    @patch('identity.views.delete_swift_account')
+    def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete, mock_keystone):
+        """
+        This test checks if delete_swift_account will be called with the
+        project_id storage_url and the "admin" auth_token. They are from
+        different keystone instances
+        """
+        mock_keystone.return_value.get_endpoints.return_value = {
+            'adminURL': 'http://api.end.point'
+        }
+
+        self.mock_vault_keystone.return_value.conn.auth_token = 'auth_token'
+
+        _ = self.view(self.request, project_id='12345abcef')
+
+        mock_delete.assert_called_with('http://api.end.point', 'auth_token')
+
+    @patch('identity.views.Keystone')
+    def test_vault_delete_project_will_be_called(self, mock_keystone):
+
+        mock_keystone.return_value.get_endpoints.return_value = {
+            'adminURL': 'http://api.end.point'
+        }
+
+        patch('identity.views.delete_swift_account', Mock()).start()
+
+        _ = self.view(self.request, project_id='12345abcef')
+
+        mock_keystone = self.mock_vault_keystone.return_value
+        mock_keystone.vault_delete_project.assert_called_with('12345abcef')

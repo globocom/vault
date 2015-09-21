@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-21 10:29-0300\n"
+"POT-Creation-Date: 2015-09-21 14:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: apps.py:9 templates/vault/base.html:6 templates/vault/header.html:10
+#: apps.py:9 templates/500.html:18 templates/vault/base.html:7
+#: templates/vault/header.html:11
 msgid "Vault"
 msgstr "Vault"
 
@@ -28,6 +28,18 @@ msgstr "Português"
 #: settings.py:93
 msgid "English"
 msgstr "Inglês"
+
+#: templates/500.html:7
+msgid "Error 500"
+msgstr "Ops!"
+
+#: templates/500.html:21
+msgid "We are traveling to space to verify our satellites."
+msgstr "Estamos viajando ao espaço para verificar nossos satélites."
+
+#: templates/500.html:22
+msgid "Come back in a while!"
+msgstr "Volte em breve!"
 
 #: templates/admin/base_site.html:10
 msgid "Vault Admin"
@@ -83,7 +95,7 @@ msgstr "Metadados"
 msgid "Content"
 msgstr "Conteúdo"
 
-#: templates/vault/pagination.html:11
+#: templates/vault/pagination.html:12
 msgid "de"
 msgstr "de"
 
@@ -99,22 +111,22 @@ msgstr "Projetos"
 msgid "Users"
 msgstr "Usuários"
 
-#: tests/unit/test_views.py:44 views.py:138
+#: tests/unit/test_views.py:45 views.py:149
 msgid "Unable to change your project."
 msgstr "Não foi possível mudar seu projeto."
 
-#: views.py:43
+#: views.py:53
 msgid "Missing 'project_id'"
 msgstr "Faltando 'project_id'"
 
-#: views.py:54
+#: views.py:63
 msgid "Can't find this project"
 msgstr "Não foi possível encontrar este projeto"
 
-#: views.py:55 views.py:136
+#: views.py:64 views.py:147
 msgid "Exception:"
 msgstr "Exceção:"
 
-#: views.py:81
+#: views.py:92
 msgid "Object storage authentication failed"
 msgstr "Autenticação no object storage falhou"

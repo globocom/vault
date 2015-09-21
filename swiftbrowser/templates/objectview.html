@@ -62,7 +62,7 @@
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-            <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
+            <a href="{% url "objectview" container=container prefix=obj.prefix %}?p={{ project_id }}"><strong>{{obj.prefix|lastpart}}</strong></a>
             <button class="btn-meta btn btn-sm"
                     data-name="{{ obj.prefix }}"
                     data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">details</button>
@@ -116,7 +116,11 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
+<script src="{% static 'vendor/js/swfobject.js' %}"></script>
+
 <script>
+if(swfobject.hasFlashPlayerVersion("1")) {
   ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
   var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
   client.on( "ready", function( readyEvent ) {
@@ -124,6 +128,12 @@
       Base.Messages.show('URL copied to clipboard', 'success')
     });
   });
+} else {
+  $(".btn-copy-url").on('click', function (e) {
+    var text = $(this).data('clipboard-text');
+    window.prompt ("Ctrl+C ou Cmd+C, Enter", text);
+  });
+}
 </script>
 
 <script>

@@ -8,10 +8,10 @@ import logging
 import os
 import requests
 import time
-import urlparse
 import json
 
-from actionlogger import ActionLogger
+from urlparse import urlparse
+from hashlib import sha1
 
 from django.conf import settings
 from django.contrib import messages
@@ -21,19 +21,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
-from hashlib import sha1
-
 from swiftclient import client
 
-from swiftbrowser.forms import CreateContainerForm, PseudoFolderForm, \
-    AddACLForm, AddCORSForm
+from swiftbrowser.forms import *
+from swiftbrowser.utils import *
 
-from swiftbrowser.utils import replace_hyphens, prefix_list, \
-    pseudofolder_object_list, get_temp_key, \
-    get_acls, remove_duplicates_from_acl, get_endpoint, get_token_id, \
-    get_cors, remove_duplicates_from_cors, to_str
-
+from actionlogger import ActionLogger
 from vault import utils
+
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -167,6 +162,7 @@ def delete_container_view(request, container):
     return redirect(containerview)
 
 
+@check_project
 @login_required
 def objectview(request, container, prefix=None):
     """ Returns list of all objects in current container. """
@@ -219,7 +215,7 @@ def upload(request, container, prefix=None):
         swift_url += prefix
         redirect_url += prefix
 
-    url_parts = urlparse.urlparse(swift_url)
+    url_parts = urlparse(swift_url)
     path = url_parts.path
 
     max_file_size = 5 * 1024 * 1024 * 1024

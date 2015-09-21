@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 15:22-0300\n"
+"POT-Creation-Date: 2015-09-21 14:32-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/apps.py:9 dashboard/templates/dashboard/dashboard.html:7
-#: dashboard/templates/dashboard/dashboard.html:13
+#: apps.py:9 templates/dashboard/dashboard.html:7
+#: templates/dashboard/dashboard.html:13
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: dashboard/templates/dashboard/dashboard.html:14
-#: dashboard/templates/dashboard/sidebar.html:6
+#: templates/dashboard/dashboard.html:14 templates/dashboard/sidebar.html:6
 msgid "Home"
 msgstr "Home"
 
-#: dashboard/templates/dashboard/sidebar.html:9
+#: templates/dashboard/dashboard.html:19
+msgid "Create Project"
+msgstr "Criar Projeto"
+
+#: templates/dashboard/sidebar.html:9
 msgid "Admin"
 msgstr "Admin"

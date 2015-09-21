@@ -33,7 +33,7 @@
           <i class="fa fa-inbox"></i>
         </td>
         <td>
-          <strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong>
+          <strong><a href="{% url "objectview" container=container.name %}?p={{ project_id }}" class="block">{{container.name}}</a></strong>
           <button class="btn-meta btn btn-sm"
                   data-name="{{ container.name }}"
                   data-meta-url="{% url "metadata" container=container.name %}">details</button>

@@ -24,7 +24,7 @@ Project.Users = {};
             'addUrl': '',
             'deleteUrl': '',
             'listUrl': '',
-            'resetPassUrl': 'user/updatepass/',
+            'resetPassUrl': '/project/user/updatepass/',
             'deleteMsg': 'Confirm reset password?'
         }, opts);
 
