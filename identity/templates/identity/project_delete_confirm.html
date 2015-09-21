@@ -1,17 +1,17 @@
 {% extends "vault/base.html" %}
+{% load i18n %}
 
 {% load staticfiles %}
 
-{% block title %}Delete Project Confirm{% endblock %}
-{% block content_title %}Delete Project Confirm
-{% endblock %}
+{% block title %}{% trans 'Delete Project Confirm' %}{% endblock %}
+{% block content_title %}{% trans 'Delete Project Confirm' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
 {% block content %}
-  <span style="color:#b92c28"><H4>TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!</H4></span>
+  <span style="color:#b92c28"><H4>{% blocktrans %}TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!{% endblocktrans %}</H4></span>
 
   <form action="" class="form-box project-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
@@ -35,7 +35,7 @@
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-danger" type="submit">Delete Project Confirm</button>
+        <button class="btn btn-danger" type="submit">{% trans 'Delete Project Confirm' %}</button>
       </div>
     </fieldset>
 

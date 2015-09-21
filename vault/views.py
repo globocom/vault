@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.translation import ugettext as _
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
      keystone_exceptions
@@ -49,7 +50,7 @@ def switch(request, project_id, next_url=None):
     Switch session parameters to project with project_id
     """
     if project_id is None:
-        raise ValueError("Missing 'project_id'")
+        raise ValueError(_("Missing 'project_id'"))
 
     if next_url is not None:
         next_url = next_url
@@ -59,8 +60,8 @@ def switch(request, project_id, next_url=None):
     try:
         project = Project.objects.get(id=project_id)
     except Project.DoesNotExist as err:
-        messages.add_message(request, messages.ERROR, "Can't find this project")
-        log.exception('Exception: %s' % err)
+        messages.add_message(request, messages.ERROR, _("Can't find this project"))
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
         return HttpResponseRedirect(next_url)
 
     keystone = Keystone(request)
@@ -88,7 +89,7 @@ class LoginRequiredMixin(object):
             self.keystone = Keystone(request)
         except keystone_exceptions.AuthorizationFailure as err:
             log.error(err)
-            msg = 'Object storage authentication failed'
+            msg = _('Object storage authentication failed')
             messages.add_message(request, messages.ERROR, msg)
 
             return handler500(request)
@@ -143,9 +144,9 @@ class SetProjectView(LoginRequiredMixin, View):
             http_redirect = switch(request, kwargs.get('project_id'))
         except ValueError as err:
             http_redirect = HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            log.exception('Exception: %s' % err)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
             messages.add_message(request, messages.ERROR,
-                                 'Unable to change your project.')
+                                 _('Unable to change your project.'))
 
         return http_redirect
 

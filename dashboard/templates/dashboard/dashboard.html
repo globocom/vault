@@ -2,20 +2,21 @@
 
 {% load staticfiles %}
 {% load render_widgets %}
+{% load i18n %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/dashboard.css' %}" />
 {% endblock %}
 
-{% block content_title %}Dashboard{% endblock %}
-{% block content_breadcrumb %}<span>Home</span>{% endblock %}
+{% block content_title %}{% trans 'Dashboard' %}{% endblock %}
+{% block content_breadcrumb %}<span>{% trans 'Home' %}</span>{% endblock %}
 
 
 {% block content_top %}
   {{ block.super }}
-  <a href="{% url "add_project" %}" class="btn btn-primary">Create Project</a>
+  <a href="{% url "add_project" %}" class="btn btn-primary">{% trans 'Create Project' %}</a>
 {% endblock %}
 
 

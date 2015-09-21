@@ -1,9 +1,10 @@
 {% load staticfiles %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Error 500</title>
+  <title>{% trans 'Error 500' %}</title>
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <style>
     body { background-color: #e6e8ea; }
@@ -14,11 +15,11 @@
 </head>
 <body>
   <div class="error500">
-    <h2 class="vault">Vault</h2>
+    <h2 class="vault">{% trans 'Vault' %}</h2>
     <img src="{% static 'vault/img/500.png' %}" />
     <p class="text">
-      We are traveling to space to verify our satellites.<br />
-      Come back in a while!
+      {% trans 'We are traveling to space to verify our satellites.' %}<br />
+      {% trans 'Come back in a while!' %}
     </p>
   </div>
 </body>

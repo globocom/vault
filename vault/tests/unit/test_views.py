@@ -5,6 +5,7 @@ from mock import Mock, patch
 
 from vault.tests.fakes import fake_request
 from vault.views import SetProjectView
+from django.utils.translation import ugettext as _
 
 
 class SetProjectTest(TestCase):
@@ -41,4 +42,4 @@ class SetProjectTest(TestCase):
 
         msgs = [msg for msg in self.request._messages]
 
-        self.assertEqual(msgs[0].message, 'Unable to change your project.')
+        self.assertEqual(msgs[0].message, _('Unable to change your project.'))

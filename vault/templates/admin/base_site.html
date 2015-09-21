@@ -1,13 +1,13 @@
 {% load admin_static %}
 {% load firstof from future %}
-
 {% load backstage_bar %}
+{% load i18n %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
-
+<html {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<!-- lang="{{ LANGUAGE_CODE|default:"en-us" }}"  -->
 <head>
-  <title>{% block title %}Vault Admin - {{ title }}{% endblock %}</title>
+  <title>{% block title %}{% trans 'Vault Admin' %} - {{ title }}{% endblock %}</title>
   <!-- <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" /> -->
 
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
@@ -33,7 +33,7 @@
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
 
 <div class="loading">
-  <div class="loading-content">Processing<br>
+  <div class="loading-content">{% trans 'Processing' %}<br>
   <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
   </div>
 </div>

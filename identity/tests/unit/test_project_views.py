@@ -10,6 +10,7 @@ from identity.tests.fakes import FakeResource
 from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
     GroupProjectsFactory
 from vault.tests.fakes import fake_request
+from django.utils.translation import ugettext as _
 
 
 class ListProjectTest(TestCase):
@@ -59,7 +60,7 @@ class ListProjectTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(msgs[0].message, 'Unable to list projects')
+        self.assertEqual(msgs[0].message, _('Unable to list projects'))
 
 
 class CreateProjectTest(TestCase):
@@ -127,7 +128,7 @@ class CreateProjectTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('This field is required', response.content)
+        self.assertIn(_('This field is required'), response.content.decode('UTF-8'))
 
     @patch('identity.views.AreaProjects.objects.get')
     @patch('identity.views.GroupProjects.objects.get')
@@ -157,7 +158,7 @@ class CreateProjectTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('This field is required', response.content)
+        self.assertIn(_('This field is required'), response.content.decode('UTF-8'))
 
     @patch('identity.views.AreaProjects.objects.get')
     @patch('identity.views.GroupProjects.objects.get')
@@ -186,7 +187,7 @@ class CreateProjectTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('Project description cannot be empty.', response.content)
+        self.assertIn(_('Project description cannot be empty.'), response.content.decode('UTF-8'))
 
     @patch('identity.views.AreaProjects.objects.get')
     @patch('identity.views.GroupProjects.objects.get')
@@ -216,7 +217,7 @@ class CreateProjectTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('Project Name must be an alphanumeric.', response.content)
+        self.assertIn(_('Project Name must be an alphanumeric.'), response.content.decode('UTF-8'))
 
     @patch('identity.keystone.Keystone.vault_create_project')
     def test_project_create_method_was_called(self, mock):
@@ -345,7 +346,7 @@ class CreateProjectSuccessTest(TestCase):
         response.render()
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Project Created', response.content)
+        self.assertIn(_('Project Created'), response.content.decode('UTF-8'))
 
         context_data = response.context_data
 
@@ -453,7 +454,7 @@ class UpdateProjectTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('This field is required', response.content)
+        self.assertIn(_('This field is required'), response.content.decode('UTF-8'))
 
     @patch('identity.views.GroupProjects.objects.get')
     @patch('identity.views.AreaProjects.objects.get')

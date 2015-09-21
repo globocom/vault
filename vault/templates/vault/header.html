@@ -1,4 +1,5 @@
 {% load backstage_bar %}
+{% load i18n %}
 
 <!-- header -->
 <header id="header" class="navbar navbar-default">
@@ -7,7 +8,7 @@
   </ul>
   <div class="navbar-header">
     <a href="{% url "dashboard" %}" class="navbar-brand logo">
-      {% block branding %}Vault{% endblock %}
+      {% block branding %}{% trans 'Vault' %}{% endblock %}
     </a>
   </div>
   <ul class="nav navbar-nav navbar-right">
