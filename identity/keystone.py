@@ -21,13 +21,13 @@ class Keystone(object):
             self.username = username
             self.password = password
         else:
-            self.username = getattr(settings, 'USERNAME_BOLADAO')
-            self.password = getattr(settings, 'PASSWORD_BOLADAO')
+            self.username = settings.KEYSTONE_USERNAME
+            self.password = settings.KEYSTONE_PASSWORD
 
         if tenant_name:
             self.tenant_name = tenant_name
         else:
-            self.tenant_name = getattr(settings, 'PROJECT_BOLADAO')
+            self.tenant_name = settings.KEYSTONE_PROJECT
 
         self.conn = self._keystone_conn(request)
 
@@ -224,7 +224,7 @@ class Keystone(object):
         try:
             user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
-                                    role_id=settings.ROLE_BOLADONA,
+                                    role_id=settings.KEYSTONE_ROLE,
                                     project_id=project.id)
         except exceptions.Forbidden:
             self.project_delete(project.id)

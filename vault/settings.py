@@ -148,11 +148,11 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
 else:
     SWIFT_INSECURE = True
 
-USERNAME_BOLADAO = os.getenv('USERNAME_BOLADAO', 'storm')
-PASSWORD_BOLADAO = os.getenv('PASSWORD_BOLADAO', 'storm')
-PROJECT_BOLADAO = os.getenv('PROJECT_BOLADAO', 'infra')
+KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'storm')
+KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'storm')
+KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'infra')
 # ID da role swiftoperator
-ROLE_BOLADONA = os.getenv('ROLE_BOLADONA', 'c573d07d11ed4f75a7cae8e7527eb1ed')
+KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE', 'c573d07d11ed4f75a7cae8e7527eb1ed')
 
 LOGGING = {
     'version': 1,
