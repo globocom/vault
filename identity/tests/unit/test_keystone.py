@@ -51,8 +51,8 @@ class TestKeystoneConnection(TestCase):
             'auth_url': getattr(settings, 'KEYSTONE_URL'),
             'insecure': True,
             'tenant_name': 'fake_tenant',
-            'username': getattr(settings, 'VAULT_KEYSTONE_USERNAME'),
-            'password': getattr(settings, 'VAULT_KEYSTONE_PASSWORD'),
+            'username': getattr(settings, 'KEYSTONE_USERNAME'),
+            'password': getattr(settings, 'KEYSTONE_PASSWORD'),
             'timeout': 3,
         }
 
@@ -65,9 +65,9 @@ class TestKeystoneConnection(TestCase):
             'remote_addr': self.request.environ.get('REMOTE_ADDR', ''),
             'auth_url': getattr(settings, 'KEYSTONE_URL'),
             'insecure': True,
-            'tenant_name': getattr(settings, 'VAULT_KEYSTONE_PROJECT'),
-            'username': getattr(settings, 'VAULT_KEYSTONE_USERNAME'),
-            'password': getattr(settings, 'VAULT_KEYSTONE_PASSWORD'),
+            'tenant_name': getattr(settings, 'KEYSTONE_PROJECT'),
+            'username': getattr(settings, 'KEYSTONE_USERNAME'),
+            'password': getattr(settings, 'KEYSTONE_PASSWORD'),
             'timeout': 3,
         }
 
@@ -210,7 +210,7 @@ class TestKeystoneV2(TestCase):
         mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
                                          password='password',
                                          project_id=self.project.id,
-                                         role_id=settings.VAULT_KEYSTONE_ROLE)
+                                         role_id=settings.KEYSTONE_ROLE)
 
         mock_gp.assert_called_with(group_id=1, project_id=self.project.id)
         self.assertTrue(mock_gp.return_value.save.called)
