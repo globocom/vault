@@ -1,9 +1,10 @@
 {% load staticfiles %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vault - {% block title %}{% endblock %}</title>
+  <title>{% trans 'Vault' %} - {% block title %}{% endblock %}</title>
 
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome.min.css' %}" />
@@ -19,7 +20,7 @@
 <body>
 
 <div class="loading">
-  <div class="loading-content">Processing<br>
+  <div class="loading-content">{% trans 'Processing' %}<br>
   <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
   </div>
 </div>
@@ -54,8 +55,8 @@
   <h4 class="object-name"></h4>
 
   <div class="tabs-nav">
-    <button class="tab tabmeta active">Metadata</button>
-    <button class="tab tabcontent">Content</button>
+    <button class="tab tabmeta active">{% trans 'Metadata' %}</button>
+    <button class="tab tabcontent">{% trans 'Content' %}</button>
   </div>
 
   <div class="tabs-content">

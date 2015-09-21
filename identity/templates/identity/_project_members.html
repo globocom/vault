@@ -11,7 +11,7 @@
     {% endfor %}
     </select>
 
-    <span>&nbsp;with role:&nbsp;</span>
+    <span>&nbsp;{% trans 'with role:' %}</span>
 
     <select class="roles">
     {% for role in roles %}
@@ -19,7 +19,7 @@
     {% endfor %}
     </select>
 
-    <a href="#" class="btn btn-primary btn-sm  add-btn">Add</a>
+    <a href="#" class="btn btn-primary btn-sm  add-btn">{% trans 'Add' %}</a>
   </div>
 
   <div class="box-users">

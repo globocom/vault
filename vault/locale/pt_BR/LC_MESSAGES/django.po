@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 15:22-0300\n"
+"POT-Creation-Date: 2015-09-21 10:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,77 +17,104 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: vault/apps.py:9
+#: apps.py:9 templates/vault/base.html:6 templates/vault/header.html:10
 msgid "Vault"
-msgstr ""
+msgstr "Vault"
 
-#: vault/settings.py:92
+#: settings.py:92
 msgid "Portuguese"
-msgstr ""
+msgstr "Português"
 
-#: vault/settings.py:93
+#: settings.py:93
 msgid "English"
-msgstr ""
+msgstr "Inglês"
 
-#: vault/templates/admin/base_site.html:59
+#: templates/admin/base_site.html:10
+msgid "Vault Admin"
+msgstr "Vault Admin"
+
+#: templates/admin/base_site.html:36 templates/vault/base.html:22
+msgid "Processing"
+msgstr "Processando"
+
+#: templates/admin/base_site.html:59
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
-#: vault/templates/admin/base_site.html:72
+#: templates/admin/base_site.html:72
 msgid "Welcome,"
-msgstr ""
+msgstr "Bemvindo,"
 
-#: vault/templates/admin/base_site.html:78
+#: templates/admin/base_site.html:78
 msgid "Documentation"
-msgstr ""
+msgstr "Documentação"
 
-#: vault/templates/admin/base_site.html:81
+#: templates/admin/base_site.html:81
 msgid "Change password"
-msgstr ""
+msgstr "Mudar senha"
 
-#: vault/templates/admin/base_site.html:83
+#: templates/admin/base_site.html:83
 msgid "Log out"
-msgstr ""
+msgstr "Log out"
 
-#: vault/templates/admin/index.html:23
+#: templates/admin/index.html:23
 #, python-format
 msgid "Models in the %(name)s application"
-msgstr ""
+msgstr "Modelos na application %(name)s"
 
-#: vault/templates/admin/index.html:34
-#: vault/templates/vault/projectsandusers.html:12
-#: vault/templates/vault/projectsandusers.html:16
+#: templates/admin/index.html:34 templates/vault/projectsandusers.html:12
+#: templates/vault/projectsandusers.html:16
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
-#: vault/templates/admin/index.html:40
+#: templates/admin/index.html:40
 msgid "Change"
-msgstr ""
+msgstr "Alterar"
 
-#: vault/templates/admin/index.html:51
+#: templates/admin/index.html:51
 msgid "You don't have permission to edit anything."
-msgstr ""
+msgstr "Você não tem permissão pra alterar nada."
 
-#: vault/templates/vault/projectsandusers.html:8
+#: templates/vault/base.html:57
+msgid "Metadata"
+msgstr "Metadados"
+
+#: templates/vault/base.html:58
+msgid "Content"
+msgstr "Conteúdo"
+
+#: templates/vault/pagination.html:11
+msgid "de"
+msgstr "de"
+
+#: templates/vault/projectsandusers.html:8
 msgid "Projects and Users"
-msgstr ""
+msgstr "Projetos e Usuários"
 
-#: vault/templates/vault/projectsandusers.html:11
+#: templates/vault/projectsandusers.html:11
 msgid "Projects"
-msgstr ""
+msgstr "Projetos"
 
-#: vault/templates/vault/projectsandusers.html:15
+#: templates/vault/projectsandusers.html:15
 msgid "Users"
-msgstr ""
+msgstr "Usuários"
 
-#: vault/views.py:43
+#: tests/unit/test_views.py:44 views.py:138
+msgid "Unable to change your project."
+msgstr "Não foi possível mudar seu projeto."
+
+#: views.py:43
 msgid "Missing 'project_id'"
-msgstr ""
+msgstr "Faltando 'project_id'"
 
-#: vault/views.py:54
+#: views.py:54
 msgid "Can't find this project"
-msgstr ""
+msgstr "Não foi possível encontrar este projeto"
 
-#: vault/views.py:81
+#: views.py:55 views.py:136
+msgid "Exception:"
+msgstr "Exceção:"
+
+#: views.py:81
 msgid "Object storage authentication failed"
-msgstr ""
+msgstr "Autenticação no object storage falhou"

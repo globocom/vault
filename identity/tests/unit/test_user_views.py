@@ -10,6 +10,7 @@ from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView, UpdateProjectUserPasswordView)
 from django.utils.translation import ugettext as _
 
+
 class ListUserTest(TestCase):
 
     def setUp(self):
@@ -54,6 +55,7 @@ class ListUserTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 200)
+        print msgs[0].message
         self.assertEqual(msgs[0].message, _('Unable to list users'))
 
 

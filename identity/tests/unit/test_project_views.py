@@ -12,6 +12,7 @@ from identity.tests.fakes import AreaFactory, AreaProjectsFactory, \
 from vault.tests.fakes import fake_request
 from django.utils.translation import ugettext as _
 
+
 class ListProjectTest(TestCase):
 
     def setUp(self):

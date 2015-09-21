@@ -1,10 +1,10 @@
 {% extends "vault/base.html" %}
-
-{% block title %}Edit User{% endblock %}
-{% block content_title %}Edit User{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Edit User' %}{% endblock %}
+{% block content_title %}{% trans 'Edit User' %}{% endblock %}
 
 {% block content_top %}
-    <a href="{% url "delete_user" user_id %}" class="delete-user btn btn-danger">Delete User</a>
+    <a href="{% url "delete_user" user_id %}" class="delete-user btn btn-danger">{% trans 'Delete User' %}</a>
 {% endblock %}
 
 {% block content %}
@@ -56,7 +56,7 @@
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Save User</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Save User' %}</button>
       </div>
     </fieldset>
 

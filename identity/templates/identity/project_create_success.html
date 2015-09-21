@@ -15,27 +15,27 @@
   <div class="panel panel-default">
     <table class="project-created items-list table table-bordered table-striped">
       <tr>
-        <th>Username</th>
+        <th>{% trans 'Username' %}</th>
         <td>{{ project_info.user_name }}</td>
       </tr>
       <tr>
-        <th>Password</th>
+        <th>{% trans 'Password' %}</th>
         <td>{{ project_info.user_password }}</td>
       </tr>
       <tr>
-        <th>Auth URL</th>
+        <th>{% trans 'Auth URL' %}</th>
         <td>{{ project_info.auth_url }}</td>
       </tr>
       <tr>
-        <th>Admin URL</th>
+        <th>{% trans 'Admin URL' %}</th>
         <td>{{ project_info.endpoints.adminURL }}</td>
       </tr>
       <tr>
-        <th>Public URL</th>
+        <th>{% trans 'Public URL' %}</th>
         <td>{{project_info.endpoints.publicURL }}</td>
       </tr>
       <tr>
-        <th>Internal URL</th>
+        <th>{% trans 'Internal URL' %}</th>
         <td>{{ project_info.endpoints.internalURL }}</td>
       </tr>
     </table>

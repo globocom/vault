@@ -1,9 +1,9 @@
 {% extends "vault/base.html" %}
-
+{% load i18n %}
 {% load staticfiles %}
 
-{% block title %}Edit Project{% endblock %}
-{% block content_title %}Edit Project{% endblock %}
+{% block title %}{% trans 'Edit Project' %}{% endblock %}
+{% block content_title %}{% trans 'Edit Project' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content_top %}
-  <a href="{% url "delete_project" idendity_project_id %}" class="btn btn-danger">Delete Project</a>
+  <a href="{% url "delete_project" idendity_project_id %}" class="btn btn-danger">{% trans 'Delete Project' %}</a>
 {% endblock %}
 
 {% block content %}
@@ -33,13 +33,13 @@
 
         {% if user_project %}
         <div class="form-group">
-          <div class="lbl-user">Project User:</div>
+          <div class="lbl-user">{% trans 'Project User:' %}</div>
           <input type='text' name='user_project' class="form-control" disabled value='{{ user_project }}' />
         </div>
 
         <div class="form-group">
-          <a href="#" class="reset-pass btn btn-primary">Reset Password</a>
-          <span class="reset-info">New password: <span class="new-pass"></span></span>
+          <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
+          <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
         </div>
         {%  endif %}
 
@@ -77,7 +77,7 @@
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Save Project</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Save Project' %}</button>
       </div>
     </fieldset>
 

@@ -6,6 +6,7 @@ from dashboard.widgets import BaseWidget
 from vault.models import GroupProjects
 from django.utils.translation import ugettext as _
 
+
 class ProjectsWidget(BaseWidget):
     title = "Object Storage"
     subtitle = "Projects"

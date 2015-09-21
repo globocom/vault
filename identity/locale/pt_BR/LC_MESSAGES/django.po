@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 16:45-0300\n"
+"POT-Creation-Date: 2015-09-16 18:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,11 +25,11 @@ msgstr "Identity"
 msgid "User Name"
 msgstr "Usuário"
 
-#: forms.py:20
+#: forms.py:20 templates/identity/users.html:21
 msgid "Email"
 msgstr "E-mail"
 
-#: forms.py:23 forms.py:117
+#: forms.py:23 forms.py:117 templates/identity/project_create_success.html:22
 msgid "Password"
 msgstr "Senha"
 
@@ -41,11 +41,12 @@ msgstr "Confirmação de Senha"
 msgid "Primary Project"
 msgstr "Projeto Primário"
 
-#: forms.py:32 forms.py:92
+#: forms.py:32 forms.py:92 templates/identity/projects.html:23
+#: templates/identity/users.html:22
 msgid "Enabled"
 msgstr "Habilitado"
 
-#: forms.py:39 tests/unit/test_user_views.py:320
+#: forms.py:39 tests/unit/test_user_views.py:321
 msgid "Passwords did not match"
 msgstr "As senhas não conferem"
 
@@ -57,7 +58,7 @@ msgstr "Projeto Criado."
 msgid "Project Name must be an alphanumeric."
 msgstr "Nome do projeto deve ser um alfanumerico"
 
-#: forms.py:89
+#: forms.py:89 templates/identity/projects.html:22
 msgid "Description"
 msgstr "Descrição"
 
@@ -73,7 +74,7 @@ msgstr "Time"
 msgid "Project description cannot be empty."
 msgstr "Descrição do projecto não pode estar vazio."
 
-#: forms.py:111
+#: forms.py:111 templates/identity/users.html:20
 msgid "User"
 msgstr "Usuário"
 
@@ -89,6 +90,14 @@ msgstr "Confirme a senha"
 msgid "Manage Users:"
 msgstr "Administrar Usuários:"
 
+#: templates/identity/_project_members.html:14
+msgid "with role:"
+msgstr "com role:"
+
+#: templates/identity/_project_members.html:22
+msgid "Add"
+msgstr "Adicionar"
+
 #: templates/identity/_project_members.html:30
 msgid "user"
 msgstr "usuário"
@@ -101,6 +110,13 @@ msgstr "role"
 msgid "Create project to manage users"
 msgstr "Crie um projeto para manipular usuários"
 
+#: templates/identity/project_create.html:6
+#: templates/identity/project_create.html:7
+#: templates/identity/project_create.html:58
+#: templates/identity/projects.html:11
+msgid "Create Project"
+msgstr "Criar Projeto"
+
 #: templates/identity/project_create_success.html:5
 #: templates/identity/project_create_success.html:6
 #: tests/unit/test_project_views.py:348
@@ -111,40 +127,131 @@ msgstr "Projeto Criado."
 msgid "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
 msgstr "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
 
+#: templates/identity/project_create_success.html:18
+msgid "Username"
+msgstr "Usuário"
+
+#: templates/identity/project_create_success.html:26
+msgid "Auth URL"
+msgstr "Auth URL"
+
+#: templates/identity/project_create_success.html:30
+msgid "Admin URL"
+msgstr "Admin URL"
+
+#: templates/identity/project_create_success.html:34
+msgid "Public URL"
+msgstr "Public URL"
+
+#: templates/identity/project_create_success.html:38
+msgid "Internal URL"
+msgstr "Internal URL"
+
+#: templates/identity/project_delete_confirm.html:6
+#: templates/identity/project_delete_confirm.html:7
+#: templates/identity/project_delete_confirm.html:38
+msgid "Delete Project Confirm"
+msgstr "Confirmar Remoção de Projeto"
+
+#: templates/identity/project_delete_confirm.html:14
+msgid "TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!"
+msgstr "TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!"
+
+#: templates/identity/project_edit.html:5
+#: templates/identity/project_edit.html:6
+msgid "Edit Project"
+msgstr "Editar Projeto"
+
+#: templates/identity/project_edit.html:17
+msgid "Delete Project"
+msgstr "Deletar Projeto"
+
+#: templates/identity/project_edit.html:36
+msgid "Project User:"
+msgstr "Usuário do Projeto:"
+
+#: templates/identity/project_edit.html:41
+msgid "Reset Password"
+msgstr "Resetar Senha"
+
+#: templates/identity/project_edit.html:42
+#, fuzzy
+#| msgid "New Password:"
+msgid "New password:"
+msgstr "Nova Senha:"
+
+#: templates/identity/project_edit.html:80
+msgid "Save Project"
+msgstr "Salvar Projeto"
+
+#: templates/identity/projects.html:5 templates/identity/projects.html.py:20
+msgid "Project"
+msgstr "Projeto"
+
+#: templates/identity/projects.html:7
+msgid "Projects"
+msgstr "Projetos"
+
+#: templates/identity/projects.html:21
+msgid "Project Id"
+msgstr "Id do Projeto"
+
+#: templates/identity/projects.html:36 templates/identity/projects.html:38
+#: templates/identity/users.html:33
+msgid "Edit"
+msgstr "Editar"
+
+#: templates/identity/user_create.html:3 templates/identity/user_create.html:4
+#: templates/identity/user_create.html:61 templates/identity/users.html:11
+msgid "Create User"
+msgstr "Criar Usuário"
+
+#: templates/identity/user_edit.html:3 templates/identity/user_edit.html:4
+msgid "Edit User"
+msgstr "Editar Usuário"
+
+#: templates/identity/user_edit.html:7
+msgid "Delete User"
+msgstr "Remover Usuário"
+
+#: templates/identity/user_edit.html:59
+msgid "Save User"
+msgstr "Salvar Usuário"
+
+#: templates/identity/users.html:5 templates/identity/users.html.py:7
+msgid "Users"
+msgstr "Usuários"
+
 #: tests/unit/test_project_views.py:62 views.py:282
 msgid "Unable to list projects"
 msgstr "Não foi possível listar os projetos."
 
 #: tests/unit/test_project_views.py:130 tests/unit/test_project_views.py:160
-#: tests/unit/test_project_views.py:456 tests/unit/test_user_views.py:140
+#: tests/unit/test_project_views.py:456 tests/unit/test_user_views.py:141
 msgid "This field is required"
 msgstr "Este campo é obrigatório."
 
-#: tests/unit/test_user_views.py:57
-#, fuzzy
-#| msgid "Unable to list projects"
+#: tests/unit/test_user_views.py:58
 msgid "Unable to list users"
 msgstr "Não foi possível listar os projetos."
 
-#: tests/unit/test_user_views.py:162
+#: tests/unit/test_user_views.py:163
 msgid "Enter a valid email address"
 msgstr "Informe um endereço de email válido"
 
-#: tests/unit/test_user_views.py:194 views.py:139
+#: tests/unit/test_user_views.py:195 views.py:139
 msgid "Error when create user"
 msgstr "Erro ao criar usuário."
 
-#: tests/unit/test_user_views.py:287 views.py:176
+#: tests/unit/test_user_views.py:288 views.py:176
 msgid "Error when update user"
 msgstr "Erro ao atualizar usuário."
 
-#: tests/unit/test_user_views.py:373
-#, fuzzy
-#| msgid "Successfully created user"
+#: tests/unit/test_user_views.py:374
 msgid "Successfully deleted user"
-msgstr "Usuário criado com sucesso."
+msgstr "Usuário removido com sucesso."
 
-#: tests/unit/test_user_views.py:386 views.py:197
+#: tests/unit/test_user_views.py:387 views.py:197
 msgid "Error when delete user"
 msgstr "Erro ao remover o usuário."
 
@@ -201,6 +308,3 @@ msgstr "Erro ao adicionar usuário."
 #: views.py:548
 msgid "Error removing user"
 msgstr "Erro ao remover usuário."
-
-#~ msgid "Duplicated project name."
-#~ msgstr "Nome de projeto duplicado."

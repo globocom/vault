@@ -52,7 +52,7 @@ def switch(request, project_id):
         project = Project.objects.get(id=project_id)
     except Project.DoesNotExist as err:
         messages.add_message(request, messages.ERROR, _("Can't find this project"))
-        log.exception('Exception: %s' % err)
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
         return HttpResponseRedirect(referer_url)
 
     keystone = Keystone(request)
@@ -133,9 +133,9 @@ class SetProjectView(LoginRequiredMixin, View):
             http_redirect = switch(request, kwargs.get('project_id'))
         except ValueError as err:
             http_redirect = HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            log.exception('Exception: %s' % err)
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
             messages.add_message(request, messages.ERROR,
-                                 'Unable to change your project.')
+                                 _('Unable to change your project.'))
 
         return http_redirect
 

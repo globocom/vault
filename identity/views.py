@@ -46,7 +46,7 @@ class ListUserView(SuperUserMixin, TemplateView):
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(self.request, messages.ERROR,
-                                 "Unable to list users")
+                                 _('Unable to list users'))
 
         sorted_users = sorted(users, key=lambda l: l.name.lower())
         context['users'] = utils.generic_pagination(sorted_users, page)
@@ -187,7 +187,7 @@ class DeleteUserView(BaseUserView):
         try:
             self.keystone.user_delete(kwargs.get('user_id'))
             messages.add_message(request, messages.SUCCESS,
-                                 'Successfully deleted user')
+                                 _('Successfully deleted user'))
             actionlog.log(request.user.username, 'delete',
                           'user_id: %s' % kwargs.get('user_id'))
 
@@ -392,7 +392,7 @@ class UpdateProjectView(BaseProjectView):
             except Exception as e:
                 log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     "Error when update project")
+                                     _('Error when update project'))
 
             return self.form_valid(form)
         else:

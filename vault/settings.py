@@ -14,8 +14,8 @@ import os
 
 # Disable HTTPS verification warnings.
 from requests.packages import urllib3
-urllib3.disable_warnings()
 from django.utils.translation import ugettext_lazy as _
+urllib3.disable_warnings()
 
 PROJECT = 'vault'
 
@@ -86,7 +86,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-#LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'pt-BR.UTF-8'
 LANGUAGES = (
     ('pt-BR', _('Portuguese')),
