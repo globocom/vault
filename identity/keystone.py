@@ -50,15 +50,15 @@ class Keystone(object):
         group_projects = GroupProjects.objects.filter(group__in=groups,
                                                       project_id=project_id)
 
-        # Pode autenticar se project pertence ao time do usuario, ou o usuario
-        # eh superuser
-        if not group_projects and not self.request.user.is_superuser:
+        # Pode autenticar se project pertence ao time do usuario
+        if not group_projects:
             msg = 'Permission denied to manage this project'
             raise exceptions.AuthorizationFailure(msg)
 
     def _keystone_conn(self, request):
 
-        self._is_allowed_to_connect()
+        if not self.request.user.is_superuser:
+            self._is_allowed_to_connect()
 
         kwargs = {
             'remote_addr': request.environ.get('REMOTE_ADDR', ''),
