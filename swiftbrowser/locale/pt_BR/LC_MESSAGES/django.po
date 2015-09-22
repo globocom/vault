@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 16:44-0300\n"
+"POT-Creation-Date: 2015-09-21 18:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 #: apps.py:9
 msgid "Swift Browser"
 msgstr "Swift Browser"
+
+#: templates/swiftbrowser/widgets/select_project.html:59
+msgid "project"
+msgstr "projeto"
 
 #: tests/unit/test_swiftbrowser.py:209 tests/unit/test_swiftbrowser.py:558
 msgid "This field is required."
