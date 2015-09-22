@@ -57,8 +57,8 @@ class Keystone(object):
 
     def _keystone_conn(self, request):
 
-        if not self.request.user.is_superuser:
-            self._is_allowed_to_connect()
+        # if not self.request.user.is_superuser:
+            # self._is_allowed_to_connect()
 
         kwargs = {
             'remote_addr': request.environ.get('REMOTE_ADDR', ''),
