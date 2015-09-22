@@ -319,7 +319,7 @@ class CreateProjectView(BaseProjectView):
     success_url = reverse_lazy('projects')
 
     def post(self, request, *args, **kwargs):
-        import ipdb;ipdb.set_trace()
+
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
 
         if form.is_valid():
