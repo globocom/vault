@@ -1,88 +1,13 @@
 
-.top .widget {
-    min-height: 252px;
+.dashboard-widgets {
+    list-style: none;
+    padding: 0;
 }
 
 .widget {
     position: relative;
-    background-color: white;
-    padding: 20px;
-    padding-bottom: 50px;
-    box-shadow: 0px 1px 2px 0 rgba(0, 0, 0, 0.15);
-    border-radius: 2px;
+    padding-bottom: 30px;
     margin-bottom: 30px;
-}
-
-.widget .base {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 30px;
-    line-height: 28px;
-    padding: 0 20px;
-    text-align: right;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-top: 1px solid #ddd;
-}
-
-.widget .base a {
-    display: block;
-    color: #333;
-    text-decoration: none;
-    font-size: 11px;
-    text-transform: uppercase;
-}
-
-/* widget-users */
-.widget-users {
-    text-align: center;
-}
-
-.widget-users .icon {
-    font-size: 72px;
-    margin-bottom: 20px;
-}
-
-.widget-users .number {
-    display: block;
-    font-size: 64px;
-    font-weight: normal;
-    line-height: 64px;
-}
-
-.widget-users .info {
-    display: block;
-    font-size: 18px;
-}
-
-/* widget-storage */
-.widget-storage h3 {
-    margin: 0 0 30px;
-}
-
-.widget-storage ul {
-    padding: 0;
-    list-style: none;
-}
-
-.widget-storage li {
-    height: 38px;
-    line-height: 38px;
-    border-bottom: 1px dotted #ccc;
-}
-
-.widget-storage li:last-child {
-    border-bottom: none;
-}
-
-.widget-storage .number {
-    float: right;
-    padding: 2px 8px;
-    background-color: #ccc;
-    color: #222;
-    border-radius: 2px;
-    line-height: 16px;
-    margin-top: 9px;
-    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0px 1px 0px #fefefe;
 }

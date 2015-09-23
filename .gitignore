@@ -4,6 +4,7 @@ actions.log
 .DS_Store
 .coverage
 .env
-
+vault_static/
 #pycharm
 .idea/
+.pycharm-venv

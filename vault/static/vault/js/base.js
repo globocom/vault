@@ -166,16 +166,17 @@ Base.SelectProject = {};
     function init(id) {
         project_id = id;
 
-        $main = $('#header .current-project');
+        // $main = $('#header .current-project');
+        $main = $('.selectproject');
         $current = $main.find('.current');
         $currentItem = $main.find('[data-project-id="'+ project_id +'"]');
 
         bindEvents();
-        loadCurrentProject();
+        // loadCurrentProject();
     }
 
     function bindEvents() {
-        $main.on('click', '.dropdown-menu a', function() {
+        $main.on('click', '.set-project', function() {
             window.location.href = '/set-project/'+ $(this).data('project-id') + '?next=' + window.location.pathname;
         });
     }
@@ -284,6 +285,33 @@ Base.Metatada = {};
     }
 
     $.extend(Base.Metatada, {
+        init: init
+    });
+
+})(window, jQuery);
+
+
+Base.Paginator = {};
+
+(function(window, $) {
+    'use strict';
+
+    var $page_number;
+
+    function init() {
+        $page_number = $('#pag_number');
+        bindEvents();
+    }
+
+    function bindEvents() {
+        $page_number.on('keypress', function(e) {
+            if (e.which == 13) {
+                window.location=window.location.origin + window.location.pathname + '?page=' + $page_number.val();
+            }
+        });
+    }
+
+    $.extend(Base.Paginator, {
         init: init
     });
 

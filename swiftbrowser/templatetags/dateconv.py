@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
+
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.timezone import utc
+
+
 register = template.Library()
 
 

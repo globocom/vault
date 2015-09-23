@@ -1,5 +1,6 @@
-""" Forms for swiftbrowser.browser """
 # -*- coding: utf-8 -*-
+
+""" Forms for swiftbrowser.browser """
 
 from django import forms
 from django.core import validators
@@ -18,6 +19,11 @@ class AddACLForm(forms.Form):
     username = forms.CharField(max_length=100)
     read = forms.BooleanField(required=False)
     write = forms.BooleanField(required=False)
+
+
+class AddCORSForm(forms.Form):
+    """ Form for CORS """
+    host = forms.CharField(max_length=100)
 
 
 class PseudoFolderForm(forms.Form):

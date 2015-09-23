@@ -5,9 +5,9 @@
 {% load dateconv %}
 {% load pagination %}
 
-{% block title %}Storage{% endblock %}
+{% block title %}Storage - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Storage - {{ project_name }}{% endblock %}
 
 {% block content_top %}
   {% if prefix %}
@@ -25,27 +25,26 @@
   <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
 {% endblock %}
 
-{% block content %}
-  <ul class="breadcrumb">
-    <li><a href="{% url "containerview" %}">Containers</a></li>
-    <li>
-      {% if prefix %}
-        <a class="u" href="{% url "objectview" container=container %}">{{container}}</a>
-      {% else %}
-        {{container}}
-      {% endif %}
-    </li>
-    {% for prefix in prefixes %}
-    <li>
-      {% if forloop.counter < prefixes|length %}
-      <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
-      {% else %}
-      {{prefix.display_name}}
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
 
+  {% if prefix %}
+    <a class="u" href="{% url "objectview" container=container %}">{{container}}</a>
+  {% else %}
+    {{ container }}
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
   <div class="panel panel-default">
     <table class="items-list table table-bordered table-striped table-hover">
       <thead>
@@ -63,7 +62,7 @@
         <tr>
           <td class="hidden-phone"><i class="fa fa-inbox"></i></td>
           <td>
-            <a href="{% url "objectview" container=container prefix=obj.prefix %}"><strong>{{obj.prefix|lastpart}}</strong></a>
+            <a href="{% url "objectview" container=container prefix=obj.prefix %}?p={{ project_id }}"><strong>{{obj.prefix|lastpart}}</strong></a>
             <button class="btn-meta btn btn-sm"
                     data-name="{{ obj.prefix }}"
                     data-meta-url="{% url "metadata" container=container objectname=obj.prefix %}">details</button>
@@ -114,7 +113,14 @@
   </div>
 {% pagination objects %}
 
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
+<script src="{% static 'vendor/js/swfobject.js' %}"></script>
+
 <script>
+if(swfobject.hasFlashPlayerVersion("1")) {
   ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
   var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
   client.on( "ready", function( readyEvent ) {
@@ -122,6 +128,16 @@
       Base.Messages.show('URL copied to clipboard', 'success')
     });
   });
+} else {
+  $(".btn-copy-url").on('click', function (e) {
+    var text = $(this).data('clipboard-text');
+    window.prompt ("Ctrl+C ou Cmd+C, Enter", text);
+  });
+}
+</script>
+
+<script>
+  Base.Paginator.init();
 </script>
 {% endblock %}
 

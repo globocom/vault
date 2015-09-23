@@ -1,14 +1,14 @@
 {% extends "vault/base.html" %}
-
+{% load i18n %}
 {% load pagination %}
 
-{% block title %}Users{% endblock %}
+{% block title %}{% trans 'Users' %}{% endblock %}
 
-{% block content_title %}Users{% endblock %}
+{% block content_title %}{% trans 'Users' %}{% endblock %}
 
 {% block content_top %}
-  <a href="{% url "add_user" %}" class="create-user btn btn-primary">
-    <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;Create User
+  <a href="{% url 'admin_add_user' %}" class="create-user btn btn-primary">
+    <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;{% trans 'Create User' %}
   </a>
 {% endblock %}
 
@@ -17,9 +17,9 @@
   <table class="items-list table table-bordered table-striped table-hover">
     <thead>
       <tr>
-        <th width="40%">User</th>
-        <th width="45%">Email</th>
-        <th width="10%">Enabled</th>
+        <th width="40%">{% trans 'User' %}</th>
+        <th width="45%">{% trans 'Email' %}</th>
+        <th width="10%">{% trans 'Enabled' %}</th>
         <th width="5%"></th>
       </tr>
     </thead>
@@ -30,12 +30,19 @@
         <td>{{ user.email }}</td>
         <td>{{ user.enabled }}</td>
         <td>
-          <a href="{% url "edit_user" user.id %}" class="edit-item btn btn-default btn-xs">Edit</a>
+          <a href="{% url 'edit_user' user.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+{% block js_bottom %}
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}
+
 {% pagination users %}
 {% endblock %}

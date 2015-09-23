@@ -23,7 +23,9 @@ Project.Users = {};
             'projectId': '',
             'addUrl': '',
             'deleteUrl': '',
-            'listUrl': ''
+            'listUrl': '',
+            'resetPassUrl': '/project/user/updatepass/',
+            'deleteMsg': 'Confirm reset password?'
         }, opts);
 
         $main = $('#add-user-role');
@@ -62,7 +64,44 @@ Project.Users = {};
             e.preventDefault();
             removeUserRole($(this).closest('tr'));
         });
+
+        var $form = $('.project-form');
+
+        $form.on('click', '.reset-pass', function(e) {
+            if(window.confirm(options.deleteMsg)) {
+                e.preventDefault();
+                resetPassword();
+            }
+            return false;
+        });
+
     }
+
+    function resetPassword() {
+        var $reset_info = $(".reset-info")
+        $.ajax({
+            type: "GET",
+            url: options.resetPassUrl + options.projectId,
+        })
+        .done(function (data) {
+            $reset_info.addClass('visible')
+                       .find('.new-pass')
+                       .text(data.new_password);
+            Base.Messages.show('Successfully created a new password', 'success')
+        })
+        .fail(function (data) {
+            Base.Messages.show('Error on reset password', 'error');
+        });
+    }
+
+    /* function showPassword(data) {
+        var new_user_password = data['new-password']
+        var $divPassword = $('.user_password');
+
+        $divPassword.fadeToggle( "slow", "linear", function() {
+            $divPassword.html('NEW PASSWORD: ' + new_user_password);
+        });
+    }*/
 
     function fillUsers() {
         $.ajax({

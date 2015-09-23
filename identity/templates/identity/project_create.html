@@ -1,9 +1,10 @@
 {% extends "vault/base.html" %}
+{% load i18n %}
 
 {% load staticfiles %}
 
-{% block title %}Create Project{% endblock %}
-{% block content_title %}Create Project{% endblock %}
+{% block title %}{% trans 'Create Project' %}{% endblock %}
+{% block content_title %}{% trans 'Create Project' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
@@ -33,20 +34,28 @@
         </div>
 
         <div class="form-group">
-          {{ form.enabled.label_tag }}<br />
-          {{ form.enabled }}
-          {{ form.enabled.errors }}
+          {{ form.areas.label_tag }}<br />
+          {{ form.areas }}
+          {{ form.areas.errors }}
         </div>
-      </div>
 
+        <div class="form-group">
+          {{ form.groups.label_tag }}<br />
+          {{ form.groups }}
+          {{ form.groups.errors }}
+        </div>
+
+      </div>
+      {% if show_roles %}
       <div class="col-md-6">
         {% include "identity/_project_members.html" %}
       </div>
+        {% endif %}
     </fieldset>
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Create Project</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Create Project' %}</button>
       </div>
     </fieldset>
 

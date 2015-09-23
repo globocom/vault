@@ -1,9 +1,9 @@
 {% extends "vault/base.html" %}
-
+{% load i18n %}
 {% load staticfiles %}
 
-{% block title %}Edit Project{% endblock %}
-{% block content_title %}Edit Project{% endblock %}
+{% block title %}{% trans 'Edit Project' %}{% endblock %}
+{% block content_title %}{% trans 'Edit Project' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
@@ -14,13 +14,14 @@
 {% endblock %}
 
 {% block content_top %}
-  <a href="{% url "delete_project" idendity_project_id %}" class="delete-project btn btn-danger">Delete Project</a>
+  <a href="{% url "delete_project" idendity_project_id %}" class="btn btn-danger">{% trans 'Delete Project' %}</a>
 {% endblock %}
 
 {% block content %}
   <form action="" class="form-box project-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
     {{ form.id }}
+    {{ form.action }}
 
     <fieldset class="content">
       <div class="col-md-6">
@@ -29,6 +30,18 @@
           {{ form.name }}
           {{ form.name.errors }}
         </div>
+
+        {% if user_project %}
+        <div class="form-group">
+          <div class="lbl-user">{% trans 'Project User:' %}</div>
+          <input type='text' name='user_project' class="form-control" disabled value='{{ user_project }}' />
+        </div>
+
+        <div class="form-group">
+          <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
+          <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
+        </div>
+        {%  endif %}
 
         <div class="form-group">
           {{ form.description.label_tag }}
@@ -41,16 +54,30 @@
           {{ form.enabled }}
           {{ form.enabled.errors }}
         </div>
+
+        <div class="form-group">
+          {{ form.areas.label_tag }}<br />
+          {{ form.areas }}
+          {{ form.areas.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.groups.label_tag }}<br />
+          {{ form.groups }}
+          {{ form.groups.errors }}
+        </div>
       </div>
 
+        {% if show_roles %}
       <div class="col-md-6">
         {% include "identity/_project_members.html" %}
       </div>
+        {%  endif %}
     </fieldset>
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Save Project</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Save Project' %}</button>
       </div>
     </fieldset>
 
@@ -59,9 +86,6 @@
 
 {% block js_bottom %}
 <script>
-Base.Forms.init({
-  'delete_btn_class': '.delete-project'
-});
 Project.Users.init({
   'projectId': '{{ idendity_project_id }}',
   'addUrl': '{% url "project_add_user" %}',

@@ -7,7 +7,8 @@ from mock import Mock, patch
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
-                            DeleteUserView)
+                            DeleteUserView, UpdateProjectUserPasswordView)
+from django.utils.translation import ugettext as _
 
 
 class ListUserTest(TestCase):
@@ -16,7 +17,6 @@ class ListUserTest(TestCase):
         self.view = ListUserView.as_view()
 
         self.request = fake_request(method='GET')
-        self.request.build_absolute_uri = lambda: '/'
         self.request.user.is_superuser = True
 
         patch('identity.keystone.Keystone._keystone_conn',
@@ -26,8 +26,8 @@ class ListUserTest(TestCase):
         patch.stopall()
 
     def test_list_users_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
         response = self.view(self.request)
-
         self.assertEqual(response.status_code, 302)
 
     def test_show_user_list(self):
@@ -38,6 +38,7 @@ class ListUserTest(TestCase):
         self.request.user.token = FakeToken
 
         response = self.view(self.request)
+
         response.render()
 
         self.assertIn('<td>FakeResource1</td>', response.content)
@@ -54,7 +55,8 @@ class ListUserTest(TestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(msgs[0].message, 'Unable to list users')
+        print msgs[0].message
+        self.assertEqual(msgs[0].message, _('Unable to list users'))
 
 
 class CreateUserTest(TestCase):
@@ -63,7 +65,6 @@ class CreateUserTest(TestCase):
         self.view = CreateUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -138,7 +139,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('This field is required', response.content)
+        self.assertIn(_('This field is required'), response.content.decode('UTF-8'))
 
     def test_validating_email_field(self):
         user = FakeResource(1, 'user1')
@@ -160,7 +161,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('Enter a valid email address', response.content)
+        self.assertIn(_('Enter a valid email address'), response.content.decode('UTF-8'))
 
     @patch('identity.keystone.Keystone.user_create')
     def test_user_create_method_was_called(self, mock):
@@ -175,7 +176,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
 
         mock.assert_called_with(name='aaa', enabled=True,
-            project=1, role=1, password='aaa', email='a@a.net', domain=None)
+            project_id=1, role_id=1, password='aaa', email='a@a.net', domain=None)
 
     @patch('identity.keystone.Keystone.user_create')
     def test_create_user_view_exception(self, mock_user_create):
@@ -192,7 +193,7 @@ class CreateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when create user')
+        self.assertEqual(msgs[0].message, _('Error when create user'))
 
 
 class UpdateUserTest(TestCase):
@@ -201,7 +202,6 @@ class UpdateUserTest(TestCase):
         self.view = UpdateUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -286,7 +286,7 @@ class UpdateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when update user')
+        self.assertEqual(msgs[0].message, _('Error when update user'))
 
     @patch('identity.keystone.Keystone.user_update')
     def test_update_user_change_password_exception(self, mock_user_update):
@@ -319,7 +319,7 @@ class UpdateUserTest(TestCase):
         response = self.view(self.request)
         msgs = [msg for msg in self.request._messages]
 
-        self.assertIn('Passwords did not match', response.rendered_content)
+        self.assertIn(_('Passwords did not match'), response.rendered_content)
         self.assertEqual(len(msgs), 0)
 
 
@@ -329,7 +329,6 @@ class DeleteUserTest(TestCase):
         self.view = DeleteUserView.as_view()
 
         self.request = fake_request()
-        self.request.build_absolute_uri = lambda: '/'
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
@@ -373,7 +372,7 @@ class DeleteUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Successfully deleted user')
+        self.assertEqual(msgs[0].message, _('Successfully deleted user'))
 
     @patch('identity.keystone.Keystone.user_delete')
     def test_user_delete_view_exception(self, mock_user_delete):
@@ -386,4 +385,91 @@ class DeleteUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, 'Error when delete user')
+        self.assertEqual(msgs[0].message, _('Error when delete user'))
+
+
+class UpdateProjectUserPasswordTest(TestCase):
+
+    def setUp(self):
+        self.view = UpdateProjectUserPasswordView.as_view()
+
+        self.request = fake_request(method='GET')
+        self.request.user.is_superuser = True
+
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        # Retorna objeto usuário similar ao do request
+        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+
+        self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
+        self.mock_users_list.return_value = [fake_request(method='GET').user]
+
+        patch('identity.keystone.Keystone._keystone_conn',
+              Mock(return_value=None)).start()
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_reset_password_needs_authentication(self):
+        self.request.user.is_authenticated = lambda: False
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 302)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_was_called(self, mock_find_user):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_find_user.assert_called_with(None)
+
+    @patch('identity.keystone.Keystone.create_password')
+    def test_create_password_was_called(self, mock_create_password):
+        self.request.user.is_authenticated = lambda: True
+
+        self.view(self.request)
+
+        mock_create_password.assert_called_with()
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_user_update_was_called(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+
+    @patch('identity.keystone.Keystone.user_update')
+    def test_return_reset_password_with_new_password(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        password = 'B52j7#ZDYuyS'
+
+        patch('identity.keystone.Keystone.create_password',
+              Mock(return_value=password)).start()
+
+        response = self.view(self.request)
+
+        mock_user_update.assert_called_with(self.request.user, password=password)
+        self.assertIn(password, response.content)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_find_u_user_with_exception(self, mock_find_u_user):
+        self.request.user.is_authenticated = lambda: True
+        mock_find_u_user.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)
+
+    @patch('identity.keystone.Keystone.return_find_u_user')
+    def test_return_user_update_with_exception(self, mock_user_update):
+        self.request.user.is_authenticated = lambda: True
+        mock_user_update.side_effect = Exception()
+
+        response = self.view(self.request)
+
+        self.assertEqual('{}', response.content)

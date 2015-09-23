@@ -1,0 +1,70 @@
+{% load i18n %}
+
+<style>
+.select-project {
+  width: 100%;
+  list-style: none;
+  padding-left: 0
+}
+
+.select-project .item {
+  position: relative;
+  display: inline-block;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  background-color: #fafafa;
+  border-radius: 3px;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.select-project .name {
+  font-size: 23px;
+  font-weight: bold;
+  color: #3E606F;
+}
+
+.select-project .name:hover {
+  text-decoration: none;
+  color: #666;
+}
+
+.project-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 100%;
+  text-align: center;
+  font-size: 20px;
+  padding-top: 20px;
+  color: #aaa;
+  border-left: 1px solid #e2e2e2;
+}
+
+.project-edit:hover {
+  color: #666;
+  background-color: #fefefe;
+}
+
+.project-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #bbb;
+}
+</style>
+
+<ul class="select-project">
+  {% for project in projects %}
+  <li class="col-md-3 col-sm-4" data-project-id="{{ project.id }}">
+    <div class="item">
+      <span class="project-label">{% trans "project" %}</span><br />
+      <a class="name" href="/set-project/{{ project.id }}/?next=/storage/"
+         title="{% if project.description %}{{ project.description }}{% endif %}">{{ project.name }}</a>
+      <a class="project-edit" href="/project/{{ project.id }}" title="Editar">
+        <i class="fa fa-edit"></i>
+      </a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>

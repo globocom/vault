@@ -1,0 +1,47 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans 'Project Created' %}{% endblock %}
+{% block content_title %}{% trans 'Project Created' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <span style="color:#b92c28"><H4>{% blocktrans %}Salve essas informa&ccedil;&otilde;es para utilizar o project criado!{% endblocktrans %}</H4></span>
+
+  <div class="panel panel-default">
+    <table class="project-created items-list table table-bordered table-striped">
+      <tr>
+        <th>{% trans 'Username' %}</th>
+        <td>{{ project_info.user_name }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Password' %}</th>
+        <td>{{ project_info.user_password }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Auth URL' %}</th>
+        <td>{{ project_info.auth_url }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Admin URL' %}</th>
+        <td>{{ project_info.endpoints.adminURL }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Public URL' %}</th>
+        <td>{{project_info.endpoints.publicURL }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Internal URL' %}</th>
+        <td>{{ project_info.endpoints.internalURL }}</td>
+      </tr>
+    </table>
+  </div>
+
+{% endblock %}
+
+{% block js_bottom %}
+{% endblock %}

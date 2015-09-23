@@ -2,9 +2,9 @@
 
 {% load pagination %}
 
-{% block title %}Storage{% endblock %}
+{% block title %}Storage - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Storage - {{ project_name }}{% endblock %}
 
 {% block content_top %}
   <a href="{% url "create_container" %}" class="btn btn btn-primary">
@@ -12,11 +12,9 @@
   </a>
 {% endblock %}
 
-{% block content %}
-<ul class="breadcrumb">
-  <li>Containers</li>
-</ul>
+{% block content_breadcrumb %}Containers{% endblock %}
 
+{% block content %}
 <div class="panel panel-default">
   <table class="items-list table table-bordered table-striped table-hover">
     <thead>
@@ -35,7 +33,7 @@
           <i class="fa fa-inbox"></i>
         </td>
         <td>
-          <strong><a href="{% url "objectview" container=container.name %}" class="block">{{container.name}}</a></strong>
+          <strong><a href="{% url "objectview" container=container.name %}?p={{ project_id }}" class="block">{{container.name}}</a></strong>
           <button class="btn-meta btn btn-sm"
                   data-name="{{ container.name }}"
                   data-meta-url="{% url "metadata" container=container.name %}">details</button>
@@ -50,14 +48,19 @@
           <div class="dropdown pull-right">
             <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
             <ul class="dropdown-menu">
-                {% url "object_versioning" container=container.name as object_versioning_url %}
-                <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i> Versioning</a></li>
-              {% url "edit_acl" container=container.name as edit_acl_url %}
-              {% if edit_acl_url %}
-                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i> Sharing</a></li>
-                <li class="divider" />
+              {% url "edit_cors" container=container.name as edit_cors_url %}
+              {% if edit_cors_url %}
+                <li><a href="{{ edit_cors_url }}"><i class="fa fa-random"></i>&nbsp;Set CORS</a></li>
               {% endif %}
 
+              {% url "object_versioning" container=container.name as object_versioning_url %}
+              <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i>&nbsp;Versioning</a></li>
+
+              {% url "edit_acl" container=container.name as edit_acl_url %}
+              {% if edit_acl_url %}
+                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i>&nbsp;Sharing</a></li>
+                <li class="divider" />
+              {% endif %}
               <li>
                 <a href="{% url "delete_container" container=container.name %}" onclick="return confirm('Delete container {{container.name}}?');">
                   <i class="fa fa-trash-o"></i> Delete container
@@ -91,5 +94,12 @@
 
   </table>
 </div>
+{% block js_bottom %}
+
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}
+
 {% pagination containers %}
 {% endblock %}

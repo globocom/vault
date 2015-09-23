@@ -1,56 +1,64 @@
-""" Standalone webinterface for Openstack Swift. """
 # -*- coding: utf-8 -*-
 # pylint:disable=E0611, E1101
 
-import os
-import re
-import time
-import urlparse
-import hmac
+""" Standalone webinterface for Openstack Swift. """
+
 import string
 import random
 import logging
-from hashlib import sha1
+
+from urlparse import urlparse
+
+from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 
 from swiftclient import client
+from keystoneclient.openstack.common.apiclient import exceptions as \
+     keystone_exceptions
 
-from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
-from django.contrib import messages
-from django.conf import settings
+from vault.views import switch
+from identity.keystone import Keystone
+
 
 log = logging.getLogger(__name__)
 
 
-# TODO: Ajustar para ser compliance com v3
-def get_admin_url(request):
-    finalURL = None
-    if request.user.service_catalog:
-        for service in request.user.service_catalog:
-            if service['type'] == 'object-store':
-                finalURL = service['endpoints'][0]['adminURL']
+def get_endpoint(request, endpoint_type):
+    """
+    service_catalog na sessao eh referente a conexao com o project "admin"
+    para retornar o endpoint do "project_id" da sessao, usa-se o service_catalog
+    do project "admin", substituindo o project_id
 
-    finalURL = re.sub(r"\/AUTH_[\w]+\/?$",
-                      "/AUTH_%s" % request.session.get('project_id'),
-                      finalURL)
+    Isto eh necessario pois a conexao com o Keystone eh sempre com o mesmo
+    project, nao estando disponivel de forma direta o service_catalog de um
+    project qualquer
 
-    return str(finalURL)
+    :param request: http resquest
+    :param endpoint_type: adminURL, publicURL, internalURL
+    :return: endpoint url or None
+
+    """
+    service_catalog = request.session.get('service_catalog')
+    project_id = request.session.get('project_id')
+
+    if not service_catalog and project_id:
+        raise ValueError('Dados da sessao incompletos.')
+
+    endpoint_on_session = service_catalog.get(endpoint_type)
+    if endpoint_on_session is None:
+        return None
+
+    _, project_admin_id = endpoint_on_session.split('AUTH_')
+
+    final_url = endpoint_on_session.replace(project_admin_id, project_id)
+
+    return final_url
 
 
-def get_public_url(request):
-    """ Retrieve public URL """
-    finalURL = None
-    if request.user.service_catalog:
-        for service in request.user.service_catalog:
-            if service['type'] == 'object-store':
-                finalURL = service['endpoints'][0]['publicURL']
-
-    finalURL = re.sub(r"\/AUTH_[\w]+\/?$",
-                      "/AUTH_%s" % request.session.get('project_id'),
-                      finalURL)
-
-    return str(finalURL)
+def get_token_id(request):
+    return request.session.get('auth_token')
 
 
 def replace_hyphens(olddict):
@@ -144,9 +152,136 @@ def get_acls(storage_url, auth_token, container, http_conn):
     return (readers, writers)
 
 
+def get_cors(storage_url, auth_token, container, http_conn):
+    """ Returns CORS header of given container. """
+    headers = client.head_container(storage_url,
+                                    auth_token,
+                                    container,
+                                    http_conn=http_conn)
+
+    cors = headers.get('x-container-meta-access-control-allow-origin', '')
+
+    return cors
+
+
+def remove_duplicates(text, separator):
+    """ Removes possible duplicates from a separator-separated list. """
+    entries = text.split(separator)
+    cleaned_entries = list(set(entries))
+    text = separator.join(cleaned_entries)
+    return text
+
+
 def remove_duplicates_from_acl(acls):
     """ Removes possible duplicates from a comma-separated list. """
-    entries = acls.split(',')
-    cleaned_entries = list(set(entries))
-    acls = ','.join(cleaned_entries)
-    return acls
+    return remove_duplicates(acls, ',')
+
+
+def remove_duplicates_from_cors(cors):
+    """ Removes possible duplicates from a space-separated list. """
+    return remove_duplicates(cors, ' ')
+
+
+def get_account_containers(storage_url, auth_token):
+    """ List all containers in an account"""
+    container_list = []
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    _, containers = client.get_account(storage_url, auth_token,
+                                                      http_conn=http_conn)
+
+    for container in containers:
+        container_list.append(container['name'])
+
+    return container_list
+
+
+def get_container_objects(container, storage_url, auth_token):
+    object_list = []
+    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
+
+    _, objects = client.get_container(storage_url,
+                                           auth_token,
+                                           container,
+                                           http_conn=http_conn)
+
+    for object in objects:
+        object_list.append(object['name'])
+
+    return object_list
+
+
+def delete_swift_account(storage_url, auth_token):
+
+    insecure = settings.SWIFT_INSECURE
+
+    try:
+        # Criar container vazio para garantir que o account existe no swift
+        http_conn = client.http_connection(storage_url, insecure=insecure)
+
+        client.put_container(storage_url, auth_token, 'dummy_container',
+                             http_conn=http_conn)
+    except client.ClientException as err:
+        log.exception('Fail to create container "dummy_container": {0}'.format(err))
+        return False
+
+    try:
+        # Deletar o account
+        url = urlparse(storage_url)
+        domain = '{}://{}'.format(url.scheme, url.netloc)
+        path = url.path
+
+        http_conn = client.HTTPConnection(domain, insecure=insecure)
+        headers = {'X-Auth-Token': auth_token}
+
+        resp = http_conn.request('DELETE', path, headers=headers)
+
+        if resp.status_code != 204:
+            log.exception('Fail to delete account {}: status code {}'.format(
+                storage_url, resp.status_code
+            ))
+            return False
+
+    except client.ClientException as err:
+        log.exception('Exception: {0}'.format(err))
+        return False
+
+    return True
+
+
+def to_str(obj):
+    if isinstance(obj, unicode):
+        return obj.encode('utf8')
+    elif isinstance(obj, str):
+        return str(obj)
+    else:
+        return repr(obj)
+
+
+def check_project(view_func):
+    """
+    Decorator para mudar o project na sessao para as urls que nao
+    passam pelo set_project
+    """
+
+    def _wrapper(request, *args, **kwargs):
+        prj_id = request.GET.get('p')
+
+        try:
+            keystone = Keystone(request)
+        except keystone_exceptions.AuthorizationFailure as err:
+            log.error(err)
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 'Object storage authentication failed')
+            return redirect('dashboard')
+
+        if prj_id and prj_id != request.session.get('project_id'):
+            return switch(request,
+                          prj_id,
+                          next_url=request.build_absolute_uri())
+
+        return view_func(request, *args, **kwargs)
+
+    return _wrapper

@@ -1,11 +1,12 @@
 {% load staticfiles %}
-{% load selectproject %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vault - {% block title %}{% endblock %}</title>
+  <title>{% trans 'Vault' %} - {% block title %}{% endblock %}</title>
 
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
@@ -13,69 +14,33 @@
   {% block css %}{% endblock %}
 
   <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
-  <script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
   {% block js_top %}{% endblock %}
-
 </head>
 <body>
 
 <div class="loading">
-  <div class="loading-content">Processing<br>
+  <div class="loading-content">{% trans 'Processing' %}<br>
   <img class="loader" src="{% static 'vault/img/loader.gif' %}" />
   </div>
 </div>
 
-<header id="header" class="navbar navbar-default">
-  <div class="navbar-header">
-    <a href="{% url "dashboard" %}" class="navbar-brand logo">Vault</a>
-  </div>
-
-  <ul class="nav navbar-nav navbar-right">
-    {% selectproject %}
-  </ul>
-</header>
-
-<nav id="sidebar">
-  <div class="user-info">
-    <i class="icon-user fa fa-user"></i>
-    {{ logged_user.username }}<br />
-    <a class="logout-btn" href="{{ logout_url }}">logout&nbsp;<i class="icon fa fa-sign-out"></i></a>
-  </div>
-
-  <ul class="menu">
-    <li><a href="{% url "dashboard" %}"><i class="icon fa fa-dashboard"></i>Dashboard</a></li>
-    {% if has_identity %}
-      <li class="open">
-        <a href="#" class="group">
-          <i class="icon fa fa-key"></i>Identity
-          <i class="plus fa fa-angle-left"></i>
-          <i class="minus fa fa-angle-down"></i>
-        </a>
-        <ul>
-          <li><a href="{% url "users" %}"><i class="icon fa fa-caret-right"></i>Users</a></li>
-          <li><a href="{% url "projects" %}"><i class="icon fa fa-caret-right"></i>Projects</a></li>
-        </ul>
-      </li>
-    {% endif %}
-    <li><a href="{% url "containerview" %}"><i class="icon fa fa-hdd-o"></i>Storage</a></li>
-  </ul>
-</nav>
+{% include "vault/header.html" %}
+{% include "dashboard/sidebar.html" %}
 
 <section id="content" class="container-fluid">
   <div class="row">
-
-    <h2 class="content-title col-md-4">
+    <h2 class="content-title col-md-8 col-sm-6 col-xs-6">
       {% block content_title %}{% endblock %}
+      <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
     </h2>
 
-    <div class="content-top col-md-8">
+    <div class="content-top col-md-4 col-sm-6 col-xs-6">
       {% block content_top %}{% endblock %}
     </div>
 
-    <div class="col-md-12">
+    <div class="content-body col-md-12 col-sm-12 col-xs-12">
       {% block content %}{% endblock %}
     </div>
-
   </div>
 </section>
 
@@ -89,8 +54,8 @@
   <h4 class="object-name"></h4>
 
   <div class="tabs-nav">
-    <button class="tab tabmeta active">Metadata</button>
-    <button class="tab tabcontent">Content</button>
+    <button class="tab tabmeta active">{% trans 'Metadata' %}</button>
+    <button class="tab tabcontent">{% trans 'Content' %}</button>
   </div>
 
   <div class="tabs-content">
@@ -105,23 +70,23 @@
 
 <!-- messages -->
 <ul class="messages"></ul>
-
 <script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'vault/js/base.js' %}"></script>
 
 {% if messages %}
 <script>
 {% for message in messages %}
-  Base.Messages.show('{{ message }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
+  Base.Messages.show('{{ message|capfirst }}'{% if message.tags %}, '{{ message.tags }}'{% endif %});
 {% endfor %}
 </script>
 {% endif %}
 
 <script>
-  Base.Menu.init();
+  // Base.Menu.init();
   Base.Metatada.init();
   Base.SelectProject.init('{{ project_id }}');
 </script>
+
 {% block js_bottom %}{% endblock %}
 </body>
 </html>

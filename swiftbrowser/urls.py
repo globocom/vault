@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.conf.urls import patterns, url
 from swiftbrowser import views
 
@@ -32,6 +34,9 @@ urlpatterns = patterns('swiftbrowser.views',
 
     url(r'^acls/(?P<container>.+?)/$',
         views.edit_acl, name="edit_acl"),
+
+    url(r'^cors/(?P<container>.+?)/$',
+        views.edit_cors, name="edit_cors"),
 
     url(r'^download/(?P<container>.+?)/(?P<objectname>.+?)$',
         views.download, name="download"),

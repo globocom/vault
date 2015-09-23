@@ -15,7 +15,6 @@ class BaseAjaxTestCase(TestCase):
         self.view = self.view_class.as_view()
 
         self.request = fake_request(method='POST')
-        self.request.build_absolute_uri = lambda: '/'
 
         self.request.user.is_authenticated = lambda: True
         self.request.user.token = FakeToken
@@ -63,7 +62,7 @@ class TestListUserRole(BaseAjaxTestCase):
 
         response = self.view(self.request)
 
-        mock_user_list.assert_called_with(project=1)
+        mock_user_list.assert_called_with(project_id=1)
 
     @patch('identity.views.ListUserRoleView.get_user_roles')
     def test_get_user_roles_was_called(self, mock_get_user_roles):

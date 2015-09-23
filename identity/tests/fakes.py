@@ -1,4 +1,9 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+
+import factory
+from django.contrib.auth.models import User, Group
+
+from vault.models import Project, Area, GroupProjects, AreaProjects
 
 
 class FakeResource(object):
@@ -30,4 +35,65 @@ class FakeKeystone:
         self.users.update = lambda user, **kwargs: None
         self.roles.get = lambda id: FakeResource(id)
         self.tenants.get = lambda a: FakeResource(1)
+        self.tenants.create = lambda name, domain_id='default', description=None, enabled=True: None
         self.projects.get = lambda a: FakeResource(1)
+
+
+# factories.py
+class GroupFactory(factory.Factory):
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = Group
+
+    name = factory.Sequence(lambda n: "Group #%s" % n)
+
+
+class UserFactory(factory.Factory):
+
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = User
+
+    pk = 1
+    first_name = "John"
+    last_name = "Doe"
+    is_superuser = True
+
+    @factory.post_generation
+    def groups(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for group in extracted:
+                self.groups.add(group)
+
+
+class ProjectFactory(factory.Factory):
+
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = Project
+
+
+class AreaFactory(factory.Factory):
+
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = Area
+
+
+class GroupProjectsFactory(factory.Factory):
+
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = GroupProjects
+
+
+class AreaProjectsFactory(factory.Factory):
+
+    class Meta:
+        strategy = factory.BUILD_STRATEGY
+        model = AreaProjects

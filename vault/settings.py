@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 Django settings for vault project.
@@ -14,6 +14,7 @@ import os
 
 # Disable HTTPS verification warnings.
 from requests.packages import urllib3
+from django.utils.translation import ugettext_lazy as _
 urllib3.disable_warnings()
 
 PROJECT = 'vault'
@@ -27,57 +28,71 @@ SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = (
+    'actionlogger',
+    'dashboard',
+    'identity',
+    'swiftbrowser',
+    'allaccess',
+    'vault',
+
+    'backstage_accounts',
+
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'openstack_auth',
-    'dashboard',
-    'identity',
-    'swiftbrowser',
-    'vault',
 )
 
+BACKSTAGE_ACCOUNTS_URL = os.getenv('VAULT_BACKSTAGE_ACCOUNTS_URL', 'https://accounts.backstage.dev.globoi.com')
+BACKSTAGE_BAR_URL = os.getenv('VAULT_BACKSTAGE_BAR_URL', 'https://barra.backstage.dev.globoi.com')
+BACKSTAGE_CLIENT_ID = os.getenv('VAULT_BACKSTAGE_CLIENT_ID', 'WUPshuyoPIfjoEn5BsmrUQ==')
+BACKSTAGE_CLIENT_SECRET = os.getenv('VAULT_BACKSTAGE_CLIENT_SECRET', 'duMbvbCu9zlvFlvGnhGxMw==')
+
 AUTHENTICATION_BACKENDS = (
-    'openstack_auth.backend.KeystoneBackend',
+    'backstage_accounts.backends.BackstageBackend',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages",
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 ROOT_URLCONF = 'vault.urls'
 
 WSGI_APPLICATION = 'vault.wsgi.application'
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'America/Sao_Paulo'
-
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-BR.UTF-8'
+LANGUAGES = (
+    ('pt-BR', _('Portuguese')),
+    ('en', _('English')),
+)
+TIME_ZONE = 'America/Sao_Paulo'
 
 STATIC_ROOT = 'vault_static/'
 
@@ -88,14 +103,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
-# Keystone
-OPENSTACK_SSL_NO_VERIFY = True
-
-LOGIN_URL = '/auth/login/'
-LOGOUT_URL = '/auth/logout'
+LOGIN_URL = '/admin/vault/login/backstage/'
+LOGOUT_URL = '{}/logout'.format(BACKSTAGE_ACCOUNTS_URL)
 LOGIN_REDIRECT_URL = '/'
 
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
@@ -103,7 +114,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # ENV Confs
 
-PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 50)
+PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 10)
 
 ALLOWED_HOSTS = ['*']
 
@@ -118,22 +129,14 @@ DATABASES = {
     }
 }
 
+# Dashboard
+DASHBOARD_WIDGETS = (
+    'swiftbrowser.widgets.ProjectsWidget',
+)
+
 # Keystone
-OPENSTACK_API_VERSIONS = {
-    "identity": 2
-}
-
-if os.environ.get('VAULT_KEYSTONE_CREATE_USER') == 'False':
-    KEYSTONE_CREATE_USER = False
-else:
-    KEYSTONE_CREATE_USER = True
-
-KEYSTONE_VERSION = OPENSTACK_API_VERSIONS.get('identity', 2)
-
-if KEYSTONE_VERSION == 3:
-    OPENSTACK_KEYSTONE_URL = "%s/v3" % os.getenv('VAULT_KEYSTONE_URL')
-else:
-    OPENSTACK_KEYSTONE_URL = "%s/v2.0" % os.getenv('VAULT_KEYSTONE_URL')
+KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL', 'https://auth.s3.dev.globoi.com:5000/v2.0')
+KEYSTONE_VERSION = 2
 
 # When versioning is enabled in a container named <container>, another
 # container named <prefix><container> will be create to keep objects versions
@@ -144,3 +147,41 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
     SWIFT_INSECURE = False
 else:
     SWIFT_INSECURE = True
+
+KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'storm')
+KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'storm')
+KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'infra')
+# ID da role swiftoperator
+KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE', 'c573d07d11ed4f75a7cae8e7527eb1ed')
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'identity': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'vault': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'swiftbrowser': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'dashboard': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
+        }
+    },
+}
