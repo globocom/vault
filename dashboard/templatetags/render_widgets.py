@@ -25,7 +25,7 @@ class RenderWidgets(template.Node):
             widget = WidgetClass(context)
             content.append(widget.render())
 
-        content = '{}</ul>'.format(''.join(content))
+        content = '{}</ul>'.format(''.join(content).encode('ISO-8859-1'))
 
         return content
 
