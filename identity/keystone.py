@@ -39,11 +39,6 @@ class Keystone(object):
         """
 
         project_id = self.request.session.get('project_id')
-        if not project_id:
-            # project = Project.objects.get(name=self.tenant_name)
-            # project_id = project.id
-            self.tenant_name = None
-            return
 
         groups = self.request.user.groups.all()
 
@@ -51,13 +46,14 @@ class Keystone(object):
                                                       project_id=project_id)
 
         # Pode autenticar se project pertence ao time do usuario
-        if not group_projects:
+        if not group_projects and not self.request.user.is_superuser:
             msg = 'Permission denied to manage this project'
             raise exceptions.AuthorizationFailure(msg)
 
     def _keystone_conn(self, request):
 
-        if not self.request.user.is_superuser:
+        # Se houver um project para contexto, verifica permissao
+        if self.request.session.get('project_id'):
             self._is_allowed_to_connect()
 
         kwargs = {

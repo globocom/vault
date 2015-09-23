@@ -52,7 +52,7 @@ msgstr "As senhas não conferem"
 
 #: forms.py:86
 msgid "Project Name"
-msgstr "Projeto Criado."
+msgstr "Nome do projeto"
 
 #: forms.py:87 tests/unit/test_project_views.py:219
 msgid "Project Name must be an alphanumeric."
