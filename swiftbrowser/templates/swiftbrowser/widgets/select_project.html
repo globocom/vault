@@ -60,7 +60,7 @@
     <div class="item">
       <span class="project-label">{% trans "project" %}</span><br />
       <a class="name" href="/set-project/{{ project.id }}/?next=/storage/"
-         title="{% if project.description %}{{ project.description }}{% endif %}">{{ project.name }}</a>
+         title="{{ project.name }}">{{ project.name }}</a>
       <a class="project-edit" href="/project/{{ project.id }}" title="Editar">
         <i class="fa fa-edit"></i>
       </a>
