@@ -70,6 +70,8 @@ def fake_request(path='/', method='GET', user=None, extra={}):
     # for messages middleware
     req._messages = default_storage(req)
 
+    req.get_host = lambda x=None: 'localhost'
+
     return req
 
 

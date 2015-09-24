@@ -207,13 +207,15 @@ def upload(request, container, prefix=None):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
-    redirect_url = get_endpoint(request, 'adminURL')
+    redirect_url = 'http://{}'.format(request.get_host())
     redirect_url += reverse('objectview', kwargs={'container': container, })
 
     swift_url = storage_url + '/' + container + '/'
     if prefix:
         swift_url += prefix
         redirect_url += prefix
+
+    redirect_url += '?p={}'.format(request.session.get('project_id'))
 
     url_parts = urlparse(swift_url)
     path = url_parts.path

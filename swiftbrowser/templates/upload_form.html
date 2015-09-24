@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{% url "create_object" container=container prefix=prefix %}" method="POST" class="form-box project-form" enctype="multipart/form-data">
+  <form action="{{ swift_url }}" method="POST" class="form-box project-form" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="redirect" value="{{ redirect_url }}" />
     <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
