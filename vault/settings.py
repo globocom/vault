@@ -166,22 +166,22 @@ LOGGING = {
         'identity': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'vault': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'swiftbrowser': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'dashboard': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         }
     },
 }
