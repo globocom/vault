@@ -1,5 +1,6 @@
 {% extends "vault/base.html" %}
 
+{% load i18n %}
 {% load staticfiles %}
 {% load lastpart %}
 {% load dateconv %}
@@ -85,7 +86,8 @@
                     data-download-url="{% url "download" container=container objectname=obj.name %}"
                     data-meta-url="{% url "metadata" container=container objectname=obj.name %}">details</button>
 
-            <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{obj.public_url}}" title="Click to copy URL to clipboard">Copy URL</button>
+            <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{ obj.public_url }}"
+                    title="{% trans 'Click to copy URL' %}">Copy URL</button>
           </td>
           <td class="hidden-phone">
             {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
@@ -116,24 +118,14 @@
 {% endblock %}
 
 {% block js_bottom %}
-<script src="{% static 'vendor/js/ZeroClipboard.min.js' %}"></script>
-<script src="{% static 'vendor/js/swfobject.js' %}"></script>
+<script src="{% static 'vendor/js/clipboard.min.js' %}"></script>
 
 <script>
-if(swfobject.hasFlashPlayerVersion("1")) {
-  ZeroClipboard.config( { swfPath: "{% static 'vendor/flash/ZeroClipboard.swf' %}" } );
-  var client = new ZeroClipboard(document.getElementsByClassName('btn-copy-url'));
-  client.on( "ready", function( readyEvent ) {
-    client.on( "aftercopy", function( event ) {
-      Base.Messages.show('URL copied to clipboard', 'success')
-    });
-  });
-} else {
-  $(".btn-copy-url").on('click', function (e) {
-    var text = $(this).data('clipboard-text');
-    window.prompt ("Ctrl+C ou Cmd+C, Enter", text);
-  });
-}
+var clipboard = new Clipboard('.btn-copy-url');
+clipboard.on('success', function(e) {
+  Base.Messages.show('{% trans "URL copied!" %}', 'success');
+  e.clearSelection();
+});
 </script>
 
 <script>

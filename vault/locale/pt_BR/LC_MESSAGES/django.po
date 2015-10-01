@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-21 14:28-0300\n"
+"POT-Creation-Date: 2015-10-01 15:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,27 +45,27 @@ msgstr "Volte em breve!"
 msgid "Vault Admin"
 msgstr "Vault Admin"
 
-#: templates/admin/base_site.html:36 templates/vault/base.html:22
+#: templates/admin/base_site.html:37 templates/vault/base.html:22
 msgid "Processing"
 msgstr "Processando"
 
-#: templates/admin/base_site.html:59
+#: templates/admin/base_site.html:60
 msgid "Home"
 msgstr "Home"
 
-#: templates/admin/base_site.html:72
+#: templates/admin/base_site.html:73
 msgid "Welcome,"
 msgstr "Bemvindo,"
 
-#: templates/admin/base_site.html:78
+#: templates/admin/base_site.html:79
 msgid "Documentation"
 msgstr "Documentação"
 
-#: templates/admin/base_site.html:81
+#: templates/admin/base_site.html:82
 msgid "Change password"
 msgstr "Mudar senha"
 
-#: templates/admin/base_site.html:83
+#: templates/admin/base_site.html:84
 msgid "Log out"
 msgstr "Log out"
 
