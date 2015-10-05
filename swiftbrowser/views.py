@@ -60,12 +60,7 @@ def containerview(request):
         account_stat = {}
         containers = []
 
-    # Does not show containers used to keep object versions
-    version_prefix = settings.SWIFT_VERSION_PREFIX
-    if version_prefix:
-        containers = [obj for obj in containers
-                                if not obj['name'].startswith(version_prefix)]
-
+    containers = _hide_containers_with_prefixes(containers)
     account_stat = replace_hyphens(account_stat)
 
     context = utils.update_default_context(request, {
@@ -75,6 +70,17 @@ def containerview(request):
 
     return render_to_response('containerview.html', context,
                               context_instance=RequestContext(request))
+
+
+def _hide_containers_with_prefixes(containers):
+    """ Hide containers that starts with prefixes in SWIFT_HIDE_PREFIXES"""
+
+    hide_prefixes = settings.SWIFT_HIDE_PREFIXES
+    if hide_prefixes:
+        for prefix in hide_prefixes:
+            containers = [obj for obj in containers if not obj['name'].startswith(prefix)]
+
+    return containers
 
 
 @login_required

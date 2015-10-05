@@ -139,8 +139,13 @@ KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL', 'https://auth.s3.dev.globoi.com:5
 KEYSTONE_VERSION = 2
 
 # When versioning is enabled in a container named <container>, another
-# container named <prefix><container> will be create to keep objects versions
-SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
+# container named <prefix><container> will be created to keep objects versions
+# SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
+
+SWIFT_HIDE_PREFIXES = (
+    '.',
+    os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
+)
 
 # True if you are using invalid SSL certs
 if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
