@@ -142,10 +142,10 @@ KEYSTONE_VERSION = 2
 # container named <prefix><container> will be created to keep objects versions
 SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
 
-SWIFT_HIDE_PREFIXES = (
+SWIFT_HIDE_PREFIXES = [
     '.',
     SWIFT_VERSION_PREFIX
-)
+]
 
 # True if you are using invalid SSL certs
 if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':

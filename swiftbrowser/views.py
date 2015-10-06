@@ -73,7 +73,7 @@ def containerview(request):
 
 
 def _hide_containers_with_prefixes(containers):
-    """ Hide containers that starts with prefixes in SWIFT_HIDE_PREFIXES"""
+    """ Hide containers that starts with prefixes listed in SWIFT_HIDE_PREFIXES """
 
     hide_prefixes = settings.SWIFT_HIDE_PREFIXES
     if hide_prefixes:

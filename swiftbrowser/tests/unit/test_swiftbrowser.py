@@ -1060,6 +1060,22 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(location, expected)
 
+    @patch('swiftbrowser.views.client.get_account')
+    @patch('vault.settings', SWIFT_HIDE_PREFIXES=['.'])
+    def test_filter_containers_with_prefix_listed_in_SWIFT_HIDE_PREFIXES(self,
+                                                                         mock_settings,
+                                                                         mock_get_account):
+        fake_get_acc = fakes.get_account()
+        containers = [{'count': 4, 'bytes': 4, 'name': '.container4'}]
+
+        mock_get_account.return_value = (fake_get_acc[0], containers)
+        response = views.containerview(self.request)
+
+        self.assertEqual(response.status_code, 200)
+
+        expected = '/storage/objects/.container4/'
+        self.assertNotIn(expected, response.content)
+
 
 class TestSwiftbrowserAcls(TestCase):
 
