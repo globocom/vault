@@ -1,6 +1,5 @@
 {% load admin_static %}
 {% load firstof from future %}
-{% load backstage_bar %}
 {% load i18n %}
 
 <!DOCTYPE html>
@@ -66,26 +65,6 @@
     <div class="content-top col-md-4">
       {% block pretitle %}{% endblock %}
       {% block content_top %}{% endblock %}
-
-        <!-- {% if user.is_active and user.is_staff %}
-        <div id="user-tools">
-            {% block welcome-msg %}
-                {% trans 'Welcome,' %}
-                <strong>{% firstof user.get_short_name user.get_username %}</strong>.
-            {% endblock %}
-            {% block userlinks %}
-                {% url 'django-admindocs-docroot' as docsroot %}
-                {% if docsroot %}
-                    <a class="btn btn-default" href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
-                {% endif %}
-                {% if user.has_usable_password %}
-                <a class="btn btn-default" href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
-                {% endif %}
-                <a class="btn btn-default" href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
-            {% endblock %}
-        </div>
-        {% endif %}
-        {% block nav-global %}{% endblock %} -->
     </div>
 
     <div class="content-body col-md-12">

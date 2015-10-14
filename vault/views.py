@@ -12,15 +12,11 @@ from django.views.generic.base import View
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
      keystone_exceptions
-
-from backstage_accounts.views import OAuthBackstageCallback,\
-                                     OAuthBackstageRedirect
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -149,26 +145,6 @@ class SetProjectView(LoginRequiredMixin, View):
                                  _('Unable to change your project.'))
 
         return http_redirect
-
-
-class OAuthVaultCallback(OAuthBackstageCallback):
-
-    def get_error_redirect(self, provider, reason):
-        return reverse('dashboard')
-
-    def get_login_redirect(self, provider, user, access, new=False):
-        return reverse('dashboard')
-
-
-class OAuthVaultRedirect(OAuthBackstageRedirect):
-    pass
-
-
-class VaultLogout(View):
-
-    def get(self, request):
-        auth_logout(request)
-        return HttpResponseRedirect(reverse('dashboard'))
 
 
 def handler500(request):

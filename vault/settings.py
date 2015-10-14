@@ -32,10 +32,7 @@ INSTALLED_APPS = (
     'dashboard',
     'identity',
     'swiftbrowser',
-    'allaccess',
     'vault',
-
-    'backstage_accounts',
 
     'django.contrib.auth',
     'django.contrib.admin',
@@ -43,15 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
-
-BACKSTAGE_ACCOUNTS_URL = os.getenv('VAULT_BACKSTAGE_ACCOUNTS_URL', 'https://accounts.backstage.dev.globoi.com')
-BACKSTAGE_BAR_URL = os.getenv('VAULT_BACKSTAGE_BAR_URL', 'https://barra.backstage.dev.globoi.com')
-BACKSTAGE_CLIENT_ID = os.getenv('VAULT_BACKSTAGE_CLIENT_ID', 'WUPshuyoPIfjoEn5BsmrUQ==')
-BACKSTAGE_CLIENT_SECRET = os.getenv('VAULT_BACKSTAGE_CLIENT_SECRET', 'duMbvbCu9zlvFlvGnhGxMw==')
-
-AUTHENTICATION_BACKENDS = (
-    'backstage_accounts.backends.BackstageBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,12 +93,7 @@ STATICFILES_FINDERS = (
 
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
-LOGIN_URL = '/admin/vault/login/backstage/'
-LOGOUT_URL = '{}/logout'.format(BACKSTAGE_ACCOUNTS_URL)
-LOGIN_REDIRECT_URL = '/'
-
-# The openstack_auth.user.Token object isn't JSON-serializable ATM
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+# LOGIN_URL = '/login/'
 
 # ENV Confs
 
@@ -134,9 +117,18 @@ DASHBOARD_WIDGETS = (
     'swiftbrowser.widgets.ProjectsWidget',
 )
 
+
 # Keystone
 KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL', 'https://auth.s3.dev.globoi.com:5000/v2.0')
 KEYSTONE_VERSION = 2
+
+KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'user')
+KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'pass')
+KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'project')
+
+# swiftoperator role ID
+KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE', 'swiftoperatorroleid')
+
 
 # When versioning is enabled in a container named <container>, another
 # container named <prefix><container> will be created to keep objects versions
@@ -152,12 +144,6 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
     SWIFT_INSECURE = False
 else:
     SWIFT_INSECURE = True
-
-KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'storm')
-KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'storm')
-KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'infra')
-# ID da role swiftoperator
-KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE', 'c573d07d11ed4f75a7cae8e7527eb1ed')
 
 LOGGING = {
     'version': 1,

@@ -1,4 +1,3 @@
-{% load backstage_bar %}
 {% load i18n %}
 
 <!-- header -->
@@ -11,8 +10,5 @@
       {% block branding %}{% trans 'Vault' %}{% endblock %}
     </a>
   </div>
-  <ul class="nav navbar-nav navbar-right">
-    {% backstage_bar_html %}
-  </ul>
+  <ul class="nav navbar-nav navbar-right"></ul>
 </header>
-{% backstage_bar_js %}

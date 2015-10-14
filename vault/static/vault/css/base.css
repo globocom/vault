@@ -493,13 +493,6 @@ body {
     color: #333;
 }
 
-/* <backstage bar> */
-#header #bsBar-account .bsBar-apps span:hover,
-#header #bsBar-account .bsBar-apps span:active {
-    color: #333;
-}
-/* </backstage bar> */
-
 .bubble {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #333;
