@@ -93,7 +93,7 @@ STATICFILES_FINDERS = (
 
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
-# LOGIN_URL = '/login/'
+LOGIN_URL = '/login/'
 
 # ENV Confs
 
