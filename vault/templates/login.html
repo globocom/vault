@@ -1,0 +1,49 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vault - Login</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/login.css' %}" />
+</head>
+<body>
+
+<div class="box-login">
+  <h1>Vault</h1>
+  <form action="." class="form-box login-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    <input type="hidden" name="next" value="{{ next }}" />
+    {{ form.region }}
+
+    <div class="control-group">
+            <label class="control-label" for="username">Username</label>
+            <div class="controls">
+                <input type="text" id="username" name="username"  placeholder="Username">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+                <input type="password" name="password" id="password" placeholder="Password">
+            </div>
+        </div>
+
+    <fieldset class="base">
+      <button class="btn btn-primary login-btn" type="submit">Login</button>
+    </fieldset>
+  </form>
+</div>
+
+<script>
+(function() {
+  // set bootstrap class for login form inputs
+  var inputs = document.querySelectorAll('input:not([type="hidden"])');
+  for (i = 0, l = inputs.length; i < l; i++) {
+    inputs[i].className += 'form-control';
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
+from django.contrib.auth import authenticate, login, logout
 
 from keystoneclient.openstack.common.apiclient import exceptions as \
      keystone_exceptions
@@ -152,3 +153,17 @@ def handler500(request):
                                   context_instance=RequestContext(request))
     response.status_code = 500
     return response
+
+def login_user(request):
+    logout(request)
+    username = password = ''
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('dashboard'))
+    return render_to_response('login.html', context_instance=RequestContext(request))
