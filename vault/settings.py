@@ -98,7 +98,6 @@ STATICFILES_FINDERS = (
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
 LOGIN_URL = '/login/'
-LOGOUT_URL = '/logout'
 # ENV Confs
 
 PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 10)

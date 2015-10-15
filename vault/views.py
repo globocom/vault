@@ -156,7 +156,7 @@ def handler500(request):
 
 
 def login_user(request):
-    logout(request)
+    #logout(request)
     username = password = ''
 
     if request.POST:

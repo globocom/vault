@@ -11,7 +11,8 @@ urlpatterns = patterns('',
     url(r'^', include('identity.urls')),
 
     url(r'^login/$', 'vault.views.login_user'),
-    url(r'^logout/$', 'vault.views.logout_user'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout',
+                          {'next_page': '/login/'}),
 
     # Swift
     url(r'^storage/', include('swiftbrowser.urls')),
