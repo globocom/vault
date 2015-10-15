@@ -9,6 +9,7 @@ from vault.views import SetProjectView
 urlpatterns = patterns('',
     url(r'^', include('dashboard.urls')),
     url(r'^', include('identity.urls')),
+    url(r'^login/$', 'vault.views.login_user'),
 
     # Swift
     url(r'^storage/', include('swiftbrowser.urls')),
