@@ -5,6 +5,8 @@
 <head>
   <title>Vault - Login</title>
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/login.css' %}" />
 </head>
 <body>
@@ -17,17 +19,17 @@
     {{ form.region }}
 
     <div class="control-group">
-            <label class="control-label" for="username">Username</label>
-            <div class="controls">
-                <input type="text" id="username" name="username"  placeholder="Username">
-            </div>
+        <label class="control-label" for="username">Username</label>
+        <div class="controls">
+            <input type="text" id="username" name="username"  placeholder="Username">
         </div>
-        <div class="control-group">
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-                <input type="password" name="password" id="password" placeholder="Password">
-            </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="password">Password</label>
+        <div class="controls">
+            <input type="password" name="password" id="password" placeholder="Password">
         </div>
+    </div>
 
     <fieldset class="base">
       <button class="btn btn-primary login-btn" type="submit">Login</button>
