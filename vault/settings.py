@@ -74,8 +74,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'pt-BR.UTF-8'
+LANGUAGE_CODE = 'en-US.UTF-8'
+#LANGUAGE_CODE = 'pt-BR.UTF-8'
 LANGUAGES = (
     ('pt-BR', _('Portuguese')),
     ('en', _('English')),

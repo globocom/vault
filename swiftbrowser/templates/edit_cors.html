@@ -2,19 +2,20 @@
 
 {% load lastpart %}
 {% load dateconv %}
+{% load i18n %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage - {{ project_name }}{% endblock %}
+{% block content_title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" %}">Containers</a>
-  <span>Set CORS to container {{ container }}</span>
+  <a href="{% url "containerview" %}">{% trans 'Containers' %}</a>
+  <span>{% trans 'Set CORS to container' %} {{ container }}</span>
 {% endblock %}
 
 {% block content_top %}
   <a href="#addcors_modal" data-target="#addcors_modal" data-toggle="modal" class="btn btn-primary">
-    <i class="fa fa-server"></i>&nbsp;&nbsp;Add Host
+    <i class="fa fa-server"></i>&nbsp;&nbsp;{% trans 'Add Host' %}
   </a>
 {% endblock %}
 
@@ -26,7 +27,7 @@
       <thead>
         <tr>
           <th style="width: 1em;" class="hidden-phone"></th>
-          <th>Name</th>
+          <th>{% trans 'Name' %}</th>
           <th style="width: 1em;"></th>
         </tr>
     </thead>
@@ -45,7 +46,7 @@
     {% empty %}
       <tr>
         <td colspan="5">
-          <strong><center>There are no CORS for this container yet. Add a new host by clicking the red button.<center></strong>
+          <strong><center>{% trans 'There are no CORS for this container yet. Add a new host by clicking the red button.' %}<center></strong>
         </td>
       </tr>
     {% endfor %}

@@ -1,28 +1,29 @@
+{% load i18n %}
 <div class="modal fade" id="addacl_modal" tabindex="-1" role="dialog" aria-labelledby="addacl_modalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="addacl_modalLabel">Add ACL for container {{container}}</h3>
+        <h3 id="addacl_modalLabel">{% trans 'Add ACL for container' %} {{container}}</h3>
       </div>
 
       <form method="POST" action="{% url "edit_acl" container=container %}" class="form-inl">
         {% csrf_token %}
       <div class="modal-body">
-        <label for="username">Project:Username:</label><br />
+        <label for="username">{% trans 'Project:Username:' %}</label><br />
         <input class="form-control" name="username" type="text">
         <span class="help-block">
-          <p>Please note that you have to enter the name in the format "Project:Username".</p>
+          <p>{% trans 'Please note that you have to enter the name in the format "Project:Username"' %}.</p>
         </span>
 
-        <label><input type="checkbox" name="read"> Read</label>
+        <label><input type="checkbox" name="read"> {% trans 'Read' %}</label>
         <br />
-        <label><input type="checkbox" name="write"> Write</label>
+        <label><input type="checkbox" name="write"> {% trans 'Write' %}</label>
 
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Add ACL</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Add ACL' %}</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans 'Cancel' %}</button>
       </div>
       </form>
     </div>

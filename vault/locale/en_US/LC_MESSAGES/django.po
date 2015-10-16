@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-14 14:12-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: apps.py:9 templates/500.html:18 templates/vault/base.html:7
+#: templates/vault/header.html:11
+msgid "Vault"
+msgstr "Vault"
+
+#: settings.py:92
+msgid "Portuguese"
+msgstr "Portuguese"
+
+#: settings.py:93
+msgid "English"
+msgstr "English"
+
+#: templates/500.html:7
+msgid "Error 500"
+msgstr "Error 500"
+
+#: templates/500.html:21
+msgid "We are traveling to space to verify our satellites."
+msgstr "We are traveling to space to verify our satellites."
+
+#: templates/500.html:22
+msgid "Come back in a while!"
+msgstr "Come back in a while!"
+
+#: templates/admin/base_site.html:10
+msgid "Vault Admin"
+msgstr "Vault Admin"
+
+#: templates/admin/base_site.html:37 templates/vault/base.html:22
+msgid "Processing"
+msgstr "Processing"
+
+#: templates/admin/base_site.html:60
+msgid "Home"
+msgstr "Home"
+
+#: templates/admin/base_site.html:73
+msgid "Welcome,"
+msgstr "Welcome,"
+
+#: templates/admin/base_site.html:79
+msgid "Documentation"
+msgstr "Documentation"
+
+#: templates/admin/base_site.html:82
+msgid "Change password"
+msgstr "Change password"
+
+#: templates/admin/base_site.html:84
+msgid "Log out"
+msgstr "Log out"
+
+#: templates/admin/index.html:23
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr "Models in the %(name)s application"
+
+#: templates/admin/index.html:34 templates/vault/projectsandusers.html:12
+#: templates/vault/projectsandusers.html:16
+msgid "Add"
+msgstr "Add"
+
+#: templates/admin/index.html:40
+msgid "Change"
+msgstr "Change"
+
+#: templates/admin/index.html:51
+msgid "You don't have permission to edit anything."
+msgstr "You don't have permission to edit anything."
+
+#: templates/vault/base.html:57
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/vault/base.html:58
+msgid "Content"
+msgstr "Content"
+
+#: templates/vault/pagination.html:12
+msgid "de"
+msgstr "of"
+
+#: templates/vault/projectsandusers.html:8
+msgid "Projects and Users"
+msgstr "Projects and Users"
+
+#: templates/vault/projectsandusers.html:11
+msgid "Projects"
+msgstr "Projects"
+
+#: templates/vault/projectsandusers.html:15
+msgid "Users"
+msgstr "Users"
+
+#: tests/unit/test_views.py:45 views.py:149
+msgid "Unable to change your project."
+msgstr "Unable to change your project."
+
+#: views.py:53
+msgid "Missing 'project_id'"
+msgstr "Missing 'project_id'"
+
+#: views.py:63
+msgid "Can't find this project"
+msgstr "Can't find this project"
+
+#: views.py:64 views.py:147
+msgid "Exception:"
+msgstr "Exception"
+
+#: views.py:92
+msgid "Object storage authentication failed"
+msgstr "Object storage authentication failed"

@@ -2,11 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-16 14:40-0300\n"
+"POT-Creation-Date: 2015-10-16 14:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,7 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: apps.py:9
 msgid "Swift Browser"
@@ -22,37 +23,37 @@ msgstr "Swift Browser"
 
 #: templates/addacl_modal.html:7
 msgid "Add ACL for container"
-msgstr "Adicionar ACL para o container"
+msgstr "Add ACL for the container"
 
 #: templates/addacl_modal.html:13
 msgid "Project:Username:"
-msgstr "Projeto:Username:"
+msgstr "Project:Username:"
 
 #: templates/addacl_modal.html:16
 msgid ""
 "Please note that you have to enter the name in the format \"Project:Username"
 "\""
-msgstr "Favor notar que você deve colocar o nome no formato \"Projeto:Username"
+msgstr "Please note that you have to enter the name in the format \"Project:Username"
 
 #: templates/addacl_modal.html:19 templates/edit_acl.html:65
 msgid "Read"
-msgstr "Ler"
+msgstr "Read"
 
 #: templates/addacl_modal.html:21 templates/edit_acl.html:69
 msgid "Write"
-msgstr "Escrever"
+msgstr "Write"
 
 #: templates/addacl_modal.html:25 templates/edit_acl.html:43
 msgid "Add ACL"
-msgstr "Adicionar ACL"
+msgstr "Add ACL"
 
 #: templates/addacl_modal.html:26 templates/addcors_modal.html:18
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Cancel"
 
 #: templates/addcors_modal.html:7
 msgid "Set host for container"
-msgstr "Definir host para o container"
+msgstr "Set host for container"
 
 #: templates/addcors_modal.html:13
 msgid "Host:"
@@ -60,11 +61,11 @@ msgstr "Host:"
 
 #: templates/addcors_modal.html:17 templates/edit_cors.html:18
 msgid "Add Host"
-msgstr "Adicionar Host"
+msgstr "Add Host"
 
 #: templates/container_versioning.html:17
 msgid "Disable Versioning"
-msgstr "Desabilitar Versionamento"
+msgstr "Disable Versioning"
 
 #: templates/container_versioning.html:23 templates/containerview.html:16
 #: templates/create_container.html:8 templates/create_pseudofolder.html:10
@@ -76,75 +77,73 @@ msgstr "Containers"
 #: templates/container_versioning.html:26
 #: templates/container_versioning.html:28
 msgid "Object versions from"
-msgstr "Versões do objeto de"
+msgstr "Object versions from"
 
 #: templates/container_versioning.html:48 templates/containerview.html:24
 #: templates/edit_acl.html:24 templates/edit_cors.html:30
 #: templates/objectview.html:54
 msgid "Name"
-msgstr "Nome"
+msgstr "Name"
 
 #: templates/container_versioning.html:49 templates/objectview.html:55
 msgid "Created"
-msgstr "Criado"
+msgstr "Created"
 
 #: templates/container_versioning.html:50 templates/containerview.html:26
 #: templates/objectview.html:56
 msgid "Size"
-msgstr "Tamanho"
+msgstr "Size"
 
 #: templates/container_versioning.html:75
 msgid "show&nbsp;metadata"
-msgstr "mostrar metadados"
+msgstr "show metadata"
 
 #: templates/container_versioning.html:90
 msgid "None object was modified since versioning was enabled."
-msgstr "Nenhum objeto foi modificado desde que o versionamento foi habilitado."
+msgstr "No object was modified since versioning was enabled."
 
 #: templates/container_versioning.html:105
 msgid "This container is not configured to version its objetcs yet."
-msgstr "Este container ainda não está configurado para versionar seus objetos."
+msgstr "This container is not configured to version its objects yet."
 
 #: templates/container_versioning.html:113
 msgid "Enable Versioning"
-msgstr "Habilitar Versionamento"
+msgstr "Enable Versioning"
 
 #: templates/containerview.html:12
 msgid "Create&nbsp;Container"
-msgstr "Criar Container"
+msgstr "Create Container"
 
 #: templates/containerview.html:25
 msgid "Objects"
-msgstr "Objetos"
+msgstr "Objects"
 
 #: templates/containerview.html:40 templates/objectview.html:69
 #: templates/objectview.html.py:87
 msgid "details"
-msgstr "detalhes"
+msgstr "details"
 
 #: templates/containerview.html:54
 msgid "Set CORS"
-msgstr "Definir CORS"
+msgstr "Set CORS"
 
 #: templates/containerview.html:58
 msgid "Versioning"
-msgstr "Versionamento"
+msgstr "Versioning"
 
 #: templates/containerview.html:62
 msgid "Sharing"
-msgstr "Compartilhamento"
+msgstr "Sharing"
 
 #: templates/containerview.html:66 templates/containerview.html.py:67
 msgid "Delete container"
-msgstr "Remover container"
+msgstr "Delete container"
 
 #: templates/containerview.html:77
 msgid ""
 "There are no containers in this account yet. Create a new container by "
 "clicking the \"Create Container\" button."
-msgstr ""
-"Ainda não existem containers nessa account. Crie um novo container clicando "
-"no botão 'Criar Container'"
+msgstr "There are no containers in this account yet. Create a new container by clicking the \"Create Container\" button."
 
 #: templates/create_container.html:3 templates/create_container.html.py:5
 #: templates/create_pseudofolder.html:5 templates/create_pseudofolder.html:7
@@ -157,252 +156,239 @@ msgstr "Storage"
 
 #: templates/create_container.html:9
 msgid "Create container"
-msgstr "Criar container"
+msgstr "Create container"
 
 #: templates/create_container.html:22
 msgid ""
 "Enter name of container here. Use only letters, numbers, underscore or "
 "hyphens."
-msgstr ""
-"Defina o nome do container. Use apenas letras, números, hífens e sublinhado."
+msgstr "Enter name of container here. Use only letters, numbers, underscore or hyphens."
 
 #: templates/create_container.html:23 templates/create_pseudofolder.html:29
 msgid "Please note that you can not rename it afterwards."
-msgstr "Atente que não é possível renomeá-lo depois."
+msgstr "Please note that you can not rename it afterwards."
 
 #: templates/create_container.html:32
 msgid "Create Container"
-msgstr "Criar Container"
+msgstr "Create Container"
 
 #: templates/create_pseudofolder.html:15
 msgid "Create Pseudofolder"
-msgstr "Criar Pseudofolder"
+msgstr "Create Pseudofolder"
 
 #: templates/create_pseudofolder.html:28
 msgid "Enter name of pseudofolder here."
-msgstr "Defina o nome do pseudofolder."
+msgstr "Enter name of pseudofolder here."
 
 #: templates/create_pseudofolder.html:38
 msgid "Create"
-msgstr "Criar"
+msgstr "Create"
 
 #: templates/edit_acl.html:13
 msgid "Add ACL to container"
-msgstr "Adicionar ACL ao container"
+msgstr "Add ACL to container"
 
 #: templates/edit_acl.html:37
 msgid "Make public"
-msgstr "Tornar público"
+msgstr "Make public"
 
 #: templates/edit_acl.html:39
 msgid "Make private"
-msgstr "Tornar privado"
+msgstr "Make private"
 
 #: templates/edit_acl.html:56
 msgid ""
 "This entry allows the listing of objects and is required for public readable "
 "containers."
-msgstr ""
-"Esta entrada habilita a listagem de objetos e é necessária para containers "
-"de leitura pública"
+msgstr "This entry allows the listing of objects and is required for public readable containers."
 
 #: templates/edit_acl.html:58
 msgid ""
 "This entry allows the download of objects and is required for public "
 "readable containers."
-msgstr ""
-"Esta entrada habilita o download de objetos e é necessária para containers "
-"de leitura pública"
+msgstr "This entry allows the download of objects and is required for public readable containers."
 
 #: templates/edit_acl.html:79
 msgid ""
 "There are no ACLs for this container yet. Add a new ACL by clicking the red "
 "button."
-msgstr ""
-"Ainda não existem ACLs para esse container. Adicione uma nova ACL clicando "
-"no botão vermelho."
+msgstr "There are no ACLs for this container yet. Add a new ACL by clicking the red button."
 
 #: templates/edit_cors.html:13
 msgid "Set CORS to container"
-msgstr "Definir CORS para o container"
+msgstr "Set CORS to container"
 
 #: templates/edit_cors.html:49
 msgid ""
 "There are no CORS for this container yet. Add a new host by clicking the red "
 "button."
-msgstr ""
-"Ainda não existem CORS para este container. Adicione um novo host clicando "
-"no botão vermelho."
+msgstr "There are no CORS for this container yet. Add a new host by clicking the red button."
 
 #: templates/objectview.html:19
+#, fuzzy
+#| msgid "project"
 msgid "Upload Object"
-msgstr "Upload de Objeto"
+msgstr "Upload Object"
 
 #: templates/objectview.html:26
 msgid "Create pseudofolder"
-msgstr "Criar pseudofolder"
+msgstr "Create pseudofolder"
 
 #: templates/objectview.html:74
 msgid "Delete pseudofolder"
-msgstr "Remover pseudofolder"
+msgstr "Delete pseudofolder"
 
 #: templates/objectview.html:90
 msgid "Click to copy URL"
-msgstr "Clique para copiar a URL"
+msgstr "Click to copy URL"
 
 #: templates/objectview.html:99
 msgid "Delete object"
-msgstr "Remover objeto"
+msgstr "Delete object"
 
 #: templates/objectview.html:109
 msgid ""
 "There are no objects in this container yet. Upload new objects by clicking "
 "the \"Upload Object\" button."
-msgstr ""
-"Ainda não existem objetos neste container. Insira novos objetos clicando no "
-"botão 'Upload de Objeto' "
+msgstr "There are no objects in this container yet. Upload new objects by clicking the \"Upload Object\" button."
 
 #: templates/objectview.html:126
 msgid "URL copied!"
-msgstr "URL copiada!"
+msgstr "URL copied!"
 
 #: templates/swiftbrowser/widgets/non_renderable.html:4
 msgid "Voc&ecirc; n&atilde;o est&aacute; associado &agrave; um time!"
-msgstr "Voc&ecirc; n&atilde;o est&aacute; associado &agrave; um time!"
+msgstr "You are not currently associated with any team!"
 
 #: templates/swiftbrowser/widgets/non_renderable.html:6
 msgid "Entre em contato com o time Storm atrav&eacute;s do email:"
-msgstr "Entre em contato com o time Storm atrav&eacute;s do email:"
+msgstr "Contact the Storm team through the email:"
 
 #: templates/swiftbrowser/widgets/select_project.html:61
 msgid "project"
-msgstr "projeto"
+msgstr "project"
 
 #: templates/upload_form.html:14
 msgid "Upload File"
-msgstr "Upload de Arquivo"
+msgstr "Upload File"
 
 #: templates/upload_form.html:30
 msgid "File:"
-msgstr "Arquivo:"
+msgstr "File:"
 
 #: templates/upload_form.html:32
-#, fuzzy
-#| msgid "Swift Browser"
 msgid "Browse"
-msgstr "Escolha o arquivo"
+msgstr "Browse"
 
 #: templates/upload_form.html:34
 msgid "Please select a file to upload."
-msgstr "Selecione o arquivo para upload."
+msgstr "Please select a file to upload."
 
 #: templates/upload_form.html:43
 msgid "Start upload"
-msgstr "Iniciar upload"
+msgstr "Start upload"
 
 #: tests/unit/test_swiftbrowser.py:209 tests/unit/test_swiftbrowser.py:558
 msgid "This field is required."
-msgstr "Este campo é obrigatório."
+msgstr "This field is required."
 
 #: views.py:43
-#, fuzzy
-#| msgid "project"
 msgid "Select a project"
-msgstr "Selecione um projeto"
+msgstr "Select a project"
 
 #: views.py:57 views.py:109 views.py:140 views.py:153 views.py:191 views.py:366
 #: views.py:393 views.py:457 views.py:520 views.py:558 views.py:704
 #: views.py:718 views.py:757 views.py:807 views.py:841
 msgid "Exception:"
-msgstr "Exceção:"
+msgstr "Exception:"
 
 #: views.py:59
 msgid "Unable to list containers"
-msgstr "Não foi possível listar os containers"
+msgstr "Unable to list containers"
 
 #: views.py:105
 msgid "Container created."
-msgstr "Container criado."
+msgstr "Container created."
 
 #: views.py:110 views.py:167 views.py:192 views.py:236 views.py:296
 #: views.py:337 views.py:458 views.py:705 views.py:719 views.py:742
 #: views.py:758
 msgid "Access denied."
-msgstr "Acesso negado."
+msgstr "Access denied."
 
 #: views.py:165
 msgid "Container deleted."
-msgstr "Container removido."
+msgstr "Container deleted."
 
 #: views.py:293
 msgid "Object created."
-msgstr "Objeto criado."
+msgstr "Object created."
 
 #: views.py:298
 msgid "Fail to create object"
-msgstr "Erro ao criar o objeto"
+msgstr "Fail to create object"
 
 #: views.py:335
 msgid "Object deleted."
-msgstr "Objeto removido."
+msgstr "Object deleted."
 
 #: views.py:398
 msgid "Pseudofolder deleted."
-msgstr "Pseudofolder removido."
+msgstr "Pseudofolder deleted."
 
 #: views.py:403
 #, python-brace-format
 msgid "Pseudofolder and {0} objects deleted."
-msgstr "Pseudofolder e {0} objetos removidos."
+msgstr "Pseudofolder and {0} objects deleted."
 
 #: views.py:406
 msgid "It was not possible to delete all objects."
-msgstr "Não foi possível remover todos os objetos."
+msgstr "It was not possible to delete all objects."
 
 #: views.py:409
 msgid "Fail to delete pseudofolder."
-msgstr "Erro ao remover pseudofolder."
+msgstr "Fail to delete pseudofolder."
 
 #: views.py:455
 msgid "Pseudofolder created."
-msgstr "Pseudofolder criado."
+msgstr "Pseudofolder created."
 
 #: views.py:515
 msgid "ACLs updated"
-msgstr "ACLs atualizadas"
+msgstr "ACLs updated"
 
 #: views.py:522 views.py:560
 msgid "ACL update failed."
-msgstr "Erro ao atualizar ACL."
+msgstr "ACL update failed."
 
 #: views.py:553
 msgid "ACL removed."
-msgstr "ACL removida"
+msgstr "ACL removed."
 
 #: views.py:680
 msgid "Action is required."
-msgstr "Ação é necessária."
+msgstr "Action is required."
 
 #: views.py:722
 msgid "Versioning enabled."
-msgstr "Versionamento habilitado."
+msgstr "Versioning enabled."
 
 #: views.py:765
 msgid "Versioning disabled."
-msgstr "Versionamento desabilitado."
+msgstr "Versioning disabled."
 
 #: views.py:802
 msgid "CORS updated"
-msgstr "CORS atualizado"
+msgstr "CORS updated"
 
 #: views.py:809 views.py:843
 msgid "CORS update failed."
-msgstr "Erro ao atualizar CORS."
+msgstr "CORS update failed."
 
 #: views.py:836
 msgid "CORS removed."
-msgstr "CORS removido"
+msgstr "CORS removed."
 
 #: widgets.py:13
 msgid "Relacao de projetos gerenciados pelo seu time"
-msgstr "Relação de projetos gerenciados pelo seu time"
+msgstr "List of projects managed by your team"

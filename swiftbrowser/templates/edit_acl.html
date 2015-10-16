@@ -2,14 +2,15 @@
 
 {% load lastpart %}
 {% load dateconv %}
+{% load i18n %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}{% trans Storage' %} - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage - {{ project_name }}{% endblock %}
+{% block content_title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" %}">Containers</a>
-  <span>Add ACL to container {{ container }}</span>
+  <a href="{% url "containerview" %}">{% trans 'Containers' %}</a>
+  <span>{% trans 'Add ACL to container' %} {{ container }}</span>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +21,7 @@
       <thead>
         <tr>
           <th style="width: 1em;" class="hidden-phone"></th>
-          <th>Name</th>
+          <th>{% trans 'Name' %}</th>
           <th style="width: 7.5em;"></th>
           <th style="width: 1em;">
             <div class="dropdown pull-right">
@@ -33,13 +34,13 @@
                     <input name="username" type="hidden" value=".r:*">
                     <input name="read" type="hidden" value="On">
                   </form>
-                  <a href="#" onclick="mkpublic.submit()"><i class="fa fa-eye"></i> Make public</a>
+                  <a href="#" onclick="mkpublic.submit()"><i class="fa fa-eye"></i> {% trans 'Make public' %}</a>
                   {% else %}
-                  <a href="{% url "edit_acl" container=container %}?delete=.r:*,.rlistings"><i class="fa fa-eye-slash"></i> Make private</a>
+                  <a href="{% url "edit_acl" container=container %}?delete=.r:*,.rlistings"><i class="fa fa-eye-slash"></i> {% trans 'Make private' %}</a>
                   {% endif %}
                 </li>
                 <li class="divider" />
-                <li><a href="#addacl_modal" data-target="#addacl_modal" data-toggle="modal"><i class="fa fa-user"></i> Add ACL</a></li>
+                <li><a href="#addacl_modal" data-target="#addacl_modal" data-toggle="modal"><i class="fa fa-user"></i> {% trans 'Add ACL' %}</a></li>
               </ul>
             </div>
           </th>
@@ -52,20 +53,20 @@
         <td class="hidden-phone"><i class="fa fa-user"></i></td>
         <td>
           {% if user == ".rlistings" %}
-            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the listing of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+            {{user}} <a href="#" data-toggle="tooltip" title="{% trans 'This entry allows the listing of objects and is required for public readable containers.' %}"><i class="fa fa-question"></i></a>
           {% elif user == ".r:*" %}
-            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the download of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+            {{user}} <a href="#" data-toggle="tooltip" title="{% trans 'This entry allows the download of objects and is required for public readable containers.' %}"><i class="fa fa-question"></i></a>
           {% else %}
             {{user}}
           {% endif %}
         </td>
         <td style="text-align:right;">
           {% if permission.read %}
-          <a class="btn btn-xs btn-success">Read</a>
+          <a class="btn btn-xs btn-success">{% trans 'Read' %}</a>
           {% endif %}
 
           {% if permission.write %}
-          <a class="btn btn-xs btn-danger">Write</a>
+          <a class="btn btn-xs btn-danger">{% trans 'Write' %}</a>
           {% endif %}
         </td>
         <td>
@@ -75,7 +76,7 @@
     {% empty %}
       <tr>
         <td colspan="5">
-          <strong><center>There are no ACLs for this container yet. Add a new ACL by clicking the red button.<center></strong>
+          <strong><center>{% trans 'There are no ACLs for this container yet. Add a new ACL by clicking the red button.' %}<center></strong>
         </td>
       </tr>
     {% endfor %}

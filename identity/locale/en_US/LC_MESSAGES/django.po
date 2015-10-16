@@ -1,0 +1,308 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-14 14:01-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: apps.py:9
+msgid "Identity"
+msgstr ""
+
+#: forms.py:17
+msgid "User Name"
+msgstr "Identity"
+
+#: forms.py:20 templates/identity/users.html:21
+msgid "Email"
+msgstr "Email"
+
+#: forms.py:23 forms.py:117 templates/identity/project_create_success.html:22
+msgid "Password"
+msgstr "Password"
+
+#: forms.py:26
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+#: forms.py:29
+msgid "Primary Project"
+msgstr "Primary Project"
+
+#: forms.py:32 forms.py:92 templates/identity/projects.html:23
+#: templates/identity/users.html:22
+msgid "Enabled"
+msgstr "Enabled"
+
+#: forms.py:39 tests/unit/test_user_views.py:322
+msgid "Passwords did not match"
+msgstr "Passwords did not match"
+
+#: forms.py:86
+msgid "Project Name"
+msgstr "Project Name"
+
+#: forms.py:87 tests/unit/test_project_views.py:220
+msgid "Project Name must be an alphanumeric."
+msgstr "Project Name must be an alphanumeric."
+
+#: forms.py:89 templates/identity/projects.html:22
+msgid "Description"
+msgstr "Description"
+
+#: forms.py:96
+msgid "Area"
+msgstr "Area"
+
+#: forms.py:98
+msgid "Time"
+msgstr "Team"
+
+#: forms.py:104 tests/unit/test_project_views.py:190
+msgid "Project description cannot be empty."
+msgstr "Project description cannot be empty."
+
+#: forms.py:111 templates/identity/users.html:20
+msgid "User"
+msgstr "User"
+
+#: forms.py:113
+msgid "Confirme o usuario do projeto"
+msgstr "Confirm the project user"
+
+#: forms.py:119
+msgid "Confirme a senha"
+msgstr "Confirm the password"
+
+#: templates/identity/_project_members.html:5
+msgid "Manage Users:"
+msgstr "Manage Users:"
+
+#: templates/identity/_project_members.html:14
+msgid "with role:"
+msgstr "with role:"
+
+#: templates/identity/_project_members.html:22
+msgid "Add"
+msgstr "Add"
+
+#: templates/identity/_project_members.html:30
+msgid "user"
+msgstr "user"
+
+#: templates/identity/_project_members.html:31
+msgid "role"
+msgstr "role"
+
+#: templates/identity/_project_members.html:40
+msgid "Create project to manage users"
+msgstr "Create project to manage users"
+
+#: templates/identity/project_create.html:6
+#: templates/identity/project_create.html:7
+#: templates/identity/project_create.html:58
+#: templates/identity/projects.html:11
+msgid "Create Project"
+msgstr "Create Project"
+
+#: templates/identity/project_create_success.html:5
+#: templates/identity/project_create_success.html:6
+#: tests/unit/test_project_views.py:349
+msgid "Project Created"
+msgstr "Project Created"
+
+#: templates/identity/project_create_success.html:13
+msgid "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
+msgstr "Save this information to use the project created!"
+
+#: templates/identity/project_create_success.html:18
+msgid "Username"
+msgstr "Username"
+
+#: templates/identity/project_create_success.html:26
+msgid "Auth URL"
+msgstr "Auth URL"
+
+#: templates/identity/project_create_success.html:30
+msgid "Admin URL"
+msgstr "Admin URL"
+
+#: templates/identity/project_create_success.html:34
+msgid "Public URL"
+msgstr "Public URL"
+
+#: templates/identity/project_create_success.html:38
+msgid "Internal URL"
+msgstr "Internal URL"
+
+#: templates/identity/project_delete_confirm.html:6
+#: templates/identity/project_delete_confirm.html:7
+#: templates/identity/project_delete_confirm.html:38
+msgid "Delete Project Confirm"
+msgstr "Delete Project Confirmation"
+
+#: templates/identity/project_delete_confirm.html:14
+msgid "TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!"
+msgstr "ALL OBJECTS WILL BE DELETED! THIS ACTION IS IRREVERSIBLE"
+
+#: templates/identity/project_edit.html:5
+#: templates/identity/project_edit.html:6
+msgid "Edit Project"
+msgstr "Edit Project"
+
+#: templates/identity/project_edit.html:17
+msgid "Delete Project"
+msgstr "Delete Project"
+
+#: templates/identity/project_edit.html:36
+msgid "Project User:"
+msgstr "Project User:"
+
+#: templates/identity/project_edit.html:41
+msgid "Reset Password"
+msgstr "Reset Password"
+
+#: templates/identity/project_edit.html:42
+msgid "New password:"
+msgstr "New password:"
+
+#: templates/identity/project_edit.html:80
+msgid "Save Project"
+msgstr "Save Project"
+
+#: templates/identity/projects.html:5 templates/identity/projects.html.py:20
+msgid "Project"
+msgstr "Project"
+
+#: templates/identity/projects.html:7
+msgid "Projects"
+msgstr "Projects"
+
+#: templates/identity/projects.html:21
+msgid "Project Id"
+msgstr "Project Id"
+
+#: templates/identity/projects.html:36 templates/identity/projects.html:38
+#: templates/identity/users.html:33
+msgid "Edit"
+msgstr "Edit"
+
+#: templates/identity/user_create.html:3 templates/identity/user_create.html:4
+#: templates/identity/user_create.html:61 templates/identity/users.html:11
+msgid "Create User"
+msgstr "Create User"
+
+#: templates/identity/user_edit.html:3 templates/identity/user_edit.html:4
+msgid "Edit User"
+msgstr "Edit User"
+
+#: templates/identity/user_edit.html:7
+msgid "Delete User"
+msgstr "Delete User"
+
+#: templates/identity/user_edit.html:59
+msgid "Save User"
+msgstr "Save User"
+
+#: templates/identity/users.html:5 templates/identity/users.html.py:7
+msgid "Users"
+msgstr "Users"
+
+#: tests/unit/test_project_views.py:63 views.py:282
+msgid "Unable to list projects"
+msgstr "Unable to list projects"
+
+#: tests/unit/test_project_views.py:131 tests/unit/test_project_views.py:161
+#: tests/unit/test_project_views.py:457 tests/unit/test_user_views.py:142
+msgid "This field is required"
+msgstr "This field is required"
+
+#: tests/unit/test_user_views.py:59 views.py:49
+msgid "Unable to list users"
+msgstr "Unable to list users"
+
+#: tests/unit/test_user_views.py:164
+msgid "Enter a valid email address"
+msgstr "Enter a valid email address"
+
+#: tests/unit/test_user_views.py:196 views.py:139
+msgid "Error when create user"
+msgstr "Error while creating user"
+
+#: tests/unit/test_user_views.py:289 views.py:176
+msgid "Error when update user"
+msgstr "Error while updating user"
+
+#: tests/unit/test_user_views.py:375 views.py:190
+msgid "Successfully deleted user"
+msgstr "Successfully deleted user"
+
+#: tests/unit/test_user_views.py:388 views.py:197
+msgid "Error when delete user"
+msgstr "Error while deleting user"
+
+#: views.py:47 views.py:137 views.py:174 views.py:195 views.py:256 views.py:280
+#: views.py:394 views.py:457 views.py:489 views.py:524 views.py:548
+#: views.py:566
+msgid "Exception:"
+msgstr "Exception:"
+
+#: views.py:133
+msgid "Successfully created user"
+msgstr "Successfully created user"
+
+#: views.py:170
+msgid "Successfully updated user"
+msgstr "Successfully updated user"
+
+#: views.py:339
+msgid "Exception: "
+msgstr "Exception: "
+
+#: views.py:389
+msgid "Successfully updated project"
+msgstr "Successfully updated project"
+
+#: views.py:396
+msgid "Error when update project"
+msgstr "Error while updading project"
+
+#: views.py:433
+msgid "Invalid credentials."
+msgstr "Invalid credentials."
+
+#: views.py:447 views.py:459
+msgid "Error when delete project"
+msgstr "Error while deleting project"
+
+#: views.py:454
+msgid "Successfully deleted project."
+msgstr ""
+
+#: views.py:518
+msgid "User already registered with this role"
+msgstr "User already registered with this role"
+
+#: views.py:519
+msgid "Conflict:"
+msgstr "Conflict:"
+
+#: views.py:523
+msgid "Error adding user"
+msgstr "Error adding user"
+
+#: views.py:547
+msgid "Error removing user"
+msgstr "Error removing user"

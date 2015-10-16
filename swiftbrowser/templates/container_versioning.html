@@ -3,6 +3,7 @@
 {% load pagination %}
 {% load lastpart %}
 {% load dateconv %}
+{% load i18n %}
 
 {% block title %}Storage - {{ project_name }}{% endblock %}
 
@@ -13,18 +14,18 @@
   <form method="POST" action="{% url "object_versioning" container=container %}">
     {% csrf_token %}
     <input type="hidden" name="action" value="disable">
-    <button class="btn btn-danger" type="submit">Disable Versioning</button>
+    <button class="btn btn-danger" type="submit">{% trans 'Disable Versioning' %}</button>
   </form>
   {% endif %}
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" %}">Containers</a>
+  <a href="{% url "containerview" %}">{% trans 'Containers' %}</a>
 
   {% if prefix %}
-    <a class="u" href="{% url "object_versioning" container=container %}">Object versions from {{ container }}</a>
+    <a class="u" href="{% url "object_versioning" container=container %}">{% trans 'Object versions from' %} {{ container }}</a>
   {% else %}
-    Object versions from {{ container }}
+    {% trans 'Object versions from' %} {{ container }}
   {% endif %}
 
   {% for prefix in prefixes %}
@@ -44,9 +45,9 @@
     <thead>
       <tr>
         <th style="width: 0.5em;" class="hidden-phone"></th>
-        <th>Name</th>
-        <th style="width: 12.5em;" class="hidden-phone">Created</th>
-        <th style="width: 6em;" class="hidden-phone">Size</th>
+        <th>{% trans 'Name' %}</th>
+        <th style="width: 12.5em;" class="hidden-phone">{% trans 'Created' %}</th>
+        <th style="width: 6em;" class="hidden-phone">{% trans 'Size' %}</th>
       </tr>
     </thead>
     <tbody>
@@ -71,7 +72,7 @@
               {{ obj.name|lastpart }}
               <button class="btn-meta btn btn-sm"
                       data-name="{{ obj.name }}"
-                      data-meta-url="{% url "metadata" container=version_location objectname=obj.name %}">show&nbsp;metadata</button>
+                      data-meta-url="{% url "metadata" container=version_location objectname=obj.name %}">{% trans 'show&nbsp;metadata' %}</button>
             </td>
             <td class="hidden-phone">
               {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
@@ -86,7 +87,7 @@
       {% else %}
         <tr>
           <td colspan="5">
-            <strong><center>None object was modified since versioning was enabled.<center></strong>
+            <strong><center>{% trans 'None object was modified since versioning was enabled.' %}<center></strong>
           </td>
       </tr>
       {% endif %}
@@ -101,7 +102,7 @@
         <div class="col-md-12">
           <div class="form-group">
             <span class="help-block">
-                This container is not configured to version its objetcs yet.
+                {% trans 'This container is not configured to version its objetcs yet.' %}
             </span>
           </div>
         </div>
@@ -109,7 +110,7 @@
 
       <fieldset class="base">
         <div class="col-md-12">
-          <button class="btn btn-primary" type="submit">Enable Versioning</button>
+          <button class="btn btn-primary" type="submit">{% trans 'Enable Versioning' %}</button>
         </div>
       </fieldset>
     </form>

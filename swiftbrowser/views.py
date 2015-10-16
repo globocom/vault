@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.utils.translation import ugettext as _
 
 from swiftclient import client
 
@@ -39,7 +40,7 @@ def containerview(request):
     """ Returns a list of all containers in current account. """
 
     if not request.session.get('project_id'):
-        messages.add_message(request, messages.ERROR, 'Select a project')
+        messages.add_message(request, messages.ERROR, _('Select a project'))
         return HttpResponseRedirect(reverse('dashboard'))
 
     storage_url = get_endpoint(request, 'adminURL')
@@ -53,9 +54,9 @@ def containerview(request):
         account_stat, containers = client.get_account(storage_url, auth_token,
                                                       http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
         messages.add_message(request, messages.ERROR,
-                             'Unable to list containers')
+                             _('Unable to list containers'))
 
         account_stat = {}
         containers = []
@@ -101,12 +102,12 @@ def create_container(request):
                                  container,
                                  http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
-                                 "Container created.")
+                                 _("Container created."))
 
             actionlog.log(request.user.username, "create", container)
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
-            messages.add_message(request, messages.ERROR, 'Access denied.')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+            messages.add_message(request, messages.ERROR, _('Access denied.'))
 
         return redirect(containerview)
 
@@ -136,7 +137,7 @@ def delete_container(request, container, force=True):
                                            http_conn=http_conn)
 
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
             return False
 
         for obj in objects:
@@ -149,7 +150,7 @@ def delete_container(request, container, force=True):
                                 container, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", container)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
         return False
 
     return True
@@ -161,9 +162,9 @@ def delete_container_view(request, container):
 
     response = delete_container(request, container)
     if response:
-        messages.add_message(request, messages.SUCCESS, "Container deleted.")
+        messages.add_message(request, messages.SUCCESS, _('Container deleted.'))
     else:
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
 
     return redirect(containerview)
 
@@ -187,8 +188,8 @@ def objectview(request, container, prefix=None):
                                              prefix=prefix,
                                              http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
         return redirect(containerview)
 
     prefixes = prefix_list(prefix)
@@ -232,7 +233,7 @@ def upload(request, container, prefix=None):
     key = get_temp_key(storage_url, auth_token, http_conn)
 
     if not key:
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
         if prefix:
             return redirect(objectview, container=container, prefix=prefix)
         else:
@@ -289,12 +290,13 @@ def create_object(request, container, prefix=None):
                             verify=not settings.SWIFT_INSECURE)
 
         if req.status_code == 201:
-            messages.add_message(request, messages.SUCCESS, 'Object created.')
+            messages.add_message(request, messages.SUCCESS, _('Object created.'))
             actionlog.log(request.user.username, "create", obj)
         elif req.status_code == 401 or req.status_code == 403:
-            messages.add_message(request, messages.ERROR, 'Access denied.')
+            messages.add_message(request, messages.ERROR, _('Access denied.'))
         else:
-            msg = 'Fail to create object ({0}).'.format(req.status_code)
+            msg = '{} ({})'.format(_('Fail to create object').encode('UTF-8'), req.status_code)
+
             log.error(msg)
             messages.add_message(request, messages.ERROR, msg)
 
@@ -330,9 +332,9 @@ def delete_object_view(request, container, objectname):
     response = delete_object(request, container, objectname)
 
     if response:
-        messages.add_message(request, messages.SUCCESS, 'Object deleted.')
+        messages.add_message(request, messages.SUCCESS, _('Object deleted.'))
     else:
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
 
     prefix = '/'.join(objectname.split('/')[:-1])
 
@@ -361,7 +363,7 @@ def delete_object(request, container, objectname):
 
         actionlog.log(request.user.username, "delete", objectname)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
         return False
 
     return True
@@ -388,23 +390,23 @@ def delete_pseudofolder(request, container, pseudofolder):
                                  http_conn=http_conn)
             count_deletes += 1
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
 
     # Empty pseudofolder
     if count_deletes == 1 and count_deletes == len(objects):
         messages.add_message(request, messages.SUCCESS,
-                'Pseudofolder deleted.')
+                _('Pseudofolder deleted.'))
 
     # Non empty pseudofolder
     elif count_deletes > 1 and count_deletes == len(objects):
         messages.add_message(request, messages.SUCCESS,
-                'Pseudofolder and {0} objects deleted.'.format(count_deletes - 1))
+                _('Pseudofolder and {0} objects deleted.').format(count_deletes - 1))
     elif count_deletes > 0 and count_deletes < len(objects):
         messages.add_message(request, messages.SUCCESS,
-                'It was not possible to delete all objects.')
+                _('It was not possible to delete all objects.'))
     else:
         messages.add_message(request, messages.ERROR,
-                'Fail to delete pseudofolder.')
+                _('Fail to delete pseudofolder.'))
 
     if pseudofolder[-1] == '/':  # deleting a pseudofolder, move one level up
         pseudofolder = pseudofolder[:-1]
@@ -450,10 +452,10 @@ def create_pseudofolder(request, container, prefix=None):
                               content_type=content_type,
                               http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
-                                 'Pseudofolder created.')
+                                 _('Pseudofolder created.'))
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
-            messages.add_message(request, messages.ERROR, 'Access denied.')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+            messages.add_message(request, messages.ERROR, _('Access denied.'))
 
         if prefix:
             actionlog.log(request.user.username, "create", foldername)
@@ -510,14 +512,14 @@ def edit_acl(request, container):
                     auth_token, container, headers=headers, http_conn=http_conn)
 
                 messages.add_message(request, messages.SUCCESS,
-                                    'ACLs updated')
+                                    _('ACLs updated'))
 
                 actionlog.log(request.user.username, "update", 'headers: %s, container: %s' % (headers, container))
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
                 messages.add_message(request, messages.ERROR,
-                                    'ACL update failed')
+                                    _('ACL update failed.'))
 
     if request.method == 'GET':
         delete = request.GET.get('delete', None)
@@ -548,14 +550,14 @@ def edit_acl(request, container):
                               container, headers=headers, http_conn=http_conn)
 
                 messages.add_message(request, messages.SUCCESS,
-                                    'ACL removed.')
+                                    _('ACL removed.'))
 
                 actionlog.log(request.user.username, "delete", 'headers: %s, container: %s' % (headers, container))
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
                 messages.add_message(request, messages.ERROR,
-                                    'ACL update failed.')
+                                    _('ACL update failed.'))
 
     (readers, writers) = get_acls(storage_url, auth_token, container, http_conn)
 
@@ -675,7 +677,7 @@ def object_versioning(request, container, prefix=None):
             disable_versioning(request, container)
             actionlog.log(request.user.username, "disable", 'Versioning. Container: %s' % container)
         else:
-            messages.add_message(request, messages.ERROR, 'Action is required.')
+            messages.add_message(request, messages.ERROR, _('Action is required.'))
 
         return redirect(object_versioning, container=container)
 
@@ -699,8 +701,8 @@ def enable_versioning(request, container):
         actionlog.log(request.user.username, "create", version_location)
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
         return False
 
     try:
@@ -713,11 +715,11 @@ def enable_versioning(request, container):
         actionlog.log(request.user.username, "update", version_location)
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
         return False
 
-    messages.add_message(request, messages.SUCCESS, 'Versioning enabled.')
+    messages.add_message(request, messages.SUCCESS, _('Versioning enabled.'))
 
     return True
 
@@ -737,7 +739,7 @@ def disable_versioning(request, container):
                                     http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
-        messages.add_message(request, messages.ERROR, 'Access denied.')
+        messages.add_message(request, messages.ERROR, _('Access denied.'))
         return False
 
     version_location = headers.get('x-versions-location', None)
@@ -752,15 +754,15 @@ def disable_versioning(request, container):
             actionlog.log(request.user.username, "update", container)
 
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
-            messages.add_message(request, messages.ERROR, 'Access denied.')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+            messages.add_message(request, messages.ERROR, _('Access denied.'))
             return False
 
         deleted = delete_container(request=request, container=version_location)
         if not deleted:
             return False
 
-    messages.add_message(request, messages.SUCCESS, 'Versioning disabled.')
+    messages.add_message(request, messages.SUCCESS, _('Versioning disabled.'))
 
     return True
 
@@ -797,14 +799,14 @@ def edit_cors(request, container):
                     auth_token, container, headers=headers, http_conn=http_conn)
 
                 messages.add_message(request, messages.SUCCESS,
-                                    'CORS updated')
+                                    _('CORS updated'))
 
                 actionlog.log(request.user.username, "update", 'headers: %s, container: %s' % (headers, container))
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
                 messages.add_message(request, messages.ERROR,
-                                    'CORS update failed')
+                                    _('CORS update failed.'))
 
     if request.method == 'GET':
         delete = request.GET.get('delete', None)
@@ -831,14 +833,14 @@ def edit_cors(request, container):
                               container, headers=headers, http_conn=http_conn)
 
                 messages.add_message(request, messages.SUCCESS,
-                                    'CORS removed.')
+                                    _('CORS removed.'))
 
                 actionlog.log(request.user.username, "delete", 'headers: %s, container: %s' % (headers, container))
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
                 messages.add_message(request, messages.ERROR,
-                                    'CORS update failed.')
+                                    _('CORS update failed.'))
 
     cors = get_cors(storage_url, auth_token, container, http_conn)
 

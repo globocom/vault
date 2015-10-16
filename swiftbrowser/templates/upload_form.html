@@ -1,16 +1,17 @@
 {% extends "vault/base.html" %}
+{% load i18n %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage - {{ project_name }}{% endblock %}
+{% block content_title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" %}">Containers</a>
+  <a href="{% url "containerview" %}">{% trans 'Containers' %}</a>
   <a class="u" href="{% url "objectview" container=container %}">{{ container }}</a>
   {% for prefix in prefixes %}
     <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
   {% endfor %}
-  <span>Upload File</span>
+  <span>{% trans 'Upload File' %}</span>
 {% endblock %}
 
 {% block content %}
@@ -26,11 +27,11 @@
     <fieldset class="content">
       <div class="col-md-6">
         <div class="form-group">
-            <label for="filetmp">File:</label><br />
+            <label for="filetmp">{% trans 'File:' %}</label><br />
             <input id="filetmp" name="filetmp" class="form-control" type="text"><br>
-            <button class="btn btn-sm btn-default" type="button" onclick="$('input[id=file]').click();">Browse</button>
+            <button class="btn btn-sm btn-default" type="button" onclick="$('input[id=file]').click();">{% trans 'Browse' %}</button>
             <span class="help-block">
-                Please select a file to upload.
+                {% trans 'Please select a file to upload.' %}
             </span>
         </div>
 
@@ -39,7 +40,7 @@
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button type="submit" id="btSubmit" class="btn btn-primary">Start upload</button>
+        <button type="submit" id="btSubmit" class="btn btn-primary">{% trans 'Start upload' %}</button>
       </div>
     </fieldset>
   </form>

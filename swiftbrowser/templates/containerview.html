@@ -1,6 +1,7 @@
 {% extends "vault/base.html" %}
 
 {% load pagination %}
+{% load i18n %}
 
 {% block title %}Storage - {{ project_name }}{% endblock %}
 
@@ -8,11 +9,11 @@
 
 {% block content_top %}
   <a href="{% url "create_container" %}" class="btn btn btn-primary">
-    <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;Create&nbsp;Container
+    <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;{% trans 'Create&nbsp;Container' %}
   </a>
 {% endblock %}
 
-{% block content_breadcrumb %}Containers{% endblock %}
+{% block content_breadcrumb %}{% trans 'Containers' %}{% endblock %}
 
 {% block content %}
 <div class="panel panel-default">
@@ -20,9 +21,9 @@
     <thead>
       <tr>
         <th width="2%" class="hidden-phone"></th>
-        <th width="76%">Name</th>
-        <th width="10%" class="hidden-phone">Objects</th>
-        <th width="10%" class="hidden-phone">Size</th>
+        <th width="76%">{% trans 'Name' %}</th>
+        <th width="10%" class="hidden-phone">{% trans 'Objects' %}</th>
+        <th width="10%" class="hidden-phone">{% trans 'Size' %}</th>
         <th width="2%">&nbsp;</th>
       </tr>
     </thead>
@@ -36,7 +37,7 @@
           <strong><a href="{% url "objectview" container=container.name %}?p={{ project_id }}" class="block">{{container.name}}</a></strong>
           <button class="btn-meta btn btn-sm"
                   data-name="{{ container.name }}"
-                  data-meta-url="{% url "metadata" container=container.name %}">details</button>
+                  data-meta-url="{% url "metadata" container=container.name %}">{% trans 'details' %}</button>
         </td>
         <td class="hidden-phone">
           {{container.count}}
@@ -50,20 +51,20 @@
             <ul class="dropdown-menu">
               {% url "edit_cors" container=container.name as edit_cors_url %}
               {% if edit_cors_url %}
-                <li><a href="{{ edit_cors_url }}"><i class="fa fa-random"></i>&nbsp;Set CORS</a></li>
+                <li><a href="{{ edit_cors_url }}"><i class="fa fa-random"></i>&nbsp;{% trans 'Set CORS' %}</a></li>
               {% endif %}
 
               {% url "object_versioning" container=container.name as object_versioning_url %}
-              <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i>&nbsp;Versioning</a></li>
+              <li><a href="{{ object_versioning_url }}"><i class="fa fa-history"></i>&nbsp;{% trans 'Versioning' %}</a></li>
 
               {% url "edit_acl" container=container.name as edit_acl_url %}
               {% if edit_acl_url %}
-                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i>&nbsp;Sharing</a></li>
+                <li><a href="{{ edit_acl_url }}"><i class="fa fa-user"></i>&nbsp;{% trans 'Sharing' %}</a></li>
                 <li class="divider" />
               {% endif %}
               <li>
-                <a href="{% url "delete_container" container=container.name %}" onclick="return confirm('Delete container {{container.name}}?');">
-                  <i class="fa fa-trash-o"></i> Delete container
+                <a href="{% url "delete_container" container=container.name %}" onclick="return confirm('{% trans 'Delete container' %} {{container.name}}?');">
+                  <i class="fa fa-trash-o"></i> {% trans 'Delete container' %}
                 </a>
               </li>
             </ul>
@@ -73,7 +74,7 @@
     {% empty %}
       <tr>
         <td colspan="5">
-          <strong><center>There are no containers in this account yet. Create a new container by clicking the "Create Container" button.<center></strong>
+          <strong><center>{% trans 'There are no containers in this account yet. Create a new container by clicking the "Create Container" button.' %}<center></strong>
         </td>
       </tr>
     {% endfor %}

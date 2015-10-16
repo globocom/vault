@@ -1,16 +1,18 @@
 {% extends "vault/base.html" %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% load i18n' %}
 
-{% block content_title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
+
+{% block content_title %}{% trans 'Storage' %} - {{ project_name }}{% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" %}">Containers</a>
+  <a href="{% url "containerview" %}">{% trans 'Containers' %}</a>
   <a class="u" href="{% url "objectview" container=container %}">{{ container }}</a>
   {% for prefix in prefixes %}
     <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
   {% endfor %}
-  <span>Create Pseudofolder</span>
+  <span>{% trans 'Create Pseudofolder' %}</span>
 {% endblock %}
 
 {% block content %}
@@ -23,8 +25,8 @@
             {{ form.foldername }}
             {{ form.foldername.errors }}
             <span class="help-block">
-                Enter name of pseudofolder here.
-                Please note that you can not rename it afterwards.
+                {% trans 'Enter name of pseudofolder here.' %}
+                {% trans 'Please note that you can not rename it afterwards.' %}
             </span>
         </div>
 
@@ -33,7 +35,7 @@
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Create' %}</button>
       </div>
     </fieldset>
   </form>
