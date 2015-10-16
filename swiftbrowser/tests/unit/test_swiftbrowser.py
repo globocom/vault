@@ -344,7 +344,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(len(msgs), 1)
 
-        expected = msg = 'Fail to create object ({0}).'.format(404)
+        expected = msg = 'Fail to create object ({0})'.format(404)
         self.assertEqual(msgs[0].message, expected)
         self.assertTrue(mock_requests_put.called)
         self.assertFalse(mock_logging.called)
@@ -1236,7 +1236,7 @@ class TestSwiftbrowserAcls(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(msgs), 1)
         self.assertTrue(mock_logging.called)
-        self.assertEqual(msgs[0].message, 'ACL update failed')
+        self.assertEqual(msgs[0].message, 'ACL update failed.')
 
     @patch('swiftbrowser.views.client.post_container')
     @patch('swiftbrowser.views.client.head_container')

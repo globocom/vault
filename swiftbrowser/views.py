@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
 
 from swiftclient import client
 
@@ -137,7 +137,7 @@ def delete_container(request, container, force=True):
                                            http_conn=http_conn)
 
         except client.ClientException as err:
-            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+            log.exception('{}{}'.format(ugettext('Exception:').encode('UTF-8'), err))
             return False
 
         for obj in objects:
@@ -150,7 +150,7 @@ def delete_container(request, container, force=True):
                                 container, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", container)
     except client.ClientException as err:
-        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+        log.exception('{}{}'.format(ugettext('Exception:').encode('UTF-8'), err))
         return False
 
     return True
@@ -188,8 +188,8 @@ def objectview(request, container, prefix=None):
                                              prefix=prefix,
                                              http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
-        messages.add_message(request, messages.ERROR, _('Access denied.'))
+        log.exception('{}{}'.format(ugettext('Exception:').encode('UTF-8'), err))
+        messages.add_message(request, messages.ERROR, ugettext('Access denied.'))
         return redirect(containerview)
 
     prefixes = prefix_list(prefix)
@@ -677,7 +677,7 @@ def object_versioning(request, container, prefix=None):
             disable_versioning(request, container)
             actionlog.log(request.user.username, "disable", 'Versioning. Container: %s' % container)
         else:
-            messages.add_message(request, messages.ERROR, _('Action is required.'))
+            messages.add_message(request, messages.ERROR, ugettext('Action is required.'))
 
         return redirect(object_versioning, container=container)
 

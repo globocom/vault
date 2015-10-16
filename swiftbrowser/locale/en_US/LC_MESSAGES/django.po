@@ -150,7 +150,7 @@ msgstr "There are no containers in this account yet. Create a new container by c
 #: templates/edit_acl.html:9 templates/edit_cors.html:7
 #: templates/edit_cors.html.py:9 templates/objectview.html:9
 #: templates/objectview.html.py:11 templates/upload_form.html:4
-#: templates/upload_form.html.py:6
+#: templates/upload_form.html.py:6 edit_acl.html:7
 msgid "Storage"
 msgstr "Storage"
 
