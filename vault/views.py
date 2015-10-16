@@ -154,16 +154,20 @@ def handler500(request):
     response.status_code = 500
     return response
 
+
 def login_user(request):
-    logout(request)
+    #logout(request)
     username = password = ''
+
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
 
         user = authenticate(username=username, password=password)
+
         if user is not None:
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect(reverse('dashboard'))
+
     return render_to_response('login.html', context_instance=RequestContext(request))

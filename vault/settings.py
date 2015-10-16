@@ -62,6 +62,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
@@ -94,7 +98,6 @@ STATICFILES_FINDERS = (
 STATIC_URL = '{}/{}'.format(os.getenv('SWIFT_PUBLIC_URL', ''), STATIC_ROOT)
 
 LOGIN_URL = '/login/'
-
 # ENV Confs
 
 PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 10)
