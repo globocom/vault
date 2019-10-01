@@ -15,17 +15,18 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 2) set environment variables
 
-    $ export VAULT_ENVIRON=PROD
-    $ export VAULT_MYSQL_USER=(vault mysql user)
-    $ export VAULT_MYSQL_PASSWORD=(vault mysql password)
-    $ export VAULT_MYSQL_PORT=3306
-    $ export VAULT_MYSQL_HOST=(vault mysql host)
-    $ export VAULT_STATIC_URL='http://your-static-url'
-    $ export VAULT_KEYSTONE_URL='https://your-keystone-url:5000'
+        $ export VAULT_ENVIRON=PROD
+        $ export VAULT_MYSQL_USER=(vault mysql user)
+        $ export VAULT_MYSQL_PASSWORD=(vault mysql password)
+        $ export VAULT_MYSQL_PORT=3306
+        $ export VAULT_MYSQL_HOST=(vault mysql host)
+        $ export VAULT_STATIC_URL='http://your-static-url'
+        $ export VAULT_KEYSTONE_URL='https://your-keystone-url:5000'
 
 3) create a mysql database named "vault"
 
-    # on mysql: 'create database vault;'
+    **_on mysql:_**          mysql> create database vault
+    
     $ python manage.py syncdb
 
 4) run
