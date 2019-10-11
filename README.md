@@ -7,7 +7,6 @@ Manage users and tenants on your Keystone service.
 Manage containers and objects on Swift. (A customized version of [django-swiftbrowser](https://github.com/cschwede/django-swiftbrowser))
 
 ### Basic setup (production)
-=======
 
 1) install dependencies
 
@@ -43,8 +42,7 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 ### To run tests
     pip install -r requirements_test.txt
     make tests
-
-=======
+    
 ### Compatibilities
 
 - Django 1.6
