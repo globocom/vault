@@ -14,7 +14,7 @@ clean: ## Clear *.pyc files, etc
 
 dependencies: ## Install project dependencies
 	@echo "Installing dependencies"
-	@pip install -r $(PROJECT_HOME)/requirements_test.txt	
+	@pip install -r $(PROJECT_HOME)/requirements_test.txt
 
 setup: dependencies ## Install project dependencies and some git hooks
 	@echo "Adding git hooks..."
@@ -39,27 +39,6 @@ tests_ci: migrations_test clean pycodestyle ## Run all tests
 
 run: check-env-vars clean ## Run a Vault development web server
 	@python $(PROJECT_HOME)/manage.py runserver 0.0.0.0:8000
-
-reset_dev:
-	@tsuru app update -a vaultdev --image-reset
-
-reset_qa:
-	@tsuru app update -a vaultqa --image-reset
-
-reset_prod:
-	@tsuru app update -a vault --image-reset
-
-deploy_dev: build_tag
-	@tsuru app-deploy . -a vaultdev
-
-deploy_qa: build_tag
-	@tsuru app-deploy . -a vaultqa
-
-deploy_prod: build_tag
-	@tsuru app-deploy . -a vault
-
-build_tag:
-	./build_tag.sh
 
 check-env-vars:
 ifndef VAULT_KEYSTONE_PROJECT
