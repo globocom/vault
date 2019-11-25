@@ -1,0 +1,51 @@
+{% load i18n vault_tags %}
+{% can_view_team_users_ogs as can_view_tusers_ogs %}
+{% can_view_costing as can_view_cost %}
+
+<!-- sidebar -->
+<nav id="sidebar">
+  <ul class="buttons">
+    <li>
+      <a href="{% url "dashboard" %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-home"></i>
+      </a>
+    </li>
+    {% if user.is_staff %}
+    <li>
+      <a href="{% url "admin:index" %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-cog"></i>
+      </a>
+    </li>
+    {% endif %}
+    <li>
+      <a href="{% url 'update_teams_users' %}" title="{% trans 'Manage Team' %}"
+         data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-users"></i>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'containerview' %}" title="S3/Swift" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-feather-alt"></i>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'faas_exports' %}" title="FaaS" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-hdd"></i>
+      </a>
+    </li>
+    {% if can_view_tusers_ogs %}
+    <li>
+      <a href="{% url 'team_list_users_ogs' %}" title="Times e Usuários" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-building"></i>
+      </a>
+    </li>
+    {% endif %}
+    {% if can_view_cost %}
+    <li>
+      <a href="{% url 'custeio_index' %}" title="Custeio" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-credit-card"></i>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>

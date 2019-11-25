@@ -1,0 +1,455 @@
+# -*- coding: utf-8 -*-
+
+"""
+Vault Generic Views
+"""
+
+import json
+import logging
+from hashlib import md5
+
+from django.contrib import messages
+from django.views.generic.base import View
+from django.views.generic.edit import FormView
+from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
+from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User, Group
+
+from allaccess.views import (OAuthCallback, OAuthRedirect)
+
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+from actionlogger.actionlogger import ActionLogger
+from identity.keystone import Keystone
+from vault.models import OG
+from vault.utils import (update_default_context, save_current_project,
+                         set_current_project, get_current_project,
+                         maybe_update_token)
+
+from vault.client import OAuth2BearerClient
+
+
+log = logging.getLogger(__name__)
+actionlog = ActionLogger()
+
+
+def _build_next_url(request):
+    next_url = request.META.get('HTTP_REFERER')
+
+    if request.GET.get('next') is not None:
+        next_url = request.GET.get('next')
+
+    if next_url:
+        return next_url
+
+    return reverse('dashboard')
+
+
+def switch(request, project_id):
+    """Switch session parameters to project with project_id"""
+
+    if project_id is None:
+        raise ValueError(_("Missing 'project_id'"))
+
+    keystone = Keystone(request)
+    next_url = reverse('dashboard')  # _build_next_url(request)
+
+    try:
+        project = keystone.project_get(project_id)
+    except Exception as err:
+        messages.add_message(request, messages.ERROR, _("Can't find this project"))
+        log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+        return HttpResponseRedirect(next_url)
+
+    save_current_project(request.user.id, project.id)
+    set_current_project(request, project)
+
+    log.info('User [{}] switched to project [{}]'.format(request.user,
+                                                         project_id))
+    messages.add_message(request, messages.INFO,
+                         _("Project selected: {}".format(project.name)))
+
+    return HttpResponseRedirect(next_url)
+
+
+class ProjectCheckMixin(object):
+    """Mixin for Views to check and set user current project"""
+
+    def dispatch(self, request, *args, **kwargs):
+        session_items = ['project_id', 'project_name']
+
+        has_project = False
+        for item in session_items:
+            has_project = item in request.session
+
+        if not has_project:
+            current_project = get_current_project(request.user.id)
+
+            if current_project is not None:
+                set_current_project(request, current_project)
+
+        return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
+
+
+class LoginRequiredMixin(object):
+    """ Mixin for Class Views that needs a user login """
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        maybe_update_token(request)
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(LoginRequiredMixin, self).get_context_data(**kwargs)
+        return update_default_context(self.request, context)
+
+
+class SuperUserMixin(LoginRequiredMixin):
+    """ Mixin for Class Views with superuser powers """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_superuser:
+            messages.add_message(self.request, messages.WARNING, u"Unauthorized")
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+
+        return super(SuperUserMixin, self).dispatch(request, *args, **kwargs)
+
+
+class HasOgPermissionMixin(LoginRequiredMixin):
+    """ Mixin for class views that controls the permissions of the OGs """
+
+    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+        group = user.groups.all()[0]
+        add_og = False
+        change_og = False
+        delete_og = False
+
+        for permission in group.permissions.all():
+            try:
+                codename = permission.codename
+                exec(codename + ' = True')
+            except Exception:
+                pass
+
+        if not(add_og and change_og and delete_og):
+            return HttpResponseRedirect(reverse('dashboard'))
+
+        return super(HasOgPermissionMixin, self).dispatch(request, *args, **kwargs)
+
+
+class JSONResponseMixin(object):
+    """ Mixin for Class Views with json response """
+
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_to_json_response(context, **response_kwargs)
+
+    def render_to_json_response(self, context, **response_kwargs):
+        return HttpResponse(
+            self.convert_context_to_json(context),
+            content_type='application/json',
+            **response_kwargs
+        )
+
+    def convert_context_to_json(self, context):
+        return json.dumps(context)
+
+
+class SetProjectView(LoginRequiredMixin, View):
+    """ Change user current project """
+
+    def get(self, request, *args, **kwargs):
+        request.session['project_id'] = kwargs.get('project_id')
+
+        try:
+            http_redirect = switch(request, kwargs.get('project_id'))
+        except ValueError as err:
+            http_redirect = HttpResponseRedirect(reverse('dashboard'))
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
+            messages.add_message(request, messages.ERROR,
+                                 _('Unable to change your project.'))
+
+        return http_redirect
+
+
+class OAuthBearerCallback(OAuthCallback):
+    " Callback de OAuth2 usando header de bearer"
+
+    def get_client(self, provider):
+        return OAuth2BearerClient(provider)
+
+    def get_login_redirect(self, provider, user, access, new=False):
+        return reverse('dashboard')
+
+    def get_user_id(self, provider, info):
+        identifier = None
+        if hasattr(info, 'get'):
+            identifier = info.get('email')
+
+        if identifier is not None:
+            return identifier
+
+        return super(OAuthBearerCallback, self).get_user_id(provider, info)
+
+    def get_or_create_user(self, provider, access, info):
+        " Vincula o usuário django logado à sua conta "
+        return self._criar_usuario(provider, info)
+
+    def _gerar_username(self, original):
+        limite_username_django = 30
+        espaco_para_hash = 5
+        # Limite do campo - hash - separador (@)
+        espaco_para_username = limite_username_django - espaco_para_hash - 1
+
+        hash = md5().hexdigest()
+        username = '{0}@{1}'.format(original[:espaco_para_username], hash)
+        username = username[:limite_username_django]
+
+        return username
+
+    def _criar_usuario(self, provider, info):
+        username = info.get('username')
+
+        if username is None:
+            username = info.get('email')  # email eh obrigatorio
+
+        while User.objects.filter(username=username).exists():
+            username = self._gerar_username(username)
+
+        user = User(username=username)
+        self._save_user_info(user, info)
+
+        return user
+
+    def _save_user_info(self, user, info):
+        if 'email' in info:
+            user.email = info['email']
+
+        if 'name' in info:
+            parts = info['name'].split(' ', 1)
+            user.first_name = parts[0]
+            user.last_name = (len(parts) > 1) and parts[1] or ''
+
+        user.save()
+
+
+class OAuthVaultCallback(OAuthBearerCallback):
+    pass
+
+
+class OAuthVaultRedirect(OAuthRedirect):
+    pass
+
+
+class VaultLogout(View):
+
+    def get(self, request):
+        user = request.user
+        auth_logout(request)
+        log.info('User logged out: [{}]'.format(user))
+        return HttpResponseRedirect(reverse('dashboard'))
+
+
+def handler500(request):
+    response = render_to_response('500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
+
+
+class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
+    template_name = "vault/user_edit_teams.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context['users'] = []
+        context['groups'] = []
+
+        try:
+            all_groups_id = [group.id for group in Group.objects.all()]
+
+            # Usuarios sem time
+            users = User.objects \
+                        .exclude(groups__in=all_groups_id) \
+                        .order_by('username')
+
+            for user in User.objects.all().order_by('username'):
+                context['users'].append({
+                    'id': int(user.id),
+                    'name': user.username
+                })
+
+            for grp in request.user.groups.all():
+                context['groups'].append({
+                    'id': int(grp.id),
+                    'name': grp.name
+                })
+
+        except Exception as e:
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            return self.render_to_response(context, status=500)
+
+        return self.render_to_response(context)
+
+
+class ListUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
+
+    def post(self, request, *args, **kwargs):
+        context = []
+
+        try:
+            groups = request.user.groups.all()
+            for group in groups:
+                team = Group.objects.get(id=group.id)
+                for user in team.user_set.all():
+                    context.append({
+                        'team': {
+                            'id': int(team.id),
+                            'name': team.name,
+                            'users': {
+                                'id': int(user.id),
+                                'name': user.username
+                            }
+                        }
+                    })
+        except Exception as e:
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            return self.render_to_response(context, status=500)
+
+        return self.render_to_response(context)
+
+
+class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
+
+    def post(self, request, *args, **kwargs):
+
+        group_id = request.POST.get('group')
+        user_id = request.POST.get('user')
+
+        context = {'msg': 'ok'}
+
+        try:
+            user = User.objects.get(id=user_id)
+            group = Group.objects.get(id=group_id)
+            groupsofuser = user.groups.all()
+            for groupuser in groupsofuser:
+                if groupuser.name == group.name:
+                    context['msg'] = _('User already registered with this team')
+                    log.exception('{}{}'.format(_('Conflict:'), context['msg']))
+                    return self.render_to_response(context, status=500)
+
+            user.groups.add(group)
+            user.save()
+
+            item = 'group: %s, user: %s' % (group, user)
+            actionlog.log(request.user.username, 'create', item)
+
+            return self.render_to_response(context)
+
+        except Exception as e:
+            context['msg'] = _('Error adding user, check user team')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            return self.render_to_response(context, status=500)
+
+
+class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
+
+    def post(self, request, *args, **kwargs):
+        group_id = request.POST.get('group')
+        user_id = request.POST.get('user')
+
+        context = {'msg': 'ok'}
+
+        try:
+            user = User.objects.get(id=user_id)
+            group = Group.objects.get(id=group_id)
+
+            user.groups.remove(group)
+            user.save()
+
+            item = 'group: %s, user: %s' % (group, user)
+            actionlog.log(request.user.username, 'delete', item)
+
+            return self.render_to_response(context)
+
+        except Exception as e:
+            context['msg'] = _('Error removing user, check user and team')
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            return self.render_to_response(context, status=500)
+
+
+class ListUsersTeamsOGsView(HasOgPermissionMixin, FormView):
+    template_name = "vault/users_teams_ogs.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context['groups'] = []
+        context['ogs'] = []
+
+        for index, group in enumerate(Group.objects.all()):
+            team_og = group.teamog_set.first()
+            og_name = team_og.og.name if team_og else ''
+
+            context['groups'].append({
+                'id': int(group.id),
+                'name': group.name,
+                'og_name': og_name,
+                'users': []
+            })
+
+            for user in group.user_set.all():
+                context['groups'][index]['users'].append({
+                    'email': user.email
+                })
+
+        for og in OG.objects.all():
+            context['ogs'].append({
+                'id': int(og.id),
+                'name': og.name
+            })
+
+        return self.render_to_response(context)
+
+
+@login_required
+def team_manager_view(request):
+    context = {}
+    groups = []
+
+    for group in request.user.groups.all():
+        groups.append({
+            'id': group.id,
+            'name': group.name,
+            'users': User.objects.filter(groups__in=[group.id])
+        })
+
+    context['groups'] = groups
+
+    return render_to_response("vault/team_manager/index.html", context,
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def list_users_outside_a_group(request):
+    group_id = request.GET.get('group')
+
+    if group_id is None:
+        return HttpResponse(status=400)
+
+    users = User.objects.exclude(groups__in=[group_id]).order_by('username')
+    content = []
+
+    for user in users:
+        content.append({
+            'id': user.id,
+            'name': user.username,
+            'email': user.email
+        })
+
+    return HttpResponse(json.dumps(content),
+                        content_type='application/json')

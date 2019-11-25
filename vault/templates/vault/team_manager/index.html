@@ -1,0 +1,71 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans 'Gerenciar Usuários e Times' %}{% endblock %}
+{% block content_title %}{% trans 'Gerenciar Usuários e Times' %}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/user_teams.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="team-manager">
+  {% for group in groups %}
+    <div class="team">
+      <div class="team-top">
+        <span class="team-name">{{ group.name }}</span>
+        <a class="btn btn-primary btn-xs btn-add-user"
+           href="#add_user_modal" data-target="#add_user_modal" data-toggle="modal"
+           data-group-id="{{ group.id }}" data-group-name="{{ group.name }}">
+          {% trans 'Add new user to' %} {{ group.name }}
+        </a>
+      </div>
+      <div class="panel panel-default">
+
+        <table id="container-list" class="items-list table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th width="32%">Name</th>
+              <th width="32%">username</th>
+              <th width="32%">email</th>
+              <th width="4%">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for user in group.users %}
+            <tr>
+              <td>{{ user.get_full_name }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <a href="#" class="btn btn-danger btn-xs btn-remove-user"
+                   data-group-id="{{ group.id }}" data-user-id="{{ user.id }}">
+                  <i class="fa fa-times"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  {% endfor %}
+  </section>
+
+  {% include "vault/team_manager/add_user_modal.html" %}
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vault/js/team_manager.js' %}"></script>
+<script>
+TeamManager.init({
+  'addUrl': '{% url "team_add_user" %}',
+  'deleteUrl': '{% url "team_delete_user" %}',
+  'outsideUserstUrl': '{% url "outside_users" %}'
+});
+</script>
+{% endblock %}

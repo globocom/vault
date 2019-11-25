@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<section id="project-metadata">
+  <div class="form-group">
+    <label>{% trans 'Project Metadata' %}:</label>
+    <table class="table-info table table-bordered table-striped">
+      <tbody>
+        {% if project.created_by %}
+        <tr>
+          <th>{% trans 'Source platform' %}</th>
+          <td>
+            <span class="service-name {{ project.created_by }}">
+              {{ project.created_by }}
+            </span>
+          </td>
+        </tr>
+        {% endif %}
+        {% if project.first_team %}
+        <tr>
+          <th>{% trans 'Created by team' %}</th>
+          <td><span>{{ project.first_team.name }}</span></td>
+        </tr>
+        {% endif %}
+        {% if project.team %}
+        <tr>
+          <th>{% trans 'Current team owner' %}</th>
+          <td><span>{{ project.team.name }}</span></td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>

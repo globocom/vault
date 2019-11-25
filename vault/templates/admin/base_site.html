@@ -1,0 +1,104 @@
+{% load admin_static i18n vault_tags %}
+
+<!DOCTYPE html>
+<html {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+  <title>{% block title %}{% trans 'Vault Admin' %} - {{ title }}{% endblock %}</title>
+
+  {% block metatags %}{% endblock %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/sub-content.css' %}" />
+  {% block extrastyle %}{% endblock %}
+
+  <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
+  {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+
+  <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+  <script type="text/javascript">window.__admin_utc_offset__ = "{% filter escapejs %}{% now "Z" %}{% endfilter %}";</script>
+
+  {% block extrahead %}{% endblock %}
+  {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+
+  <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
+  <script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'vault/js/base.js' %}"></script>
+  {% block js_top %}{% endblock %}
+</head>
+
+<body class="{% if is_popup %}popup {% endif %}{% with_sidebar %}{% block bodyclass %}{% endblock %}">
+
+{% if not is_popup %}
+  {% include "vault/header.html" %}
+  {% include "dashboard/sidebar.html" %}
+{% endif %}
+
+<!-- Content -->
+<section id="content" class="container-fluid">
+  <div class="row">
+
+    <h2 class="content-title col-md-8">
+      {% block content_title %}{{ title }}{% endblock %}
+      {% block breadcrumbs %}
+      {% endblock %}
+    </h2>
+
+    <div class="content-top col-md-4">
+      {% block pretitle %}{% endblock %}
+      {% block content_top %}{% endblock %}
+    </div>
+
+    <div class="content-body col-md-12">
+      {% block content %}
+        {% block object-tools %}{% endblock %}
+        {{ content }}
+      {% endblock %}
+      {% block sidebar %}{% endblock %}
+    </div>
+
+  </div>
+</section>
+<!-- END Content -->
+
+{% block footer %}<div id="footer"></div>{% endblock %}
+
+<!-- messages -->
+<ul class="messages"></ul>
+
+<script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
+
+<script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
+<script>
+bootbox.setDefaults({
+  locale: 'br',
+  backdrop: true,
+  centerVertical: true
+});
+</script>
+
+<script>Base.init();</script>
+{% if messages %}
+<script>
+{% for message in messages %}
+  Base.Messages.setMessage({
+    description: '{{ message|safe|capfirst }}',
+    type: '{% if message.tags %}{{ message.tags }}{% endif %}'
+  });
+{% endfor %}
+</script>
+{% endif %}
+
+<script src="{% get_backstage_bar_url %}/scripts/backstage-bar.js"></script>
+<script>
+window.bsBar = window.bsBar || {};
+bsBar.config = { 'logoutCallbackUrl': '{% get_logout_url %}' };
+bsBar.Bar.render();
+</script>
+
+{% block js_bottom %}{% endblock %}
+</body>
+</html>

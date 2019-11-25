@@ -1,0 +1,92 @@
+{% load i18n %}
+
+{% if has_group %}
+
+<style>
+.select-project { width: 100%; list-style: none; padding-left: 0 }
+.select-project li.team-name { padding: 5px 0; text-transform: uppercase; color: #888; font-size: 12px; }
+.select-project li.project { position: relative; min-height: 50px; line-height: 50px; padding: 0; width: 100%; margin-bottom: 2px; background-color: #383838; cursor: pointer; }
+.select-project li.project:hover { background-color: #3a3a3a; }
+
+.select-project li .action { position: absolute; top: 0; bottom: 0; left: 0; width: 80%; border-left: 5px solid #555; }
+.select-project li .action:hover { border-left-color: #3498DB; }
+
+.select-project .name { display: block; font-size: 18px; color: #aaa; display: block; width: 100%; padding-left: 20px; }
+.select-project li:hover .name { color: white; }
+
+.project-edit { position: absolute; top: 0; right: 10%; height: 50px; width: 10%; text-align: center; font-size: 18px; color: #ccc; border-left: 2px solid #444; }
+.project-edit:hover { color: #3498DB; text-decoration: none; }
+
+.project-delete { position: absolute; top: 0; right: 0; height: 50px; width: 10%; text-align: center; font-size: 18px; color: #ccc; border-left: 2px solid #444; }
+.project-delete:hover { color: #E74C3C; text-decoration: none; }
+
+.project-label { font-size: 10px; text-transform: uppercase; color: #bbb; }
+</style>
+
+<div class="current-project">
+  {% if current_project.id %}
+
+  <div class="project-name">
+    <span>{% trans "current project" %}</span><br />
+    <strong>{{ current_project.name }}</strong>
+  </div>
+
+  <div class="btn-group btn-group-xs" role="group">
+    <a href="#" class="btn-change-project btn btn-default">{% trans "Change" %}</a>
+  </div>
+
+  {% else %}
+
+  <div class="project-name">
+    <span>{% trans "No project selected" %}</span><br />
+    <strong>
+      <a href="#" class="btn-change-project">
+        {% trans "Click here to select a project" %}
+      </a>
+    </strong>
+  </div>
+
+  {% endif %}
+</div>
+
+<script type="text/html" class="content-select-project">
+<ul class="select-project">
+  {% for gp in group_projects %}
+    <li class="team-name">{{ gp.team }}</li>
+
+    {% for prj in gp.projects %}
+      <li class="project">
+        <span class="name">{{ prj.name }}</span>
+        <a class="action" href="{% url 'set_project' prj.id %}" title="{% trans 'Select' %} {{ prj.name }}"></a>
+        <a class="project-edit" href="{% url 'edit_project' prj.id %}" title="{% trans 'Edit Project' %}">
+          <i class="fa fa-pencil-alt"></i>
+        </a>
+        <a class="project-delete" href="{% url 'delete_project' prj.id %}" title="{% trans 'Delete Project' %}">
+          <i class="fa fa-trash"></i>
+        </a>
+      </li>
+    {% endfor %}
+
+    </ul><ul class="select-project">
+  {% endfor %}
+</ul>
+</script>
+
+{% else %}
+
+<div class="current-project no-group">
+  <div class="project-name">
+    <i class="icon-warning fa fa-exclamation-triangle"></i>
+    <span>
+      <strong>
+        Voc&ecirc; n&atilde;o est&aacute; associado a um time. Um membro da sua equipe pode associ&aacute;-lo!
+        <a href="http://docs.s3.globoi.com/swift_faq/#4-como-adicionar-um-novo-usuario-ao-meu-time">Mais info.</a>
+      </strong>
+    </span>
+    <br />
+    Caso ningu&eacute;m do seu time utiliza ou j&aacute; utilizou o Vault, entre em contato atrav&eacute;s do canal
+    <strong>#s3</strong> no Slack ou com a <strong>Equipe de Atendimento</strong>.
+  </div>
+</div>
+
+{% endif %}

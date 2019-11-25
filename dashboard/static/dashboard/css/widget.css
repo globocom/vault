@@ -1,0 +1,56 @@
+ul.widgets {
+    list-style: none;
+    padding: 0;
+}
+
+.widget {
+    position: relative;
+    margin-bottom: 30px;
+    min-height: 280px;
+}
+
+.widget-tab-items table {
+    margin: 0;
+}
+
+.widget-tab-items table th {
+    width: 10%;
+    text-align: right;
+}
+
+.widget-tab-items table input {
+    border-color: #eee;
+    border-radius: 0;
+}
+
+.widget .big-number {
+    display: block;
+    font-size: 38px;
+    font-weight: 200;
+}
+
+.widget .tab-pane {
+    padding: 0;
+}
+
+.widget .widget-tab-items {
+    display: flex;
+    flex-flow: row wrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.widget .widget-tab-items .item-box {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
+    justify-content: center;
+    min-height: 100px;
+    text-align: center;
+    padding: 10px;
+    color: white;
+    margin: 0;
+    font-weight: 300;
+    font-size: 16px;
+}

@@ -1,0 +1,27 @@
+{% load i18n %}
+
+{% if user.is_staff and user.is_superuser %}
+  <div class="app-projectsandusers module panel panel-default">
+    <table class="items-list table table-bordered table-striped table-hover">
+      <caption>{% trans 'Keystone' %}</caption>
+      <tbody>
+        <tr class="model-projectsandusers">
+          <th scope="row">
+            <a href="{% url 'admin_projects' %}">{% trans 'Projects' %}</a>
+          </th>
+          <td>
+            <a href="{% url 'admin_add_project' %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
+          </td>
+        </tr>
+        <tr class="model-projectsandusers">
+          <th scope="row">
+            <a href="{% url 'admin_list_users' %}">{% trans 'Users' %}</a>
+          </th>
+          <td>
+            <a href="{% url 'admin_add_user' %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endif %}

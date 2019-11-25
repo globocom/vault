@@ -1,0 +1,31 @@
+<style>
+.btn-send-cache.waiting .set-cache { display: none; }
+.btn-send-cache .wait-text { display: none; }
+.btn-send-cache.waiting .wait-text { display: inline-block; }
+</style>
+
+<div class="modal fade" id="modal-cache-control" role="dialog" aria-labelledby="modal-cache-controlLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="modal-cache-controlLabel">Set Cache-Control for Object</h3>
+      </div>
+      <form action="#" id="form-cache-control">
+        <div class="modal-body">
+          <label for="host">max-age (em dias):</label><br />
+          <input class="form-control" name="days" type="text" value="1">
+        </div>
+        <div class="modal-footer">
+          <button class="btn-send-cache btn btn-primary">
+            <span class="wait-text">
+              <i class="fa fa-spinner fa-pulse fa-fw"></i>&nbsp;Loading...
+            </span>
+            <span class="set-cache">Set Cache-Control</span>
+          </button>
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

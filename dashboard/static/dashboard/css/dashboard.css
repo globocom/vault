@@ -1,0 +1,65 @@
+.dashboard-widgets {
+    list-style: none;
+    padding: 0;
+}
+
+.service {
+    position: relative;
+    background-color: white;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+.service .head {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #666;
+}
+
+.service .head:hover,
+.service .head:hover .icon {
+    color: #3498DB;
+}
+
+.service .head .icon {
+    float: left;
+    height: 58px;
+    line-height: 58px;
+    font-size: 36px;
+    padding-right: 20px;
+    text-shadow: 0 1px 0 white;
+}
+
+.service .name {
+    font-size: 26px;
+    font-weight: 300;
+    display: inline-block;
+}
+
+.service .info {
+    font-size: 14px;
+    line-height: 15px;
+    display: block;
+}
+
+.service .item-box {
+    text-align: center;
+    padding: 15px 10px;
+    background-color: #aaa;
+    min-width: 25%;
+    color: white;
+}
+
+.service .base {
+    padding: 15px 20px;
+    text-align: right;
+}
+
+.service .base .btn {
+    margin-left: 5px;
+}
+
+.service .nav-tabs {
+    border-bottom: 1px solid transparent;
+}

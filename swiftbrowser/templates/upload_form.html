@@ -1,0 +1,69 @@
+{% extends "vault/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block css %}
+<link href="{% static 'vendor/css/fileinput.min.css' %}" media="all" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js_top %}
+<script src="{% static 'vendor/js/fileinput.min.js' %}"></script>
+<script src="{% static 'vendor/js/fileinput.theme.js' %}"></script>
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+  <a class="u" href="{% url "objectview" container=container %}">{{ container }}</a>
+  {% for prefix in prefixes %}
+    <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+  {% endfor %}
+  <span>Upload File</span>
+{% endblock %}
+
+{% block content %}
+  <form action="{{ swift_url }}" method="POST" class="form-box project-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="redirect" value="{{ redirect_url }}" />
+    <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
+    <input type="hidden" name="max_file_count" value="{{ max_file_count }}" />
+    <input type="hidden" name="expires" value="{{ expires }}" />
+    <input type="hidden" name="signature" value="{{ signature }}" />
+
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+            <label for="filetmp">File(s):</label><br />
+            <input id="file" name="file1" type="file" class="file-loading" multiple>
+            <span class="help-block">
+                Please select up to {{ max_file_count }} files to upload.
+            </span>
+        </div>
+      <div class="col-md-6">&nbsp;</div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button type="submit" id="btSubmit" class="btn btn-primary">Start upload</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+$(document).on('ready', function() {
+    $("#file").fileinput({
+        theme: "gly",
+        maxFileCount: {{ max_file_count }},
+        autoReplace: true,
+        showUpload: false,
+        hideThumbnailContent: true
+    });
+});
+</script>
+{% endblock %}

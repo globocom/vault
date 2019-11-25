@@ -1,0 +1,208 @@
+{% extends "vault/base.html" %}
+
+{% load i18n staticfiles %}
+{% load pagination storage_tags %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'swiftbrowser/css/swiftbrowser.css' %}" />
+{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_top %}
+  {% if prefix %}
+  <a class="btn btn-primary" href="{% url "upload" container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary" href="{% url "upload" container=container %}">
+  {% endif %}
+  <i class="fa fa-upload"></i>&nbsp;&nbsp;Upload&nbsp;Object</a>
+
+  {% if prefix %}
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container %}">
+  {% endif %}
+  <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url "objectview" container=container  %}">{{ container }}</a>
+  {% else %}
+    <span>{{ container }}</span>
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url "objectview" container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+  {% if optin_status == 'True' %}
+
+    <div id="box_search">
+      <div class="row">
+
+        <form id="form-search" action="{% url 'metadata_search' project_id=project_id container=container %}" method="GET">
+          <label class="search-label">Pesquisar : </label><br/>
+          <input type="text" class="btn btn-default input-query" name="query" value="{{ query }}"/>
+          <button class="btn btn-primary send-btn">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div> <!-- .row -->
+    </div> <!-- #generate-billing -->
+
+    {% if query %}
+    <div id="box_query">
+      <div class="finded-term">Pesquisado pelo(s) termo(s) : '<span>{{ query }}</span>'</div>
+    </div>
+    {% endif %}
+
+  {% endif %}
+
+  {% storage_tools %}
+
+  <div class="panel panel-default">
+    <table class="items-list table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th width="2%"></th>
+          <th width="65%">Name</th>
+          <th width="15%">Created</th>
+          <th width="10%">Size</th>
+          <th width="6%">&nbsp;</th>
+          <th width="2%">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for obj in objects %}
+        {% if 'prefix' in obj %}
+        <tr>
+          <td><i class="fa fa-inbox"></i></td>
+          <td>
+            <a href="{% url "objectview" container=container prefix=obj.prefix %}?p={{ project_id }}">
+              <strong>{{obj.prefix|lastpart}}</strong>
+            </a>
+          </td>
+          <td></td>
+          <td></td>
+          <td>
+            <button class="btn-meta btn btn-xs btn-default"
+              data-name="{{ obj.name }}"
+              data-preview-url="{% url "preview" container=container objectname=obj.name %}"
+              data-meta-url="{% url "metadata" container=container objectname=obj.name %}">
+              <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+            </button>
+          </td>
+          <td>
+            <div class="dropdown pull-right">
+              <a class="btn-config dropdown-toggle btn btn-xs btn-default" data-toggle="dropdown">
+                <i class="fa fa-cog icon-white"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="{% url "delete_pseudofolder" container=container pseudofolder=obj.name %}"
+                    onclick="return confirm('Delete pseudofolder {{obj.name}}?');">
+                    <i class="fas fa-trash"></i>&nbsp;Delete pseudofolder</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td>
+            <i class="fa fa-file"></i>
+          </td>
+          <td>
+            <span class="block"><a href='{{obj.public_url}}' target="_blank">{{obj.name|lastpart}}</a></span>
+            <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{ obj.public_url }}"
+                    title="{% trans 'Click to copy URL' %}">Copy URL</button>
+          </td>
+          <td>
+            {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+          </td>
+          <td>
+            {{obj.bytes|filesizeformat}}
+          </td>
+          <td>
+            <button class="btn-meta btn btn-xs btn-default"
+              data-name="{{ obj.name }}"
+              data-preview-url="{% url "preview" container=container objectname=obj.name %}"
+              data-meta-url="{% url "metadata" container=container objectname=obj.name %}">
+              <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+            </button>
+          </td>
+          <td>
+            <div class="dropdown pull-right">
+              <a class="btn-config dropdown-toggle btn btn-xs btn-default" data-toggle="dropdown">
+                <i class="fa fa-cog icon-white"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#modal-cache-control" data-target="#modal-cache-control" data-toggle="modal" class="btn-cache-control"
+                     data-cache-control-url="{% url "cache_control" container=container objectname=obj.name %}">
+                    <i class="fa fa-angle-right"></i>&nbsp;{% trans 'Edit Cache-Control' %}
+                  </a>
+                </li>
+                <li class="divider" />
+                <li>
+                  <a href="{% url "delete_object" container=container objectname=obj.name %}"
+                    onclick="return confirm('Delete object {{ obj.name }}?');">
+                    <i class="fas fa-trash"></i>&nbsp;Delete object</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+      </tbody>
+      {% if not objects %}
+      <tbody>
+        <tr>
+          <th colspan="5" class="center">
+            <strong><center>There are no objects in this container yet. Upload new objects by clicking the "Upload Object" button.<center></strong>
+          </th>
+        </tr>
+      </tbody>
+      {% endif %}
+    </table>
+  </div>
+
+{% pagination objects %}
+
+{% include "modal_cache_control.html" %}
+
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+var clipboard = new Clipboard('.btn-copy-url');
+clipboard.on('success', function(e) {
+  Base.Messages.setMessage({
+    description: '{% trans "URL copied!" %}',
+    type: 'success'
+  });
+  e.clearSelection();
+});
+</script>
+<script src="{% static 'vault/js/metadata.js' %}"></script>
+<script>
+  Metadata.init();
+  Metadata.CacheControl.init();
+  Base.Paginator.init();
+</script>
+{% endblock %}
+

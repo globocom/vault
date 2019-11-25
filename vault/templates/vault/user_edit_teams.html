@@ -1,0 +1,65 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content_title %}{% trans 'Gerenciar Usuários e Times' %}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/user_teams.css' %}" />
+{% endblock %}
+
+{% block js_top %}
+  <script src="{% static 'vault/js/users_teams.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div id="add-user-team">
+    <div class="controls">
+      <span>&nbsp;{% trans 'User' %}</span>
+      <select class="users">
+        <option value="">---</option>
+        <option value=""></option>
+      {% for user in users %}
+        <option value="{{ user.id }}">{{ user.name }}</option>
+      {% endfor %}
+      </select>
+
+      <span>&nbsp;{% trans "Team" %}</span>
+      <select class="groups">
+        <option value="">---</option>
+        <option value=""></option>
+      {% for group in groups %}
+        <option value="{{ group.id }}">{{ group.name }}</option>
+      {% endfor %}
+      </select>
+
+      <a href="#" class="btn btn-primary btn-sm add-btn">{% trans 'Add' %}</a>
+    </div>
+
+    <div class="box-users-teams">
+      <img class="loader-gif" src="{% static 'vault/img/loader.gif' %}" />
+      <table class="related-users">
+        <thead>
+          <tr>
+            <th width="45%">{% trans 'User' %}</th>
+            <th width="45%">{% trans 'Team' %}</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+Team.Users.init({
+  'addUrl': '{% url "team_add_user" %}',
+  'deleteUrl': '{% url "team_delete_user" %}',
+  'listUrl': '{% url "team_list_users" %}'
+});
+</script>
+{% endblock %}

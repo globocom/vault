@@ -1,0 +1,377 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-26 14:33-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt-BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: identity/apps.py:9
+msgid "Identity"
+msgstr "Identity"
+
+#: identity/forms.py:19
+msgid "User Name"
+msgstr "Usuário"
+
+#: identity/forms.py:24 identity/templates/identity/users.html:21
+msgid "Email"
+msgstr "E-mail"
+
+#: identity/forms.py:29 identity/forms.py:153
+#: identity/templates/identity/project_create_success.html:30
+msgid "Password"
+msgstr "Senha"
+
+#: identity/forms.py:34
+msgid "Confirm Password"
+msgstr "Confirmação de Senha"
+
+#: identity/forms.py:39
+msgid "Primary Project"
+msgstr "Projeto Primário"
+
+#: identity/forms.py:44 identity/forms.py:118
+#: identity/templates/identity/projects.html:28
+#: identity/templates/identity/users.html:22
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: identity/forms.py:52 identity/tests/unit/test_user_views.py:365
+msgid "Passwords did not match"
+msgstr "As senhas não conferem"
+
+#: identity/forms.py:101
+msgid "Project Name"
+msgstr "Nome do projeto"
+
+#: identity/forms.py:107
+msgid "Project Name must be an alphanumeric."
+msgstr "Nome do projeto deve ser um alfanumerico"
+
+#: identity/forms.py:113 identity/templates/identity/projects.html:25
+msgid "Description"
+msgstr "Descrição"
+
+#: identity/forms.py:125
+msgid "Time"
+msgstr "Time"
+
+#: identity/forms.py:134
+msgid "Project description cannot be empty."
+msgstr "Descrição do projecto não pode estar vazio."
+
+#: identity/forms.py:142 identity/templates/identity/users.html:20
+msgid "User"
+msgstr "Usuário"
+
+#: identity/forms.py:147
+msgid "Confirme o usuario do projeto"
+msgstr "Confirme o usuario do projeto"
+
+#: identity/forms.py:158
+msgid "Confirme a senha"
+msgstr "Confirme a senha"
+
+#: identity/keystone.py:82
+msgid "Permission denied to manage this project"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:5
+msgid "Manage Users:"
+msgstr "Administrar Usuários:"
+
+#: identity/templates/identity/_project_members.html:14
+msgid "with role:"
+msgstr "com role:"
+
+#: identity/templates/identity/_project_members.html:22
+#: identity/templates/identity/projects_and_users.html:13
+#: identity/templates/identity/projects_and_users.html:21
+msgid "Add"
+msgstr "Adicionar"
+
+#: identity/templates/identity/_project_members.html:30
+msgid "user"
+msgstr "usuário"
+
+#: identity/templates/identity/_project_members.html:31
+msgid "role"
+msgstr "role"
+
+#: identity/templates/identity/_project_members.html:40
+msgid "Create project to manage users"
+msgstr "Crie um projeto para manipular usuários"
+
+#: identity/templates/identity/_project_metadata.html:5
+#, fuzzy
+#| msgid "Project Created"
+msgid "Project Metadata"
+msgstr "Projeto Criado"
+
+#: identity/templates/identity/_project_metadata.html:10
+msgid "Source platform"
+msgstr ""
+
+#: identity/templates/identity/_project_metadata.html:20
+#, fuzzy
+#| msgid "Create User"
+msgid "Created by team"
+msgstr "Criar Usuário"
+
+#: identity/templates/identity/_project_metadata.html:26
+msgid "Current team owner"
+msgstr ""
+
+#: identity/templates/identity/project_create.html:6
+#: identity/templates/identity/project_create.html:7
+#: identity/templates/identity/project_create.html:52
+#: identity/templates/identity/projects.html:14
+msgid "Create Project"
+msgstr "Criar Projeto"
+
+#: identity/templates/identity/project_create_success.html:4
+#: identity/templates/identity/project_create_success.html:5
+msgid "Project Created"
+msgstr "Projeto Criado"
+
+#: identity/templates/identity/project_create_success.html:22
+#: identity/templates/identity/projects.html:4
+#: identity/templates/identity/projects.html:23
+msgid "Project"
+msgstr "Projeto"
+
+#: identity/templates/identity/project_create_success.html:26
+msgid "Username"
+msgstr "Usuário"
+
+#: identity/templates/identity/project_delete_confirm.html:6
+#: identity/templates/identity/project_delete_confirm.html:7
+#: identity/templates/identity/project_delete_confirm.html:38
+msgid "Delete Project Confirm"
+msgstr "Confirmar Remoção de Projeto"
+
+#: identity/templates/identity/project_delete_confirm.html:14
+msgid "TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!"
+msgstr "TODOS OS OBJETOS SERÃO APAGADOS! ESSA AÇÃO É IRREVERSÍVEL!"
+
+#: identity/templates/identity/project_edit.html:5
+#: identity/templates/identity/project_edit.html:6
+msgid "Edit Project"
+msgstr "Editar Projeto"
+
+#: identity/templates/identity/project_edit.html:18
+msgid "Delete Project"
+msgstr "Deletar Projeto"
+
+#: identity/templates/identity/project_edit.html:38
+msgid "Project User:"
+msgstr "Usuário do Projeto:"
+
+#: identity/templates/identity/project_edit.html:43
+msgid "Reset Password"
+msgstr "Resetar Senha"
+
+#: identity/templates/identity/project_edit.html:44
+msgid "New password:"
+msgstr "Nova Senha:"
+
+#: identity/templates/identity/project_edit.html:79
+msgid "Save Project"
+msgstr "Salvar Projeto"
+
+#: identity/templates/identity/projects.html:6
+#: identity/templates/identity/projects_and_users.html:10
+msgid "Projects"
+msgstr "Projetos"
+
+#: identity/templates/identity/projects.html:24
+msgid "Project Id"
+msgstr "Id do Projeto"
+
+#: identity/templates/identity/projects.html:26
+#, fuzzy
+#| msgid "Create User"
+msgid "Created By"
+msgstr "Criar Usuário"
+
+#: identity/templates/identity/projects.html:27
+msgid "Owner"
+msgstr ""
+
+#: identity/templates/identity/projects.html:47
+#: identity/templates/identity/projects.html:49
+#: identity/templates/identity/users.html:33
+msgid "Edit"
+msgstr "Editar"
+
+#: identity/templates/identity/projects_and_users.html:6
+msgid "Keystone"
+msgstr "Keystone"
+
+#: identity/templates/identity/projects_and_users.html:18
+#: identity/templates/identity/users.html:5
+#: identity/templates/identity/users.html:7
+msgid "Users"
+msgstr "Usuários"
+
+#: identity/templates/identity/user_create.html:3
+#: identity/templates/identity/user_create.html:4
+#: identity/templates/identity/user_create.html:61
+#: identity/templates/identity/users.html:11
+msgid "Create User"
+msgstr "Criar Usuário"
+
+#: identity/templates/identity/user_edit.html:3
+#: identity/templates/identity/user_edit.html:4
+msgid "Edit User"
+msgstr "Editar Usuário"
+
+#: identity/templates/identity/user_edit.html:7
+msgid "Delete User"
+msgstr "Remover Usuário"
+
+#: identity/templates/identity/user_edit.html:59
+msgid "Save User"
+msgstr "Salvar Usuário"
+
+#: identity/tests/unit/test_project_views.py:67 identity/views.py:352
+msgid "Unable to list projects"
+msgstr "Não foi possível listar os projetos"
+
+#: identity/tests/unit/test_user_views.py:60 identity/views.py:66
+msgid "Unable to list users"
+msgstr "Não foi possível listar os projetos"
+
+#: identity/tests/unit/test_user_views.py:153
+msgid "This field is required"
+msgstr "Este campo é obrigatório"
+
+#: identity/tests/unit/test_user_views.py:177
+msgid "Enter a valid email address"
+msgstr "Informe um endereço de email válido"
+
+#: identity/tests/unit/test_user_views.py:209 identity/views.py:162
+msgid "Error when create user"
+msgstr "Erro ao criar usuário"
+
+#: identity/tests/unit/test_user_views.py:329 identity/views.py:200
+msgid "Error when update user"
+msgstr "Erro ao atualizar usuário"
+
+#: identity/tests/unit/test_user_views.py:417 identity/views.py:214
+msgid "Successfully deleted user"
+msgstr "Usuário removido com sucesso"
+
+#: identity/tests/unit/test_user_views.py:430 identity/views.py:221
+msgid "Error when delete user"
+msgstr "Erro ao remover o usuário"
+
+#: identity/tests/unit/test_user_views.py:498 identity/views.py:662
+#, fuzzy
+#| msgid "Error adding user"
+msgid "Error updating password"
+msgstr "Erro ao adicionar usuário"
+
+#: identity/views.py:45
+msgid "Authorization error"
+msgstr ""
+
+#: identity/views.py:64 identity/views.py:160 identity/views.py:198
+#: identity/views.py:219 identity/views.py:316 identity/views.py:350
+#: identity/views.py:478 identity/views.py:541 identity/views.py:581
+#: identity/views.py:617
+msgid "Exception:"
+msgstr "Exceção:"
+
+#: identity/views.py:155
+msgid "Successfully created user"
+msgstr "Usuário criado com sucesso"
+
+#: identity/views.py:193
+msgid "Successfully updated user"
+msgstr "Usuário atualizado com sucesso"
+
+#: identity/views.py:470
+msgid "Successfully updated project"
+msgstr "Projeto atualizado com sucesso"
+
+#: identity/views.py:480
+#, fuzzy
+#| msgid "Error when delete project"
+msgid "Error when update project"
+msgstr "Erro ao remover projeto"
+
+#: identity/views.py:516
+msgid "Invalid credentials."
+msgstr "Credencias inválidas"
+
+#: identity/views.py:530
+#, fuzzy
+#| msgid "Error when delete user"
+msgid "Error when delete swift account"
+msgstr "Erro ao remover o usuário"
+
+#: identity/views.py:538
+msgid "Successfully deleted project."
+msgstr "Projeto removido com sucesso"
+
+#: identity/views.py:543
+msgid "Error when delete project"
+msgstr "Erro ao remover projeto"
+
+#: identity/views.py:611
+msgid "User already registered with this role"
+msgstr "Usuário já registrado com esse role"
+
+#: identity/views.py:612
+msgid "Conflict:"
+msgstr "Conflito:"
+
+#: identity/views.py:616
+msgid "Error adding user"
+msgstr "Erro ao adicionar usuário"
+
+#: identity/views.py:641
+msgid "Error removing user"
+msgstr "Erro ao remover usuário"
+
+#~ msgid "Area"
+#~ msgstr "Área"
+
+#~ msgid "Object storage authentication failed"
+#~ msgstr "Falha ao autenticar com Object Storage"
+
+#~ msgid "Exception: "
+#~ msgstr "Exceção:"
+
+#~ msgid ""
+#~ "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
+#~ msgstr ""
+#~ "Salve essas informa&ccedil;&otilde;es para utilizar o project criado!"
+
+#~ msgid "Auth URL"
+#~ msgstr "Auth URL"
+
+#~ msgid "Admin URL"
+#~ msgstr "Admin URL"
+
+#~ msgid "Public URL"
+#~ msgstr "Public URL"
+
+#~ msgid "Internal URL"
+#~ msgstr "Internal URL"
+
+#~ msgid "Username and password required."
+#~ msgstr "Usuário e senha requeridos"

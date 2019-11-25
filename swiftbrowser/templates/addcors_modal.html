@@ -1,0 +1,22 @@
+<div class="modal fade" id="addcors_modal" tabindex="-1" role="dialog" aria-labelledby="addcors_modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="addcors_modalLabel">Set host for container {{ container }}</h3>
+      </div>
+
+      <form method="POST" action="{% url "edit_cors" container=container %}" class="form-inl">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="host">Host:</label><br />
+          <input class="form-control" name="host" type="text">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Host</button>
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+{% extends "vault/base.html" %}
+
+{% load pagination %}
+{% load storage_tags %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_top %}
+  {% if version_location %}
+  <form method="POST" action="{% url "object_versioning" container=container %}">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="disable">
+    <button class="btn btn-danger" type="submit">Disable Versioning</button>
+  </form>
+  {% endif %}
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url "object_versioning" container=container %}">Object versions from {{ container }}</a>
+  {% else %}
+    Object versions from {{ container }}
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url "object_versioning" container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
+  {% if version_location %}
+  <div class="panel panel-default">
+  <table class="items-list table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th style="width: 0.5em;"></th>
+        <th>Name</th>
+        <th style="width: 12.5em;">Created</th>
+        <th style="width: 6em;">Size</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if objects %}
+        {% for obj in objects %}
+        <tbody>
+          {% if 'prefix' in obj %}
+          <tr>
+            <td><i class="fa fa-inbox"></i></td>
+            <td>
+              <a href="{% url "object_versioning" container=container prefix=obj.prefix %}"><strong>{{ obj.prefix|lastpart }}</strong></a>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td>
+              <i class="fa fa-file"></i>
+            </td>
+            <td>
+              {{ obj.name|lastpart }}
+              <button class="btn-meta btn btn-sm"
+                      data-name="{{ obj.name }}"
+                      data-meta-url="{% url "metadata" container=version_location objectname=obj.name %}">show&nbsp;metadata</button>
+            </td>
+            <td>
+              {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+            </td>
+            <td>
+              {{obj.bytes|filesizeformat}}
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5">
+            <strong><center>None object was modified since versioning was enabled.<center></strong>
+          </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+    <form method="POST" action="{% url "object_versioning" container=container %}" class="form-box project-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="enable">
+      <fieldset class="content">
+        <div class="col-md-12">
+          <div class="form-group">
+            <span class="help-block">
+                This container is not configured to version its objetcs yet.
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="base">
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit">Enable Versioning</button>
+        </div>
+      </fieldset>
+    </form>
+  {% endif %}
+{% pagination objects %}
+{% endblock %}

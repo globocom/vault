@@ -1,0 +1,35 @@
+{% extends "vault/base.html" %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_breadcrumb %}
+  <span>Remove from cache</span>
+{% endblock %}
+
+{% block content %}
+  <form method="POST" action="{% url "remove_from_cache" %}" class="form-box project-form">
+    {% csrf_token %}
+    <fieldset class="content">
+      <div class="col-md-6">
+        <div class="form-group">
+            {{ form.urls.label }}
+            {{ form.urls }}
+            {{ form.urls.errors }}
+        </div>
+        <span class="help-block">
+            Enter all the URLs you need to remove from cache.
+            One URL per line.
+        </span>
+      <div class="col-md-6">&nbsp;</div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">Remove from cache</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

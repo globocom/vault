@@ -1,0 +1,85 @@
+{% load staticfiles i18n vault_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% trans 'Vault' %} - {% block title %}{% endblock %}</title>
+
+  {% block metatags %}{% endblock %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/sub-content.css' %}" />
+  {% block css %}{% endblock %}
+
+  <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
+  <script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'vault/js/base.js' %}"></script>
+  {% block js_top %}{% endblock %}
+</head>
+
+<body class="{% with_sidebar %}{% block bodyclass %}{% endblock %}">
+
+{% include "vault/header.html" %}
+{% include "dashboard/sidebar.html" %}
+
+<section id="content" class="container-fluid">
+  <div class="row">
+    <h2 class="content-title col-md-8 col-sm-6 col-xs-6">
+      {% block content_title %}{% endblock %}
+      {% block breadcrumb %}
+        <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
+      {% endblock %}
+    </h2>
+
+    <div class="content-top col-md-4 col-sm-6 col-xs-6">
+      {% block content_top %}{% endblock %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="content-body col-md-12 col-sm-12 col-xs-12">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</section>
+
+<!-- messages -->
+<ul class="messages"></ul>
+
+<script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
+
+<script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
+<script>
+bootbox.setDefaults({
+  backdrop: true,
+  locale: 'br',
+  centerVertical: true
+});
+</script>
+
+<script>Base.init();</script>
+{% if messages %}
+<script>
+{% for message in messages %}
+  Base.Messages.setMessage({
+    description: '{{ message|safe|capfirst }}',
+    type: '{% if message.tags %}{{ message.tags }}{% endif %}'
+  });
+{% endfor %}
+</script>
+{% endif %}
+
+<script src="{% get_backstage_bar_url %}/scripts/backstage-bar.js"></script>
+<script>
+window.bsBar = window.bsBar || {};
+bsBar.config = { 'logoutCallbackUrl': '{% get_logout_url %}' };
+bsBar.Bar.render();
+</script>
+
+{% block js_bottom %}{% endblock %}
+</body>
+</html>

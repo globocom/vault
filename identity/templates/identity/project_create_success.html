@@ -1,0 +1,78 @@
+{% extends "vault/base.html" %}
+{% load i18n staticfiles %}
+
+{% block title %}{% trans 'Project Created' %}{% endblock %}
+{% block content_title %}{% trans 'Project Created' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h4>
+    <i class="icon-warning fa fa-warning"></i>
+    Salve estas informa&ccedil;&otilde;es para acessar os servi&ccedil;os
+  </h4>
+  <br />
+
+  <div class="panel panel-default">
+    <table class="project-created items-list table table-bordered table-striped">
+      <caption>Credenciais</caption>
+      <tr>
+        <th width="20%">{% trans 'Project' %}</th>
+        <td>{{ project_info.project_name }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Username' %}</th>
+        <td>{{ project_info.user_name }}</td>
+      </tr>
+      <tr>
+        <th>{% trans 'Password' %}</th>
+        <td>{{ project_info.user_password }}</td>
+      </tr>
+      <tr>
+        <th>Auth URL</th>
+        <td>{{ project_info.auth_url }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="panel panel-default">
+    <table class="project-created items-list table table-bordered table-striped">
+      <caption>S3/Swift endpoints</caption>
+      <tr>
+        <th width="20%">Admin URL</th>
+        <td>{{ project_info.endpoints.object_store.adminURL }}</td>
+      </tr>
+      <tr>
+        <th>Public URL</th>
+        <td>{{project_info.endpoints.object_store.publicURL }}</td>
+      </tr>
+      <tr>
+        <th>Internal URL</th>
+        <td>{{ project_info.endpoints.object_store.internalURL }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="panel panel-default">
+    <table class="project-created items-list table table-bordered table-striped">
+      <caption>FaaS endpoints</caption>
+      <tr>
+        <th width="20%">Admin URL</th>
+        <td>{{ project_info.endpoints.block_storage.adminURL }}</td>
+      </tr>
+      <tr>
+        <th>Public URL</th>
+        <td>{{project_info.endpoints.block_storage.publicURL }}</td>
+      </tr>
+      <tr>
+        <th>Internal URL</th>
+        <td>{{ project_info.endpoints.block_storage.internalURL }}</td>
+      </tr>
+    </table>
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+{% endblock %}

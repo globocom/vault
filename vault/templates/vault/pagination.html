@@ -1,0 +1,21 @@
+{% load i18n vault_tags %}
+
+{% if items.paginator.num_pages > 1 %}
+<div class="table-pagination">
+  {% if items.has_previous %}
+    <a href="?{% url_replace get_parameters page=items.previous_page_number %}">
+      <i class="fa fa-angle-left"></i> anterior
+    </a>
+  {% endif %}
+
+  <input id="pag_number" class="form-control" type="text" name="page" value="{{ items.number }}"> {% trans 'of' %} {{ items.paginator.num_pages }}
+
+  <input id="query" class="form-control" type="hidden" name="query" value="{{ query }}">
+
+  {% if items.has_next %}
+    <a href="?{% url_replace get_parameters page=items.next_page_number %}">
+      pr&oacute;ximo <i class="fa fa-angle-right"></i>
+    </a>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,117 @@
+{% load i18n staticfiles %}
+
+<div id="storage-tools">
+  <span class="container-label">Container</span>
+  <strong class="container-name">{{ container }}</strong>
+
+  {% if trash_enabled %}
+  <button class="btn-trash" data-toggle="modal" data-target="#trash-modal">
+    <i class="icon fa fa-trash"></i>{% trans 'Trash' %}
+  </button>
+  {% endif %}
+
+  {% if backup_obj %}
+  <button class="btn-backup" data-toggle="modal" data-target="#backup-modal">
+    <i class="icon fa fa-box"></i>{% trans 'Backup' %}
+  </button>
+  {% endif %}
+</div>
+
+<!-- modal lixeira -->
+<div class="modal" id="trash-modal" tabindex="-1" role="dialog" aria-labelledby="trash-modal-label">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="trash-modal-label">
+          {% trans 'Trash' %}
+          <span class='alert alert-warning'>
+            Já existe objeto com esse nome no container, sugerimos um novo nome, caso precise editar clique sobre o novo nome, no final clique em restaurar
+          </span>
+        </h4>
+
+      </div>
+
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 0.5em;"></th>
+              <th>{% trans 'Name' %}</th>
+              <th style="width: 6em;">{% trans 'Size' %}</th>
+              <th style="width: 3em;">Restaurar</th>
+            </tr>
+          </thead>
+          <tbody class="table-content">
+          <tr>
+            <td colspan="4" style="text-align: center" width="75px">
+              <div class="loader"></div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="opaque">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- modal backup -->
+<div class="modal" id="backup-modal" tabindex="-1" role="dialog" aria-labelledby="backup-modal-label">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="backup-modal-label">{% trans 'Backup' %}</h4>
+      </div>
+
+      <div class="modal-body">
+        <h5>{% trans 'Restore Backup' %}:</h5>
+        <div class="backup-restore-buttons">
+          <button class="btn btn-primary btn-backup-restore-daily">{% trans 'Daily' %}</button>
+          <button class="btn btn-primary btn-backup-restore-weekly" disabled>{% trans 'Weekly' %}</button>
+          <button class="btn btn-primary btn-backup-restore-monthly" disabled>{% trans 'Monthly' %}</button>
+        </div>
+        <p>
+          {% trans 'The backup will be restored to a container with the following name' %}:
+          <code>[container]_[backup_type]_[timestamp]</code>
+        </p>
+        <p>
+          {% trans 'The backup service for this container was requested on' %} <code>{{ backup_obj.created_at }}</code><br />
+          {% trans 'If you want to restore a backup, please contact us' %}: <a href="mailto:storm@corp.globo.com">storm@corp.globo.com</a>
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+
+    </div> <!-- .modal-content -->
+  </div> <!-- .modal-dialog -->
+</div>
+
+<script src="{% static 'swiftbrowser/js/storage.tools.js' %}"></script>
+<script>
+Storage.Tools.init({
+  'deleted_objects_url': '{% if prefix %}{% url "deleted_objects" container prefix %}{% else %}{% url "deleted_objects" container %}{% endif %}?p={{ project_id }}',
+  'restore_object_url': '{% url "restore_object" %}?p={{ project_id }}',
+  'trash_remove_url': '{% url "remove_from_trash" %}?p={{ project_id }}',
+  'backup_restore_url': '{% url "backup_restore" %}?p={{ project_id }}',
+  'container_name': '{{ container }}',
+  'project_name': '{{ project_name }}'
+});
+</script>

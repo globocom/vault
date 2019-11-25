@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="modal fade" id="add_user_modal" tabindex="-1" role="dialog"
+     aria-labelledby="add_user_modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="add_user_modalLabel">{% trans 'Add user to' %} <span class="modal-team-name"></span></h3>
+      </div>
+
+      <form method="POST" action="{% url 'team_add_user' %}" class="form-inl">
+        {% csrf_token %}
+        <input type="hidden" class="modal-group-id" name="group" value="" />
+        
+        <div class="modal-body">
+          <label for="user">{% trans 'Select a user' %}:</label><br />
+          <select class="modal-users" name="user">
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">{% trans 'Add User' %}</button>
+          <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans 'Cancel' %}</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

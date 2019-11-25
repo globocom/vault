@@ -1,0 +1,22 @@
+{% extends "vault/base.html" %}
+
+{% load i18n staticfiles dashboard_tags %}
+
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/dashboard.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/widget.css' %}" />
+{% endblock %}
+
+{% block content_title %}{% trans 'Dashboard' %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+
+{% block content_top %}
+  {{ block.super }}
+  <a href="{% url "add_project" %}" class="btn btn-primary">{% trans 'Create Project' %}</a>
+{% endblock %}
+
+{% block content %}
+  {% render_widgets %}
+{% endblock %}

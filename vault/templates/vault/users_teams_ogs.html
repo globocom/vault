@@ -1,0 +1,77 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content_title %}{% trans 'Listar Times e Usuários' %}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/users_teams_ogs.css' %}" />
+{% endblock %}
+
+{% block js_top %}
+  <script src="{% static 'vault/js/users_teams_ogs.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div id="search-user-team">
+    <div class="controls">
+      <div class="field-team">
+        <span>&nbsp;{% trans "Team" %}</span>
+        <select class="groups">
+          <option value="">Todos</option>
+          {% for group in groups %}
+            <option value="{{ group.id }}">{{ group.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field-og">
+        <span>&nbsp;OG</span>
+        <select class="ogs">
+          <option value="">Todos</option>
+          {% for og in ogs %}
+            <option value="{{ og.id }}">{{ og.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field-users">
+        <span>&nbsp;Usuário</span>
+        <input type="text" class="users" name="" />
+      </div>
+    </div>
+
+    <div class="box-users-teams">
+      <table class="related-users" style="display: table;">
+        <thead>
+          <tr>
+            <th width="25%">{% trans 'Team' %}</th>
+            <th width="25%">OG</th>
+            <th width="50%">{% trans 'User' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+          <tr>
+            <td class="grp">{{ group.name }}</td>
+            <td class="grp">{{ group.og_name }}</td>
+            <td class="grp">
+              <ul style="padding-left: 20px;">
+              {% for user in group.users %}
+                <li>{{ user.email }}</li>
+              {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+Team.UsersOGs.init();
+</script>
+{% endblock %}

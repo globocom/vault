@@ -1,0 +1,74 @@
+{% extends "admin/base_site.html" %}
+
+{% load i18n %}
+{% load admin_static %}
+{% load vault_tags %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+  <div class="row">
+
+  {% if app_list %}
+
+    {% for app in app_list %}
+      <div class="col-md-6">
+
+      <div class="app-{{ app.app_label }} module panel panel-default">
+        <table class="items-list table table-bordered table-striped table-hover">
+        <caption>
+          <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
+        </caption>
+        {% for model in app.models %}
+          <tr class="model-{{ model.object_name|lower }}">
+          {% if model.admin_url %}
+            <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+          {% else %}
+            <th scope="row">{{ model.name }}</th>
+          {% endif %}
+
+          {% if model.add_url %}
+            <td><a href="{{ model.add_url }}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a></td>
+          {% else %}
+            <td>&nbsp;</td>
+          {% endif %}
+
+          {% if model.admin_url %}
+            <td><a href="{{ model.admin_url }}" class="changelink btn btn-xs btn-default">{% trans 'Change' %}</a></td>
+          {% else %}
+            <td>&nbsp;</td>
+          {% endif %}
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+
+      </div>
+    {% endfor %}
+
+      <div class="col-md-6">
+        {% include "identity/projects_and_users.html" %}
+      </div>
+
+      <div class="col-md-6">
+        {% include "faas/faas_config.html" %}
+      </div>
+
+  {% else %}
+      <p>{% trans "You don't have permission to edit anything." %}</p>
+  {% endif %}
+  </div> <!-- .row -->
+
+</div> <!-- #content-main -->
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

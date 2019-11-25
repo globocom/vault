@@ -1,0 +1,64 @@
+{% extends "vault/base.html" %}
+{% load i18n staticfiles pagination %}
+
+{% block title %}{% trans 'Project' %}{% endblock %}
+
+{% block content_title %}{% trans 'Projects' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content_top %}
+  <a href="{% url "add_project" %}" class="create-project btn btn-primary">
+    <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+  <table class="items-list table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th width="15%">{% trans 'Project' %}</th>
+        <th width="30%">{% trans 'Project Id' %}</th>
+        <th width="40%">{% trans 'Description' %}</th>
+        <th width="10%">{% trans 'Created By' %}</th>
+        <th width="10%">{% trans 'Owner' %}</th>
+        <th width="10%">{% trans 'Enabled' %}</th>
+        <th width="5%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td>{{ project.name }}</td>
+        <td>{{ project.id }}</td>
+        <td>{{ project.description }}</td>
+        <td>
+          {% if project.created_by %}
+          <span class="service-name {{ project.created_by }}">{{ project.created_by }}</span>
+          {% endif %}
+        </td>
+        <td>{{ project.team.name }}</td>
+        <td>{{ project.enabled }}</td>
+        <td>
+          {% if is_admin %}
+          <a href="{% url "admin_edit_project" project.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
+          {% else %}
+          <a href="{% url "edit_project" project.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% block js_bottom %}
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}
+
+{% pagination projects %}
+{% endblock %}

@@ -1,0 +1,75 @@
+#search-user-team {
+    position: relative;
+}
+
+#search-user-team .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    background-color: #ddd;
+    border-radius: 2px;
+    line-height: 50px;
+    min-height: 50px;
+    margin-bottom: 25px;
+}
+
+#search-user-team .controls .field-team {
+    flex-grow: 3;
+}
+
+#search-user-team .controls .field-og {
+    flex-grow: 4;
+}
+
+#search-user-team .controls .field-users {
+    flex-grow: 1;
+}
+
+#search-user-team .box-users-teams {
+    position: relative;
+    background-color: #ddd;
+    margin-bottom: 15px;
+    border-radius: 2px;
+    min-height: 74px;
+    overflow: hidden;
+}
+
+#search-user-team .related-users {
+    display: none;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+    width: 100%;
+    border-radius: 2px;
+}
+
+#search-user-team .related-users th {
+    padding: 8px 10px;
+    text-transform: uppercase;
+    background-color: #ccc;
+    font-size: 11px;
+}
+
+#search-user-team .related-users td {
+    padding: 8px 10px;
+    border-top: 1px solid #ccc;
+}
+
+#search-user-team .related-users tbody tr:hover {
+    background-color: #d2d2d2;
+}
+
+#search-user-team .related-users li:first-child {
+    border-top: none;
+}
+
+#search-user-team .groups,
+#search-user-team .ogs {
+    display: inline-block;
+}
+
+#search-user-team .users {
+    height: 25px;
+    width: 300px;
+}
