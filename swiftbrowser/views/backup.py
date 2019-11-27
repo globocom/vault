@@ -256,6 +256,9 @@ def config_backup_container(request, container):
 
 
 def get_current_backup(container, project_id):
+    if not settings.BACKUP_ENABLED:
+        return None
+
     query = BackupContainer.objects.filter(container=container,
                                            project_id=project_id)
     if query.count() > 0:

@@ -80,18 +80,10 @@ ROOT_URLCONF = 'vault.urls'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -149,19 +141,21 @@ SWIFT_TRASH_PREFIX = '.trash'
 SWIFT_HIDE_PREFIXES = [SWIFT_VERSION_PREFIX, SWIFT_TRASH_PREFIX]
 
 # Backup
-BACKUP_USER = os.getenv('VAULT_BACKUP_USER', 'u_backup')
-BACKUP_USER_ROLE = os.getenv('VAULT_BACKUP_USER_ROLE', 'swiftoperator')
-BACKUP_API_URL = os.getenv('VAULT_BACKUP_API_URL', 's3backup.dev.globoi.com:5572')
+BACKUP_ENABLED = False
+if os.getenv('VAULT_BACKUP_ENABLED') == 'True':
+    BACKUP_ENABLED = True
+BACKUP_USER = os.getenv('VAULT_BACKUP_USER')
+BACKUP_USER_ROLE = os.getenv('VAULT_BACKUP_USER_ROLE')
+BACKUP_API_URL = os.getenv('VAULT_BACKUP_API_URL')
 BACKUP_API_USER = os.getenv('VAULT_BACKUP_API_USER')
 BACKUP_API_PASSWORD = os.getenv('VAULT_BACKUP_API_PASSWORD')
 BACKUP_OBJECT_COUNT_VALUE = os.getenv('BACKUP_OBJECT_COUNT_VALUE', '10000')
 BACKUP_OBJECT_BYTES_VALUE = os.getenv('BACKUP_OBJECT_BYTES_VALUE', '1000000000')
 
 # True if you are using invalid SSL certs
+SWIFT_INSECURE = True
 if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
     SWIFT_INSECURE = False
-else:
-    SWIFT_INSECURE = True
 
 # Keystone
 KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME')

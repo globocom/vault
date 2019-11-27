@@ -29,7 +29,7 @@
         <h4 class="modal-title" id="trash-modal-label">
           {% trans 'Trash' %}
           <span class='alert alert-warning'>
-            Já existe objeto com esse nome no container, sugerimos um novo nome, caso precise editar clique sobre o novo nome, no final clique em restaurar
+            {% trans 'There is already an object with this name in the container, we suggest a new name. If you need to edit, click on the new name and then click restore.' %}
           </span>
         </h4>
 
@@ -68,6 +68,7 @@
 </div>
 
 <!-- modal backup -->
+{% if backup_obj %}
 <div class="modal" id="backup-modal" tabindex="-1" role="dialog" aria-labelledby="backup-modal-label">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -92,7 +93,7 @@
         </p>
         <p>
           {% trans 'The backup service for this container was requested on' %} <code>{{ backup_obj.created_at }}</code><br />
-          {% trans 'If you want to restore a backup, please contact us' %}: <a href="mailto:storm@corp.globo.com">storm@corp.globo.com</a>
+          {% trans 'If you want to restore a backup, please contact Vault administrator' %}
         </p>
       </div>
 
@@ -103,6 +104,7 @@
     </div> <!-- .modal-content -->
   </div> <!-- .modal-dialog -->
 </div>
+{% endif %}
 
 <script src="{% static 'swiftbrowser/js/storage.tools.js' %}"></script>
 <script>

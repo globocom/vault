@@ -27,12 +27,12 @@ def storage_tools(context):
         trash_enabled = False
 
     return {
-        "trash_enabled": trash_enabled,
-        "backup_obj": get_current_backup(container, project_id),
-        "container": container,
-        "prefix": context.get("prefix"),
-        "project_id": project_id,
-        "project_name": project_name
+        'trash_enabled': trash_enabled,
+        'backup_obj': get_current_backup(container, project_id),
+        'container': container,
+        'prefix': context.get('prefix'),
+        'project_id': project_id,
+        'project_name': project_name
     }
 
 

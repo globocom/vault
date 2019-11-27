@@ -3,24 +3,20 @@
 
 """ Standalone webinterface for Openstack Swift. """
 
-import dateutil.parser
+import re
 import string
 import random
 import logging
-import requests
-import json
-import re
+import dateutil.parser
 
 from urlparse import urlparse
 
-from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext
 
 from swiftclient import client
 
-from alf.client import Client
 
 log = logging.getLogger(__name__)
 
@@ -131,7 +127,7 @@ def get_temp_key(storage_url, auth_token, http_conn):
 
     try:
         account = client.get_account(storage_url, auth_token,
-                                http_conn=http_conn)
+                                     http_conn=http_conn)
     except client.ClientException:
         return None
 
@@ -153,9 +149,9 @@ def get_temp_key(storage_url, auth_token, http_conn):
 def get_acls(storage_url, auth_token, container, http_conn):
     """ Returns ACLs of given container. """
     acls = client.head_container(storage_url,
-                                auth_token,
-                                container,
-                                http_conn=http_conn)
+                                 auth_token,
+                                 container,
+                                 http_conn=http_conn)
 
     readers = acls.get('x-container-read', '')
     writers = acls.get('x-container-write', '')
@@ -258,109 +254,12 @@ def delete_swift_account(storage_url, auth_token):
     return True
 
 
-# Elastic Methods
-def get_backstage_client():
-
-    client = Client(
-        token_endpoint=settings.SWIFT_SEARCH_BACKSTAGE_ACCOUNTS_URL,
-        client_id=settings.SWIFT_SEARCH_CLIENT_ID,
-        client_secret=settings.SWIFT_SEARCH_CLIENT_SECRET)
-
-    return client
-
-
 def get_name_from_document(data):
     return data.get('_source').get('object')
 
 
 def get_uri_object_from_document(data):
     return data.get('hits').get('hits')[0].get('_id')
-
-
-def make_data_filter_for_elastic_search(container, project_id, value):
-
-    try:
-        data = {
-            "query":
-            {
-                "bool":
-                {
-                    "must":
-                    [
-                        {
-                            "multi_match":
-                            {
-                                "query": "*{}*".format(str(value)),
-                                "fields": [
-                                    "headers.*",
-                                    "object"
-                                ],
-                                "analyzer": "swift_search_ngrams"
-                            }
-                        }
-                    ],
-                    "filter":
-                    [
-                        {
-                            "term": {
-                                "project_id.raw": str(project_id)
-                            }
-                        },
-                        {
-                            "term": {
-                                "container.raw": str(container)
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    except Exception as err:
-        return None
-
-    return data
-
-
-def build_objects_json_for_objectview(request, container, search_result, storage_url, public_url, auth_token):
-
-    content = []
-
-    for obj in search_result:
-        data = {}
-        data['name'] = get_name_from_document(obj)
-
-        headers = {'X-Storage-Token': auth_token}
-        url = '{0}/{1}/{2}'.format(storage_url, container, data['name'].encode('utf-8'))
-        response = requests.get(url, headers=headers, verify=not settings.SWIFT_INSECURE)
-
-        object_metadata = dict(response.headers)
-
-        if ('content-type' in object_metadata):
-            data['content_type'] = object_metadata['content-type']
-        else:
-            data['content-type'] = ' - '
-
-        if ('content-length' in object_metadata):
-            data['bytes'] = int(object_metadata['content-length'])
-        else:
-            data['bytes'] = ' - '
-
-        if ('last-modified' in object_metadata):
-            data['last_modified'] = datetime.strftime(dateutil.parser.parse(object_metadata['last-modified']), "%Y-%m-%dT%H:%M:%S.%f")
-        else:
-            data['last_modified'] = ' - '
-
-        if ('etag' in object_metadata):
-            data['hash'] = object_metadata['etag']
-        else:
-            data['hash'] = ' - '
-
-        data['public_url'] = public_url.split('AUTH_')[0] + "AUTH_" + obj.get('_id')
-        data['path'] = obj.get('_id').replace(obj.get('_id').split('/')[0], '')
-
-        content.append(data)
-
-    return content
 
 
 def to_str(obj):
