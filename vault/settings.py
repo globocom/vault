@@ -7,30 +7,32 @@ Django settings for vault project.
 import os
 from django.utils.translation import ugettext_lazy as _
 
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+SECRET_KEY = 'mzjhdtd6fpisubo863qi%j%!u=q&p_^ban=+*#xzz*0sel^2lp'
+
 PROJECT = 'vault'
 
 DEBUG = False if os.environ.get('VAULT_DEBUG') == 'False' else True
+
+ALLOWED_HOSTS = ['*']
 
 # Disable HTTPS verification warnings in debug mode
 if DEBUG:
     from requests.packages import urllib3
     urllib3.disable_warnings()
 
-SECRET_KEY = 's3cr3t_k3y'
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 ENVIRON = os.getenv('VAULT_ENVIRON', None)
 
 INSTALLED_APPS = [
-    'allaccess',
-    'vault',
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'vault',
     'actionlogger',
     'dashboard',
     'identity',
@@ -64,7 +66,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'debug': DEBUG,
         },
     },
 ]
@@ -77,6 +78,23 @@ LOCALE_PATHS = (
 
 ROOT_URLCONF = 'vault.urls'
 
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
 LANGUAGE_CODE = 'pt-BR.UTF-8'
 LANGUAGES = (
     ('pt-BR', _('Portuguese')),
@@ -91,29 +109,18 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_ROOT = 'vault_static/'
-
-STATICFILES_DIRS = ()
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
-)
 
 STATIC_URL = '{}/{}/{}'.format(os.getenv('SWIFT_INTERNAL_URL', ''),
                                os.getenv('SWIFT_CONTAINER', 'vault'),
                                STATIC_ROOT)
 
-LOGIN_URL = '/admin/vault/login/backstage/'
-LOGOUT_URL = 'http://{}/admin/logout/'
-# LOGIN_REDIRECT_URL = '/'
 
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 20)
-
-ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
@@ -139,10 +146,7 @@ VAULT_HTTP_PROXY = os.getenv('VAULT_HTTP_PROXY')
 # container named <prefix><container> will be created to keep objects versions
 SWIFT_VERSION_PREFIX = os.getenv('VAULT_SWIFT_VERSION_PREFIX', '_version_')
 SWIFT_TRASH_PREFIX = '.trash'
-SWIFT_HIDE_PREFIXES = [
-    SWIFT_VERSION_PREFIX,
-    SWIFT_TRASH_PREFIX
-]
+SWIFT_HIDE_PREFIXES = [SWIFT_VERSION_PREFIX, SWIFT_TRASH_PREFIX]
 
 # Backup
 BACKUP_USER = os.getenv('VAULT_BACKUP_USER', 'u_backup')
@@ -169,13 +173,7 @@ KEYSTONE_VERSION = 3
 # swiftoperator role ID
 KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')
 
-# Metadata Search
-SWIFT_SEARCH_CLIENT_ID = os.getenv('SWIFT_SEARCH_CLIENT_ID', '73+1C/EhriImDadILK4Tyg==')
-SWIFT_SEARCH_CLIENT_SECRET = os.getenv('SWIFT_SEARCH_CLIENT_SECRET', 'zn1c2n++7yPQ4qaoc1GO9Q==')
-SWIFT_SEARCH_BACKSTAGE_ACCOUNTS_URL = os.getenv('SWIFT_SEARCH_BACKSTAGE_ACCOUNTS_URL', 'https://accounts.backstage.dev.globoi.com/token')
-SWIFT_SEARCH_ES_URL = os.getenv('SWIFT_SEARCH_ES_URL', 'https://searchengine.backstage.dev.globoi.com/swift_search/s3/_search?size=1000')
-
-# API para limpeza de cache
+# Cache cleanning API
 CACHESWEEP_API = os.getenv('CACHESWEEP_API', 'http://localhost/')
 
 LOGGING = {

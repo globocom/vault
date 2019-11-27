@@ -10,23 +10,24 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 1) install dependencies
 ```
-$ pip install -r requirements.txt.
+$ pip install -r requirements.txt
 ```
 
 2) set environment variables
 ```
 $ export VAULT_ENVIRON=PROD
-$ export VAULT_MYSQL_USER=(vault mysql user)
-$ export VAULT_MYSQL_PASSWORD=(vault mysql password)
+$ export VAULT_MYSQL_USER=<user>
+$ export VAULT_MYSQL_PASSWORD=<password>
 $ export VAULT_MYSQL_PORT=3306
-$ export VAULT_MYSQL_HOST=(vault mysql host)
-$ export VAULT_STATIC_URL='http://your-static-url'
-$ export VAULT_KEYSTONE_URL='https://your-keystone-url:5000'
+$ export VAULT_MYSQL_HOST=<host>
+$ export VAULT_STATIC_URL='http://static-url'
+$ export VAULT_KEYSTONE_URL='https://keystone-url'
 ```
 
-3) create a mysql database "vault"
+3) create a mysql database called "vault"
 ```
-# on mysql: 'create database vault;'
+mysql> create database vault;
+
 $ python manage.py syncdb
 ```
 
@@ -39,20 +40,21 @@ $ python manage.py runserver
 ```
 $ python manage.py collectstatic --noinput
 
-# upload your static files to your static_url
+# Upload your static files to your static_url.
 
-# if Swift do:
+# To upload static files to your current swift cluster, do:
+
 $ cd statictemp
-$ swift -A https://your-keystone-url:5000/v2.0 -V 2.0 -U <user> -K <password> --os-tenant-name <project> --os-endpoint-type adminURL upload <your-container> .
+$ swift -A https://your-keystone/v3 -V 3 -U <user> -K <password> --os-tenant-name <project> --os-endpoint-type adminURL upload <your-container>
 ```
 
-### To run tests
+### Running tests
 ```
 pip install -r requirements_test.txt
 make tests
 ```
 
-### To run local (based on dev environment)
+### Running local
 ```
 # Create a virtualenv (using pyenv)
 pyenv virtualenv 2.7.11 vault
@@ -61,7 +63,7 @@ pyenv virtualenv 2.7.11 vault
 for var in $(tsuru app-run env -a vault-dev | grep -E "MYSQL|VAULT_KEYSTONE"); do export $var; done;
 
 # Creates a dump of the database
-mysqldump --user $VAULT_MYSQL_USER -p$VAULT_MYSQL_PASSWORD --host $VAULT_MYSQL_HOST $VAULT_MYSQL_DB > /tmp/vault.sql
+mysqldump --user $VAULT_MYSQL_USER -p $VAULT_MYSQL_PASSWORD --host $VAULT_MYSQL_HOST $VAULT_MYSQL_DB > /tmp/vault.sql
 
 # Clear the database environment variables
 unset VAULT_MYSQL_DB
@@ -76,9 +78,9 @@ mysql -u root vault < /tmp/vault.sql
 make run
 ```
 
-### Compatibilities
+### Dependencies
 
-- Django 1.11
+- Django
 - Swift
 - Keystone
 
@@ -87,9 +89,6 @@ make run
 How to edit locale files:
 
 ```
-brew install gettext
-brew link gettext --force
-
 # In the app directory
 django-admin makemessages --all
 django-admin compilemessages --locale=pt_BR
