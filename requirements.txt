@@ -1,3 +1,5 @@
+-i https://pypi.python.org/simple
+
 Babel==2.3.4
 Django==1.11.20
 iso8601==0.1.11
@@ -6,7 +8,7 @@ openpyxl==2.3.5
 oslo.config==3.2.0
 prettytable==0.7.2
 pymongo==3.3.0
-PyMySQL==0.8.0
+mysqlclient==1.4.6
 python-dateutil==2.5.3
 python-keystoneclient==2.1.2
 python-swiftclient==2.5.0
