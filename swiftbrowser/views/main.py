@@ -191,14 +191,11 @@ def objectview(request, container, prefix=None):
 
     page = request.GET.get('page', 1)
 
-    optin_status = False
     try:
         meta, objects = client.get_container(storage_url, auth_token,
                                              container, delimiter='/',
                                              prefix=prefix, full_listing=True,
                                              http_conn=http_conn)
-
-        optin_status = meta.get('x-container-meta-enqueue')
 
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
@@ -211,7 +208,6 @@ def objectview(request, container, prefix=None):
     context = utils.update_default_context(request, {
         'container_meta': meta,
         'container': container,
-        'optin_status': optin_status,
         'objects': utils.generic_pagination(object_list, page),
         'prefix': prefix,
         'prefixes': prefixes,

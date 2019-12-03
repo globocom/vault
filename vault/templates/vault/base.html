@@ -73,13 +73,6 @@ bootbox.setDefaults({
 </script>
 {% endif %}
 
-<script src="{% get_backstage_bar_url %}/scripts/backstage-bar.js"></script>
-<script>
-window.bsBar = window.bsBar || {};
-bsBar.config = { 'logoutCallbackUrl': '{% get_logout_url %}' };
-bsBar.Bar.render();
-</script>
-
 {% block js_bottom %}{% endblock %}
 </body>
 </html>

@@ -79,11 +79,6 @@ def set_project(context):
 
 
 @register.simple_tag(takes_context=True)
-def get_backstage_bar_url(context):
-    return settings.BACKSTAGE_BAR_URL
-
-
-@register.simple_tag(takes_context=True)
 def get_logout_url(context):
     request = context.get('request')
     logout_url = settings.LOGOUT_URL.format(
@@ -112,40 +107,6 @@ def can_view_team_users_ogs(context):
             pass
 
     return (add_og and change_og and delete_og)
-
-
-@register.assignment_tag(takes_context=True)
-def can_view_costing(context):
-    user = context.get('user')
-
-    if user.is_superuser:
-        return True
-
-    response = requests.get(
-        '{}/{}'.format(
-            settings.CUSTEIO_COLETA_URL,
-            'common/roles'
-        )
-    )
-    content = json.loads(response.content)
-
-    all_groups = [''.join(x.values()).lower() for x in content['roles']['driver_processado']]
-    all_groups += [''.join(x.values()).lower() for x in content['roles']['sheets']]
-    all_groups += [''.join(x.values()).lower() for x in content['roles']['reports']]
-
-    for group in user.groups.all():
-        if group.name.lower() in all_groups:
-            return True
-
-    return False
-
-
-@register.simple_tag(takes_context=True)
-def get_vault_version(context):
-    file = open("version.txt", "r")
-    version = file.read()
-
-    return version
 
 
 @register.simple_tag()

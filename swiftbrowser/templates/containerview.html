@@ -121,18 +121,6 @@
                   </a>
                 </li>
 
-                <li>
-                  <a href="#" id="container-{{ forloop.counter }}-optin" class="config-optin config-item"
-                     data-setup-url="{% url 'config_optin_container' container=container.name %}"
-                     data-msg-enable="{% trans 'This will enable Search for container' %} {{ container.name }}. Continue?"
-                     data-msg-disable="{% trans 'This will disable Search for container' %} {{ container.name }}. Continue?"
-                     data-current-status="">
-                    <span class="item-verifying"><i class="icon fa fa-spinner fa-pulse"></i>{% trans 'Checking Search' %}</span>
-                    <span class="item-enabled"><i class="icon fa fa-toggle-on"></i>{% trans 'Disable Search' %}</span>
-                    <span class="item-disabled"><i class="icon fa fa-toggle-off"></i>{% trans 'Enable Search' %}</span>
-                  </a>
-                </li>
-
                 {% if user.is_staff %}
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-backup" class="config-backup config-item"

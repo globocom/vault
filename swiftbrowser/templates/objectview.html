@@ -48,29 +48,6 @@
 
 {% block content %}
 
-  {% if optin_status == 'True' %}
-
-    <div id="box_search">
-      <div class="row">
-
-        <form id="form-search" action="{% url 'metadata_search' project_id=project_id container=container %}" method="GET">
-          <label class="search-label">Pesquisar : </label><br/>
-          <input type="text" class="btn btn-default input-query" name="query" value="{{ query }}"/>
-          <button class="btn btn-primary send-btn">
-            <i class="fa fa-search" aria-hidden="true"></i>
-          </button>
-        </form>
-      </div> <!-- .row -->
-    </div> <!-- #generate-billing -->
-
-    {% if query %}
-    <div id="box_query">
-      <div class="finded-term">Pesquisado pelo(s) termo(s) : '<span>{{ query }}</span>'</div>
-    </div>
-    {% endif %}
-
-  {% endif %}
-
   {% storage_tools %}
 
   <div class="panel panel-default">

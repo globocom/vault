@@ -611,17 +611,6 @@ a:hover, a:active, a:focus {
 }
 /* </loader> */
 
-/* <backstage bar> */
-#vault-header #bsBar-account {
-    margin-right: 0;
-}
-
-#vault-header #bsBar-account .bsBar-apps span:hover,
-#vault-header #bsBar-account .bsBar-apps span:active {
-    color: #666;
-}
-/* </backstage bar> */
-
 /* forms.css */
 .submit-row a.deletelink {
     height: 100% !important;

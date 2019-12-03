@@ -5,10 +5,6 @@ from swiftbrowser import views
 
 
 urlpatterns = [
-    # Optin Container
-    url(r'^optin/(?P<container>.+?)/(?P<prefix>.+)?$', views.config_optin_container, name="config_optin_container"),
-    url(r'^optin-container-status/(?P<container>.+?)$', views.optin_container_status, name="container_optin_status"),
-
     # Trash: enable/disable Undelete
     url(r'^trash-container-config/(?P<container>.+?)$', views.config_trash_container, name="config_trash_container"),
     url(r'^trash-container-status/(?P<container>.+?)$', views.container_trash_status, name="container_trash_status"),
@@ -31,9 +27,6 @@ urlpatterns = [
     url(r'^trash/restore/', views.restore_object, name="restore_object"),
     url(r'^trash/remove/', views.remove_from_trash, name="remove_from_trash"),
     url(r'^trash/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.get_deleted_objects, name="deleted_objects"),
-
-    # Search Metadata
-    url(r'^metadata-search/(?P<project_id>.+?)/(?P<container>.+)?$', views.search_metadata_object, name="metadata_search"),
 
     # Swiftbrowser urls
     url(r'^objects/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.objectview, name="objectview"),

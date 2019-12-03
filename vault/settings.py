@@ -26,8 +26,8 @@ if DEBUG:
 ENVIRON = os.getenv('VAULT_ENVIRON', None)
 
 INSTALLED_APPS = [
-    'django.contrib.auth',
     'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -39,10 +39,9 @@ INSTALLED_APPS = [
     'swiftbrowser',
 ]
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allaccess.backends.AuthorizedServiceBackend',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+# )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,6 +76,8 @@ LOCALE_PATHS = (
 )
 
 ROOT_URLCONF = 'vault.urls'
+
+LOGIN_URL = '/admin/login/'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -153,16 +154,18 @@ BACKUP_OBJECT_COUNT_VALUE = os.getenv('BACKUP_OBJECT_COUNT_VALUE', '10000')
 BACKUP_OBJECT_BYTES_VALUE = os.getenv('BACKUP_OBJECT_BYTES_VALUE', '1000000000')
 
 # True if you are using invalid SSL certs
-SWIFT_INSECURE = True
-if os.environ.get('VAULT_SWIFT_INSECURE') == 'False':
-    SWIFT_INSECURE = False
+SWIFT_INSECURE = False
+if os.environ.get('VAULT_SWIFT_INSECURE') == 'True':
+    SWIFT_INSECURE = True
 
 # Keystone
 KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME')
 KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD')
 KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT')
 KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
-KEYSTONE_VERSION = 3
+KEYSTONE_VERSION = os.getenv('VAULT_KEYSTONE_VERSION', 2)
+KEYSTONE_TIMEOUT = os.getenv('VAULT_KEYSTONE_TIMEOUT', 3)
+KEYSTONE_INSECURE = False
 
 # swiftoperator role ID
 KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')

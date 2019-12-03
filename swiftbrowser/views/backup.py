@@ -12,12 +12,10 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 
-from storm_keystone.keystone import exceptions
-
 from swiftbrowser.models import BackupContainer
 from swiftbrowser.utils import get_token_id, get_storage_endpoint
 from vault import utils
-from identity.keystone import Keystone
+from identity.keystone import Keystone, exceptions
 from actionlogger.actionlogger import ActionLogger
 
 

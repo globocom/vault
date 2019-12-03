@@ -14,13 +14,10 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User, Group
-
-from allaccess.views import (OAuthCallback, OAuthRedirect)
-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -30,8 +27,6 @@ from vault.models import OG
 from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
                          maybe_update_token)
-
-from vault.client import OAuth2BearerClient
 
 
 log = logging.getLogger(__name__)
@@ -177,80 +172,11 @@ class SetProjectView(LoginRequiredMixin, View):
         return http_redirect
 
 
-class OAuthBearerCallback(OAuthCallback):
-    " Callback de OAuth2 usando header de bearer"
-
-    def get_client(self, provider):
-        return OAuth2BearerClient(provider)
-
-    def get_login_redirect(self, provider, user, access, new=False):
-        return reverse('dashboard')
-
-    def get_user_id(self, provider, info):
-        identifier = None
-        if hasattr(info, 'get'):
-            identifier = info.get('email')
-
-        if identifier is not None:
-            return identifier
-
-        return super(OAuthBearerCallback, self).get_user_id(provider, info)
-
-    def get_or_create_user(self, provider, access, info):
-        " Vincula o usuário django logado à sua conta "
-        return self._criar_usuario(provider, info)
-
-    def _gerar_username(self, original):
-        limite_username_django = 30
-        espaco_para_hash = 5
-        # Limite do campo - hash - separador (@)
-        espaco_para_username = limite_username_django - espaco_para_hash - 1
-
-        hash = md5().hexdigest()
-        username = '{0}@{1}'.format(original[:espaco_para_username], hash)
-        username = username[:limite_username_django]
-
-        return username
-
-    def _criar_usuario(self, provider, info):
-        username = info.get('username')
-
-        if username is None:
-            username = info.get('email')  # email eh obrigatorio
-
-        while User.objects.filter(username=username).exists():
-            username = self._gerar_username(username)
-
-        user = User(username=username)
-        self._save_user_info(user, info)
-
-        return user
-
-    def _save_user_info(self, user, info):
-        if 'email' in info:
-            user.email = info['email']
-
-        if 'name' in info:
-            parts = info['name'].split(' ', 1)
-            user.first_name = parts[0]
-            user.last_name = (len(parts) > 1) and parts[1] or ''
-
-        user.save()
-
-
-class OAuthVaultCallback(OAuthBearerCallback):
-    pass
-
-
-class OAuthVaultRedirect(OAuthRedirect):
-    pass
-
-
 class VaultLogout(View):
 
     def get(self, request):
         user = request.user
-        auth_logout(request)
+        logout(request)
         log.info('User logged out: [{}]'.format(user))
         return HttpResponseRedirect(reverse('dashboard'))
 
@@ -274,9 +200,9 @@ class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
             all_groups_id = [group.id for group in Group.objects.all()]
 
             # Usuarios sem time
-            users = User.objects \
-                        .exclude(groups__in=all_groups_id) \
-                        .order_by('username')
+            users = (User.objects
+                         .exclude(groups__in=all_groups_id)
+                         .order_by('username'))
 
             for user in User.objects.all().order_by('username'):
                 context['users'].append({

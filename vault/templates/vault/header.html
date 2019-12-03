@@ -9,10 +9,8 @@
   <div class="header-middle">
     <a href="{% url "dashboard" %}" class="logo">Vault</a>
     <span class="vault-env {% get_vault_env %}">{% get_vault_env %}</span>
-    <span class="vault-env version">{% get_vault_version %}</span>
     {% set_project %}
   </div>
   <div class="header-right">
-    <div id="backstage-bar-widget"></div>
   </div>
 </header>
