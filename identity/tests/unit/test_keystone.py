@@ -237,7 +237,7 @@ class TestKeystoneV2(TestCase):
 
     @patch('identity.keystone.Keystone.user_list')
     @patch('identity.keystone.Keystone.project_get')
-    def test_return_find_u_user(self, mock_project_get, mock_user_list):
+    def test_find_user_with_u_prefix(self, mock_project_get, mock_user_list):
         mock_project_get.return_value = Tenant('123',
             {u'id': 'abcde', u'name': 'infra'})
         mock_user_list.return_value = UserFactory(id='abcde', username='u_project_test')
@@ -282,8 +282,8 @@ class TestKeystoneDeleteProject(TestCase):
         self.mock_project_get_by_name = patch('storm_keystone.keystone.Keystone.project_get_by_name').start()
         self.mock_project_get_by_name.return_value = self.project
 
-        self.mock_return_find_u_user = patch('storm_keystone.keystone.Keystone.return_find_u_user').start()
-        self.mock_return_find_u_user.return_value = FakeResource(self.user_id, name=self.user_name)
+        self.mock_find_user_with_u_prefix = patch('storm_keystone.keystone.Keystone.find_user_with_u_prefix').start()
+        self.mock_find_user_with_u_prefix.return_value = FakeResource(self.user_id, name=self.user_name)
 
     def tearDown(self):
         patch.stopall()
@@ -307,7 +307,7 @@ class TestKeystoneDeleteProject(TestCase):
         mock_swift_delete.assert_called_with(self.project.id)
 
         # Find project's user
-        self.mock_return_find_u_user.assert_called_with(self.project.id)
+        self.mock_find_user_with_u_prefix.assert_called_with(self.project.id)
 
         # Keystone project delete
         mock_keystone_delete.assert_called_with(self.project.id)

@@ -441,7 +441,7 @@ class UpdateProjectUserPasswordTest(TestCase):
         self.request.POST = post
         self.request.user.is_authenticated.value = True
 
-        self.mock_keystone_find_user = patch('identity.keystone.Keystone.return_find_u_user').start()
+        self.mock_keystone_find_user = patch('identity.keystone.Keystone.find_user_with_u_prefix').start()
         # Retorna objeto usuário similar ao do request
         self.mock_keystone_find_user.return_value = fake_request(method='GET').user
 
@@ -458,8 +458,8 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('identity.keystone.Keystone.return_find_u_user')
-    def test_return_find_u_user_was_called(self, mock_find_user):
+    @patch('identity.keystone.Keystone.find_user_with_u_prefix')
+    def test_find_user_with_u_prefix_was_called(self, mock_find_user):
         self.view(self.request)
 
         mock_find_user.assert_called_with("AProjectID")
@@ -488,8 +488,8 @@ class UpdateProjectUserPasswordTest(TestCase):
         self.assertIn(password, response.content)
         self.assertEqual(response.status_code, 200)
 
-    @patch('identity.keystone.Keystone.return_find_u_user')
-    def test_return_find_u_user_with_exception(self, mock_find_u_user):
+    @patch('identity.keystone.Keystone.find_user_with_u_prefix')
+    def test_find_user_with_u_prefix_with_exception(self, mock_find_u_user):
         mock_find_u_user.side_effect = Exception()
 
         response = self.view(self.request)

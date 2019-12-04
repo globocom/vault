@@ -109,7 +109,6 @@ STATIC_URL = '{}/{}/{}'.format(os.getenv('SWIFT_INTERNAL_URL', ''),
                                os.getenv('SWIFT_CONTAINER', 'vault'),
                                STATIC_ROOT)
 
-
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
@@ -166,9 +165,7 @@ KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
 KEYSTONE_VERSION = os.getenv('VAULT_KEYSTONE_VERSION', 2)
 KEYSTONE_TIMEOUT = os.getenv('VAULT_KEYSTONE_TIMEOUT', 3)
 KEYSTONE_INSECURE = False
-
-# swiftoperator role ID
-KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')
+KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')  # swiftoperator role ID
 
 # Cache cleanning API
 CACHESWEEP_API = os.getenv('CACHESWEEP_API', 'http://localhost/')

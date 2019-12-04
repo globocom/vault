@@ -36,7 +36,7 @@ a:hover, a:active, a:focus {
 
 #vault-header .header-middle {
     position: absolute;
-    top: 0; left: 50px; right: 145px;
+    top: 0; left: 50px; right: 0;
     height: 50px;
     line-height: 50px;
     overflow: hidden;
