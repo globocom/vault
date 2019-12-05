@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from django.db.models.signals import class_prepared
 
 
-# Vault
 class GroupProjects(models.Model):
 
     group = models.ForeignKey(Group)
@@ -16,10 +15,10 @@ class GroupProjects(models.Model):
     class Meta:
         db_table = 'group_projects'
         unique_together = (('group', 'project'),)
-        verbose_name_plural = _('Teams and Projects')
+        verbose_name_plural = _('Groups and Projects')
 
     def __unicode__(self):
-        return "Team {} - Project {}".format(self.group, self.project)
+        return "Group {} - Project {}".format(self.group, self.project)
 
 
 class CurrentProject(models.Model):

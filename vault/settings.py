@@ -26,13 +26,13 @@ if DEBUG:
 ENVIRON = os.getenv('VAULT_ENVIRON', None)
 
 INSTALLED_APPS = [
+    'vault',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'vault',
     'actionlogger',
     'dashboard',
     'identity',
@@ -88,13 +88,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'pt-BR.UTF-8'
+LANGUAGE_CODE = 'en-us'
 LANGUAGES = (
-    ('pt-BR', _('Portuguese')),
     ('en', _('English')),
+    ('pt-BR', _('Portuguese')),
 )
 
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -112,7 +112,7 @@ STATIC_URL = '{}/{}/{}'.format(os.getenv('SWIFT_INTERNAL_URL', ''),
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 20)
+PAGINATION_SIZE = os.getenv('VAULT_PAGINATION_SIZE', 50)
 
 DATABASES = {
     'default': {
