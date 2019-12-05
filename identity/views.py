@@ -332,11 +332,13 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, TemplateView):
         try:
             projects = [p.to_dict() for p in self.keystone.project_list()]
             projects = sorted(projects, key=lambda l: l['name'].lower())
+
             for prj in projects:
                 prj['team'] = ''
                 if prj.get('team_owner_id') is not None:
-                    prj['team'] = Group.objects.get(id=prj['team_owner_id'])
-
+                    prj['team'] = (Group.objects
+                                        .filter(id=prj['team_owner_id'])
+                                        .first())
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(self.request, messages.ERROR,
