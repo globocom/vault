@@ -1,6 +1,9 @@
 *.pyc
+*.sublime-project
+*.sublime-workspace
 .cache/
 .coverage
+.data/
 .DS_Store
 .env
 .idea/
@@ -12,8 +15,5 @@
 actions.log
 dump.rdb
 statictemp/
-swift_data.json
 TODO
 vault_static/
-*.sublime-workspace
-*.sublime-project

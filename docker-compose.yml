@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+    mysql_db:
+        container_name: vault_db
+        image: mysql:5.7
+        volumes:
+            - "./.data/db:/var/lib/mysql"
+        restart: always
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+
+    # keystone:
+    #     container_name: vault_keystone
+    #     image: krystism/openstack-keystone
+    #     ports:
+    #         - "35357:35357"
+    #         - "5000:5000"
+    #     restart: always
+    #     environment:
+    #         OS_TENANT_NAME: admin
+    #         OS_USERNAME: admin
+    #         OS_PASSWORD: secret_admin_pass
+    #     networks:
+    #         - vault_network
+
+    # swift:
+    #     container_name: vault_swift
+
+    vault:
+        container_name: vault_app
+        build:
+            context: ./
+            dockerfile: helpers/docker/Dockerfile
+        volumes:
+            - .:/code
+        depends_on:
+            - mysql_db
+            # - keystone
+        links:
+            - mysql_db
+        networks:
+            - vault_network
+        ports:
+            - "8000:8000"
+        environment:
+            VAULT_MYSQL_HOST: mysql_db
+            # VAULT_KEYSTONE_URL: "http://vault_keystone:5000/v2.0"
+            # VAULT_KEYSTONE_PROJECT: vault
+            # VAULT_KEYSTONE_USERNAME: u_vault
+            # VAULT_KEYSTONE_PASSWORD: u_vault_pwd
+
+volumes:
+    vault_db_vol:
+
+networks:
+    vault_network:
