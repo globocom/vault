@@ -5,8 +5,10 @@ services:
         container_name: vault_db
         image: mysql:5.7
         volumes:
-            - "./.data/db:/var/lib/mysql"
+            - vault_mysql_db:/var/lib/mysql
         restart: always
+        ports:
+            - '3307:3306'
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
@@ -33,25 +35,21 @@ services:
             context: ./
             dockerfile: helpers/docker/Dockerfile
         volumes:
-            - .:/code
+            - .:/home/app/vault
         depends_on:
-            - mysql_db
+            - "mysql_db"
             # - keystone
+        command: ['./helpers/docker/start_setup.sh']
         links:
             - mysql_db
-        networks:
-            - vault_network
         ports:
             - "8000:8000"
         environment:
-            VAULT_MYSQL_HOST: mysql_db
+            VAULT_MYSQL_HOST: "mysql_db"
             # VAULT_KEYSTONE_URL: "http://vault_keystone:5000/v2.0"
             # VAULT_KEYSTONE_PROJECT: vault
             # VAULT_KEYSTONE_USERNAME: u_vault
             # VAULT_KEYSTONE_PASSWORD: u_vault_pwd
 
 volumes:
-    vault_db_vol:
-
-networks:
-    vault_network:
+    vault_mysql_db:

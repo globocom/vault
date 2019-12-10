@@ -9,12 +9,8 @@ RUN apt-get install -y build-essential libssl-dev default-libmysqlclient-dev \
 
 RUN pip install pip --upgrade
 
-WORKDIR /code
-
-COPY requirements_test.txt requirements_test.txt
-
-RUN pip install -r requirements_test.txt
+WORKDIR /home/app/vault
 
 COPY . .
 
-CMD ["make", "run"]
+RUN pip install -r requirements_test.txt
