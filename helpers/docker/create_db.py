@@ -6,8 +6,8 @@ from sys import exit
 from time import sleep
 
 
-MAX_TRIES = getenv('CREATE_DB_MAX_TRIES', 20)
-INTERVAL = getenv('CREATE_DB_INTERVAL', 5)
+MAX_TRIES = getenv('VAULT_CREATE_DB_MAX_TRIES', 20)
+INTERVAL = getenv('VAULT_CREATE_DB_INTERVAL', 5)
 DB_HOST = getenv('VAULT_MYSQL_HOST', 'vault_db')
 
 
@@ -20,9 +20,8 @@ def run():
             db = MySQLdb.connect(host=DB_HOST, user='root')
             connected = True
             print('Database connected!')
-        except MySQLdb.MySQLError as e:
+        except MySQLdb.MySQLError:
             attempt += 1
-            print('Error: {}'.format(e))
             print('Database not connected. Trying again in {} seconds...'.format(INTERVAL))
             sleep(INTERVAL)
 
@@ -31,10 +30,10 @@ def run():
         try:
             c.execute('USE vault;')
             print('Database already exists!')
-        except MySQLdb.MySQLError as e:
-            print('Error: {}'.format(e))
+        except MySQLdb.MySQLError:
             print('Database does not exists. Creating...')
             c.execute('CREATE DATABASE vault DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;')
+            print('Database created!')
 
         exit(0)
 

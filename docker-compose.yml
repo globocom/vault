@@ -8,23 +8,21 @@ services:
             - vault_mysql_db:/var/lib/mysql
         restart: always
         ports:
-            - '3307:3306'
+            - 3307:3306
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
-    # keystone:
-    #     container_name: vault_keystone
-    #     image: krystism/openstack-keystone
-    #     ports:
-    #         - "35357:35357"
-    #         - "5000:5000"
-    #     restart: always
-    #     environment:
-    #         OS_TENANT_NAME: admin
-    #         OS_USERNAME: admin
-    #         OS_PASSWORD: secret_admin_pass
-    #     networks:
-    #         - vault_network
+    keystone:
+        container_name: vault_keystone
+        image: krystism/openstack-keystone
+        restart: always
+        ports:
+            - 35357:35357
+            - 5000:5000
+        environment:
+            OS_TENANT_NAME: admin
+            OS_USERNAME: admin
+            OS_PASSWORD: secret_admin_pass
 
     # swift:
     #     container_name: vault_swift
@@ -37,19 +35,20 @@ services:
         volumes:
             - .:/home/app/vault
         depends_on:
-            - "mysql_db"
-            # - keystone
-        command: ['./helpers/docker/start_setup.sh']
+            - mysql_db
+            - keystone
         links:
             - mysql_db
+            - keystone
+        command: ['./helpers/docker/start_setup.sh']
         ports:
-            - "8000:8000"
+            - 8000:8000
         environment:
-            VAULT_MYSQL_HOST: "mysql_db"
-            # VAULT_KEYSTONE_URL: "http://vault_keystone:5000/v2.0"
-            # VAULT_KEYSTONE_PROJECT: vault
-            # VAULT_KEYSTONE_USERNAME: u_vault
-            # VAULT_KEYSTONE_PASSWORD: u_vault_pwd
+            VAULT_MYSQL_HOST: mysql_db
+            VAULT_KEYSTONE_URL: http://vault_keystone:5000/v2.0
+            VAULT_KEYSTONE_PROJECT: vault
+            VAULT_KEYSTONE_USERNAME: u_vault
+            VAULT_KEYSTONE_PASSWORD: u_vault_pwd
 
 volumes:
     vault_mysql_db:

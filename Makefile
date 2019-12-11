@@ -40,13 +40,7 @@ tests-ci: migrations-test clean pycodestyle ## Run tests
 run: clean ## Run a project development web server
 	@python $(PROJECT_HOME)/manage.py runserver 0.0.0.0:8000
 
-start: ## Build-up docker elements to run project localy
-	@docker-compose up -d
-
-stop: ## Turn off docker elements built by "docker-up"
-	@docker-compose down
-
-docker-shell: ##
+docker-shell: ## Open a shell inside vault_app container
 	@docker exec -it vault_app /bin/bash
 
 docker-clean: ## Remove any container, network, volume and image created by docker
