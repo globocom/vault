@@ -40,9 +40,12 @@ tests-ci: migrations-test clean pycodestyle ## Run tests
 run: clean ## Run a project development web server
 	@python $(PROJECT_HOME)/manage.py runserver 0.0.0.0:8000
 
+docker-start: ## Build and start Docker containers
+	@docker-compose up -d
+	./helpers/docker/keystone/run_keystone_setup.sh
+
 docker-shell: ## Open a shell inside vault_app container
 	@docker exec -it vault_app /bin/bash
 
 docker-clean: ## Remove any container, network, volume and image created by docker
 	@docker-compose down -v --rmi all --remove-orphans
-

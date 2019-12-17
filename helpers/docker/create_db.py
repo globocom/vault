@@ -19,21 +19,21 @@ def run():
         try:
             db = MySQLdb.connect(host=DB_HOST, user='root')
             connected = True
-            print('Database connected!')
+            print('Database server connected!')
         except MySQLdb.MySQLError:
             attempt += 1
-            print('Database not connected. Trying again in {} seconds...'.format(INTERVAL))
+            print('Database server not connected. Trying again in {} seconds...'.format(INTERVAL))
             sleep(INTERVAL)
 
     if connected:
         c = db.cursor()
         try:
             c.execute('USE vault;')
-            print('Database already exists!')
+            print('Database vault already exists!')
         except MySQLdb.MySQLError:
-            print('Database does not exists. Creating...')
+            print('Database vault does not exists. Creating...')
             c.execute('CREATE DATABASE vault DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;')
-            print('Database created!')
+            print('Database vault created!')
 
         exit(0)
 

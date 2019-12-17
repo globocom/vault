@@ -1,0 +1,1 @@
+FROM kahing/docker-swift
