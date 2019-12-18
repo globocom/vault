@@ -4,7 +4,7 @@ ENV OS_TENANT_NAME admin
 ENV OS_USERNAME admin
 
 RUN apt-get update
-RUN apt-get install -y telnet curl vim
+RUN apt-get install -y telnet curl vim sqlite3
 
 RUN pip install pip --upgrade
 

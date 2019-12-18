@@ -80,7 +80,7 @@ while : ; do
         break
     else
         echo "Creating user u_vault"
-        openstack user create --domain default u_vault --password u_vault
+        openstack user create --project Vault --password u_vault u_vault
         sleep 1
     fi
 done
