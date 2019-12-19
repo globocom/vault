@@ -120,8 +120,8 @@ DATABASES = {
         'NAME': os.getenv('VAULT_MYSQL_DB', PROJECT),
         'USER': os.getenv('VAULT_MYSQL_USER', 'root'),
         'PASSWORD': os.getenv('VAULT_MYSQL_PASSWORD', ''),
-        'HOST': os.getenv('VAULT_MYSQL_HOST', ''),
-        'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3306)),
+        'HOST': os.getenv('VAULT_MYSQL_HOST', '127.0.0.1'),
+        'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3307)),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
@@ -158,13 +158,13 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'True':
     SWIFT_INSECURE = True
 
 # Keystone
-KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME')
-KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD')
-KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT')
-KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL')
+KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'u_vault')
+KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'u_vault')
+KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'Vault')
+KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL', 'http://localhost:5000/v2.0')
 KEYSTONE_VERSION = os.getenv('VAULT_KEYSTONE_VERSION', 2)
 KEYSTONE_TIMEOUT = os.getenv('VAULT_KEYSTONE_TIMEOUT', 3)
-KEYSTONE_INSECURE = False
+# KEYSTONE_INSECURE = False
 KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')  # swiftoperator role ID
 
 # Cache cleanning API
