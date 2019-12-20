@@ -7,11 +7,6 @@ import logging
 import requests
 import keystoneclient
 
-try:
-    from keystoneclient.openstack.common.apiclient import exceptions
-except ModuleNotFoundError as e:
-    from keystoneclient import exceptions
-
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User, Group
@@ -249,13 +244,13 @@ class KeystoneBase(object):
                                           description=description,
                                           enabled=True,
                                           **kwargs)
-        except exceptions.Conflict as err:
+        except keystoneclient.exceptions.Conflict as err:
             log.error('Error: {}'.format(err))
             return {
                 'status': False,
                 'reason': 'Duplicated project name.'
             }
-        except exceptions.Forbidden as err:
+        except keystoneclient.exceptions.Forbidden as err:
             log.error('Error: {}'.format(err))
             return {
                 'status': False,
@@ -269,7 +264,7 @@ class KeystoneBase(object):
                                     password=user_password,
                                     role_id=self.config['role_id'],
                                     project_id=project.id)
-        except exceptions.Forbidden as err:
+        except keystoneclient.exceptions.Forbidden as err:
             self.project_delete(project.id)
             log.error('Error: {}'.format(err))
             return {
@@ -334,7 +329,7 @@ class KeystoneBase(object):
             updated_project = self.project_update(project,
                                                   name=project_name,
                                                   **kwargs)
-        except exceptions.Forbidden:
+        except keystoneclient.exceptions.Forbidden:
             return {
                 'status': False,
                 'reason': 'Admin required'
