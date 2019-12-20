@@ -5,10 +5,10 @@ Django==1.11.20
 iso8601==0.1.11
 mysqlclient==1.4.6
 netaddr==0.7.18
-oslo.config==3.2.0
+oslo.config==4.2.0
 python-dateutil==2.5.3
-python-keystoneclient==2.1.2
-python-swiftclient==2.5.0
+python-keystoneclient==3.5.1
+python-swiftclient==3.7.1
 pytz==2015.4
 requests==2.19.1
 wsgiref==0.1.2
