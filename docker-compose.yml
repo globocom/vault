@@ -21,9 +21,9 @@ services:
         ports:
             - 35357:35357
             - 5000:5000
-        environment:
-            OS_TENANT_NAME: admin
-            OS_USERNAME: admin
+        # environment:
+        #     OS_TENANT_NAME: admin
+        #     OS_USERNAME: admin
 
     swift:
         container_name: vault_swift
