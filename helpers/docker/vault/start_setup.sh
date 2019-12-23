@@ -2,7 +2,7 @@
 # start_setup.sh
 
 # Vault database and migrations
-python helpers/docker/create_db.py
+python helpers/docker/vault/create_db.py
 python manage.py migrate
 
 # Run Vault server

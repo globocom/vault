@@ -36,7 +36,7 @@ services:
         container_name: vault_app
         build:
             context: ./
-            dockerfile: helpers/docker/Dockerfile
+            dockerfile: helpers/docker/vault/Dockerfile
         volumes:
             - .:/home/app/vault
         depends_on:
@@ -47,7 +47,7 @@ services:
             - mysql
             - keystone
             - swift
-        command: ['./helpers/docker/start_setup.sh']
+        command: ['./helpers/docker/vault/start_setup.sh']
         ports:
             - 8000:8000
         environment:

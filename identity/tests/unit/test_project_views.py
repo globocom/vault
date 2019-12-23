@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from django.utils.translation import ugettext as _
 
-from keystoneclient.openstack.common.apiclient import exceptions
+from keystoneclient import exceptions
 
 from identity import views
 from identity.tests.fakes import (FakeResource, GroupFactory,

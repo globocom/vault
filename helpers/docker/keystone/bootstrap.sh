@@ -15,12 +15,12 @@ OS_IDENTITY_API_VERSION=3
 CONFIG_FILE=/etc/keystone/keystone.conf
 SQL_SCRIPT=${SQL_SCRIPT:-/root/keystone.sql}
 
-if env | grep -qi MYSQL_ROOT_PASSWORD && test -e $SQL_SCRIPT; then
-    MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
-    MYSQL_HOST=${MYSQL_HOST:-mysql}
-    sed -i "s#^connection.*=.*#connection = mysql://keystone:KEYSTONE_DBPASS@${MYSQL_HOST}/keystone#" $CONFIG_FILE
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD -h $MYSQL_HOST <$SQL_SCRIPT
-fi
+# if env | grep -qi MYSQL_ROOT_PASSWORD && test -e $SQL_SCRIPT; then
+#     MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+#     MYSQL_HOST=${MYSQL_HOST:-mysql}
+#     sed -i "s#^connection.*=.*#connection = mysql://keystone:KEYSTONE_DBPASS@${MYSQL_HOST}/keystone#" $CONFIG_FILE
+#     mysql -uroot -p$MYSQL_ROOT_PASSWORD -h $MYSQL_HOST <$SQL_SCRIPT
+# fi
 
 rm -f $SQL_SCRIPT
 
@@ -29,11 +29,12 @@ sed -i "s#^admin_token.*=.*#admin_token = $ADMIN_TOKEN#" $CONFIG_FILE
 
 # Populate the Identity service database
 keystone-manage db_sync
+
 # Initialize Fernet keys
 keystone-manage fernet_setup --keystone-user root --keystone-group root
 mv /etc/keystone/default_catalog.templates /etc/keystone/default_catalog
 
-# start keystone service 
+# start keystone service
 uwsgi --http 0.0.0.0:35357 --wsgi-file $(which keystone-wsgi-admin) &
 # uwsgi --http 0.0.0.0:5000 --wsgi-file $(which keystone-wsgi-public) &
 sleep 5 # wait for start
@@ -41,15 +42,21 @@ sleep 5 # wait for start
 export OS_TOKEN OS_URL OS_IDENTITY_API_VERSION
 
 # Initialize account
-openstack service create  --name keystone identity
+openstack service create --name keystone identity
 openstack endpoint create --region RegionOne identity public http://${HOSTNAME}:5000/v3
 openstack endpoint create --region RegionOne identity internal http://${HOSTNAME}:5000/v3
 openstack endpoint create --region RegionOne identity admin http://${HOSTNAME}:5000/v3
 openstack domain create --description "Default Domain" default
-openstack project create --domain default  --description "Admin Project" admin
+openstack project create --domain default --description "Admin Project" admin
 openstack user create --domain default --password $ADMIN_PASSWORD admin
 openstack role create admin
 openstack role add --project admin --user admin admin
+
+# Add Swift service
+# openstack service create --name swift object-storage
+# openstack endpoint create --region RegionOne object-storage public 'http://vault_swift/v1/AUTH_$(tenant_id)s'
+# openstack endpoint create --region RegionOne object-storage internal 'http://vault_swift/v1/AUTH_$(tenant_id)s'
+# openstack endpoint create --region RegionOne object-storage admin 'http://vault_swift/v1/AUTH_$(tenant_id)s'
 
 unset OS_TOKEN OS_URL
 

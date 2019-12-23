@@ -42,7 +42,7 @@ run: clean ## Run a project development web server
 
 docker-start: ## Build and start Docker containers
 	@docker-compose up -d
-	./helpers/docker/keystone/run_keystone_setup.sh
+# 	./helpers/docker/keystone/run_keystone_setup.sh
 
 docker-shell: ## Open a shell inside vault_app container
 	@docker exec -it vault_app /bin/bash

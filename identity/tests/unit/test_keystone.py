@@ -4,7 +4,7 @@ from uuid import uuid4
 from unittest import TestCase
 from mock import patch
 from keystoneclient.v2_0.tenants import Tenant
-from keystoneclient.openstack.common.apiclient import exceptions
+from keystoneclient import exceptions
 
 from django.conf import settings
 from django.contrib.auth.models import User, Group

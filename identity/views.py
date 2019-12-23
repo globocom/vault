@@ -15,7 +15,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 
-from keystoneclient.openstack.common.apiclient import exceptions
+from keystoneclient import exceptions
 
 from swiftbrowser.utils import delete_swift_account
 from actionlogger.actionlogger import ActionLogger
