@@ -1,25 +1,21 @@
 #!/bin/bash
-exec > >(tee -i /keystone-v3.log)
+exec > >(tee -i /keystone.log)
 exec 2>&1
 
 set -x
 
-# Openstack Keystone
-
-: ${IPADDR:=127.0.0.1}
-
 # Identity service configuration
 : ${OS_IDENTITY_API_VERSION:=3}
-: ${OS_IDENTITY_SERVICE_REGION:=RegionOne}
+# : ${OS_IDENTITY_SERVICE_REGION:=RegionOne}
 : ${OS_IDENTITY_SERVICE_NAME:=keystone}
 : ${OS_IDENTITY_ADMIN_DOMAIN:=default}
 : ${OS_IDENTITY_ADMIN_PROJECT:=admin}
 : ${OS_IDENTITY_ADMIN_USERNAME:=admin}
 : ${OS_IDENTITY_ADMIN_PASSWD:=ADMIN_PASS}
 : ${OS_IDENTITY_ADMIN_ROLE:=admin}
-: ${OS_IDENTITY_URL_ADMIN:=http://${IPADDR}:35357}
-: ${OS_IDENTITY_URL_INTERNAL:=http://${IPADDR}:5000}
-: ${OS_IDENTITY_URL_PUBLIC:=http://${IPADDR}:5000}
+: ${OS_IDENTITY_URL_ADMIN:=http://127.0.0.1:35357}
+: ${OS_IDENTITY_URL_INTERNAL:=http://127.0.0.1:5000}
+: ${OS_IDENTITY_URL_PUBLIC:=http://127.0.0.1:5000}
 
 # Object store configuration
 : ${OS_OBJECTSTORE_SERVICE_REGION:=RegionOne}
@@ -39,16 +35,12 @@ echo '> Configuring Keystone ...'
 # Set log to stderr for Docker
 # openstack-config --set /etc/keystone/keystone.conf DEFAULT use_stderr True
 
-# Use a local sqlite database for demo purposes
+# Use a local sqlite database
 # openstack-config --set /etc/keystone/keystone.conf database connection 'sqlite:////var/lib/keystone/keystone.db'
 
-keystone-manage credential_setup \
-  --keystone-user root \
-  --keystone-group root
+keystone-manage credential_setup --keystone-user root --keystone-group root
 
-keystone-manage fernet_setup \
-  --keystone-user root \
-  --keystone-group root
+keystone-manage fernet_setup --keystone-user root --keystone-group root
 
 keystone-manage db_sync
 
@@ -59,10 +51,10 @@ keystone-manage bootstrap \
   --bootstrap-password "$OS_IDENTITY_ADMIN_PASSWD" \
   --bootstrap-role-name "$OS_IDENTITY_ADMIN_ROLE" \
   --bootstrap-service-name "$OS_IDENTITY_SERVICE_NAME" \
-  --bootstrap-region-id "$OS_IDENTITY_SERVICE_REGION" \
-  --bootstrap-admin-url "$OS_IDENTITY_URL_ADMIN" \
-  --bootstrap-public-url "$OS_IDENTITY_URL_PUBLIC" \
-  --bootstrap-internal-url "$OS_IDENTITY_URL_INTERNAL"
+  --bootstrap-region-id "RegionOne" \
+  --bootstrap-admin-url "http://vault_keystone:35357/v2.0" \
+  --bootstrap-public-url "http://vault_keystone:5000/v2.0" \
+  --bootstrap-internal-url "http://vault_keystone:5000/v2.0"
 
 # Using uwsgi for demo purposes
 echo '> Starting Keystone admin service ...'
@@ -73,7 +65,7 @@ echo '> Starting Keystone public service ...'
 uwsgi --http 0.0.0.0:5000 --wsgi-file $(which keystone-wsgi-admin) &
 sleep 5
 
-while ! nc -z ${IPADDR} 35357; do
+while ! nc -z 127.0.0.1 35357; do
   sleep 1
 done
 
