@@ -5,14 +5,13 @@ ENV VERSION=12.0.3
 RUN set -x \
     && apt-get -y update \
     && apt-get install -y libffi-dev python-dev libssl-dev netcat \
-    && apt-get -y clean
+    && apt-get -y clean all
 
 RUN curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
     && tar xvf keystone-${VERSION}.tar.gz \
     && cd keystone-${VERSION} \
     && pip install -r requirements.txt \
     && PBR_VERSION=${VERSION} pip install . \
-    # && pip install uwsgi \
     && cp -r etc /etc/keystone \
     && pip install uwsgi python-openstackclient \
     && cd - \
@@ -27,4 +26,4 @@ EXPOSE 5000 35357
 
 # HEALTHCHECK --interval=10s --timeout=5s \
 #   CMD curl -f http://localhost:5000/v3 2> /dev/null || exit 1; \
-#   curl -f http://localhost:35357/v3 2> /dev/null || exit 1; \
+#       curl -f http://localhost:35357/v3 2> /dev/null || exit 1; \

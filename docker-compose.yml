@@ -6,7 +6,6 @@ services:
         image: mysql:5.7
         volumes:
             - vault_mysql:/var/lib/mysql
-        restart: always
         ports:
             - 3307:3306
         environment:
@@ -17,20 +16,15 @@ services:
         build:
             context: ./
             dockerfile: helpers/docker/keystone/Dockerfile
-        restart: always
         ports:
             - 35357:35357
             - 5000:5000
-        # environment:
-        #     OS_TENANT_NAME: admin
-        #     OS_USERNAME: admin
 
     swift:
         container_name: vault_swift
         build:
             context: ./
             dockerfile: helpers/docker/swift/Dockerfile
-        restart: always
 
     vault:
         container_name: vault_app
@@ -47,7 +41,7 @@ services:
             - mysql
             - keystone
             - swift
-        command: ['./helpers/docker/vault/start_setup.sh']
+        command: ['./helpers/docker/vault/start.sh']
         ports:
             - 8000:8000
         environment:

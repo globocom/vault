@@ -1,10 +1,8 @@
 FROM python:2.7-stretch
 
 RUN apt-get update \
-    && apt-get clean all
-
-RUN apt-get install -y build-essential libssl-dev default-libmysqlclient-dev \
-                       python-pip python-dev
+    && apt-get install -y build-essential libssl-dev default-libmysqlclient-dev python-pip python-dev \
+    && apt-get -y clean all
 
 WORKDIR /home/app/vault
 
