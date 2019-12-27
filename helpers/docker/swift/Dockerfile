@@ -38,7 +38,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Pike
-RUN pip install keystoneauth1==3.1.1 keystonemiddleware==4.17.1
+RUN pip install keystoneauth1==3.4.1 keystonemiddleware==4.22.0
 
 COPY ./helpers/docker/swift/swift /etc/swift
 COPY ./helpers/docker/swift/misc/rsyncd.conf /etc/

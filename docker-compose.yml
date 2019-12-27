@@ -5,9 +5,9 @@ services:
         container_name: vault_db
         image: mysql:5.7
         volumes:
-            - vault_mysql:/var/lib/mysql
+            - vol_mysql:/var/lib/mysql
         ports:
-            - 3306:3306
+            - 3307:3306
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
@@ -16,6 +16,8 @@ services:
         build:
             context: ./
             dockerfile: helpers/docker/keystone/Dockerfile
+        volumes:
+            - vol_keystone:/etc/keystone
         ports:
             - 35357:35357
             - 5000:5000
@@ -25,10 +27,14 @@ services:
         build:
             context: ./
             dockerfile: helpers/docker/swift/Dockerfile
+        volumes:
+            - vol_swift:/swift/nodes
         depends_on:
             - keystone
         links:
             - keystone
+        ports:
+            - 8080:8080
 
     vault:
         container_name: vault_app
@@ -56,4 +62,6 @@ services:
             VAULT_KEYSTONE_PASSWORD: u_vault
 
 volumes:
-    vault_mysql:
+    vol_mysql:
+    vol_keystone:
+    vol_swift:
