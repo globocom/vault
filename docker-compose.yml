@@ -25,6 +25,10 @@ services:
         build:
             context: ./
             dockerfile: helpers/docker/swift/Dockerfile
+        depends_on:
+            - keystone
+        links:
+            - keystone
 
     vault:
         container_name: vault_app
