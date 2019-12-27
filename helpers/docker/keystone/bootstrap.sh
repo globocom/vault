@@ -22,7 +22,7 @@ set -x
 : ${OS_OBJECTSTORE_SERVICE_DESC:=Swift Object Storage}
 : ${OS_OBJECTSTORE_DOMAIN:=default}
 : ${OS_OBJECTSTORE_PROJECT:=swift}
-: ${OS_OBJECTSTORE_USERNAME:=swift}
+: ${OS_OBJECTSTORE_USERNAME:=u_swift}
 : ${OS_OBJECTSTORE_PASSWD:=SWIFT_PASS}
 : ${OS_OBJECTSTORE_ROLE:=admin}
 : ${OS_OBJECTSTORE_URL_ADMIN:=http://vault_swift/v1/AUTH_%(tenant_id)s}

@@ -37,6 +37,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Pike
+RUN pip install keystoneauth1==3.1.1 keystonemiddleware==4.17.1
+
 COPY ./helpers/docker/swift/swift /etc/swift
 COPY ./helpers/docker/swift/misc/rsyncd.conf /etc/
 COPY ./helpers/docker/swift/bin /swift/bin
@@ -44,7 +47,7 @@ COPY ./helpers/docker/swift/misc/bashrc /swift/.bashrc
 COPY ./helpers/docker/swift/rsyslog.d/10-swift.conf /etc/rsyslog.d/10-swift.conf
 COPY ./helpers/docker/swift/misc/supervisord.conf /etc/supervisord.conf
 
-RUN	easy_install supervisor; mkdir /var/log/supervisor/ && \
+RUN	pip install supervisor; mkdir /var/log/supervisor/ && \
     # create swift user and group
     /usr/sbin/useradd -m -d /swift -U swift && \
     sed -i 's/RSYNC_ENABLE=false/RSYNC_ENABLE=true/' /etc/default/rsync && \
