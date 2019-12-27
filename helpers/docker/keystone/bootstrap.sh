@@ -25,7 +25,7 @@ set -x
 : ${OS_OBJECTSTORE_USERNAME:=swift}
 : ${OS_OBJECTSTORE_PASSWD:=SWIFT_PASS}
 : ${OS_OBJECTSTORE_ROLE:=admin}
-: ${OS_OBJECTSTORE_URL_ADMIN:=http://vault_swift/v1}
+: ${OS_OBJECTSTORE_URL_ADMIN:=http://vault_swift/v1/AUTH_%(tenant_id)s}
 : ${OS_OBJECTSTORE_URL_INTERNAL:=http://vault_swift/v1/AUTH_%(tenant_id)s}
 : ${OS_OBJECTSTORE_URL_PUBLIC:=http://vault_swift/v1/AUTH_%(tenant_id)s}
 

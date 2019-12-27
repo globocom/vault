@@ -54,24 +54,6 @@
       </tr>
     </table>
   </div>
-
-  <div class="panel panel-default">
-    <table class="project-created items-list table table-bordered table-striped">
-      <caption>FaaS endpoints</caption>
-      <tr>
-        <th width="20%">Admin URL</th>
-        <td>{{ project_info.endpoints.block_storage.adminURL }}</td>
-      </tr>
-      <tr>
-        <th>Public URL</th>
-        <td>{{project_info.endpoints.block_storage.publicURL }}</td>
-      </tr>
-      <tr>
-        <th>Internal URL</th>
-        <td>{{ project_info.endpoints.block_storage.internalURL }}</td>
-      </tr>
-    </table>
-  </div>
 {% endblock %}
 
 {% block js_bottom %}
