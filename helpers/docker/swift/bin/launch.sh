@@ -1,7 +1,14 @@
 #!/bin/sh
+
+# exec > >(tee -i /var/log/swift/proxy.log)
+# exec 2>&1
+
+# set -x
+
 /usr/sbin/service rsyslog start
 /usr/sbin/service rsync start
 /usr/sbin/service memcached start
+
 # set up storage
 mkdir -p /swift/nodes/1 /swift/nodes/2 /swift/nodes/3 /swift/nodes/4
 ln -s /swift/nodes/1 /srv/1; ln -s /swift/nodes/2 /srv/2; ln -s /swift/nodes/3 /srv/3; ln -s /swift/nodes/4 /srv/4 

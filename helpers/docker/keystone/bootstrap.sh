@@ -1,4 +1,5 @@
 #!/bin/bash
+
 exec > >(tee -i /etc/keystone/keystone.log)
 exec 2>&1
 
@@ -16,9 +17,9 @@ keystone-manage bootstrap \
   --bootstrap-role-name "admin" \
   --bootstrap-service-name "keystone" \
   --bootstrap-region-id "RegionOne" \
-  --bootstrap-admin-url "http://127.0.0.1:35357/v2.0" \
-  --bootstrap-public-url "http://127.0.0.1:5000/v2.0" \
-  --bootstrap-internal-url "http://127.0.0.1:5000/v2.0"
+  --bootstrap-admin-url "http://vault_keystone:35357/v2.0" \
+  --bootstrap-public-url "http://vault_keystone:5000/v2.0" \
+  --bootstrap-internal-url "http://vault_keystone:5000/v2.0"
 
 # Start uwsgi
 echo "Start Keystone admin:"
@@ -52,13 +53,13 @@ openstack project create "swift"
 openstack user create --password "SWIFT_PASS" --project "swift" "u_swift"
 openstack role add --user "u_swift" --project "swift" "admin"
 openstack service create --name "swift" --description "Swift Object Storage" "object-store"
-openstack endpoint create --region "RegionOne" "object-store" public "http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s"
-openstack endpoint create --region "RegionOne" "object-store" internal "http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s"
-openstack endpoint create --region "RegionOne" "object-store" admin "http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s"
+openstack endpoint create --region "RegionOne" "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+openstack endpoint create --region "RegionOne" "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+openstack endpoint create --region "RegionOne" "object-store" admin "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
 
 # Vault user
-openstack project create "Vault"  & sleep 3
-openstack user create --password "u_vault" --project "Vault" "u_vault"
+openstack project create "Vault" & sleep 2
+openstack user create --password "u_vault" --project "Vault" "u_vault" & sleep 2
 openstack role add --user "u_vault" --project "Vault" "admin"
 openstack role add --user "u_vault" --project "Vault" "swiftoperator"
 
