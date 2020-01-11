@@ -49,9 +49,11 @@ source /etc/keystone/keystonerc
 # Object store service
 echo "Register Swift:"
 openstack role create "swiftoperator"
+openstack role create "ResellerAdmin"
 openstack project create "swift"
 openstack user create --password "SWIFT_PASS" --project "swift" "u_swift"
 openstack role add --user "u_swift" --project "swift" "admin"
+openstack role add --user "u_swift" --project "swift" "ResellerAdmin"
 openstack service create --name "swift" --description "Swift Object Storage" "object-store"
 openstack endpoint create --region "RegionOne" "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
 openstack endpoint create --region "RegionOne" "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
@@ -62,6 +64,7 @@ openstack project create "Vault" & sleep 2
 openstack user create --password "u_vault" --project "Vault" "u_vault" & sleep 2
 openstack role add --user "u_vault" --project "Vault" "admin"
 openstack role add --user "u_vault" --project "Vault" "swiftoperator"
+openstack role add --user "u_vault" --project "Vault" "ResellerAdmin"
 
 # Restart uwsgi
 pkill uwsgi

@@ -117,7 +117,7 @@ class ProjectForm(forms.Form):
             choices=BOOLEAN_CHOICES), initial=True)
 
     group = forms.ModelChoiceField(
-        label=_('Time'),
+        label=_('Group'),
         required=True,
         queryset=Group.objects.all())
 
@@ -139,7 +139,7 @@ class DeleteProjectConfirm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': _('Confirme o usuario do projeto'),
+                'placeholder': _('Confirm project user'),
             }
         )
     )
@@ -150,7 +150,7 @@ class DeleteProjectConfirm(forms.Form):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': _('Confirme a senha')
+                'placeholder': _('Confirm password')
             }
         )
     )
