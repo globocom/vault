@@ -50,11 +50,11 @@ source /etc/keystone/keystonerc
 echo "Register Swift:"
 openstack role create "swiftoperator"
 openstack role create "ResellerAdmin"
-openstack project create "swift"
-openstack user create --password "SWIFT_PASS" --project "swift" "u_swift"
-openstack role add --user "u_swift" --project "swift" "admin"
+openstack project create "swift" & sleep 2
+openstack user create --password "SWIFT_PASS" --project "swift" "u_swift" & sleep 2
 openstack role add --user "u_swift" --project "swift" "ResellerAdmin"
-openstack service create --name "swift" --description "Swift Object Storage" "object-store"
+openstack role add --user "u_swift" --project "swift" "admin"
+openstack service create --name "swift" --description "Swift Object Storage" "object-store" & sleep 2
 openstack endpoint create --region "RegionOne" "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
 openstack endpoint create --region "RegionOne" "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
 openstack endpoint create --region "RegionOne" "object-store" admin "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
