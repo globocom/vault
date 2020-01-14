@@ -31,7 +31,7 @@ def run():
             c.execute('USE vault;')
             print('Database vault already exists!')
         except MySQLdb.MySQLError:
-            print('Database vault does not exists. Creating...')
+            print('Database vault does not exist. Creating...')
             c.execute('CREATE DATABASE vault DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;')
             print('Database vault created!')
 
