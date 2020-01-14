@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source fn.sh
+
 exec > >(tee -i /etc/keystone/keystone.log)
 exec 2>&1
 
@@ -46,25 +48,24 @@ export OS_PASSWORD="ADMIN_PASS"
 EOF
 source /etc/keystone/keystonerc
 
-# Object store service
-echo "Register Swift:"
-openstack role create "swiftoperator"
-openstack role create "ResellerAdmin"
-openstack project create "swift" & sleep 2
-openstack user create --password "SWIFT_PASS" --project "swift" "u_swift" & sleep 2
-openstack role add --user "u_swift" --project "swift" "ResellerAdmin"
-openstack role add --user "u_swift" --project "swift" "admin"
-openstack service create --name "swift" --description "Swift Object Storage" "object-store" & sleep 2
-openstack endpoint create --region "RegionOne" "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
-openstack endpoint create --region "RegionOne" "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
-openstack endpoint create --region "RegionOne" "object-store" admin "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+# Swift object store service
+create_project swift
+create_user u_swift SWIFT_PASS swift
+create_role swiftoperator
+create_role ResellerAdmin
+create_role_assign u_swift swift admin
+create_role_assign u_swift swift ResellerAdmin
+create_service swift "object-store"
+create_endpoint "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+create_endpoint "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+create_endpoint "object-store" admin "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
 
-# Vault user
-openstack project create "Vault" & sleep 2
-openstack user create --password "u_vault" --project "Vault" "u_vault" & sleep 2
-openstack role add --user "u_vault" --project "Vault" "admin"
-openstack role add --user "u_vault" --project "Vault" "swiftoperator"
-openstack role add --user "u_vault" --project "Vault" "ResellerAdmin"
+# Vault project and user
+create_project Vault
+create_user u_vault u_vault Vault
+create_role_assign u_vault Vault admin
+create_role_assign u_vault Vault swiftoperator
+create_role_assign u_vault Vault ResellerAdmin
 
 # Restart uwsgi
 pkill uwsgi
