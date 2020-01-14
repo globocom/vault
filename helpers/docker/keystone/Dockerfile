@@ -18,7 +18,7 @@ RUN curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz
     && rm -rf keystone-${VERSION}*
 
 COPY ./helpers/docker/keystone/keystone.conf /etc/keystone/keystone.conf
-COPY ./helpers/docker/keystone/fn.sh /etc/fn.sh
+COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
 COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
 RUN echo '127.0.0.1 vault_keystone' >> /etc/hosts

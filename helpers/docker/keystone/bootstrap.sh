@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source fn.sh
+source /etc/bootstrap_fn.sh
 
 exec > >(tee -i /etc/keystone/keystone.log)
 exec 2>&1
