@@ -3,13 +3,13 @@
 from django.contrib.auth.models import User, Group
 
 try:
-    grp = Group.objects.get(name='admins')
-    print("Group 'admins' already exists!")
+    grp = Group.objects.get(name='Sample Group')
+    print("Group 'Sample Group' already exists!")
 except Group.DoesNotExist:
-    print("Creating group 'admins'")
-    grp = Group.objects.create(name='admins')
+    print("Creating group 'Sample Group'")
+    grp = Group.objects.create(name='Sample Group')
     grp.save()
-    print("Group 'admins' successfully created!")
+    print("Group 'Sample Group' successfully created!")
 
 try:
     usr = User.objects.get(username='admin')
@@ -19,10 +19,10 @@ except User.DoesNotExist:
     usr = User.objects.create_superuser('admin', 'admin@admin', 'admin')
     print("User 'admin' successfully created!")
 
-if usr.groups.filter(name='admins').count() == 0:
-    print("Adding user 'admin' to group 'admins'")
+if usr.groups.filter(name='Sample Group').count() == 0:
+    print("Adding user 'admin' to group 'Sample Group'")
     usr.groups.add(grp)
     usr.save()
-    print("User 'admin' successfully added to group 'admins'!")
+    print("User 'admin' successfully added to group 'Sample Group'!")
 else:
-    print("User 'admin' already in group 'admins'!")
+    print("User 'admin' already in group 'Sample Group'!")
