@@ -7,6 +7,9 @@ exec 2>&1
 
 set -x
 
+# MySQL Connection
+python /etc/create_db.py
+
 # Keystone config
 echo "Keystone Config:"
 keystone-manage credential_setup --keystone-user root --keystone-group root

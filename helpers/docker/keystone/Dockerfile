@@ -20,6 +20,7 @@ RUN curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz
 COPY ./helpers/docker/keystone/keystone.conf /etc/keystone/keystone.conf
 COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
 COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
+COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
 COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
 RUN pip install -r /etc/requirements.txt
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
