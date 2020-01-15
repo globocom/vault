@@ -24,7 +24,6 @@ COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
 COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
 RUN pip install -r /etc/requirements.txt
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
-RUN echo '127.0.0.1 vault_keystone' >> /etc/hosts
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
 EXPOSE 5000 35357
