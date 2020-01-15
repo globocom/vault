@@ -22,7 +22,8 @@ COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
 COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
 COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
 COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
-RUN pip install -r /etc/requirements.txt
+RUN pip install -r /etc/requirements.txt \
+    && pip install python-openstackclient==4.0.0
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
