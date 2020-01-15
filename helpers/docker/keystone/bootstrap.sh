@@ -11,7 +11,10 @@ set -x
 echo "Keystone Config:"
 keystone-manage credential_setup --keystone-user root --keystone-group root
 keystone-manage fernet_setup --keystone-user root --keystone-group root
-keystone-manage db_sync
+while ! keystone-manage db_sync; do
+  echo "! database schema initialization failed; retrying in 5 seconds..."
+  sleep 5
+done
 keystone-manage bootstrap \
   --bootstrap-project-name "admin" \
   --bootstrap-username "admin" \

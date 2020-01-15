@@ -18,6 +18,8 @@ services:
             dockerfile: helpers/docker/keystone/Dockerfile
         volumes:
             - vol_keystone:/etc/keystone
+        depends_on:
+            - mysql
         ports:
             - 35357:35357
             - 5000:5000
