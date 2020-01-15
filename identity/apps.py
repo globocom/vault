@@ -7,3 +7,4 @@ from django.utils.translation import ugettext_lazy as _
 class IdentityConfig(AppConfig):
     name = 'identity'
     verbose_name = _("Identity")
+    dashboard_widgets = [{'widget_class': 'identity.widgets.KeystoneWidget'}]

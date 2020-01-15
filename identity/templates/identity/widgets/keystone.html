@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<style>
+.keystone .head:hover,
+.keystone .head:hover .icon { color: #0cd437; }
+.keystone .widget-tab-items .item-box { background-color: #0cd437; }
+</style>
+
+<div class="service keystone">
+  <a class="head" href="{% url 'admin_projects' %}">
+    <i class="icon fas fa-key"></i>
+    <span class="name">
+      Keystone
+      <span class="info">Identity Service</span>
+    </span>
+  </a>
+  <div class="content">
+
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+      <li class="active">
+        <a href="#keystone-metrics" data-toggle="tab">Info</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <div class="tab-pane active" id="keystone-metrics">
+        <div class="widget-tab-items">
+
+          <div class="item-box">
+            <span class="big-number">{% if projects %}{{ projects }}{% else %}0{% endif %}</span>
+            {% trans 'projects' %}
+          </div>
+          <div class="item-box">
+            <span class="big-number">{% if users %}{{ users }}{% else %}0{% endif %}</span>
+            {% trans 'users' %}
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- .tab-content -->
+
+  </div> <!-- .content -->
+
+  <div class="base">
+    <a class="btn btn-xs btn-primary" href="{% url 'admin_projects' %}">Projects</a>
+    <a class="btn btn-xs btn-primary" href="{% url 'admin_list_users' %}">Users</a>
+  </div>
+</div>
