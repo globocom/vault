@@ -21,7 +21,6 @@ COPY ./helpers/docker/keystone/keystone.conf /etc/keystone/keystone.conf
 COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
 COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
-RUN echo '127.0.0.1 vault_keystone' >> /etc/hosts
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
 EXPOSE 5000 35357
