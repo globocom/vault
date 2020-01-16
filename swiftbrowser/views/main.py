@@ -21,11 +21,14 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.template.defaultfilters import filesizeformat
 
 from swiftclient import client
 
 from swiftbrowser.forms import *
 from swiftbrowser.utils import *
+
+from dashboard.jsoninfo import JsonInfo
 
 from vault import utils
 from actionlogger.actionlogger import ActionLogger
@@ -1267,3 +1270,79 @@ def container_acl_status(request, container):
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
                         status=status)
+
+
+@utils.project_required
+@login_required
+def info_json(request):
+
+    class SwiftJsonInfo(JsonInfo):
+        def generate_menu_info(self):
+            self._menu = content = {
+                "name": "S3/Swift",
+                "icon": "fa fa-feather-alt",
+                "url": "",
+                "subitems": [
+                    {
+                        "name": "Containers",
+                        "icon": "",
+                        "url": reverse("containerview")
+                    }
+                ]
+            }
+
+        def generate_widget_info(self):
+            storage_url = get_storage_endpoint(request, 'adminURL')
+
+            if storage_url is None:
+                self._widgets = {
+                    "error": "Storage URL not found."
+                }
+
+            auth_token = request.session.get('auth_token')
+            http_conn = client.http_connection(storage_url,
+                                                 insecure=settings.SWIFT_INSECURE)
+            try:
+                head_acc = client.head_account(storage_url,
+                                                 auth_token,
+                                                 http_conn=http_conn)
+            except Exception as err:
+                log.exception('Exception: {0}'.format(err))
+                self._widgets = {
+                    "error": "Unable to show Swift info."
+                }
+
+            self._widgets = [
+                {
+                    "type": "default",
+                    "title": "S3/Swift",
+                    "subtitle": "Object Storage",
+                    "properties": [
+                        {
+                            "name": "containers",
+                            "description": "",
+                            "value": head_acc.get('x-account-container-count')
+                        },
+                        {
+                            "name": "objects",
+                            "description": "",
+                            "value": head_acc.get('x-account-object-count')
+                        },
+                        {
+                            "name": "used space",
+                            "description": "",
+                            "value": filesizeformat(head_acc.get('x-account-bytes-used'))
+                        }
+                    ],
+                    "buttons": [
+                        {
+                            "name":  "containers",
+                            "url": reverse("containerview")
+                        }
+                    ]
+                }
+            ]
+
+    sjinfo = SwiftJsonInfo()
+
+    return sjinfo.render(request)
