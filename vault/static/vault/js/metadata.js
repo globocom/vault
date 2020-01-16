@@ -79,7 +79,7 @@ Metadata.CacheControl = {};
 (function(window, $) {
     'use strict';
 
-    var $btnCacheControl, $formCacheControl, $btnSend, $btnMeta, $inputMaxAge,
+    var $btnCacheControl, $formCacheControl, $btnSend, $inputMaxAge,
         cacheUrl = '', maxage = 0;
 
     function init() {
@@ -87,9 +87,7 @@ Metadata.CacheControl = {};
         $formCacheControl = $('#form-cache-control');
         $inputMaxAge = $formCacheControl.find('input[name=maxage]');
         $btnSend = $('.btn-send-cache');
-        $btnMeta = $('.btn-meta');
 
-        getMetaInfo($btnMeta.data('meta-url'));
         Base.CSRF.fix();
         bindEvents();
     }
@@ -97,6 +95,9 @@ Metadata.CacheControl = {};
     function bindEvents() {
         $btnCacheControl.on('click', function() {
             cacheUrl = $(this).data('cache-control-url');
+            $formCacheControl.find('input[name=unit][value=seconds]').prop('checked', true);
+            $inputMaxAge.val(1);
+            getMetaInfo(cacheUrl.replace('cache-control', 'metadata'));
         });
 
         $btnSend.on('click', function(e) {
