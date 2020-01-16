@@ -25,5 +25,4 @@ class KeystoneWidget(BaseWidget, WithKeystoneMixin):
     @property
     def is_visible(self):
         user = self.context.get('user')
-        print(user.is_superuser)
         return user.is_superuser

@@ -80,7 +80,7 @@ Metadata.CacheControl = {};
     'use strict';
 
     var $btnCacheControl, $formCacheControl, $btnSend, $inputMaxAge,
-        cacheUrl = '', maxage = 0;
+        cacheUrl = '';
 
     function init() {
         $btnCacheControl = $('.btn-cache-control');
