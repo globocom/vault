@@ -29,6 +29,9 @@ class JsonInfo(object):
                 "type": "default",
                 "title": "Title",
                 "subtitle": "Subtitle",
+                "color": "#cccccc",
+                "icon": "",
+                "url": "",
                 "properties": [
                     {
                         "name": "",

@@ -1324,6 +1324,9 @@ def info_json(request):
                     "type": "default",
                     "title": "S3/Swift",
                     "subtitle": "Object Storage",
+                    "color": "#0caed4",
+                    "icon": "fa fa-feather-alt",
+                    "url": reverse("containerview"),
                     "properties": [
                         {
                             "name": "containers",
@@ -1343,7 +1346,7 @@ def info_json(request):
                     ],
                     "buttons": [
                         {
-                            "name":  "containers",
+                            "name":  "Containers",
                             "url": reverse("containerview")
                         }
                     ]
