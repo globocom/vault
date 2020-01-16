@@ -9,6 +9,7 @@ from django.utils.translation import ugettext as _
 from swiftclient import client as swclient
 
 from dashboard.widgets import BaseWidget
+from identity.views import WithKeystoneMixin
 
 
 log = logging.getLogger(__name__)
