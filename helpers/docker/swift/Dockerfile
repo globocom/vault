@@ -61,4 +61,5 @@ RUN	pip install supervisor; mkdir /var/log/supervisor/ && \
     echo %sudo ALL=NOPASSWD: ALL >> /etc/sudoers
 
 EXPOSE 8080
+
 CMD ["/bin/bash", "/swift/bin/launch.sh"]

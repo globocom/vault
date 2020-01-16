@@ -7,11 +7,17 @@ exec 2>&1
 
 set -x
 
+# MySQL Connection
+python /etc/create_db.py
+
 # Keystone config
 echo "Keystone Config:"
 keystone-manage credential_setup --keystone-user root --keystone-group root
 keystone-manage fernet_setup --keystone-user root --keystone-group root
-keystone-manage db_sync
+while ! keystone-manage db_sync; do
+  echo "! database schema initialization failed; retrying in 5 seconds..."
+  sleep 5
+done
 keystone-manage bootstrap \
   --bootstrap-project-name "admin" \
   --bootstrap-username "admin" \
@@ -19,9 +25,9 @@ keystone-manage bootstrap \
   --bootstrap-role-name "admin" \
   --bootstrap-service-name "keystone" \
   --bootstrap-region-id "RegionOne" \
-  --bootstrap-admin-url "http://vault_keystone:35357/v2.0" \
-  --bootstrap-public-url "http://vault_keystone:5000/v2.0" \
-  --bootstrap-internal-url "http://vault_keystone:5000/v2.0"
+  --bootstrap-admin-url "http://localhost:35357/v2.0" \
+  --bootstrap-public-url "http://localhost:5000/v2.0" \
+  --bootstrap-internal-url "http://localhost:5000/v2.0"
 
 # Start uwsgi
 echo "Start Keystone admin:"
@@ -56,9 +62,9 @@ create_role ResellerAdmin
 create_role_assign u_swift swift admin
 create_role_assign u_swift swift ResellerAdmin
 create_service swift "object-store"
-create_endpoint "object-store" public "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
-create_endpoint "object-store" internal "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
-create_endpoint "object-store" admin "http://vault_swift:8080/v1/AUTH_%(tenant_id)s"
+create_endpoint "object-store" public "http://localhost:8080/v1/AUTH_%(tenant_id)s"
+create_endpoint "object-store" internal "http://localhost:8080/v1/AUTH_%(tenant_id)s"
+create_endpoint "object-store" admin "http://localhost:8080/v1/AUTH_%(tenant_id)s"
 
 # Vault project and user
 create_project Vault

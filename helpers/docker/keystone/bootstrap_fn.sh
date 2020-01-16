@@ -5,7 +5,7 @@ create_user() {
     pass=$2
     project=$3
     while : ; do
-        user_match=$(openstack user list | grep $user)
+        user_match=$(openstack user list -f value | grep $user)
         if [[ ! -z "$user_match" ]]; then
             echo "User created"
             break
@@ -20,7 +20,7 @@ create_user() {
 create_project() {
     project=$1
     while : ; do
-        project_match=$(openstack project list | grep $project)
+        project_match=$(openstack project list -f value | grep $project)
         if [[ ! -z "$project_match" ]]; then
             echo "Project created"
             break
@@ -35,7 +35,7 @@ create_project() {
 create_role() {
     role=$1
     while : ; do
-        role_match=$(openstack role list | grep $role)
+        role_match=$(openstack role list -f value | grep $role)
         if [[ ! -z "$role_match" ]]; then
             echo "Role created"
             break
@@ -52,7 +52,7 @@ create_role_assign() {
     project=$2
     role=$3
     while : ; do
-        assign_match=$(openstack role assignment list --user $user --names | grep $role)
+        assign_match=$(openstack role assignment list -f value --user $user --names | grep $role)
         if [[ ! -z "$assign_match" ]]; then
             echo "Role associated"
             break
@@ -68,7 +68,7 @@ create_service() {
     service=$1
     service_type=$2
     while : ; do
-        service_match=$(openstack service list | grep $service)
+        service_match=$(openstack service list -f value | grep $service)
         if [[ ! -z "$service_match" ]]; then
             echo "Service created"
             break
@@ -85,7 +85,7 @@ create_endpoint() {
     interface=$2
     endpoint=$3
     while : ; do
-        endpoint_match=$(openstack endpoint list --service $service_type --interface $interface | grep $service_type)
+        endpoint_match=$(openstack endpoint list -f value --service $service_type --interface $interface | grep $service_type)
         if [[ ! -z "$endpoint_match" ]]; then
             echo "Endpoint created"
             break
