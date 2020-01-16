@@ -95,13 +95,22 @@ Metadata.CacheControl = {};
     function bindEvents() {
         $btnCacheControl.on('click', function() {
             cacheUrl = $(this).data('cache-control-url');
-            $formCacheControl.find('input[name=unit][value=seconds]').prop('checked', true);
-            $inputMaxAge.val(1);
+            $formCacheControl.find('input[name=unit][value=minutes]').prop('checked', true);
+            $inputMaxAge.val(3);
             getMetaInfo(cacheUrl.replace('cache-control', 'metadata'));
         });
 
         $btnSend.on('click', function(e) {
             e.preventDefault();
+            var unit = $formCacheControl.find('input[name=unit]:checked').val();
+            var maxage = $inputMaxAge.val();
+            if(unit === 'minutes' && maxage < 3) {
+                Base.Messages.setMessage({
+                    description: 'O cache-control deve ter no mínimo 3 minutos',
+                    type: 'error'
+                });
+                return;
+            }
             if(!$(this).hasClass('waiting')) {
                 sendCacheControl(cacheUrl);
             }
@@ -119,7 +128,7 @@ Metadata.CacheControl = {};
                     var cacheControl = data[key];
                     var regexp = /max-age=([0-9]+)/gi;
                     var match = regexp.exec(cacheControl);
-                    $inputMaxAge.val(match[1]);
+                    $inputMaxAge.val(match[1] / 60);
                     break;
                 }
             }

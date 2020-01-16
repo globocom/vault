@@ -943,8 +943,8 @@ def cache_control(request, container, objectname):
                                        insecure=settings.SWIFT_INSECURE)
 
     content, status = {}, 200
-    unit = request.POST.get("unit", "seconds")
-    maxage = int(request.POST.get("maxage", 1))
+    unit = request.POST.get("unit", "minutes")
+    maxage = int(request.POST.get("maxage", 3)) * 60
 
     if maxage <= 0:
         content, status = {"message": _("Days must be greater than 0")}, 400
@@ -952,9 +952,7 @@ def cache_control(request, container, objectname):
                             content_type='application/json',
                             status=status)
 
-    if unit == "minutes":
-        maxage = maxage * 60
-    elif unit == "hours":
+    if unit == "hours":
         maxage = maxage * 3600
     elif unit == "days":
         maxage = maxage * 86400
