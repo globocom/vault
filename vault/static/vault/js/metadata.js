@@ -79,14 +79,17 @@ Metadata.CacheControl = {};
 (function(window, $) {
     'use strict';
 
-    var $btnCacheControl, $formCacheControl, $btnSend,
-        cacheUrl = '';
+    var $btnCacheControl, $formCacheControl, $btnSend, $btnMeta, $inputMaxAge,
+        cacheUrl = '', maxage = 0;
 
     function init() {
         $btnCacheControl = $('.btn-cache-control');
         $formCacheControl = $('#form-cache-control');
+        $inputMaxAge = $formCacheControl.find('input[name=maxage]');
         $btnSend = $('.btn-send-cache');
+        $btnMeta = $('.btn-meta');
 
+        getMetaInfo($btnMeta.data('meta-url'));
         Base.CSRF.fix();
         bindEvents();
     }
@@ -94,7 +97,6 @@ Metadata.CacheControl = {};
     function bindEvents() {
         $btnCacheControl.on('click', function() {
             cacheUrl = $(this).data('cache-control-url');
-            console.log(cacheUrl);
         });
 
         $btnSend.on('click', function(e) {
@@ -105,14 +107,42 @@ Metadata.CacheControl = {};
         });
     }
 
+    function getMetaInfo(url) {
+        $.ajax({
+            type: "GET",
+            url: url
+        })
+        .done(function (data) {
+            for(var key in data) {
+                if (key.toLowerCase() === 'cache-control') {
+                    var cacheControl = data[key];
+                    var regexp = /max-age=([0-9]+)/gi;
+                    var match = regexp.exec(cacheControl);
+                    $inputMaxAge.val(match[1]);
+                    break;
+                }
+            }
+        })
+        .fail(function (data) {
+            Base.Messages.setMessage({
+                description: 'Unable to show item metadata',
+                type: 'error'
+            });
+        });
+    }
+
     function sendCacheControl(cacheUrl) {
-        var days = $formCacheControl.find('input[name=days]').val();
+        var unit = $formCacheControl.find('input[name=unit]:checked').val();
+        var maxage = $formCacheControl.find('input[name=maxage]').val();
         $btnSend.addClass('waiting');
 
         $.ajax({
             type: 'POST',
             url: cacheUrl,
-            data: {'days': days}
+            data: {
+                'unit': unit,
+                'maxage': maxage
+            }
         })
         .done(function (data) {
             Base.Messages.setMessage({

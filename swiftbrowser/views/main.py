@@ -943,16 +943,25 @@ def cache_control(request, container, objectname):
                                        insecure=settings.SWIFT_INSECURE)
 
     content, status = {}, 200
-    days = int(request.POST.get("days", 1))
-    if days <= 0:
+    unit = request.POST.get("unit", "seconds")
+    maxage = int(request.POST.get("maxage", 1))
+
+    if maxage <= 0:
         content, status = {"message": _("Days must be greater than 0")}, 400
         return HttpResponse(json.dumps(content),
                             content_type='application/json',
                             status=status)
 
+    if unit == "minutes":
+        maxage = maxage * 60
+    elif unit == "hours":
+        maxage = maxage * 3600
+    elif unit == "days":
+        maxage = maxage * 86400
+
     headers = client.head_object(storage_url, auth_token, container,
                                  objectname, http_conn=http_conn)
-    headers["cache-control"] = "public, max-age={}".format(days * 86400)
+    headers["cache-control"] = "public, max-age={}".format(maxage)
 
     try:
         client.post_object(storage_url, auth_token, container, objectname,

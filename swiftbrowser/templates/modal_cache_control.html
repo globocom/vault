@@ -13,8 +13,16 @@
       </div>
       <form action="#" id="form-cache-control">
         <div class="modal-body">
-          <label for="host">max-age (em dias):</label><br />
-          <input class="form-control" name="days" type="text" value="1">
+          <label for="host">max-age:</label><br />
+          <input type="radio" id="seconds" name="unit" value="seconds" checked>
+          <label for="seconds">segundos</label>
+          <input type="radio" id="minutes" name="unit" value="minutes">
+          <label for="minutes">minutos</label>
+          <input type="radio" id="hours" name="unit" value="hours">
+          <label for="hours">horas</label>
+          <input type="radio" id="days" name="unit" value="days">
+          <label for="days">dias</label>
+          <input class="form-control" type="number" name="maxage" min="1" value="1">
         </div>
         <div class="modal-footer">
           <button class="btn-send-cache btn btn-primary">
