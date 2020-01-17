@@ -45,6 +45,9 @@ urlpatterns = [
     url(r'^cache-control/(?P<container>.+?)/(?P<objectname>.+?)?$', views.cache_control, name="cache_control"),
     url(r'^versioning/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.object_versioning, name="object_versioning"),
 
+    # JSON info
+    url(r'^info$', views.info_json, name="info_json"),
+
     # Storage base url (/)
     url(r'^', views.containerview, name="containerview"),
 ]
