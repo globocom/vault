@@ -7,4 +7,4 @@ from django.utils.translation import ugettext_lazy as _
 class SwiftBrowserConfig(AppConfig):
     name = 'swiftbrowser'
     verbose_name = _("Swift Browser")
-    dashboard_widgets = [{'widget_class': 'swiftbrowser.widgets.SwiftWidget'}]
+    info_endpoint = '/storage/info'
