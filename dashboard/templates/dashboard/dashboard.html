@@ -82,6 +82,7 @@
       data.forEach(d => {
       var wid = document.createElement("li");
       if (d.type == "default") {
+        wid.className = "widget col-md-6 col-xs-6";
         wid.innerHTML = tmpl("widget_default", Object.assign({
           "name": "default",
           "color": "#aaaaaa",
