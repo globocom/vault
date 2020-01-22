@@ -12,41 +12,8 @@ class JsonInfo(object):
 
     def __init__(self, *args, **kwargs):
 
-        self._menu = {
-            "name": "Menu Item",
-            "icon": "",
-            "url": "",
-            "subitems": [
-                {
-                    "name": "Subitem",
-                    "icon": "",
-                    "url": "/"
-                }
-            ]
-        }
-        self._widgets = [
-            {
-                "type": "default",
-                "title": "Title",
-                "subtitle": "Subtitle",
-                "color": "#cccccc",
-                "icon": "",
-                "url": "",
-                "properties": [
-                    {
-                        "name": "",
-                        "description": "",
-                        "value": ""
-                    }
-                ],
-                "buttons": [
-                    {
-                        "name":  "Button",
-                        "url": "/"
-                    }
-                ]
-            }
-        ]
+        self._menu = {}
+        self._widgets = []
 
     @property
     def menu_info(self):

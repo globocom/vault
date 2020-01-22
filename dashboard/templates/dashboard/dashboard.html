@@ -18,7 +18,18 @@
 {% endblock %}
 
 {% block content %}
+  {% if has_team %}
   <ul class="dashboard-widgets" id="dashboard-widgets"></ul>
+  {% else %}
+  <div class="widget no-team alert alert-warning">
+    <i class="icon-warning fa fa-exclamation-triangle"></i>
+    <span>
+      <strong>
+        {% trans "You are not associated with a team. Contact the administrator to add you to a team." %}
+      </strong>
+    </span>
+  </div>
+  {% endif %}
 
 {% endblock %}
 
@@ -60,6 +71,7 @@
   </div>
 </script>
 
+{% if has_team %}
 <script type="text/javascript">
   var urls = [{% for iep in info_endpoints %}"{{iep}}",{%endfor%}];
 
@@ -89,4 +101,5 @@
 });
 
 </script>
+{% endif %}
 {% endblock %}

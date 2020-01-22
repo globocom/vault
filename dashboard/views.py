@@ -19,7 +19,8 @@ class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
                 info_endpoints.append(conf.info_endpoint)
 
         context = {
-            "info_endpoints": info_endpoints
+            "info_endpoints": info_endpoints,
+            "has_team": request.user.groups.count() > 0
         }
 
         return self.render_to_response(context)
