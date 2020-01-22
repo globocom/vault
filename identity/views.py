@@ -709,7 +709,7 @@ class JsonInfoView(LoginRequiredMixin, WithKeystoneMixin, View):
                         "name": "keystone",
                         "title": "Keystone",
                         "subtitle": "Identity Service",
-                        "color": "#0cd437",
+                        "color": "#6faa50",
                         "icon": "fas fa-key",
                         "url": reverse("admin_projects"),
                         "properties": [
