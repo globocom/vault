@@ -18,5 +18,75 @@
 {% endblock %}
 
 {% block content %}
-  {% render_widgets %}
+  <ul class="dashboard-widgets" id="dashboard-widgets"></ul>
+
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
+<script src="{% static 'dashboard/js/dashboard.js' %}"></script>
+
+<script type="text/html" id="widget_default">
+  <style>
+  .<%=name%> .head:hover,
+  .<%=name%> .head:hover .icon { color: <%=color%> }
+  .<%=name%> .item-box { background-color: <%=color%> }
+  </style>
+
+  <div class="service <%=name%>">
+    <a class="head" href="<%=title_url%>">
+      <i class="icon <%=icon%>"></i>
+      <span class="name">
+        <%=title%>
+        <span class="info"><%=subtitle%></span>
+      </span>
+    </a>
+    <div class="content">
+      <div class="item-box">
+        <span class="big-number">{% if projects %}{{ projects }}{% else %}0{% endif %}</span>
+        {% trans 'projects' %}
+      </div>
+      <div class="item-box">
+        <span class="big-number">{% if users %}{{ users }}{% else %}0{% endif %}</span>
+        {% trans 'users' %}
+      </div>
+
+    </div> <!-- .content -->
+
+    <div class="base">
+      <a class="btn btn-xs btn-primary" href="{% url 'admin_projects' %}">Projects</a>
+      <a class="btn btn-xs btn-primary" href="{% url 'admin_list_users' %}">Users</a>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+  var urls = [{% for iep in info_endpoints %}"{{iep}}",{%endfor%}];
+
+  Promise.all(urls.map(u=>fetch(u + "?opt=widgets"))).then(responses => {
+    return Promise.all(responses.map(res => res.json()));
+  }).then(datas => {
+    datas.forEach(data => {
+      data.forEach(d => {
+      var wid = document.createElement("li");
+      // var widContent = document.createTextNode(JSON.stringify(d));
+      // wid.appendChild(widContent);
+      wid.innerHTML = tmpl("widget_default", {
+        "color": "#ff0000",
+        "title": "Title",
+        "name": "Name",
+        "title_url": "/",
+        "icon": "fas fa-key",
+        "subtitle": "Subtitle"
+      });
+      console.log(d);
+      var widgets = document.getElementById("dashboard-widgets");
+      widgets.appendChild(wid);
+      console.log(wid);
+    });
+
+  })
+});
+
+</script>
 {% endblock %}
