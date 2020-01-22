@@ -11,13 +11,13 @@
 {% block content %}
   <h4>
     <i class="icon-warning fa fa-warning"></i>
-    Salve estas informa&ccedil;&otilde;es para acessar os servi&ccedil;os
+    {% trans 'Save this information to access the services' %}
   </h4>
   <br />
 
-  <div class="panel panel-default">
+  <div class="panel panel-default" id="credentials">
     <table class="project-created items-list table table-bordered table-striped">
-      <caption>Credenciais</caption>
+      <caption>{% trans 'Credentials' %}</caption>
       <tr>
         <th width="20%">{% trans 'Project' %}</th>
         <td>{{ project_info.project_name }}</td>
@@ -35,6 +35,16 @@
         <td>{{ project_info.auth_url }}</td>
       </tr>
     </table>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <button class="btn btn-info btn-copy-clipboard" data-copied-msg="{% trans 'Copied!' %}" id="btn-copy-clipboard">
+        {% trans 'Copy to Clipboard' %}
+      </button>
+      <button class="btn btn-info btn-download" id="btn-download">
+        {% trans 'Download Credentials' %}
+      </button>
+    </div>
   </div>
 
   <div class="panel panel-default">
@@ -57,4 +67,27 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script type="text/javascript">
+  var jsonData = JSON.stringify({
+    "project": "{{ project_info.project_name }}",
+    "username": "{{ project_info.user_name }}",
+    "password": "{{ project_info.user_password }}",
+    "auth_url": "{{ project_info.auth_url }}"
+  });
+  var btnClipboard = document.getElementById('btn-copy-clipboard');
+  var btnDownload = document.getElementById('btn-download');
+  var copiedMsg = btnClipboard.dataset.copiedMsg;
+  var clipboard = new Clipboard('.btn-copy-clipboard', {
+      text: function(trigger) { return jsonData; }
+  });
+
+  clipboard.on('success', function(e) {
+      Base.Messages.setMessage({ description: copiedMsg, type: 'success' });
+      e.clearSelection();
+  });
+
+  btnDownload.onclick = () => {
+      Base.Download.json('credentials.json', jsonData);
+  }
+</script>
 {% endblock %}
