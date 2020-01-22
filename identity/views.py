@@ -706,6 +706,7 @@ class JsonInfoView(LoginRequiredMixin, WithKeystoneMixin, View):
                 self._widgets = [
                     {
                         "type": "default",
+                        "name": "keystone",
                         "title": "Keystone",
                         "subtitle": "Identity Service",
                         "color": "#0cd437",

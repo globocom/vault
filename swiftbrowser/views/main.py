@@ -1322,6 +1322,7 @@ def info_json(request):
             self._widgets = [
                 {
                     "type": "default",
+                    "name": "swiftbrowser",
                     "title": "S3/Swift",
                     "subtitle": "Object Storage",
                     "color": "#0caed4",

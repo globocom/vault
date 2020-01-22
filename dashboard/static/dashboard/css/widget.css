@@ -6,19 +6,19 @@ ul.widgets {
 .widget {
     position: relative;
     margin-bottom: 30px;
-    min-height: 280px;
+    min-height: 230px;
 }
 
-.widget-tab-items table {
+.widget.content table {
     margin: 0;
 }
 
-.widget-tab-items table th {
+.widget.content table th {
     width: 10%;
     text-align: right;
 }
 
-.widget-tab-items table input {
+.widget.content table input {
     border-color: #eee;
     border-radius: 0;
 }
@@ -33,7 +33,7 @@ ul.widgets {
     padding: 0;
 }
 
-.widget .widget-tab-items {
+.widget .content {
     display: flex;
     flex-flow: row wrap;
     flex-direction: row;
@@ -41,7 +41,7 @@ ul.widgets {
     justify-content: center;
 }
 
-.widget .widget-tab-items .item-box {
+.widget .content .item-box {
     display: flex;
     flex-grow: 1;
     flex-flow: column;

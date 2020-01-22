@@ -33,8 +33,8 @@
   .<%=name%> .item-box { background-color: <%=color%> }
   </style>
 
-  <div class="service <%=name%>">
-    <a class="head" href="<%=title_url%>">
+  <div class="widget service <%=name%>">
+    <a class="head" href="<%=url%>">
       <i class="icon <%=icon%>"></i>
       <span class="name">
         <%=title%>
@@ -42,20 +42,20 @@
       </span>
     </a>
     <div class="content">
+      <% for ( var i = 0; i < properties.length; i++ ) { %>
       <div class="item-box">
-        <span class="big-number">{% if projects %}{{ projects }}{% else %}0{% endif %}</span>
-        {% trans 'projects' %}
+        <%=properties[i].description%>
+        <span class="big-number"><%=properties[i].value%></span>
+        <%=properties[i].name%>
       </div>
-      <div class="item-box">
-        <span class="big-number">{% if users %}{{ users }}{% else %}0{% endif %}</span>
-        {% trans 'users' %}
-      </div>
+      <% } %>
 
     </div> <!-- .content -->
 
     <div class="base">
-      <a class="btn btn-xs btn-primary" href="{% url 'admin_projects' %}">Projects</a>
-      <a class="btn btn-xs btn-primary" href="{% url 'admin_list_users' %}">Users</a>
+      <% for ( var i = 0; i < buttons.length; i++ ) { %>
+      <a class="btn btn-xs btn-primary" href="<%=buttons[i].url%>"><%=buttons[i].name%></a>
+      <% } %>
     </div>
   </div>
 </script>
@@ -69,20 +69,20 @@
     datas.forEach(data => {
       data.forEach(d => {
       var wid = document.createElement("li");
-      // var widContent = document.createTextNode(JSON.stringify(d));
-      // wid.appendChild(widContent);
-      wid.innerHTML = tmpl("widget_default", {
-        "color": "#ff0000",
-        "title": "Title",
-        "name": "Name",
-        "title_url": "/",
-        "icon": "fas fa-key",
-        "subtitle": "Subtitle"
-      });
-      console.log(d);
+      if (d.type == "default") {
+        wid.innerHTML = tmpl("widget_default", Object.assign({
+          "name": "default",
+          "color": "#aaaaaa",
+          "icon": "fas fa-question-circle",
+          "title": "",
+          "url": "#",
+          "subtitle": "",
+          "properties": [],
+          "buttons": []
+        }, d));
+      }
       var widgets = document.getElementById("dashboard-widgets");
       widgets.appendChild(wid);
-      console.log(wid);
     });
 
   })
