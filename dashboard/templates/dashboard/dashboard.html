@@ -78,9 +78,14 @@
   {% endautoescape %}
 
   Promise.all(urls.map(u=>fetch(u + "?opt=widgets"))).then(responses => {
-    return Promise.all(responses.map(res => res.json()));
+    return Promise.all(responses.map(res => res.text()));
   }).then(datas => {
     datas.forEach(data => {
+      try {
+        data = JSON.parse(data);
+      } catch (err) {
+        return;
+      }
       data.forEach(d => {
       var wid = document.createElement("li");
       if (d.type == "default") {

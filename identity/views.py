@@ -657,7 +657,7 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin,
         return self.render_to_response(context, status=status)
 
 
-class JsonInfoView(LoginRequiredMixin, WithKeystoneMixin, View):
+class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
 
     def get(self, request, *args, **kwargs):
 

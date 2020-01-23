@@ -46,17 +46,22 @@
   {% endautoescape %}
 
   Promise.all(urls.map(u=>fetch(u + "?opt=menu"))).then(responses => {
-    return Promise.all(responses.map(res => res.json()));
+    return Promise.all(responses.map(res => res.text()));
   }).then(datas => {
       datas.forEach(data => {
-      var wid = document.createElement("li");
-      wid.innerHTML = tmpl("menu_icon_default", Object.assign({
-        "name": "default",
-        "icon": "fas fa-question-circle",
-        "url": "#"
-      }, data));
-      var widgets = document.getElementById("sidebar-buttons");
-      widgets.appendChild(wid);
+        try {
+          data = JSON.parse(data);
+        } catch (err) {
+          return;
+        }
+        var wid = document.createElement("li");
+        wid.innerHTML = tmpl("menu_icon_default", Object.assign({
+          "name": "default",
+          "icon": "fas fa-question-circle",
+          "url": "#"
+        }, data));
+        var widgets = document.getElementById("sidebar-buttons");
+        widgets.appendChild(wid);
     })
 });
 
