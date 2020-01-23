@@ -73,7 +73,9 @@
 
 {% if has_team %}
 <script type="text/javascript">
-  var urls = [{% for iep in info_endpoints %}"{{iep}}",{%endfor%}];
+  {% autoescape off %}
+  var urls = [{% info_endpoints %}];
+  {% endautoescape %}
 
   Promise.all(urls.map(u=>fetch(u + "?opt=widgets"))).then(responses => {
     return Promise.all(responses.map(res => res.json()));

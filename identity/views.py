@@ -670,7 +670,7 @@ class JsonInfoView(LoginRequiredMixin, WithKeystoneMixin, View):
                 self._menu = content = {
                     "name": "Keystone",
                     "icon": "fas fa-key",
-                    "url": "",
+                    "url": reverse("admin_projects"),
                     "subitems": [
                         {
                             "name": "Projects",

@@ -1,9 +1,9 @@
-{% load i18n vault_tags %}
+{% load i18n staticfiles dashboard_tags vault_tags %}
 {% can_view_team_users_ogs as can_view_tusers_ogs %}
 
 <!-- sidebar -->
 <nav id="sidebar">
-  <ul class="buttons">
+  <ul class="buttons" id="sidebar-buttons">
     <li>
       <a href="{% url 'dashboard' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-home"></i>
@@ -22,11 +22,6 @@
         <i class="icon fa fa-users"></i>
       </a>
     </li>
-    <li>
-      <a href="{% url 'containerview' %}" title="S3/Swift" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-feather-alt"></i>
-      </a>
-    </li>
     {% if can_view_tusers_ogs %}
     <li>
       <a href="{% url 'team_list_users_ogs' %}" title="Times e Usuários" data-toggle="tooltip" data-placement="right">
@@ -37,3 +32,32 @@
   </ul>
 </nav>
 <!-- /sidebar -->
+
+<script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
+
+<script type="text/html" id="menu_icon_default">
+  <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">
+    <i class="icon <%=icon%>"></i>
+  </a>
+</script>
+<script type="text/javascript">
+  {% autoescape off %}
+  var urls = [{% info_endpoints %}];
+  {% endautoescape %}
+
+  Promise.all(urls.map(u=>fetch(u + "?opt=menu"))).then(responses => {
+    return Promise.all(responses.map(res => res.json()));
+  }).then(datas => {
+      datas.forEach(data => {
+      var wid = document.createElement("li");
+      wid.innerHTML = tmpl("menu_icon_default", Object.assign({
+        "name": "default",
+        "icon": "fas fa-question-circle",
+        "url": "#"
+      }, data));
+      var widgets = document.getElementById("sidebar-buttons");
+      widgets.appendChild(wid);
+    })
+});
+
+</script>

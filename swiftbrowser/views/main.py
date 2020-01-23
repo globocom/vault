@@ -1288,7 +1288,7 @@ def info_json(request):
             self._menu = content = {
                 "name": "S3/Swift",
                 "icon": "fa fa-feather-alt",
-                "url": "",
+                "url": reverse("containerview"),
                 "subitems": [
                     {
                         "name": "Containers",

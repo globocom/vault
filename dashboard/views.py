@@ -12,14 +12,7 @@ class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        info_endpoints = []
-
-        for conf in apps.get_app_configs():
-            if hasattr(conf, 'info_endpoint'):
-                info_endpoints.append(conf.info_endpoint)
-
         context = {
-            "info_endpoints": info_endpoints,
             "has_team": request.user.groups.count() > 0
         }
 
