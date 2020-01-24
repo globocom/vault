@@ -11,4 +11,3 @@ python-keystoneclient==3.13.1
 python-swiftclient==3.7.1
 pytz==2015.4
 requests==2.19.1
-wsgiref==0.1.2
