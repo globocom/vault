@@ -34,7 +34,7 @@ class ActionLogger:
 
         audit = Audit(user=user,
                       action=self._actions[action],
-                      item=self._to_str(item))
+                      item=str(item))
         audit.save()
 
         msg = self._make_log_message(user, action, item)
@@ -43,12 +43,4 @@ class ActionLogger:
     def _make_log_message(self, user, action, item):
         return 'Usuario {} {} {}'.format(user,
                                          self._actions[action],
-                                         self._to_str(item))
-
-    def _to_str(self, obj):
-        if isinstance(obj, unicode):
-            return obj.encode("utf8")
-        elif isinstance(obj, str):
-            return str(obj)
-        else:
-            return repr(obj)
+                                         str(item))
