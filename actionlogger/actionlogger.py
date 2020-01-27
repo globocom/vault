@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import syslog
-from models import Audit
+from .models import Audit
 
 
 class ActionNotFound(Exception):

@@ -9,7 +9,7 @@ import random
 import logging
 import dateutil.parser
 
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib import messages

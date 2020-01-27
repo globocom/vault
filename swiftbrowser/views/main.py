@@ -12,7 +12,7 @@ import requests
 from datetime import datetime
 
 from hashlib import sha1
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib import messages
