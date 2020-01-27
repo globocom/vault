@@ -15,7 +15,7 @@ def get_project_list():
         if keystone.conn is not None:
             for project in keystone.project_list():
                 project_list[project.id] = project.name
-    except Exception, e:
+    except Exception as e:
         pass
 
     return project_list

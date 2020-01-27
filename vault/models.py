@@ -43,7 +43,7 @@ class OG(models.Model):
         verbose_name_plural = _('OGs')
 
     def __unicode__(self):
-        return " %s" % (self.name)
+        return "{}".format(self.name)
 
 
 class TeamOG(models.Model):

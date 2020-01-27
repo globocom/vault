@@ -8,7 +8,7 @@ from django.http import HttpResponse
 log = logging.getLogger(__name__)
 
 
-class JsonInfo(object):
+class JsonInfo:
 
     def __init__(self, *args, **kwargs):
 

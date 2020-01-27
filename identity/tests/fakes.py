@@ -8,11 +8,11 @@ from django.contrib.auth.models import User, Group
 from vault.models import GroupProjects
 
 
-class FakeResource(object):
+class FakeResource:
     """ Fake Keystone Resource (e.g. User, Project, Role) """
     def __init__(self, n=0, name=None):
         self.id = n
-        self.name = name if name else "FakeResource%d" % n
+        self.name = name if name else "FakeResource{:d}".format(n)
         self.enabled = True
         self.description = ''
         self.project_id = 1
@@ -21,7 +21,7 @@ class FakeResource(object):
         return self.__dict__
 
 
-class FakeToken(object):
+class FakeToken:
     """ Fake Keystone Token """
     def __init__(self, id="faketokenid"):
         self.id = id
@@ -52,7 +52,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
         # strategy = factory.BUILD_STRATEGY
 
     # id = factory.Sequence(lambda n: n)
-    name = factory.Sequence(lambda n: "Group #%s" % n)
+    name = factory.Sequence(lambda n: "Group #{}".format(n))
 
 
 class UserFactory(factory.django.DjangoModelFactory):

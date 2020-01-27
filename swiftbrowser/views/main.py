@@ -253,8 +253,8 @@ def upload(request, container, prefix=None):
         else:
             return redirect(objectview, container=container)
 
-    hmac_body = '%s\n%s\n%s\n%s\n%s' % (path, redirect_url, max_file_size,
-                                        max_file_count, expires)
+    hmac_body = '{}\n{}\n{}\n{}\n{}'.format(path, redirect_url, max_file_size,
+                                            max_file_count, expires)
     signature = hmac.new(str(key), str(hmac_body), sha1).hexdigest()
 
     prefixes = prefix_list(prefix)
@@ -508,10 +508,10 @@ def edit_acl(request, container):
             writers = remove_duplicates_from_acl(writers)
 
             if form.cleaned_data['read']:
-                readers += ",%s" % username
+                readers += ",{}".format(username)
 
             if form.cleaned_data['write']:
-                writers += ",%s" % username
+                writers += ",{}".format(username)
 
             headers = {'X-Container-Read': readers,
                        'X-Container-Write': writers}
@@ -523,7 +523,7 @@ def edit_acl(request, container):
                                      _('ACLs updated'))
 
                 actionlog.log(request.user.username, "update",
-                              'headers: %s, container: %s' % (headers, container))
+                              'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
@@ -560,7 +560,7 @@ def edit_acl(request, container):
                                      _('ACL removed'))
 
                 actionlog.log(request.user.username, "delete",
-                              'headers: %s, container: %s' % (headers, container))
+                              'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
@@ -717,11 +717,11 @@ def object_versioning(request, container, prefix=None):
         if action == 'enable':
             enable_versioning(request, container)
             actionlog.log(request.user.username, "enable",
-                          'Versioning. Container: %s' % container)
+                          'Versioning. Container: {}'.format(container))
         elif action == 'disable':
             disable_versioning(request, container)
             actionlog.log(request.user.username, "disable",
-                          'Versioning. Container: %s' % container)
+                          'Versioning. Container: {}'.format(container))
         else:
             messages.add_message(request, messages.ERROR,
                                  'Action is required.')
@@ -847,7 +847,7 @@ def edit_cors(request, container):
                                      _('CORS updated'))
 
                 actionlog.log(request.user.username, "update",
-                              'headers: %s, container: %s' % (headers, container))
+                              'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
@@ -882,7 +882,7 @@ def edit_cors(request, container):
                                      _('CORS removed'))
 
                 actionlog.log(request.user.username, "delete",
-                              'headers: %s, container: %s' % (headers, container))
+                              'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))

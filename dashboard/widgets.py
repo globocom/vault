@@ -55,7 +55,7 @@ class RenderWidgets(template.Node):
         return getattr(m, classname)
 
 
-class BaseWidget(object):
+class BaseWidget:
     widget_template = 'dashboard/widgets/widget.html'
     size = "half"
 

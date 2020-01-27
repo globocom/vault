@@ -22,7 +22,7 @@ CHECKS = [
     },
     {
         'output': 'Checking for print statements...',
-        'command': 'grep -n " print " %s',
+        'command': 'grep -n " print(" %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*docs.*'],
         'print_filename': True,
@@ -36,7 +36,7 @@ def matches_file(file_name, match_files):
 
 def check_files(files, check):
     result = 0
-    print check['output']
+    print(check['output'])
     for file_name in files:
         if not 'match_files' in check or matches_file(file_name, check['match_files']):
             if not 'ignore_files' in check or not matches_file(file_name, check['ignore_files']):
@@ -49,9 +49,9 @@ def check_files(files, check):
                     else:
                         prefix = '\t'
                     output_lines = ['%s%s' % (prefix, line) for line in out.splitlines()]
-                    print '\n'.join(output_lines)
+                    print('\n'.join(output_lines))
                     if err:
-                        print err
+                        print(err)
                     result = 1
     return result
 
@@ -76,7 +76,7 @@ def main(all_files):
         result = check_files(files, check) or result
 
     if result == 1:
-        print "\nCOMMIT FAILED. Check the git hook messages. IF AND ONLY IF you are SURE that is a false positive, use git commit --no-verify\n"
+        print("\nCOMMIT FAILED. Check the git hook messages. IF AND ONLY IF you are SURE that is a false positive, use git commit --no-verify\n")
     sys.exit(result)
 
 

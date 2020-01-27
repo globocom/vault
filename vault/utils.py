@@ -167,5 +167,5 @@ def human_readable(value):
         index += 1
         value = round(value / 1024)
     if index == -1:
-        return '%d' % value
-    return '%d%si' % (round(value), suffixes[index])
+        return '{:d}'.format(value)
+    return '{:d}{}i'.format(round(value), suffixes[index])

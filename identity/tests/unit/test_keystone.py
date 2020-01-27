@@ -296,7 +296,7 @@ class TestKeystoneDeleteProject(TestCase):
                                         mock_keystone_delete):
         mock_endpoints.return_value = {'adminURL': 'https://fake.api.globoi.com/v1/AUTH_XPTO'}
 
-        class FakeResponse(object):
+        class FakeResponse:
             status_code = 204
         mock_swift_delete.return_value = FakeResponse()
 

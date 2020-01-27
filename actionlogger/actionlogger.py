@@ -8,7 +8,7 @@ class ActionNotFound(Exception):
     pass
 
 
-class ActionLogger(object):
+class ActionLogger:
     """ A wrapper to log actions """
 
     def __init__(self):

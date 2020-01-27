@@ -72,7 +72,7 @@ def switch(request, project_id):
     return HttpResponseRedirect(next_url)
 
 
-class ProjectCheckMixin(object):
+class ProjectCheckMixin:
     """Mixin for Views to check and set user current project"""
 
     def dispatch(self, request, *args, **kwargs):
@@ -91,7 +91,7 @@ class ProjectCheckMixin(object):
         return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
 
 
-class LoginRequiredMixin(object):
+class LoginRequiredMixin:
     """ Mixin for Class Views that needs a user login """
 
     @method_decorator(login_required)
@@ -138,7 +138,7 @@ class HasOgPermissionMixin(LoginRequiredMixin):
         return super(HasOgPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
-class JSONResponseMixin(object):
+class JSONResponseMixin:
     """ Mixin for Class Views with json response """
 
     def render_to_response(self, context, **response_kwargs):
@@ -272,7 +272,7 @@ class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             user.groups.add(group)
             user.save()
 
-            item = 'group: %s, user: %s' % (group, user)
+            item = 'group: {}, user: {}'.format(group, user)
             actionlog.log(request.user.username, 'create', item)
 
             return self.render_to_response(context)
@@ -298,7 +298,7 @@ class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             user.groups.remove(group)
             user.save()
 
-            item = 'group: %s, user: %s' % (group, user)
+            item = 'group: {}, user: {}'.format(group, user)
             actionlog.log(request.user.username, 'delete', item)
 
             return self.render_to_response(context)

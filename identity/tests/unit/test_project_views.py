@@ -328,7 +328,7 @@ class DeleteProjectTest(TestCase):
     #         'object_store': {'adminURL': 'http://api.end.point'}
     #     }
 
-    #     class ConnStub(object):
+    #     class ConnStub:
     #         auth_token = 'auth_token'
 
     #     mock_keystone.return_value.conn = ConnStub()

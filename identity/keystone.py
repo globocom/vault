@@ -17,7 +17,7 @@ from vault.models import GroupProjects
 log = logging.getLogger(__name__)
 
 
-class KeystoneBase(object):
+class KeystoneBase:
 
     def __init__(self, username=None, password=None, tenant_name=None,
                  auth_url=None, config={}):

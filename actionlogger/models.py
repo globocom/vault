@@ -15,4 +15,4 @@ class Audit(models.Model):
         db_table = 'audit'
 
     def __unicode__(self):
-        return " %s - %s - %s - %s " % (self.user, self.action, self.item, self.created_at)
+        return "{} - {} - {} - {}".format(self.user, self.action, self.item, self.created_at)

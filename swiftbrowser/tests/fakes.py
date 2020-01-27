@@ -59,24 +59,24 @@ def get_container(*args, **kwargs):
     return ({}, objects)
 
 
-def get_containers(object):
+def get_containers(objects):
     self.headers = {'Content-Length': '7', 'X-Container-Object-Count': '1', 'Accept-Ranges': 'bytes', 'Vary': 'Origin', 'Server': 'nginx', 'X-Container-Bytes-Used': '0', 'Connection': 'keep-alive', 'X-Timestamp': '1465405001.73901', 'X-Trans-Id': 'tx52fbf897372b486ebd33a-005762b25d', 'Date': 'Thu, 16 Jun 2016 14:06:21 GMT', 'X-Storage-Policy': 'default-3x', 'Content-Type': 'text/plain; charset=utf-8'}
 
     return ({}, objects)
 
 
-class FakeResource(object):
-    """ Fake Keystone Resource (e.g. User, Project, Role) """
+class FakeResource:
+    """Fake Keystone Resource (e.g. User, Project, Role)"""
 
     def __init__(self, n=0, name=None):
         self.id = n
-        self.name = name if name else "FakeResource%d" % n
+        self.name = name if name else "FakeResource{:d}".format(n)
         self.enabled = True
         self.description = ''
         self.project_id = 1
 
 
-class FakeToken(object):
+class FakeToken:
     """ Fake Keystone Token """
 
     def __init__(self, id="faketokenid"):
@@ -84,18 +84,18 @@ class FakeToken(object):
 
 
 class FakeUser(AnonymousUser):
-    """ Fake Keystone Resource (e.g. User, Project, Role) """
+    """Fake Keystone Resource (e.g. User, Project, Role)"""
 
     def __init__(self, n=0, name=None):
         super(FakeUser, self).__init__()
 
         self.id = n
-        self.username = name if name else "FakeUser%d" % n
+        self.username = name if name else "FakeUser{:d}".format(n)
         self.enabled = True
         self.description = ''
 
 
-class FakeRequestResponse(object):
+class FakeRequestResponse:
 
     def __init__(self, status_code=200, content=None, headers=None):
         self.status_code = status_code
@@ -103,8 +103,8 @@ class FakeRequestResponse(object):
         self.headers = headers
 
 
-class FakeElasticResult(object):
-    """ Fake Elastic Result """
+class FakeElasticResult:
+    """Fake Elastic Result"""
 
     def __init__(self, headers):
         self.headers = headers

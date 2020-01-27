@@ -18,7 +18,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
         model = Group
         strategy = factory.BUILD_STRATEGY
 
-    name = factory.Sequence(lambda n: "Group #%s" % n)
+    name = factory.Sequence(lambda n: "Group #{}".format(n))
 
 
 # TODO: Carregando grupos reais do banco; corrigir para carregar GroupFactory

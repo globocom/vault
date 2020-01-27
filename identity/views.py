@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
 
-class WithKeystoneMixin(object):
+class WithKeystoneMixin:
 
     def __init__(self, *args, **kwargs):
         self.keystone = None
@@ -214,7 +214,7 @@ class DeleteUserView(BaseUserView):
             messages.add_message(request, messages.SUCCESS,
                                  _('Successfully deleted user'))
             actionlog.log(request.user.username, 'delete',
-                          'user_id: %s' % kwargs.get('user_id'))
+                          'user_id: {}'.format(kwargs.get('user_id')))
 
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
@@ -593,7 +593,7 @@ class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
         try:
             self.keystone.add_user_role(project=project, role=role, user=user)
 
-            item = 'project: %s, role: %s, user: %s' % (project, role, user)
+            item = 'project: {}, role: {}, user: {}'.format(project, role, user)
             actionlog.log(request.user.username, 'create', item)
 
             return self.render_to_response(context)
@@ -623,7 +623,7 @@ class DeleteUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             self.keystone.remove_user_role(
                 project=project, role=role, user=user)
 
-            item = 'project: %s, role: %s, user: %s' % (project, role, user)
+            item = 'project: {}, role: {}, user: {}'.format(project, role, user)
             actionlog.log(request.user.username, 'delete', item)
 
             return self.render_to_response(context)
