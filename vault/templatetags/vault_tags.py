@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urllib import urlencode
+from urllib.parse import urlencode
 from django import template
 from django.conf import settings
 
