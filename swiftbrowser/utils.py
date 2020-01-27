@@ -260,12 +260,3 @@ def get_name_from_document(data):
 
 def get_uri_object_from_document(data):
     return data.get('hits').get('hits')[0].get('_id')
-
-
-def to_str(obj):
-    if isinstance(obj, unicode):
-        return obj.encode('utf8')
-    elif isinstance(obj, str):
-        return str(obj)
-    else:
-        return repr(obj)

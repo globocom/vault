@@ -328,12 +328,12 @@ def download(request, container, objectname):
         'X-Storage-Token': auth_token
     }
 
-    url = '{0}/{1}/{2}'.format(storage_url, container, to_str(objectname))
+    url = '{0}/{1}/{2}'.format(storage_url, container, str(objectname))
 
     res = requests.get(url, headers=headers,
                        verify=not settings.SWIFT_INSECURE)
 
-    actionlog.log(request.user.username, "download", to_str(objectname))
+    actionlog.log(request.user.username, "download", str(objectname))
 
     return HttpResponse(res.content, content_type=res.headers['content-type'])
 
@@ -649,7 +649,7 @@ def metadataview(request, container, objectname=None):
 
     url = '{0}/{1}'.format(storage_url, container)
     if objectname:
-        url = '{0}/{1}'.format(url, to_str(objectname))
+        url = '{0}/{1}'.format(url, str(objectname))
 
     response = requests.head(url, headers=headers,
                              verify=not settings.SWIFT_INSECURE)
