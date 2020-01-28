@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from mock import Mock, MagicMock, patch
+from unittest.mock import Mock, MagicMock, patch
 
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeToken
@@ -92,7 +92,7 @@ class TestDeleteUserTeam(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '{"msg": "ok"}')
+        self.assertEqual(response.content, b'{"msg": "ok"}')
 
     def test_delete_user_and_team_flow_work_fine(self):
         self.request.user.is_superuser = False
@@ -107,7 +107,7 @@ class TestDeleteUserTeam(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '{"msg": "ok"}')
+        self.assertEqual(response.content, b'{"msg": "ok"}')
 
     def test_delete_user_and_team_flow_fail(self):
         self.request.user.is_superuser = False
@@ -224,7 +224,7 @@ class TestAddUserTeam(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '{"msg": "ok"}')
+        self.assertEqual(response.content, b'{"msg": "ok"}')
 
         response2 = self.view(self.request)
 
@@ -326,7 +326,7 @@ class UpdateTeamsUsersTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('<option value="2">usertest-2</option>', response.content)
+        self.assertIn(b'<option value="2">usertest-2</option>', response.content)
 
     @patch('vault.templatetags.vault_tags.requests.get')
     def test_manage_users_teams_flow_ensure_group_list_was_filled_up(self, mock_response):
@@ -334,7 +334,7 @@ class UpdateTeamsUsersTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('<option value="1">Group', response.content)
+        self.assertIn(b'<option value="1">Group', response.content)
 
     def test_manage_users_teams_flow_for_a_user_not_superuser_work_fine(self):
         self.request.user.is_superuser = False

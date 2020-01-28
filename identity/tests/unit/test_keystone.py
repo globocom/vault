@@ -2,7 +2,7 @@
 
 from uuid import uuid4
 from unittest import TestCase
-from mock import patch
+from unittest.mock import patch
 from keystoneclient.v2_0.tenants import Tenant
 from keystoneclient import exceptions
 
@@ -49,11 +49,8 @@ class TestKeystoneV2(TestCase):
             'identity.keystone.Keystone.project_get').start()
         self.mock_project_get.return_value = fake_project
 
-        self.mock_bs_project = patch(
-            'storm_keystone.keystone.Keystone.vault_business_service_project_create').start()
-
         self.mock_keystone_conn = patch(
-            'storm_keystone.keystone.Keystone._create_keystone_connection').start()
+            'identity.keystone.Keystone._create_keystone_connection').start()
 
         self.group = GroupFactory(id=1)
 
@@ -136,8 +133,8 @@ class TestKeystoneV2(TestCase):
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
     @patch('identity.keystone.Keystone.user_create')
-    @patch('storm_keystone.keystone.Keystone.create_password')
-    @patch('storm_keystone.keystone.Keystone.vault_group_project_create')
+    @patch('identity.keystone.Keystone.create_password')
+    @patch('identity.keystone.Keystone.vault_group_project_create')
     def test_vault_create_project(self, mock_gp_create, mock_key_pass, mock_key_user):
 
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
@@ -247,18 +244,19 @@ class TestKeystoneV2(TestCase):
         fake_user = 'u_{}'.format(self.project.name)
         self.assertEqual(fake_user, mock_user_list.return_value.username)
 
-    def test_vault_update_project_keystone(self):
-        group_id = self.group.id
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+    @patch('identity.keystone.Keystone.vault_set_project_owner')
+    def test_vault_update_project_keystone(self, mock_prj_owner):
+        mock_prj_owner.return_value = {'status': True}
         fake_project = self.mock_project_get.return_value
 
+        keystone = Keystone(self.request, tenant_name='tenant_name')
+        computed = keystone.vault_project_update(self.project.id,
+                                                 self.project.name,
+                                                 self.group.id,
+                                                 description=self.project.description)
         expected = {'status': True,
                     'project': self.mock_project_update.return_value}
 
-        computed = keystone.vault_project_update(self.project.id,
-                                                 self.project.name,
-                                                 group_id,
-                                                 description=self.project.description)
         self.assertEqual(computed, expected)
 
 
@@ -277,20 +275,20 @@ class TestKeystoneDeleteProject(TestCase):
             u'enabled': True
         })
 
-        self.mock_keystone_conn = patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._create_keystone_connection').start()
 
-        self.mock_project_get_by_name = patch('storm_keystone.keystone.Keystone.project_get_by_name').start()
+        self.mock_project_get_by_name = patch('identity.keystone.Keystone.project_get_by_name').start()
         self.mock_project_get_by_name.return_value = self.project
 
-        self.mock_find_user_with_u_prefix = patch('storm_keystone.keystone.Keystone.find_user_with_u_prefix').start()
+        self.mock_find_user_with_u_prefix = patch('identity.keystone.Keystone.find_user_with_u_prefix').start()
         self.mock_find_user_with_u_prefix.return_value = FakeResource(self.user_id, name=self.user_name)
 
     def tearDown(self):
         patch.stopall()
 
-    @patch('storm_keystone.keystone.Keystone.project_delete')
-    @patch('storm_keystone.keystone.Keystone._project_delete_swift')
-    @patch('storm_keystone.keystone.Keystone.get_object_store_endpoints')
+    @patch('identity.keystone.Keystone.project_delete')
+    @patch('identity.keystone.Keystone._project_delete_swift')
+    @patch('identity.keystone.Keystone.get_object_store_endpoints')
     def test_vault_delete_project(self, mock_endpoints,
                                         mock_swift_delete,
                                         mock_keystone_delete):
@@ -322,7 +320,7 @@ class TestKeystonePermissionToConnect(TestCase):
     def setUp(self):
         self.request = fake_request()
         self.mock_filter = patch('identity.keystone.GroupProjects.objects.filter').start()
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
 
     def tearDown(self):
         patch.stopall()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 from vault.tests.fakes import fake_request
 from dashboard.views import DashboardView
@@ -42,4 +42,4 @@ class DashboardTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response.render()
-        self.assertIn('Dashboard', response.content)
+        self.assertIn(b'Dashboard', response.content)

@@ -3,7 +3,7 @@
 import factory
 from datetime import datetime, timedelta
 
-from StringIO import StringIO
+from io import StringIO
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.contrib.auth.models import User, Group, AnonymousUser

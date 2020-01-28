@@ -2,7 +2,7 @@
 
 import pytest
 from unittest import TestCase
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
@@ -43,7 +43,7 @@ class ListUserTest(TestCase):
 
         response.render()
 
-        self.assertIn('<td>FakeResource1</td>', response.content)
+        self.assertIn(b'<td>FakeResource1</td>', response.content)
 
     @patch('identity.keystone.Keystone.user_list')
     def test_list_user_view_exception(self, mock_user_list):
@@ -77,7 +77,7 @@ class CreateUserTest(TestCase):
         patch('actionlogger.actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
 
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
 
         patch('identity.keystone.Keystone.project_list',
               Mock(return_value=[FakeResource(1, 'project1')])).start()
@@ -106,7 +106,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('<option value="1">project1</option>', response.content)
+        self.assertIn(b'<option value="1">project1</option>', response.content)
 
     def test_ensure_role_list_was_filled_up(self):
         self.request.META.update({
@@ -115,7 +115,7 @@ class CreateUserTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn('<option value="1">role1</option>', response.content)
+        self.assertIn(b'<option value="1">role1</option>', response.content)
 
     def test_enabled_field_is_a_select_tag(self):
         from django.forms.widgets import Select
@@ -383,7 +383,7 @@ class DeleteUserTest(TestCase):
         patch('actionlogger.actionlogger.ActionLogger.log',
               Mock(return_value=None)).start()
 
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
 
     def tearDown(self):
         patch.stopall()
@@ -448,7 +448,7 @@ class UpdateProjectUserPasswordTest(TestCase):
         self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
         self.mock_users_list.return_value = [fake_request(method='GET').user]
 
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
 
     def tearDown(self):
         patch.stopall()

@@ -726,11 +726,11 @@ class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
                         ],
                         "buttons": [
                             {
-                                "name":  "Projects",
+                                "name": "Projects",
                                 "url": reverse("admin_projects")
                             },
                             {
-                                "name":  "Users",
+                                "name": "Users",
                                 "url": reverse("admin_list_users")
                             }
                         ]

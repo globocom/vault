@@ -3,7 +3,7 @@
 import json
 
 from unittest import TestCase
-from mock import patch
+from unittest.mock import patch
 
 from identity.views import (
     ListUserRoleView, AddUserRoleView, DeleteUserRoleView)
@@ -23,7 +23,7 @@ class BaseAjaxTestCase(TestCase):
         self.request.user.token = FakeToken
         self.request.user.is_superuser = True
 
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
         patch('identity.views.log').start()
 
     def tearDown(self):

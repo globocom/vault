@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import StringIO
+from io import StringIO
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 # From: http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/
 def get_temporary_text_file():
-    io = StringIO.StringIO()
+    io = StringIO()
     io.write('foo')
     text_file = InMemoryUploadedFile(io, None, 'foo.txt', 'text', io.len, None)
     text_file.seek(0)

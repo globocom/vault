@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from mock import patch
+from unittest.mock import patch
 from unittest import TestCase
 
 from swiftclient import client

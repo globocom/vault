@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from unittest import TestCase
 import requests
 
@@ -130,13 +130,13 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = '/storage/objects/container1/'
+        expected = b'/storage/objects/container1/'
         self.assertIn(expected, response.content)
 
-        expected = '/storage/objects/container2/'
+        expected = b'/storage/objects/container2/'
         self.assertIn(expected, response.content)
 
-        expected = '/storage/objects/container3/'
+        expected = b'/storage/objects/container3/'
         self.assertIn(expected, response.content)
 
     @patch('swiftbrowser.views.main.log.exception')
@@ -168,11 +168,11 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = '/AUTH_1/fakecontainer/obj_pelo_vip.html'
+        expected = b'/AUTH_1/fakecontainer/obj_pelo_vip.html'
         self.assertIn(expected, response.content)
 
         # Botao de views.upload File
-        self.assertIn('/storage/upload/fakecontainer/', response.content)
+        self.assertIn(b'/storage/upload/fakecontainer/', response.content)
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.get_container')
@@ -255,12 +255,12 @@ class TestSwiftbrowser(TestCase):
         self.assertFalse(mock_logging.called)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
+        self.assertIn(b'Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
 
         post.update({'containername': '..'})
         self.request.POST = post
         response = views.create_container(self.request)
-        self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
+        self.assertIn(b'Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.put_container')
@@ -384,7 +384,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(_('Container deleted'), response.content)
+        self.assertIn(b'Container deleted', response.content)
 
     @patch('swiftbrowser.views.main.delete_container')
     def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
@@ -394,7 +394,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 500)
-        self.assertIn(_('Container delete error'), response.content)
+        self.assertIn(b'Container delete error', response.content)
 
     @patch('swiftbrowser.views.main.client.get_object')
     @patch('swiftbrowser.views.main.client.delete_object')
@@ -794,7 +794,7 @@ class TestSwiftbrowser(TestCase):
 
         response = views.upload(self.request, 'fakecontainer')
 
-        self.assertIn('enctype="multipart/form-data"', response.content)
+        self.assertIn(b'enctype="multipart/form-data"', response.content)
 
     @patch('swiftbrowser.views.main.client.get_account')
     def test_render_upload_view_with_prefix(self, mock_get_account):
@@ -806,7 +806,7 @@ class TestSwiftbrowser(TestCase):
 
         response = views.upload(self.request, 'fakecontainer', 'prefixTest')
 
-        self.assertIn('prefixTest', response.content)
+        self.assertIn(b'prefixTest', response.content)
 
     @patch('swiftbrowser.views.main.client.get_account')
     def test_upload_view_without_temp_key_without_prefix(self, mock_get_account):
@@ -848,7 +848,7 @@ class TestSwiftbrowser(TestCase):
 
     @patch('swiftbrowser.views.main.requests.get')
     def test_download(self, mock_get):
-        content = 'ola'
+        content = b'ola'
         headers = {'content-type': 'fake/object'}
         mock_get.return_value = fakes.FakeRequestResponse(content=content,
                                                           headers=headers)
@@ -866,7 +866,7 @@ class TestSwiftbrowser(TestCase):
                                                           headers=headers)
         response = views.metadataview(self.request, 'fakecontainer')
 
-        self.assertIn('fake/container', response.content)
+        self.assertIn(b'fake/container', response.content)
 
     @patch('swiftbrowser.views.main.requests.head')
     def test_metadataview_return_headers_from_object(self, mock_head):
@@ -877,7 +877,7 @@ class TestSwiftbrowser(TestCase):
                                       'fakecontainer',
                                       'fakeobject')
 
-        self.assertIn('fake/object', response.content)
+        self.assertIn(b'fake/object', response.content)
 
     @patch('swiftbrowser.views.main.actionlog.log')
     @patch('swiftbrowser.views.main.client.post_container')
@@ -1069,11 +1069,11 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(mock_enable.call_count, 1)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('object_versioning',
                            kwargs={'container': 'fakecontainer'})
 
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.disable_versioning')
     def test_object_versioning_view_disabling_versioning(self, mock_disable):
@@ -1109,7 +1109,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = '/storage/objects/.container4/'
+        expected = b'/storage/objects/.container4/'
         self.assertNotIn(expected, response.content)
 
 

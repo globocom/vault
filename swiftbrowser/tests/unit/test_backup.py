@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from unittest import TestCase
 
 from swiftbrowser.tests import fakes

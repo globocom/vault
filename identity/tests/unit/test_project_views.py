@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 from unittest import TestCase
 
 from django.utils.translation import ugettext as _
@@ -17,7 +17,7 @@ from vault.tests.fakes import fake_request
 class ListProjectTest(TestCase):
 
     def setUp(self):
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
         patch('identity.views.log').start()
 
         self.view = views.ListProjectView.as_view()
@@ -70,7 +70,7 @@ class ListProjectTest(TestCase):
 class CreateProjectTest(TestCase):
 
     def setUp(self):
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
         patch('identity.views.actionlog.log').start()
         patch('identity.views.log').start()
         patch('identity.views.CreateProjectView.get_context_data').start()
@@ -96,7 +96,7 @@ class CreateProjectTest(TestCase):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
-    @patch('storm_keystone.keystone.Keystone.vault_project_create')
+    @patch('identity.keystone.Keystone.vault_project_create')
     def test_invove_vault_project_create_when_request_is_valid(self, mock):
         mock.return_value = {
             'status': True,
@@ -112,7 +112,7 @@ class CreateProjectTest(TestCase):
                                 created_by='vault', description='desc',
                                 team_owner_id=1, first_team_id=1)
 
-    @patch('storm_keystone.keystone.Keystone.vault_project_create')
+    @patch('identity.keystone.Keystone.vault_project_create')
     def test_dont_invove_vault_project_create_when_request_is_valid(self, mock):
 
         # Fake the validation of the form
@@ -130,7 +130,7 @@ class CreateProjectSuccessTest(TestCase):
         self.request = fake_request(method='GET')
         self.request.user.is_authenticated.value = True
 
-        self.mock_keystone_conn = patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        self.mock_keystone_conn = patch('identity.keystone.Keystone._create_keystone_connection').start()
 
     @patch('identity.views.Keystone.get_endpoints')
     @patch('identity.views.CreateProjectSuccessView.render_to_response')
@@ -185,7 +185,7 @@ class UpdateProjectTestTest(TestCase):
     """
 
     def setUp(self):
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
         patch('identity.views.actionlog.log').start()
         patch('identity.views.log').start()
 
@@ -211,8 +211,7 @@ class UpdateProjectTestTest(TestCase):
         self.request.POST = post
         self.request.user.is_authenticated.value = True
 
-
-    @patch('storm_keystone.keystone.Keystone.vault_project_update')
+    @patch('identity.keystone.Keystone.vault_project_update')
     def test_invalid_form_dont_invoke_vault_project_update(self, mock):
         # Inverting this return value must fail the test
         self.form_is_valid.return_value = False
@@ -221,7 +220,7 @@ class UpdateProjectTestTest(TestCase):
         mock.assert_not_called()
         self.assertTrue(self.mock_get_context_data.called)
 
-    @patch('storm_keystone.keystone.Keystone.vault_project_update')
+    @patch('identity.keystone.Keystone.vault_project_update')
     def test_valid_form_invoke_vault_project_update(self, mock):
         # Inverting this return value must fail the test
         self.form_is_valid.return_value = True
@@ -252,7 +251,7 @@ class DeleteProjectTest(TestCase):
     """
 
     def setUp(self):
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
         patch('identity.views.actionlog.log').start()
         patch('identity.views.log').start()
         patch('identity.views.DeleteProjectView.get_context_data').start()
@@ -288,7 +287,7 @@ class DeleteProjectTest(TestCase):
 
     def test_post_invalid_form(self):
         mock_delete = patch(
-            'storm_keystone.keystone.Keystone.vault_project_delete').start()
+            'identity.keystone.Keystone.vault_project_delete').start()
 
         mock_render = patch(
             'identity.views.DeleteProjectView.render_to_response').start()
@@ -302,52 +301,52 @@ class DeleteProjectTest(TestCase):
         self.assertEqual(1, mock_render.call_count)
         mock_delete.assert_not_called()
 
-    @patch('storm_keystone.keystone.Keystone')
+    @patch('identity.views.Keystone')
     def test_get_delete_url_return_200(self, mock_keystone):
         self.request.method = 'GET'
         response = self.view(self.request)
 
         self.assertEqual(200, response.status_code)
 
-    @patch('storm_keystone.keystone.Keystone')
+    @patch('identity.views.Keystone')
     def test_delete_project_connect_with_username_and_password_passed_by_form(self, mock_keystone):
         self.view(self.request, project_id='12345abcef')
 
         mock_keystone.asser_called_with(
             self.request, username='teste_user', password='secret')
 
-    # @patch('storm_keystone.keystone.Keystone')
-    # @patch('identity.views.delete_swift_account')
-    # def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete, mock_keystone):
-    #     """
-    #     This test checks if delete_swift_account will be called with the
-    #     project_id storage_url and the "admin" auth_token. They are from
-    #     different keystone instances
-    #     """
-    #     mock_keystone.return_value.get_endpoints.return_value = {
-    #         'object_store': {'adminURL': 'http://api.end.point'}
-    #     }
+    @patch('identity.views.Keystone')
+    @patch('identity.views.delete_swift_account')
+    def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete, mock_keystone):
+        """
+        This test checks if delete_swift_account will be called with the
+        project_id storage_url and the "admin" auth_token. They are from
+        different keystone instances
+        """
+        mock_keystone.return_value.get_endpoints.return_value = {
+            'object_store': {'adminURL': 'http://api.end.point'}
+        }
 
-    #     class ConnStub:
-    #         auth_token = 'auth_token'
+        class ConnStub:
+            auth_token = 'auth_token'
 
-    #     mock_keystone.return_value.conn = ConnStub()
+        mock_keystone.return_value.conn = ConnStub()
 
-    #     self.view(self.request, project_id='12345abcef')
+        self.view(self.request, project_id='12345abcef')
 
-    #     mock_delete.assert_called_with('http://api.end.point', 'auth_token')
+        mock_delete.assert_called_with('http://api.end.point', 'auth_token')
 
-#     @patch('identity.views.Keystone')
-#     @patch('identity.views.delete_swift_account')
-#     def test_vault_delete_project_will_be_called(self, mock_delete, mock_keystone):
+    @patch('identity.views.Keystone')
+    @patch('identity.views.delete_swift_account')
+    def test_vault_delete_project_will_be_called(self, mock_delete, mock_keystone):
 
-#         mock_keystone.return_value.get_endpoints.return_value = {
-#             'object_store': {'adminURL': 'http://api.end.point'}
-#         }
+        mock_keystone.return_value.get_endpoints.return_value = {
+            'object_store': {'adminURL': 'http://api.end.point'}
+        }
 
-#         patch('identity.views.delete_swift_account', Mock()).start()
+        patch('identity.views.delete_swift_account', Mock()).start()
 
-#         self.view(self.request, project_id='12345abcef')
+        self.view(self.request, project_id='12345abcef')
 
-#         mock_keystone = mock_keystone.return_value
-#         mock_keystone.vault_delete_project.assert_called_with('12345abcef')
+        mock_keystone = mock_keystone.return_value
+        mock_keystone.vault_delete_project.assert_called_with('12345abcef')

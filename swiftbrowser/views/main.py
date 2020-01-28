@@ -1349,7 +1349,7 @@ def info_json(request):
                     ],
                     "buttons": [
                         {
-                            "name":  "Containers",
+                            "name": "Containers",
                             "url": reverse("containerview")
                         }
                     ]

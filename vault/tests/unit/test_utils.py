@@ -7,7 +7,7 @@ Unit tests for utils functions
 import datetime
 
 from unittest import TestCase
-from mock import patch
+from unittest.mock import patch
 
 from keystoneclient.v2_0.tenants import Tenant
 
@@ -86,7 +86,7 @@ class TestVaultUtils(TestCase):
 
         request = fake_request(method='GET')
         request.user.is_authenticated.value = True
-        patch('storm_keystone.keystone.Keystone._create_keystone_connection').start()
+        patch('identity.keystone.Keystone._create_keystone_connection').start()
 
         utils.set_current_project(request, project)
 
@@ -117,7 +117,7 @@ class TestVaultUtils(TestCase):
 
         self.assertEqual(result_project, None)
 
-    @patch('storm_keystone.keystone.Keystone._create_keystone_connection')
+    @patch('identity.keystone.Keystone._create_keystone_connection')
     def test_maybe_update_token_without_time_token_value(self, keystone_conn_mock):
         conn_mock = keystone_conn_mock.return_value
         conn_mock.auth_token = '12345678'
@@ -128,7 +128,7 @@ class TestVaultUtils(TestCase):
 
         self.assertTrue(result)
 
-    @patch('storm_keystone.keystone.Keystone._create_keystone_connection')
+    @patch('identity.keystone.Keystone._create_keystone_connection')
     def test_maybe_update_token_with_expired_time_token(self, keystone_conn_mock):
         conn_mock = keystone_conn_mock.return_value
         conn_mock.auth_token = '12345678'
@@ -140,7 +140,7 @@ class TestVaultUtils(TestCase):
 
         self.assertTrue(result)
 
-    @patch('storm_keystone.keystone.Keystone._create_keystone_connection')
+    @patch('identity.keystone.Keystone._create_keystone_connection')
     def test_maybe_update_token_with_valid_time_token(self, keystone_conn_mock):
         conn_mock = keystone_conn_mock.return_value
         conn_mock.auth_token = '12345678'

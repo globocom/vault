@@ -2,7 +2,7 @@
 
 import json
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from unittest import TestCase
 
 from swiftclient import client
@@ -42,7 +42,7 @@ class TestSwiftTrash(TestCase):
         mock_get_container.return_value = fakes.get_container()
         response = views.get_deleted_objects(self.request, 'container1')
 
-        self.assertIn('application/json', response.serialize_headers())
+        self.assertIn(b'application/json', response.serialize_headers())
 
     @patch("swiftbrowser.views.client.get_container")
     def test_check_properties_from_get_deleted_objects_content(self, mock_get_container):
