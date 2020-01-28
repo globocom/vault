@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('user', models.CharField(max_length=60, null=True, blank=True)),
                 ('action', models.CharField(max_length=60, null=True, blank=True)),
                 ('item', models.TextField(max_length=255, null=True, blank=True)),
-                ('through', models.TextField(default=b'vault', max_length=255)),
+                ('through', models.TextField(default='vault', max_length=255)),
                 ('created_at', models.DateTimeField(auto_now=True)),
             ],
             options={

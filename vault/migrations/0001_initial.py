@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'group_projects',
-                'verbose_name_plural': 'Times e Projetos',
+                'verbose_name_plural': 'Groups and Projects',
             },
         ),
         migrations.CreateModel(
