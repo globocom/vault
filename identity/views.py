@@ -731,7 +731,7 @@ class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
                             },
                             {
                                 "name":  "Users",
-                                "url": reverse("admin_projects")
+                                "url": reverse("admin_list_users")
                             }
                         ]
                     }
