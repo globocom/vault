@@ -335,7 +335,7 @@ def download(request, container, objectname):
 
     actionlog.log(request.user.username, "download", str(objectname))
 
-    return HttpResponse(res.content, content_type=res.headers['content-type'])
+    return HttpResponse(res.content, content_type=res.headers['Content-Type'])
 
 
 @login_required
@@ -1006,9 +1006,9 @@ def get_deleted_objects(request, container, prefix=None):
             log.info("Not found: {}".format(trash_container))
             objects = []
         else:
-            log.exception("Exception: {0}".format(err.message))
+            log.exception("Exception: {0}".format(err.msg))
             status = err.http_status
-            content = {"error": err.message}
+            content = {"error": err.msg}
 
     if objects is not None:
         object_list = pseudofolder_object_list(objects, prefix, public_url)
@@ -1108,9 +1108,9 @@ def restore_object(request):
                                  _('Object restored'))
             actionlog.log(request.user.username, "restore", object_name)
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err.message))
+            log.exception('Exception: {0}'.format(err.msg))
             status = err.http_status
-            content = {"error": err.message}
+            content = {"error": err.msg}
 
     return HttpResponse(json.dumps(content), content_type='application/json', status=status)
 

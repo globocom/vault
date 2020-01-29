@@ -485,7 +485,8 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         mock_user_update.assert_called_with(self.request.user, password=password)
-        self.assertIn(password, response.content)
+
+        self.assertIn(password, response.content.decode())
         self.assertEqual(response.status_code, 200)
 
     @patch('identity.keystone.Keystone.find_user_with_u_prefix')
@@ -495,4 +496,4 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 500)
-        self.assertIn(_('Error updating password'), response.content)
+        self.assertIn(b'Error updating password', response.content)

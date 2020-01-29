@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from unittest import TestCase
 from unittest.mock import Mock, MagicMock, patch
 
@@ -9,10 +11,6 @@ from vault.views import (SetProjectView, DeleteUserTeamView, AddUserTeamView,
     ListUserTeamView, UpdateTeamsUsersView)
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import Group, User
-
-import json
-
-import json
 
 
 class SetProjectTest(TestCase):

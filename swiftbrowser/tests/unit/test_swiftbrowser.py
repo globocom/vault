@@ -298,10 +298,10 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(msgs[0].message, _('Object created'))
         self.assertTrue(mock_requests_put.called)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.requests.put')
     def test_create_object_status_201_with_prefix(self, mock_requests_put):
@@ -324,10 +324,10 @@ class TestSwiftbrowser(TestCase):
         str_call = str(mock_requests_put.call_args)
         self.assertIn('/fakecontainer/prefix/foo.txt', str_call)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.requests.put')
@@ -601,9 +601,9 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.delete_object')
     def test_view_delete_object_inside_a_pseudofolder(self, mock_delete_object):
@@ -621,10 +621,10 @@ class TestSwiftbrowser(TestCase):
         msgs = [msg for msg in self.request._messages]
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': fakepseudofolder})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.delete_object')
     def test_view_delete_object_fail_to_delete(self, mock_delete_object):
@@ -642,9 +642,9 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(msgs[0].message, _('Access denied'))
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.actionlog.log')
     @patch('swiftbrowser.views.main.client.delete_object')
@@ -694,9 +694,9 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(kargs['name'], fakepseudofolder)
         self.assertEqual(kargs['container'], fakecontainer)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.client.delete_object')
     @patch('swiftbrowser.views.main.client.get_container')
@@ -758,10 +758,10 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(kargs['name'], fakepseudofolder)
         self.assertEqual(kargs['container'], fakecontainer)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.client.delete_object')
     @patch('swiftbrowser.views.main.client.get_container')
@@ -822,10 +822,10 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.client.get_account')
     def test_upload_view_without_temp_key_with_prefix(self, mock_get_account):
@@ -841,23 +841,23 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix})
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @patch('swiftbrowser.views.main.requests.get')
     def test_download(self, mock_get):
         content = b'ola'
-        headers = {'content-type': 'fake/object'}
+        headers = {'Content-Type': 'fake/object'}
         mock_get.return_value = fakes.FakeRequestResponse(content=content,
                                                           headers=headers)
         response = views.download(self.request, 'fakecontainer', 'fakeobject')
 
-        computed_headers = response.serialize_headers()
+        computed_headers = dict([i for i in response.items()])
 
         self.assertEqual(response.content, content)
-        self.assertIn(headers['content-type'], computed_headers)
+        self.assertEqual(headers, computed_headers)
 
     @patch('swiftbrowser.views.main.requests.head')
     def test_metadataview_return_headers_from_container(self, mock_head):
@@ -1088,11 +1088,11 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(mock_disable.call_count, 1)
 
-        location = response.items()[1][1]
+        headers = dict([i for i in response.items()])
         expected = reverse('object_versioning',
                            kwargs={'container': 'fakecontainer'})
 
-        self.assertEqual(location, expected)
+        self.assertEqual(headers['Location'], expected)
 
     @override_settings(SWIFT_HIDE_PREFIXES=['.'])
     @patch('swiftbrowser.views.main.client.get_account')

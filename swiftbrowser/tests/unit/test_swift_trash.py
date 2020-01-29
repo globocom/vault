@@ -62,7 +62,7 @@ class TestSwiftTrash(TestCase):
                                                                 http_status=500)
         response = views.get_deleted_objects(self.request, 'container1')
 
-        self.assertEqual(response.content, '{"error": "error message"}')
+        self.assertEqual(response.content.decode(), '{"error": "error message"}')
         self.assertEqual(response.status_code, 500)
 
     @patch("swiftbrowser.views.remove_from_trash")

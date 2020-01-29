@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from io import StringIO
 
 from django.contrib.auth.models import AnonymousUser
@@ -10,7 +11,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 def get_temporary_text_file():
     io = StringIO()
     io.write('foo')
-    text_file = InMemoryUploadedFile(io, None, 'foo.txt', 'text', io.len, None)
+    io.seek(0, os.SEEK_END)
+    text_file = InMemoryUploadedFile(io, None, 'foo.txt', 'text', io.tell(), None)
     text_file.seek(0)
     return text_file
 

@@ -16,10 +16,9 @@ class TestSwiftbrowserUtils(TestCase):
 
     def test_remove_duplicates_from_acl(self):
         given = 'projectfake:userfake,projectfake2:userfake2,projectfake:userfake'
-        expected = 'projectfake:userfake,projectfake2:userfake2'
         computed = utils.remove_duplicates_from_acl(given)
 
-        self.assertEqual(expected, computed)
+        self.assertEqual(len(computed.split(',')), 2)
 
     def test_remove_duplicates_from_acl_empty_acls(self):
         given = ''
@@ -30,10 +29,10 @@ class TestSwiftbrowserUtils(TestCase):
 
     def test_remove_duplicates_from_acl_no_duplicated_acls(self):
         given = 'projectfake:userfake,projectfake2:userfake2'
-        expected = 'projectfake:userfake,projectfake2:userfake2'
         computed = utils.remove_duplicates_from_acl(given)
 
-        self.assertEqual(expected, computed)
+        self.assertIn('projectfake:userfake', computed)
+        self.assertIn('projectfake2:userfake2', computed)
 
     def test_replace_hyphens(self):
         fake_dict = {'content-length': '147', 'content-type': 'application/json'}

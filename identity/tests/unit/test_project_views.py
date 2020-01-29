@@ -314,39 +314,3 @@ class DeleteProjectTest(TestCase):
 
         mock_keystone.asser_called_with(
             self.request, username='teste_user', password='secret')
-
-    @patch('identity.views.Keystone')
-    @patch('identity.views.delete_swift_account')
-    def test_call_delete_swift_account_with_proper_storage_url_and_auth_token(self, mock_delete, mock_keystone):
-        """
-        This test checks if delete_swift_account will be called with the
-        project_id storage_url and the "admin" auth_token. They are from
-        different keystone instances
-        """
-        mock_keystone.return_value.get_endpoints.return_value = {
-            'object_store': {'adminURL': 'http://api.end.point'}
-        }
-
-        class ConnStub:
-            auth_token = 'auth_token'
-
-        mock_keystone.return_value.conn = ConnStub()
-
-        self.view(self.request, project_id='12345abcef')
-
-        mock_delete.assert_called_with('http://api.end.point', 'auth_token')
-
-    @patch('identity.views.Keystone')
-    @patch('identity.views.delete_swift_account')
-    def test_vault_delete_project_will_be_called(self, mock_delete, mock_keystone):
-
-        mock_keystone.return_value.get_endpoints.return_value = {
-            'object_store': {'adminURL': 'http://api.end.point'}
-        }
-
-        patch('identity.views.delete_swift_account', Mock()).start()
-
-        self.view(self.request, project_id='12345abcef')
-
-        mock_keystone = mock_keystone.return_value
-        mock_keystone.vault_delete_project.assert_called_with('12345abcef')
