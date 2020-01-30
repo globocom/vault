@@ -26,7 +26,7 @@ class ListUserTest(TestCase):
         patch.stopall()
 
     def test_list_users_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
@@ -34,7 +34,7 @@ class ListUserTest(TestCase):
         patch('identity.keystone.Keystone.user_list',
               Mock(return_value=[FakeResource(1)])).start()
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
         self.request.META.update({
             'HTTP_HOST': 'localhost'
@@ -49,7 +49,7 @@ class ListUserTest(TestCase):
     def test_list_user_view_exception(self, mock_user_list):
         mock_user_list.side_effect = Exception()
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         response = self.view(self.request)
@@ -71,7 +71,7 @@ class CreateUserTest(TestCase):
             'SERVER_PORT': '80'
         })
         self.request.user.is_superuser = True
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -92,7 +92,7 @@ class CreateUserTest(TestCase):
         patch.stopall()
 
     def test_create_user_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         self.request.user.token = None
 
         response = self.view(self.request)
@@ -220,7 +220,7 @@ class UpdateTeamsUsersViewTest(TestCase):
             'SERVER_PORT': '80'
         })
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -230,7 +230,7 @@ class UpdateTeamsUsersViewTest(TestCase):
         patch.stopall()
 
     def test_update_teams_users_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 302)
@@ -247,7 +247,7 @@ class UpdateUserTest(TestCase):
             'SERVER_PORT': '80'
         })
         self.request.user.is_superuser = True
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -260,7 +260,7 @@ class UpdateUserTest(TestCase):
         patch.stopall()
 
     def test_update_user_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         self.request.user.token = None
 
         response = self.view(self.request)
@@ -377,7 +377,7 @@ class DeleteUserTest(TestCase):
             'SERVER_PORT': '80'
         })
         self.request.user.is_superuser = True
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -389,7 +389,7 @@ class DeleteUserTest(TestCase):
         patch.stopall()
 
     def test_delete_user_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         self.request.user.token = None
 
         response = self.view(self.request)
@@ -439,7 +439,7 @@ class UpdateProjectUserPasswordTest(TestCase):
         post = self.request.POST.copy()
         post.update({"project": "AProjectID"})
         self.request.POST = post
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         self.mock_keystone_find_user = patch('identity.keystone.Keystone.find_user_with_u_prefix').start()
         # Retorna objeto usuário similar ao do request
@@ -454,7 +454,7 @@ class UpdateProjectUserPasswordTest(TestCase):
         patch.stopall()
 
     def test_reset_password_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 

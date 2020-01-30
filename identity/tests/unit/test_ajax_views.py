@@ -19,7 +19,7 @@ class BaseAjaxTestCase(TestCase):
 
         self.request = fake_request(method='POST')
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
         self.request.user.is_superuser = True
 
@@ -39,7 +39,7 @@ class TestListUserRole(BaseAjaxTestCase):
             'identity.keystone.Keystone.user_list').start()
 
     def test_list_user_role_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
@@ -128,7 +128,7 @@ class TestAddUserRole(BaseAjaxTestCase):
     view_class = AddUserRoleView
 
     def test_add_user_role_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         self.request.user.token = None
 
         response = self.view(self.request)
@@ -175,7 +175,7 @@ class TestDeleteUserRole(BaseAjaxTestCase):
     view_class = DeleteUserRoleView
 
     def test_delete_user_role_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         self.request.user.token = None
 
         response = self.view(self.request)

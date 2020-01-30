@@ -17,7 +17,10 @@ class DashboardTest(TestCase):
             'SERVER_PORT': '80',
             'HTTP_HOST': 'localhost'
         })
-        self.request.user.is_authenticated.value = True
+
+        import ipdb; ipdb.set_trace()
+
+        self.request.user.is_authenticated = True
 
         # does not connect to the keystone client
         patch('keystoneclient.v2_0.client.Client').start()
@@ -26,7 +29,7 @@ class DashboardTest(TestCase):
         patch.stopall()
 
     def test_dashboard_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 

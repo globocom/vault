@@ -22,14 +22,14 @@ class ListProjectTest(TestCase):
 
         self.view = views.ListProjectView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.request.user.is_superuser = True
 
     def tearDown(self):
         patch.stopall()
 
     def test_list_projects_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
@@ -89,10 +89,10 @@ class CreateProjectTest(TestCase):
             'group': self.group.id
         })
         self.request.POST = post
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
     def test_create_project_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 
@@ -128,7 +128,7 @@ class CreateProjectSuccessTest(TestCase):
         self.view = views.CreateProjectSuccessView.as_view()
 
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         self.mock_keystone_conn = patch('identity.keystone.Keystone._create_keystone_connection').start()
 
@@ -209,7 +209,7 @@ class UpdateProjectTestTest(TestCase):
             'group': 1,
             'enabled': 'False'})
         self.request.POST = post
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
     @patch('identity.keystone.Keystone.vault_project_update')
     def test_invalid_form_dont_invoke_vault_project_update(self, mock):
@@ -259,13 +259,13 @@ class DeleteProjectTest(TestCase):
         self.form = patch('identity.views.DeleteProjectConfirm').start()
         self.view = views.DeleteProjectView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
     def tearDown(self):
         patch.stopall()
 
     def test_create_project_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
         response = self.view(self.request)
         self.assertEqual(response.status_code, 302)
 

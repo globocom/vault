@@ -87,7 +87,7 @@ def get_logout_url(context):
     return logout_url
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def can_view_team_users_ogs(context):
     user = context.get('user')
     add_og = False

@@ -85,7 +85,7 @@ class TestVaultUtils(TestCase):
         project.name = 'Teste'
 
         request = fake_request(method='GET')
-        request.user.is_authenticated.value = True
+        request.user.is_authenticated = True
         patch('identity.keystone.Keystone._create_keystone_connection').start()
 
         utils.set_current_project(request, project)

@@ -11,7 +11,7 @@ admin.site.index_title = _("Admin Dashboard")
 
 urlpatterns = [
     # Admin
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # Identity admin
     url(r'^admin/identity/', include('identity.urls_admin')),

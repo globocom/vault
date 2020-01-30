@@ -18,7 +18,7 @@ class SetProjectTest(TestCase):
     def setUp(self):
         self.view = SetProjectView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
     def tearDown(self):
         patch.stopall()
@@ -29,7 +29,7 @@ class SetProjectTest(TestCase):
 
     @patch('vault.views.switch')
     def test_set_new_project_id_to_session(self, mock_switch):
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         self.assertEqual(self.request.session.get('project_id'), '1')
 
         response = self.view(self.request, project_id=2)
@@ -37,7 +37,7 @@ class SetProjectTest(TestCase):
 
     @patch('vault.views.switch')
     def test_set_new_project_id_to_session_exception(self, mock_switch):
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
         mock_switch.side_effect = ValueError()
 
         self.assertEqual(self.request.session.get('project_id'), '1')
@@ -58,7 +58,7 @@ class TestDeleteUserTeam(TestCase):
 
         self.request = fake_request(method='POST')
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -71,7 +71,7 @@ class TestDeleteUserTeam(TestCase):
         self.user.delete()
 
     def test_delete_user_and_team_flow_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
@@ -79,7 +79,7 @@ class TestDeleteUserTeam(TestCase):
 
     def test_delete_user_and_team_flow_dont_need_to_be_superuser(self):
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         post = self.request.POST.copy()
         post.setdefault('group', int('1'))
@@ -94,7 +94,7 @@ class TestDeleteUserTeam(TestCase):
 
     def test_delete_user_and_team_flow_work_fine(self):
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         post = self.request.POST.copy()
         post.setdefault('group', int('1'))
@@ -109,7 +109,7 @@ class TestDeleteUserTeam(TestCase):
 
     def test_delete_user_and_team_flow_fail(self):
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         post = self.request.POST.copy()
         post.setdefault('group', int('10'))
@@ -130,7 +130,7 @@ class TestListUserTeam(TestCase):
 
         self.request = fake_request(method='POST')
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -143,7 +143,7 @@ class TestListUserTeam(TestCase):
         self.user.delete()
 
     def test_list_users_teams_flow_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
@@ -178,7 +178,7 @@ class TestAddUserTeam(TestCase):
 
         self.request = fake_request(method='POST')
 
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -191,7 +191,7 @@ class TestAddUserTeam(TestCase):
         self.user.delete()
 
     def test_add_user_and_team_flow_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
@@ -229,7 +229,7 @@ class TestAddUserTeam(TestCase):
         self.assertEqual(response2.status_code, 500)
 
     def test_add_user_and_team_flow_redirect_for_user_not_logged(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
@@ -237,7 +237,7 @@ class TestAddUserTeam(TestCase):
 
     def test_add_user_and_team_flow_from_user_fail(self):
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         post = self.request.POST.copy()
         post.setdefault('group', int('10'))
@@ -278,7 +278,7 @@ class UpdateTeamsUsersTest(TestCase):
             'HTTP_HOST': 'localhost'
         })
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated.value = True
+        self.request.user.is_authenticated = True
 
         # Silent log
         mock_log = patch('vault.views.log').start()
@@ -312,7 +312,7 @@ class UpdateTeamsUsersTest(TestCase):
         group.delete()
 
     def test_manage_users_teams_flow_needs_authentication(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
@@ -342,7 +342,7 @@ class UpdateTeamsUsersTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_manage_users_teams_flow_for_a_user_redirect_for_user_not_logged(self):
-        self.request.user.is_authenticated.value = False
+        self.request.user.is_authenticated = False
 
         response = self.view(self.request)
 
