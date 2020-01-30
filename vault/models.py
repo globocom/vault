@@ -8,7 +8,7 @@ from django.db.models.signals import class_prepared
 
 class GroupProjects(models.Model):
 
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     project = models.CharField(max_length=255)
     owner = models.BooleanField(default=0)
 
@@ -23,7 +23,7 @@ class GroupProjects(models.Model):
 
 class CurrentProject(models.Model):
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     project = models.CharField(max_length=255)
 
     class Meta:
@@ -48,8 +48,8 @@ class OG(models.Model):
 
 class TeamOG(models.Model):
 
-    group = models.ForeignKey(Group)
-    og = models.ForeignKey(OG)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    og = models.ForeignKey(OG, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'team_og'

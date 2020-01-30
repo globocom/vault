@@ -1,7 +1,8 @@
 -i https://pypi.python.org/simple
 
 Babel==2.3.4
-Django==1.11.20
+# Django==1.11.20
+Django==2.2.9
 iso8601==0.1.11
 mysqlclient==1.4.6
 netaddr==0.7.18
