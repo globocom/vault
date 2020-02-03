@@ -79,22 +79,29 @@ The role registered in your Keystone service that is needed to operate Swift.
 Example value: `swiftoperator`
 
 
-### VAULT_PAGINATION_SIZE
-
-*(Optional)* The number of items displayed per page when listing something in Vault, such as Swift objects or Keystone users.
-
-Default value: 50
-
-
 ### MAX_FILES_UPLOAD
 
 *(Optional)* The maximum number of files that can be uploaded at once to Swift via the [Bulk Operations middleware](https://www.swiftstack.com/docs/admin/middleware/bulk.html).
 
-Default value: 10
+Default value: `10`
+
+
+### VAULT_PAGINATION_SIZE
+
+*(Optional)* The number of items displayed per page when listing something in Vault, such as Swift objects or Keystone users.
+
+Default value: `50`
+
+
+### VAULT_SWIFT_INSECURE
+
+*(Optional)* Set to `True` if using invalid SSL certificates.
+
+Default value: `False`
 
 
 ### VAULT_SWIFT_VERSION_PREFIX
 
 *(Optional)* When versioning is enabled on a Swift container, a new, hidden container is created with its name and this prefix.
 
-Default value: \_version\_
+Default value: `_version_`
