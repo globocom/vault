@@ -121,7 +121,7 @@ DATABASES = {
         'USER': os.getenv('VAULT_MYSQL_USER', 'root'),
         'PASSWORD': os.getenv('VAULT_MYSQL_PASSWORD', ''),
         'HOST': os.getenv('VAULT_MYSQL_HOST', '127.0.0.1'),
-        'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3307)),
+        'PORT': int(os.getenv('VAULT_MYSQL_PORT', 3306)),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
