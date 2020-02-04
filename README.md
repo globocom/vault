@@ -16,6 +16,11 @@ After a while, Vault will be accessible at localhost:8000. The initial admin use
 - *username*: admin
 - *password*: admin
 
+There will also be a non-admin user available. That user's credentials are:
+
+- *username*: user
+- *password*: user
+
 For more information on the docker implementation see [DOCKER.md](DOCKER.md).
 
 ## Basic setup

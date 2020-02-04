@@ -12,6 +12,11 @@ After a while, Vault will be accessible at localhost:8000. The initial admin use
 - *username*: admin
 - *password*: admin
 
+There will also be a non-admin user available. That user's credentials are:
+
+- *username*: user
+- *password*: user
+
 The proccess may take several minutes for the first time, as the Keystone, Swift and Vault images are generated. Once it's done, future runs will take much less time.
 
 ### The structure
