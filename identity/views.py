@@ -573,9 +573,8 @@ class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             return self.render_to_response(context, status=500)
 
     def get_user_roles(self, user, project_id):
-        # TODO: in v3 client users won't list roles (verify role_assignments)
         return [{'id': r.id, 'name': r.name}
-                for r in user.list_roles(project_id)]
+                for r in self.keystone.list_user_roles(user, project_id)]
 
 
 class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View,

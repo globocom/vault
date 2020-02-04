@@ -161,7 +161,7 @@ if os.environ.get('VAULT_SWIFT_INSECURE') == 'True':
 KEYSTONE_USERNAME = os.getenv('VAULT_KEYSTONE_USERNAME', 'u_vault')
 KEYSTONE_PASSWORD = os.getenv('VAULT_KEYSTONE_PASSWORD', 'u_vault')
 KEYSTONE_PROJECT = os.getenv('VAULT_KEYSTONE_PROJECT', 'Vault')
-KEYSTONE_VERSION = os.getenv('VAULT_KEYSTONE_API_VERSION', 2)
+KEYSTONE_VERSION = os.getenv('VAULT_KEYSTONE_API_VERSION', 3)
 KEYSTONE_URL = os.getenv('VAULT_KEYSTONE_URL',
                          'http://localhost:5000/{}'.format('v2.0' if KEYSTONE_VERSION == 2 else 'v3'))
 KEYSTONE_TIMEOUT = os.getenv('VAULT_KEYSTONE_TIMEOUT', 3)

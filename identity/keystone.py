@@ -216,6 +216,10 @@ class KeystoneBase:
     def role_get(self, role_id):
         return self.conn.roles.get(role_id)
 
+    def list_user_roles(self, user=None, project=None):
+        roleManager = v3.roles.RoleManager(self.conn)
+        return roleManager.list(user=user, project=project)
+
     def add_user_role(self, user=None, project=None, role=None):
         if self.config['version'] < 3:
             return self.conn.roles.add_user_role(user, role, project)
