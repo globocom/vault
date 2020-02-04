@@ -40,7 +40,10 @@ tests-ci: migrations-test clean pycodestyle ## Run tests
 run: clean ## Run a project development web server
 	@python $(PROJECT_HOME)/manage.py runserver 0.0.0.0:8000
 
-docker-start: ## Build and start Docker containers
+docker-build: ## Build Docker containers
+	@docker-compose build
+
+docker-start: docker-build ## Build and start Docker containers
 	@docker-compose up -d
 
 docker-clean: ## Remove any container, network, volume and image created by docker
