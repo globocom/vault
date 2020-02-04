@@ -6,7 +6,10 @@ Manage users and tenants on your Keystone service.
 
 Manage containers and objects on Swift. (A customized version of [django-swiftbrowser](https://github.com/cschwede/django-swiftbrowser))
 
-## Running with Docker Compose
+## Running locally with Docker Compose
+
+This section describes how to use Docker Compose to locally setup Vault, running all the necessary services in containers.
+
 ```
 $ make docker-start
 ```
@@ -23,9 +26,9 @@ There will also be a non-admin user available. That user's credentials are:
 
 For more information on the docker implementation see [DOCKER.md](DOCKER.md).
 
-## Basic setup
+## Basic setup for production environment
 
-This section shows how to setup Vault in your own infrastructure, to facilitate administration of your existing Keystone and Swift services.
+This section describes how to setup Vault in your own infrastructure, to facilitate administration of your existing Keystone and Swift services. In this case, Vault will run in your own environment, such as in a Virtual Machine.
 
 ### 1. Install dependencies
 ```
@@ -67,16 +70,16 @@ You will be asked for a username, e-mail, team and password. A superuser with th
 
 Optionally, you can pass the `--username`, `--email`, `--teamname` and `--password` arguments, skipping the need to interactively fill out these pieces of information.
 
-The `-s` (or `--superuser`) option makes the new user a superuser, meaning it has admin privileges. For a normal user, don't use this option
+The `-s` (or `--superuser`) option makes the new user a superuser, meaning it has admin privileges. For a normal user, don't use this option.
 
 ### 5. Run
 ```
 $ python manage.py runserver
 ```
 
-In a production environment, it is recommended to use a WSGI HTTP server. Here's an example using Gunicorn:
+In a production environment, it is recommended to use a WSGI HTTP server. Here's an example using [Gunicorn](https://gunicorn.org/):
 ```
-web: gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
+gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 ```
 
 ### Static files
