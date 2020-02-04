@@ -8,7 +8,7 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 ## Running with Docker Compose
 ```
-$ pip install -r requirements.txt
+$ make docker-start
 ```
 
 After a while, Vault will be accessible at localhost:8000. The initial admin user's credentials are:
@@ -53,7 +53,14 @@ mysql> GRANT ALL PRIVILEGES ON vault.* TO 'mysql_user'@'localhost';
 $ python manage.py migrate
 ```
 
-### 4. Run
+### 4. Create a superuser
+```
+$ python manage.py createsuperuser
+```
+
+For more information on this step, refer to the official [Django documentation](https://docs.djangoproject.com/en/3.0/intro/tutorial02/#creating-an-admin-user).
+
+### 5. Run
 ```
 $ python manage.py runserver
 ```
@@ -75,19 +82,19 @@ $ cd statictemp
 $ swift upload --os-username=<swift-user> --os-password=<swift-pass> --os-tenant-name=<swift-tenant> --os-auth-url=<swift-auth-url> --os-storage-url=<swift-admin-url> <swift-container> vault_static/
 ```
 
-### Running tests
+## Running tests
 ```
 pip install -r requirements_test.txt
 make tests
 ```
 
-### Dependencies
+## Dependencies
 
 - Django
 - Swift
 - Keystone
 
-### Locale
+## Locale
 
 How to edit locale files:
 
