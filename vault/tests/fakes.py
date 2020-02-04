@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import random
 import factory
 from datetime import datetime, timedelta
 
@@ -11,41 +12,35 @@ from django.contrib.messages.storage import default_storage
 from django.contrib.sessions.backends.db import SessionStore
 
 
-# factories.py
 class GroupFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Group
-        strategy = factory.BUILD_STRATEGY
+        django_get_or_create = ('name',)
 
     name = factory.Sequence(lambda n: "Group #{}".format(n))
 
 
-# TODO: Carregando grupos reais do banco; corrigir para carregar GroupFactory
 class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = User
-        strategy = factory.BUILD_STRATEGY
+        django_get_or_create = ('username',)
 
-    pk = 1
-    first_name = "John"
-    last_name = "Doe"
+    username = factory.Sequence(lambda n: "User #{}".format(n))
     is_superuser = True
 
     @factory.post_generation
     def groups(self, create, extracted, **kwargs):
         if not create:
-            # Simple build, do nothing.
             return
 
         if extracted:
-            # A list of groups were passed in, use them
             for group in extracted:
                 self.groups.add(group)
 
 
-def fake_request(path='/', method='GET', user=None, extra={}):
+def fake_request(path='/', method='GET', user=True, extra={}):
     params = {
         'REQUEST_METHOD': method,
         'PATH_INFO': path,
@@ -55,13 +50,10 @@ def fake_request(path='/', method='GET', user=None, extra={}):
 
     req = WSGIRequest(params)
 
-    req.user = user or AnonymousUser()
-    req.user.id = 999
-    req.user.username = 'user'
-    req.user.first_name = 'mock_user'
-    req.user.is_superuser = True
-    req.user.groups.all = lambda: [GroupFactory(id=1)]
-    req.user.groups.first = lambda: GroupFactory(id=1)
+    if user:
+        req.user = UserFactory.create(groups=(GroupFactory(), GroupFactory()))
+    else:
+        req.user = AnonymousUser()
 
     req.build_absolute_uri = lambda x=None: '/'
 

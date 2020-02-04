@@ -12,7 +12,6 @@ class DashboardTest(TestCase):
     def setUp(self):
         self.view = DashboardView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user = UserFactory(id='999', username='u_user_test')
 
         # does not connect to the keystone client
         patch('keystoneclient.v2_0.client.Client').start()
@@ -21,8 +20,9 @@ class DashboardTest(TestCase):
         patch.stopall()
 
     def test_dashboard_needs_authentication(self):
-        req = fake_request(method='GET')
+        req = fake_request(method='GET', user=False)
         response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     def test_show_dashboard(self):

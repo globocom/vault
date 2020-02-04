@@ -8,8 +8,7 @@ from django.utils.translation import ugettext as _
 from keystoneclient import exceptions
 
 from identity import views
-from identity.tests.fakes import (FakeResource, GroupFactory,
-                                  GroupProjectsFactory)
+from identity.tests.fakes import FakeResource
 
 from vault.tests.fakes import fake_request
 
@@ -22,15 +21,14 @@ class ListProjectTest(TestCase):
 
         self.view = views.ListProjectView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated = True
-        self.request.user.is_superuser = True
 
     def tearDown(self):
         patch.stopall()
 
     def test_list_projects_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(method='GET', user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     def test_show_project_list(self):
@@ -77,6 +75,7 @@ class CreateProjectTest(TestCase):
 
         self.form = patch('identity.views.ProjectForm').start()
         self.view = views.CreateProjectView.as_view()
+
         self.request = fake_request(method='POST')
 
         self.group = self.request.user.groups.first()
@@ -89,11 +88,11 @@ class CreateProjectTest(TestCase):
             'group': self.group.id
         })
         self.request.POST = post
-        self.request.user.is_authenticated = True
 
     def test_create_project_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(method='POST', user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     @patch('identity.keystone.Keystone.vault_project_create')
@@ -107,10 +106,11 @@ class CreateProjectTest(TestCase):
         # Fake the validation of the form
         self.form.return_value.is_valid.return_value = True
         response = self.view(self.request)
+        group_id = self.group.id
 
-        mock.assert_called_with('project-teste', self.group.id,
+        mock.assert_called_with('project-teste', group_id,
                                 created_by='vault', description='desc',
-                                team_owner_id=1, first_team_id=1)
+                                team_owner_id=group_id, first_team_id=group_id)
 
     @patch('identity.keystone.Keystone.vault_project_create')
     def test_dont_invove_vault_project_create_when_request_is_valid(self, mock):
@@ -126,10 +126,7 @@ class CreateProjectSuccessTest(TestCase):
 
     def setUp(self):
         self.view = views.CreateProjectSuccessView.as_view()
-
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated = True
-
         self.mock_keystone_conn = patch('identity.keystone.Keystone._create_keystone_connection').start()
 
     @patch('identity.views.Keystone.get_endpoints')
@@ -202,6 +199,7 @@ class UpdateProjectTestTest(TestCase):
         self.view = views.UpdateProjectView.as_view()
 
         self.request = fake_request(method='POST')
+
         post = self.request.POST.copy()
         post.update({
             'name': 'update_teste',
@@ -209,7 +207,6 @@ class UpdateProjectTestTest(TestCase):
             'group': 1,
             'enabled': 'False'})
         self.request.POST = post
-        self.request.user.is_authenticated = True
 
     @patch('identity.keystone.Keystone.vault_project_update')
     def test_invalid_form_dont_invoke_vault_project_update(self, mock):
@@ -259,14 +256,14 @@ class DeleteProjectTest(TestCase):
         self.form = patch('identity.views.DeleteProjectConfirm').start()
         self.view = views.DeleteProjectView.as_view()
         self.request = fake_request(method='GET')
-        self.request.user.is_authenticated = True
 
     def tearDown(self):
         patch.stopall()
 
-    def test_create_project_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+    def test_delete_project_needs_authentication(self):
+        req = fake_request(method='GET', user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     def test_get_request_invoke_render_with_form_object(self):

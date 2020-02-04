@@ -8,7 +8,7 @@ from unittest.mock import patch
 from identity.views import (
     ListUserRoleView, AddUserRoleView, DeleteUserRoleView)
 from identity.tests.fakes import FakeToken, FakeResource
-from vault.tests.fakes import fake_request
+from vault.tests.fakes import fake_request, UserFactory
 
 
 class BaseAjaxTestCase(TestCase):
@@ -16,10 +16,8 @@ class BaseAjaxTestCase(TestCase):
 
     def setUp(self):
         self.view = self.view_class.as_view()
-
         self.request = fake_request(method='POST')
 
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
         self.request.user.is_superuser = True
 
@@ -39,8 +37,9 @@ class TestListUserRole(BaseAjaxTestCase):
             'identity.keystone.Keystone.user_list').start()
 
     def test_list_user_role_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(method='POST', user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     def test_list_user_role_need_to_be_superuser(self):
@@ -128,10 +127,9 @@ class TestAddUserRole(BaseAjaxTestCase):
     view_class = AddUserRoleView
 
     def test_add_user_role_needs_authentication(self):
-        self.request.user.is_authenticated = False
+        req = fake_request(method='POST', user=False)
         self.request.user.token = None
-
-        response = self.view(self.request)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 
@@ -175,10 +173,10 @@ class TestDeleteUserRole(BaseAjaxTestCase):
     view_class = DeleteUserRoleView
 
     def test_delete_user_role_needs_authentication(self):
-        self.request.user.is_authenticated = False
+        req = fake_request(method='POST', user=False)
         self.request.user.token = None
 
-        response = self.view(self.request)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 

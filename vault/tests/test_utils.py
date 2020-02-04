@@ -14,7 +14,7 @@ from keystoneclient.v2_0.tenants import Tenant
 from vault import utils
 from vault.models import CurrentProject
 from django.core.paginator import PageNotAnInteger, EmptyPage
-from vault.tests.fakes import fake_request
+from vault.tests.fakes import fake_request, UserFactory
 
 
 class TestVaultUtils(TestCase):
@@ -85,7 +85,7 @@ class TestVaultUtils(TestCase):
         project.name = 'Teste'
 
         request = fake_request(method='GET')
-        request.user.is_authenticated = True
+        request.user = UserFactory(id='999', username='u_user_test')
         patch('identity.keystone.Keystone._create_keystone_connection').start()
 
         utils.set_current_project(request, project)

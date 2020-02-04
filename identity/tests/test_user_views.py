@@ -15,9 +15,7 @@ class ListUserTest(TestCase):
 
     def setUp(self):
         self.view = ListUserView.as_view()
-
         self.request = fake_request(method='GET')
-        self.request.user.is_superuser = True
 
         # does not connect to the keystone client
         patch('keystoneclient.v2_0.client.Client').start()
@@ -26,15 +24,15 @@ class ListUserTest(TestCase):
         patch.stopall()
 
     def test_list_users_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(method='GET', user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     def test_show_user_list(self):
         patch('identity.keystone.Keystone.user_list',
               Mock(return_value=[FakeResource(1)])).start()
 
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
         self.request.META.update({
             'HTTP_HOST': 'localhost'
@@ -48,8 +46,6 @@ class ListUserTest(TestCase):
     @patch('identity.keystone.Keystone.user_list')
     def test_list_user_view_exception(self, mock_user_list):
         mock_user_list.side_effect = Exception()
-
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         response = self.view(self.request)
@@ -70,8 +66,6 @@ class CreateUserTest(TestCase):
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
         })
-        self.request.user.is_superuser = True
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -92,10 +86,10 @@ class CreateUserTest(TestCase):
         patch.stopall()
 
     def test_create_user_needs_authentication(self):
-        self.request.user.is_authenticated = False
+        req = fake_request(user=False)
         self.request.user.token = None
 
-        response = self.view(self.request)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 
@@ -220,7 +214,6 @@ class UpdateTeamsUsersViewTest(TestCase):
             'SERVER_PORT': '80'
         })
         self.request.user.is_superuser = False
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -230,8 +223,8 @@ class UpdateTeamsUsersViewTest(TestCase):
         patch.stopall()
 
     def test_update_teams_users_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(user=False)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 
@@ -246,8 +239,6 @@ class UpdateUserTest(TestCase):
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
         })
-        self.request.user.is_superuser = True
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -260,10 +251,10 @@ class UpdateUserTest(TestCase):
         patch.stopall()
 
     def test_update_user_needs_authentication(self):
-        self.request.user.is_authenticated = False
+        req = fake_request(user=False)
         self.request.user.token = None
 
-        response = self.view(self.request)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 
@@ -376,8 +367,6 @@ class DeleteUserTest(TestCase):
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80'
         })
-        self.request.user.is_superuser = True
-        self.request.user.is_authenticated = True
         self.request.user.token = FakeToken
 
         patch('actionlogger.actionlogger.ActionLogger.log',
@@ -389,10 +378,10 @@ class DeleteUserTest(TestCase):
         patch.stopall()
 
     def test_delete_user_needs_authentication(self):
-        self.request.user.is_authenticated = False
+        req = fake_request(user=False)
         self.request.user.token = None
 
-        response = self.view(self.request)
+        response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
 
@@ -439,11 +428,9 @@ class UpdateProjectUserPasswordTest(TestCase):
         post = self.request.POST.copy()
         post.update({"project": "AProjectID"})
         self.request.POST = post
-        self.request.user.is_authenticated = True
 
         self.mock_keystone_find_user = patch('identity.keystone.Keystone.find_user_with_u_prefix').start()
-        # Retorna objeto usuário similar ao do request
-        self.mock_keystone_find_user.return_value = fake_request(method='GET').user
+        self.mock_keystone_find_user.return_value = self.request.user
 
         self.mock_users_list = patch('identity.keystone.Keystone.user_list').start()
         self.mock_users_list.return_value = [fake_request(method='GET').user]
@@ -454,8 +441,9 @@ class UpdateProjectUserPasswordTest(TestCase):
         patch.stopall()
 
     def test_reset_password_needs_authentication(self):
-        self.request.user.is_authenticated = False
-        response = self.view(self.request)
+        req = fake_request(user=False)
+        response = self.view(req)
+
         self.assertEqual(response.status_code, 302)
 
     @patch('identity.keystone.Keystone.find_user_with_u_prefix')
