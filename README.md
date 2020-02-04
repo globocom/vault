@@ -60,7 +60,7 @@ $ python manage.py create_user -s
 
 You will be asked for a username, e-mail, team and password. A superuser with the provided information will be created. If the team does not yet exist, it will be created. The superuser will be added to the provided team.
 
-Optionally, you can pass the `--username`, `--email` `--teamname` and `--password` arguments, skipping the need to interactively fill out these pieces of information.
+Optionally, you can pass the `--username`, `--email`, `--teamname` and `--password` arguments, skipping the need to interactively fill out these pieces of information.
 
 The `-s` (or `--superuser`) option makes the new user a superuser, meaning it has admin privileges. For a normal user, don't use this option
 
