@@ -20,10 +20,7 @@ class TestSwiftAcl(TestCase):
     """
 
     def setUp(self):
-        self.user = fakes.FakeUser(1, 'user')
-        self.user.is_superuser = True
-        self.user.is_authenticated.value = True
-        self.request = fake_request(user=self.user)
+        self.request = fake_request()
         self.project_id = "1ad2d06a38c643fb8550fe35b0ef579a_test"
         self.container = "container_test"
 
@@ -38,14 +35,14 @@ class TestSwiftAcl(TestCase):
         patch.stopall()
 
     def test_container_acl_update_needs_authentication(self):
-        self.user.is_authenticated.value = False
-        response = views.container_acl_update(self.request, self.container)
+        req = fake_request(user=False)
+        response = views.container_acl_update(req, self.container)
 
         self.assertEqual(response.status_code, 302)
 
     def test_container_acl_status_needs_authentication(self):
-        self.user.is_authenticated.value = False
-        response = views.container_acl_status(self.request, self.container)
+        req = fake_request(user=False)
+        response = views.container_acl_status(req, self.container)
 
         self.assertEqual(response.status_code, 302)
 
@@ -68,7 +65,6 @@ class TestSwiftAcl(TestCase):
     @patch('swiftbrowser.views.client.head_container')
     @patch('swiftbrowser.views.client.post_container')
     def test_container_acl_update_set_to_private(self, mock_post, mock_head):
-
         mock_head.return_value = {}
 
         self.request.method = 'GET'
@@ -85,7 +81,6 @@ class TestSwiftAcl(TestCase):
     @patch('swiftbrowser.views.client.head_container')
     @patch('swiftbrowser.views.client.post_container')
     def test_container_acl_update_set_to_public(self, mock_post, mock_head):
-
         mock_head.return_value = {}
 
         self.request.method = 'GET'
