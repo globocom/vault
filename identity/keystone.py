@@ -441,13 +441,10 @@ class KeystoneBase:
         sc_endpoints = self.conn.service_catalog.get_endpoints()
         endpoints = {}
 
-        for service, i in sc_endpoints.items():
-            item = i[0]
+        for service, item in sc_endpoints.items():
             service_name = service.replace('-', '_')
             endpoints[service_name] = {
-                'adminURL': item.get('adminURL'),
-                'publicURL': item.get('publicURL'),
-                'internalURL': item.get('internalURL')
+                a['interface'] + 'URL': a['url'] for a in item
             }
         return endpoints
 
