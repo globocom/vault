@@ -6,6 +6,12 @@ Manage users and tenants on your Keystone service.
 
 Manage containers and objects on Swift. (A customized version of [django-swiftbrowser](https://github.com/cschwede/django-swiftbrowser))
 
+## How Vault works
+
+In Vault, users have teams. A user that is in a team can add another user to their team. Keystone projects are associated to a Vault team, giving members of that team access to that project. Swift accounts are called "projects" inside Vault, as they are directly tied to a corresponding Keystone project. An user can select any project of any team they are a part of and, from there, browse, create, modify and delete that account's containers and objects. Any user can create a new project and associate it to one of their teams.
+
+An admin can create users and teams, as well as add and remove users from those teams. Admins can also manage Keystone projects and users.
+
 ## Running locally with Docker Compose
 
 This section describes how to use Docker Compose to locally setup Vault, running all the necessary services in containers.
