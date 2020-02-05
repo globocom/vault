@@ -124,7 +124,7 @@ class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
         if user_id:
             user = self.keystone.user_get(user_id)
             form.initial = user.to_dict()
-            form.fields['project'].initial = user.project_id
+            form.fields['project'].initial = user.default_project_id
             context['user_id'] = user_id
 
         return context
@@ -183,7 +183,7 @@ class UpdateUserView(BaseUserView):
                 user = self.keystone.user_get(post.get('id'))
 
                 # can't modify primary project
-                project = self.keystone.project_get(user.project_id)
+                project = self.keystone.project_get(user.default_project_id)
 
                 self.keystone.user_update(user, name=post.get('name'),
                                           email=post.get('email'), password=post.get('password'),
@@ -291,7 +291,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
 
             user = self.keystone.find_user_with_u_prefix(project_id)
             if user:
-                context['user_project'] = user.username
+                context['user_project'] = user.name
 
             if context['show_roles']:
                 try:
@@ -552,11 +552,11 @@ class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             unique_users = set()
 
             for user in project_users:
-                if user.username not in unique_users:
-                    unique_users.add(user.username)
+                if user.name not in unique_users:
+                    unique_users.add(user.name)
                     context['users'].append({
                         'id': user.id,
-                        'username': user.username,
+                        'username': user.name,
                         'roles': self.get_user_roles(user, project_id)
                     })
 

@@ -89,7 +89,7 @@ class KeystoneBase:
 
     # based on: https://github.com/openstack/horizon/blob/master/openstack_dashboard/api/keystone.py#L45-L49
     def _user_manager(self, user):
-        if getattr(user, "project_id", None) is None:
+        if getattr(user, "default_project_id", None) is None:
             user.project_id = getattr(user, "tenantId", None)
         return user
 
@@ -427,7 +427,7 @@ class KeystoneBase:
         users = self.user_list(project.id)
 
         for user in users:
-            if user.username == 'u_{}'.format(project.name):
+            if user.name == 'u_{}'.format(project.name):
                 return user
 
         return None
