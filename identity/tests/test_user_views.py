@@ -49,7 +49,6 @@ class ListUserTest(TestCase):
         self.request.user.token = FakeToken
 
         response = self.view(self.request)
-
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
