@@ -26,7 +26,7 @@ pycodestyle: ## Check source-code for pycodestyle compliance
 	@-pycodestyle $(PROJECT_HOME) --ignore=E501,E126,E127,E128,W605
 
 delete-db:
-	@rm vault_test.db
+	@rm -f vault_test.db
 
 migrations-test: ## Database test migrations
 	@python manage.py makemigrations --settings=vault.settings_test

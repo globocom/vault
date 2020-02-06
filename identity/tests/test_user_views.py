@@ -8,7 +8,7 @@ from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView, UpdateProjectUserPasswordView)
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
 class ListUserTest(TestCase):
@@ -49,6 +49,7 @@ class ListUserTest(TestCase):
         self.request.user.token = FakeToken
 
         response = self.view(self.request)
+
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)

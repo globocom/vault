@@ -9,7 +9,7 @@ from vault.tests.fakes import fake_request, UserFactory
 from identity.tests.fakes import FakeToken
 from vault.views import (SetProjectView, DeleteUserTeamView, AddUserTeamView,
     ListUserTeamView, UpdateTeamsUsersView)
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group, User
 
 

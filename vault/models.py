@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import Group, User
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db.models.signals import class_prepared
 
 
