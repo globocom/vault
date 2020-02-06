@@ -1,4 +1,4 @@
-.PHONY: help clean deps setup pycodestyle migrations-test tests tests-ci run docker-up docker-down docker-clean
+.PHONY: help clean deps setup pycodestyle delete-db migrations-test tests tests-ci run docker-up docker-down docker-clean
 
 CWD="`pwd`"
 PROJECT_NAME = vault
@@ -25,15 +25,18 @@ pycodestyle: ## Check source-code for pycodestyle compliance
 	@echo "Checking source-code pycodestyle compliance"
 	@-pycodestyle $(PROJECT_HOME) --ignore=E501,E126,E127,E128,W605
 
+delete-db:
+	@rm vault_test.db
+
 migrations-test: ## Database test migrations
 	@python manage.py makemigrations --settings=vault.settings_test
 	@python manage.py migrate --settings=vault.settings_test
 
-tests: migrations-test clean pycodestyle ## Run tests (with coverage)
+tests: delete-db migrations-test clean pycodestyle ## Run tests (with coverage)
 	@echo "Running all tests with coverage"
 	@py.test --cov-config .coveragerc --cov $(PROJECT_HOME) --cov-report term-missing
 
-tests-ci: migrations-test clean pycodestyle ## Run tests
+tests-ci: delete-db migrations-test clean pycodestyle ## Run tests
 	@echo "Running the tests"
 	@py.test
 

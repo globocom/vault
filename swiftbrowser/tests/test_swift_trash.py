@@ -16,10 +16,7 @@ from vault.tests.fakes import fake_request
 class TestSwiftTrash(TestCase):
 
     def setUp(self):
-        self.user = fakes.FakeUser(1, 'user')
-        self.user.is_superuser = True
-        self.user.is_authenticated.value = True
-        self.request = fake_request(user=self.user)
+        self.request = fake_request()
 
         # silence log
         patch('swiftbrowser.views.log',
@@ -32,8 +29,8 @@ class TestSwiftTrash(TestCase):
         patch.stopall()
 
     def test_deleted_objects_list_needs_authentication(self):
-        self.user.is_authenticated.value = False
-        response = views.get_deleted_objects(self.request)
+        req = fake_request(user=False)
+        response = views.get_deleted_objects(req)
 
         self.assertEqual(response.status_code, 302)
 

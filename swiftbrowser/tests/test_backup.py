@@ -12,9 +12,7 @@ from vault.tests.fakes import fake_request
 class TestSwiftBackup(TestCase):
 
     def setUp(self):
-        self.user = fakes.FakeUser(42, 'user')
-        self.user.is_authenticated.value = True
-        self.request = fake_request(user=self.user)
+        self.request = fake_request(user=False)
 
         # silence log
         patch('swiftbrowser.views.backup.log',
@@ -24,7 +22,6 @@ class TestSwiftBackup(TestCase):
         patch.stopall()
 
     def test_authenticated_config_backup_url(self):
-        self.user.is_authenticated.value = False
         response = backup.config_backup_container(self.request, 'blah')
 
         self.assertEqual(response.status_code, 302)

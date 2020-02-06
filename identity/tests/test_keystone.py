@@ -232,18 +232,6 @@ class TestKeystoneV2(TestCase):
 
         mock_user_delete.assert_called_with(fake_user.id)
 
-    @patch('identity.keystone.Keystone.user_list')
-    @patch('identity.keystone.Keystone.project_get')
-    def test_find_user_with_u_prefix(self, mock_project_get, mock_user_list):
-        mock_project_get.return_value = Tenant('123',
-            {u'id': 'abcde', u'name': 'infra'})
-        mock_user_list.return_value = UserFactory(id='abcde', username='u_project_test')
-
-        keystone = Keystone(self.request, tenant_name='tenant_name')
-
-        fake_user = 'u_{}'.format(self.project.name)
-        self.assertEqual(fake_user, mock_user_list.return_value.username)
-
     @patch('identity.keystone.Keystone.vault_set_project_owner')
     def test_vault_update_project_keystone(self, mock_prj_owner):
         mock_prj_owner.return_value = {'status': True}

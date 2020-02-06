@@ -13,20 +13,36 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import Group, User
 
 
-class SetProjectTest(TestCase):
+class BaseTestCase(TestCase):
 
     def setUp(self):
-        self.view = SetProjectView.as_view()
-        self.request = fake_request(method='GET')
-        # self.request.user.is_authenticated = False
-        self.request.user = UserFactory(id='999', username='u_user_test')
+        self.request = fake_request()
+        self.anonymous_request = fake_request(user=False)
 
     def tearDown(self):
+        User.objects.all().delete()
+        Group.objects.all().delete()
+
+    @classmethod
+    def setUpClass(cls):
+        patch('identity.keystone.v2_0').start()
+        patch('identity.keystone.v3').start()
+
+    @classmethod
+    def tearDownClass(cls):
         patch.stopall()
 
+
+class SetProjectTest(BaseTestCase):
+
+    def setUp(self):
+        super(SetProjectTest, self).setUp()
+
+        self.view = SetProjectView.as_view()
+
     def test_set_project_needs_authentication(self):
-        req = fake_request(method='GET')
-        response = self.view(req)
+        response = self.view(self.anonymous_request)
+
         self.assertEqual(response.status_code, 302)
 
     @patch('vault.views.switch')
@@ -50,13 +66,15 @@ class SetProjectTest(TestCase):
         self.assertEqual(msgs[0].message, _('Unable to change your project.'))
 
 
-class TestDeleteUserTeam(TestCase):
+class TestDeleteUserTeam(BaseTestCase):
     view_class = DeleteUserTeamView
 
     def setUp(self):
+        super(TestDeleteUserTeam, self).setUp()
+
         self.view = self.view_class.as_view()
-        self.request = fake_request(method='POST')
-        self.request.user = UserFactory(id='999', username='u_user_test')
+
+        self.request.method = 'POST'
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -64,13 +82,8 @@ class TestDeleteUserTeam(TestCase):
         self.user = User(id=1, username="usertest")
         self.user.save()
 
-    def tearDown(self):
-        self.group.delete()
-        self.user.delete()
-
     def test_delete_user_and_team_flow_needs_authentication(self):
-        req = fake_request(method='GET')
-        response = self.view(req)
+        response = self.view(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -116,13 +129,15 @@ class TestDeleteUserTeam(TestCase):
         self.assertEqual(response.status_code, 500)
 
 
-class TestListUserTeam(TestCase):
+class TestListUserTeam(BaseTestCase):
     view_class = ListUserTeamView
 
     def setUp(self):
+        super(TestListUserTeam, self).setUp()
+
         self.view = self.view_class.as_view()
-        self.request = fake_request(method='POST')
-        self.request.user = UserFactory(id='999', username='u_user_test')
+
+        self.request.method = 'POST'
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -130,12 +145,8 @@ class TestListUserTeam(TestCase):
         self.user = User(id=1, username="usertest")
         self.user.save()
 
-    def tearDown(self):
-        self.group.delete()
-        self.user.delete()
-
     def test_list_users_teams_flow_needs_authentication(self):
-        req = fake_request(method='GET')
+        req = fake_request(user=False)
         response = self.view(req)
 
         self.assertEqual(response.status_code, 302)
@@ -152,21 +163,24 @@ class TestListUserTeam(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.reason_phrase, 'OK')
 
-    def test_list_users_teams_flow_fail(self):
-        self.request.user.groups.all = None
-
+    @patch('django.contrib.auth.models.Group.objects.get')
+    def test_list_users_teams_flow_fail(self, mock_get):
+        mock_get.return_value = None
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 500)
 
 
-class TestAddUserTeam(TestCase):
+class TestAddUserTeam(BaseTestCase):
     view_class = AddUserTeamView
 
     def setUp(self):
+        super(TestAddUserTeam, self).setUp()
+
         self.view = self.view_class.as_view()
-        self.request = fake_request(method='POST')
-        self.request.user = UserFactory(id='999', username='u_user_test')
+
+        self.request.method = 'POST'
+        self.anonymous_request.method = 'POST'
 
         self.group = Group(id=1, name="teamtest")
         self.group.save()
@@ -174,13 +188,8 @@ class TestAddUserTeam(TestCase):
         self.user = User(id=1, username="usertest")
         self.user.save()
 
-    def tearDown(self):
-        self.group.delete()
-        self.user.delete()
-
     def test_add_user_and_team_flow_needs_authentication(self):
-        req = fake_request(method='POST')
-        response = self.view(req)
+        response = self.view(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -230,9 +239,11 @@ class TestAddUserTeam(TestCase):
         self.assertEqual(response.status_code, 500)
 
 
-class UpdateTeamsUsersTest(TestCase):
+class UpdateTeamsUsersTest(BaseTestCase):
 
     def setUp(self):
+        super(UpdateTeamsUsersTest, self).setUp()
+
         self.view = UpdateTeamsUsersView.as_view()
 
         self.roles = {
@@ -251,20 +262,17 @@ class UpdateTeamsUsersTest(TestCase):
             }
         }
 
-        self.request = fake_request()
         self.request.META.update({
             'SERVER_NAME': 'globo.com',
             'SERVER_PORT': '80',
             'HTTP_HOST': 'localhost'
         })
-        self.request.user = UserFactory(id='999', username='u_user_test')
-        self.request.user.is_superuser = False
 
         # Silent log
         mock_log = patch('vault.views.log').start()
 
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        # patch('keystoneclient.v2_0.client.Client').start()
 
         group = Group(id=1, name="teamtest")
         group.save()
@@ -272,6 +280,7 @@ class UpdateTeamsUsersTest(TestCase):
         # Usuario do time "teamtest"
         user = User(id=1, username="usertest-1")
         user.save()
+
         user.groups.add(group)
         user.save()
 
@@ -279,21 +288,8 @@ class UpdateTeamsUsersTest(TestCase):
         user = User(id=2, username="usertest-2")
         user.save()
 
-    def tearDown(self):
-        # self.group.delete()
-        # self.user.delete()
-        user = User(id=1)
-        user.delete()
-
-        user = User(id=2)
-        user.delete()
-
-        group = Group(id=1)
-        group.delete()
-
     def test_manage_users_teams_flow_needs_authentication(self):
-        req = fake_request()
-        response = self.view(req)
+        response = self.view(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -303,15 +299,17 @@ class UpdateTeamsUsersTest(TestCase):
         response = self.view(self.request)
         response.render()
 
-        self.assertIn(b'<option value="2">usertest-2</option>', response.content)
+        self.assertIn('<option value="2">usertest-2</option>', response.content.decode('utf-8'))
 
     @patch('vault.templatetags.vault_tags.requests.get')
     def test_manage_users_teams_flow_ensure_group_list_was_filled_up(self, mock_response):
         mock_response.return_value = MagicMock(status_code=200, content=json.dumps(self.roles))
         response = self.view(self.request)
         response.render()
+        group = self.request.user.groups.first()
 
-        self.assertIn(b'<option value="1">Group', response.content)
+        self.assertIn('<option value="{}">{}'.format(group.id, group.name),
+                      response.content.decode('utf-8'))
 
     def test_manage_users_teams_flow_for_a_user_not_superuser_work_fine(self):
         self.request.user.is_superuser = False
@@ -319,7 +317,9 @@ class UpdateTeamsUsersTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_manage_users_teams_fail_to_get_user_group(self):
-        self.request.user.groups.all = Mock(side_effect=Exception)
+    @patch('django.contrib.auth.models.Group.objects.all')
+    def test_manage_users_teams_fail_to_get_user_group(self, mock_all):
+        mock_all.return_value = None
         response = self.view(self.request)
+
         self.assertEqual(response.status_code, 500)

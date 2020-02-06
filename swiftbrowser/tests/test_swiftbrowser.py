@@ -9,6 +9,7 @@ from swiftclient import client
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.test.utils import override_settings
+from django.contrib.auth.models import Group, User
 
 from swiftbrowser.tests import fakes
 from swiftbrowser import views
@@ -17,95 +18,82 @@ from vault.tests.fakes import fake_request
 from vault import utils
 
 
-class TestSwiftbrowser(TestCase):
+class BaseTestCase(TestCase):
 
     def setUp(self):
-
-        self.user = fakes.FakeUser(1, 'user')
-        self.user.is_superuser = True
-        self.user.is_authenticated.value = True
-        self.request = fake_request(user=self.user)
-
-        # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        self.request = fake_request()
+        self.anonymous_request = fake_request(user=False)
+        patch('swiftbrowser.views.main.actionlog',
+              Mock(return_value=None)).start()
 
     def tearDown(self):
+        User.objects.all().delete()
+        Group.objects.all().delete()
+
+    @classmethod
+    def setUpClass(cls):
+        patch('identity.keystone.v2_0').start()
+        patch('identity.keystone.v3').start()
+
+    @classmethod
+    def tearDownClass(cls):
         patch.stopall()
 
+
+class TestSwiftbrowser(BaseTestCase):
+
     def test_containerview_needs_authentication(self):
-        """ Verify if views.containerview is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.containerview(self.request)
+        response = views.containerview(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_create_container_needs_authentication(self):
-        """ Verify if views.create_container is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.objectview(self.request)
+        response = views.create_container(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_objectview_needs_authentication(self):
-        """ Verify if views.objectview is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.objectview(self.request)
+        response = views.objectview(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_delete_container_view_needs_authentication(self):
-        """ Verify if views.delete_container is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.delete_container_view(self.request)
+        response = views.delete_container_view(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_create_object_needs_authentication(self):
-        """ Verify if views.create_object is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.create_object(self.request)
+        response = views.create_object(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_upload_needs_authentication(self):
-        """ Verify if views.upload is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.upload(self.request)
+        response = views.upload(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_delete_object_view_needs_authentication(self):
-        """ Verify if views.delete_object is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.delete_object_view(self.request)
+        response = views.delete_object_view(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_delete_pseudofolder_needs_authentication(self):
-        """ Verify if views.delete_pseudofolder is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.delete_pseudofolder(self.request)
+        response = views.delete_pseudofolder(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_create_pseudofolder_needs_authentication(self):
-        """ Verify if views.create_pseudofolder is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.create_pseudofolder(self.request)
+        response = views.create_pseudofolder(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_object_versioning_needs_authentication(self):
-        """ Verify if views.object_versioning is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.object_versioning(self.request)
+        response = views.object_versioning(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
     def test_remove_from_cache_needs_authentication(self):
-        """ Verify if views.create_container is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.remove_from_cache(self.request)
+        response = views.remove_from_cache(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
@@ -130,22 +118,21 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = b'/storage/objects/container1/'
-        self.assertIn(expected, response.content)
+        expected = '/storage/objects/container1/'
+        self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = b'/storage/objects/container2/'
-        self.assertIn(expected, response.content)
+        expected = '/storage/objects/container2/'
+        self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = b'/storage/objects/container3/'
-        self.assertIn(expected, response.content)
+        expected = '/storage/objects/container3/'
+        self.assertIn(expected, response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.get_account')
     def test_containerview_clientexception(self, mock_get_account, mock_logging):
         mock_get_account.side_effect = client.ClientException('')
-        self.request.META.update({
-            'HTTP_HOST': 'localhost'
-        })
+        self.request.META.update({'HTTP_HOST': 'localhost'})
+
         views.containerview(self.request)
 
         msgs = [msg for msg in self.request._messages]
@@ -168,11 +155,11 @@ class TestSwiftbrowser(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = b'/AUTH_1/fakecontainer/obj_pelo_vip.html'
-        self.assertIn(expected, response.content)
+        expected = '/AUTH_1/fakecontainer/obj_pelo_vip.html'
+        self.assertIn(expected, response.content.decode('UTF-8'))
 
         # Botao de views.upload File
-        self.assertIn(b'/storage/upload/fakecontainer/', response.content)
+        self.assertIn('/storage/upload/fakecontainer/', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.get_container')
@@ -205,7 +192,9 @@ class TestSwiftbrowser(TestCase):
         self.assertEqual(msgs[0].message, _('Container created'))
         self.assertTrue(mock_put_container.called)
         self.assertFalse(mock_logging.called)
-        mock_log.assert_called_with("user", "create", "fakecontainer")
+
+        user = self.request.user.username
+        mock_log.assert_called_with(user, "create", "fakecontainer")
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.put_container')
@@ -255,12 +244,12 @@ class TestSwiftbrowser(TestCase):
         self.assertFalse(mock_logging.called)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
+        self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content.decode('UTF-8'))
 
         post.update({'containername': '..'})
         self.request.POST = post
         response = views.create_container(self.request)
-        self.assertIn(b'Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content)
+        self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.log.exception')
     @patch('swiftbrowser.views.main.client.put_container')
@@ -384,7 +373,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Container deleted', response.content)
+        self.assertIn('Container deleted', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.delete_container')
     def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
@@ -394,7 +383,7 @@ class TestSwiftbrowser(TestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 500)
-        self.assertIn(b'Container delete error', response.content)
+        self.assertIn('Container delete error', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.client.get_object')
     @patch('swiftbrowser.views.main.client.delete_object')
@@ -794,7 +783,7 @@ class TestSwiftbrowser(TestCase):
 
         response = views.upload(self.request, 'fakecontainer')
 
-        self.assertIn(b'enctype="multipart/form-data"', response.content)
+        self.assertIn('enctype="multipart/form-data"', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.client.get_account')
     def test_render_upload_view_with_prefix(self, mock_get_account):
@@ -806,7 +795,7 @@ class TestSwiftbrowser(TestCase):
 
         response = views.upload(self.request, 'fakecontainer', 'prefixTest')
 
-        self.assertIn(b'prefixTest', response.content)
+        self.assertIn('prefixTest', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.client.get_account')
     def test_upload_view_without_temp_key_without_prefix(self, mock_get_account):
@@ -866,7 +855,7 @@ class TestSwiftbrowser(TestCase):
                                                           headers=headers)
         response = views.metadataview(self.request, 'fakecontainer')
 
-        self.assertIn(b'fake/container', response.content)
+        self.assertIn('fake/container', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.requests.head')
     def test_metadataview_return_headers_from_object(self, mock_head):
@@ -877,7 +866,7 @@ class TestSwiftbrowser(TestCase):
                                       'fakecontainer',
                                       'fakeobject')
 
-        self.assertIn(b'fake/object', response.content)
+        self.assertIn('fake/object', response.content.decode('UTF-8'))
 
     @patch('swiftbrowser.views.main.actionlog.log')
     @patch('swiftbrowser.views.main.client.post_container')
@@ -1108,335 +1097,303 @@ class TestSwiftbrowser(TestCase):
         response = views.containerview(self.request)
 
         self.assertEqual(response.status_code, 200)
+        self.assertNotIn('/storage/objects/.container4/', response.content.decode('UTF-8'))
+
+
+class TestSwiftbrowserAcls(BaseTestCase):
+
+    def test_edit_acl_needs_authentication(self):
+        response = views.edit_acl(self.anonymous_request)
+
+        self.assertEqual(response.status_code, 302)
+
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_list_acls_container_public(self, mock_get_container):
+        """
+        Verify the ACL list for a container public and
+        if the "Make private" action is available
+        """
+        mock_get_container.return_value = {
+            'x-container-read': '.r:*',
+            'x-container-write': '',
+        }
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Add ACL to container fakecontainer', response.content.decode('UTF-8'))
+        self.assertIn('Make private', response.content.decode('UTF-8'))
+        self.assertIn('Add ACL', response.content.decode('UTF-8'))
+        self.assertIn('.r:*', response.content.decode('UTF-8'))
+
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_list_acls_container_private(self, mock_get_container):
+        """
+        Verify the ACL list for a private container with no ACLS and
+        if the "Make Public" action is available
+        """
+        mock_get_container.return_value = {
+            'x-container-read': '',
+            'x-container-write': '',
+        }
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Make public', response.content.decode('UTF-8'))
+        self.assertIn('Add ACL', response.content.decode('UTF-8'))
+
+        expected = 'There are no ACLs for this container yet. Add a new ACL by clicking the red button.'
+        self.assertIn(expected, response.content.decode('UTF-8'))
+
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_private_container_but_public_for_read_and_write_for_an_user_and_project(self, mock_head_container):
+        """
+        Verify if it's properly listing container's acl and
+        if the "Make Public" action is available
+        """
+        mock_head_container.return_value = {
+            'x-container-read': 'projectfake:userfake',
+            'x-container-write': 'projectfake:userfake',
+        }
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Make public', response.content.decode('UTF-8'))
+        self.assertIn('Add ACL', response.content.decode('UTF-8'))
+        self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
+
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_public_container_and_public_for_read_for_more_than_one_user_and_project(self, mock_head_container):
+        """
+        Verify if it's properly listing container's acl for a public container
+        and if Make Private is available
+        """
+        mock_head_container.return_value = {
+            'x-container-read': '.r:*,projectfake:userfake',
+            'x-container-write': 'projectfake2:userfake2',
+        }
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Make private', response.content.decode('UTF-8'))
+        self.assertIn('Add ACL', response.content.decode('UTF-8'))
+        self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
+        self.assertIn('projectfake2:userfake2', response.content.decode('UTF-8'))
+
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container):
+        mock_head_container.return_value = {
+            'x-container-read': '',
+            'x-container-write': '',
+        }
+
+        self.request.method = 'POST'
+        post = self.request.POST.copy()
+
+        post.update({
+                'username': 'projectfake:userfake',
+                'read': 'On',
+                'write': 'On'
+        })
+
+        self.request.POST = post
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        name, args, kargs = mock_post_container.mock_calls[0]
 
-        expected = b'/storage/objects/.container4/'
-        self.assertNotIn(expected, response.content)
-
-
-# class TestSwiftbrowserAcls(TestCase):
-
-#     def setUp(self):
-
-#         self.user = fakes.FakeUser(1, 'user')
-#         self.user.is_superuser = True
-#         self.user.is_authenticated.value = True
-#         self.request = fake_request(user=self.user)
-
-#     def tearDown(self):
-#         patch.stopall()
-
-#     def test_edit_acl_needs_authentication(self):
-#         """ Verify if views.edit_acl is requiring a authentication """
-#         self.user.is_authenticated.value = False
-#         response = views.edit_acl(self.request)
-
-#         self.assertEqual(response.status_code, 302)
-
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_list_acls_container_publico(self, mock_get_container):
-#         """
-#             Verify the ACL list for a container public and
-#             if the "Make private" action is available
-#         """
-#         mock_get_container.return_value = {
-#             'x-container-read': '.r:*',
-#             'x-container-write': '',
-#         }
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('Add ACL to container fakecontainer', response.content)
-#         self.assertIn('Make private', response.content)
-#         self.assertIn('Add ACL', response.content)
-#         self.assertIn('.r:*', response.content)
-
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_list_acls_container_private(self, mock_get_container):
-#         """
-#             Verify the ACL list for a private container with no ACLS and
-#             if the "Make Public" action is available
-#         """
-#         mock_get_container.return_value = {
-#             'x-container-read': '',
-#             'x-container-write': '',
-#         }
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('Make public', response.content)
-#         self.assertIn('Add ACL', response.content)
-
-#         expected = 'There are no ACLs for this container yet. Add a new ACL by clicking the red button.'
-#         self.assertIn(expected, response.content)
-
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_container_privado_mas_publico_para_leitura_e_escrita_para_um_user_e_project(self, mock_head_container):
-#         """
-#             Verify if it's properly listing container's acl and
-#             if the "Make Public" action is available
-#         """
-#         mock_head_container.return_value = {
-#             'x-container-read': 'projectfake:userfake',
-#             'x-container-write': 'projectfake:userfake',
-#         }
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('Make public', response.content)
-#         self.assertIn('Add ACL', response.content)
-#         self.assertIn('projectfake:userfake', response.content)
-
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_container_publico_e_publico_para_leitura_para_mais_de_um_user_e_project(self, mock_head_container):
-#         """
-#             Verify if it's properly listing container's acl for a public container
-#             and if Make Private is available
-#         """
-#         mock_head_container.return_value = {
-#             'x-container-read': '.r:*,projectfake:userfake',
-#             'x-container-write': 'projectfake2:userfake2',
-#         }
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('Make private', response.content)
-#         self.assertIn('Add ACL', response.content)
-#         self.assertIn('projectfake:userfake', response.content)
-#         self.assertIn('projectfake2:userfake2', response.content)
-
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container):
-#         mock_head_container.return_value = {
-#             'x-container-read': '',
-#             'x-container-write': '',
-#         }
-
-#         self.request.method = 'POST'
-#         post = self.request.POST.copy()
-
-#         post.update({
-#                 'username': 'projectfake:userfake',
-#                 'read': 'On',
-#                 'write': 'On'
-#         })
-
-#         self.request.POST = post
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         name, args, kargs = mock_post_container.mock_calls[0]
-
-#         expected_arg = {
-#             'X-Container-Write': ',projectfake:userfake',
-#             'X-Container-Read': ',projectfake:userfake'
-#         }
-#         self.assertEqual(expected_arg, kargs['headers'])
-
-#         msgs = [msg for msg in self.request._messages]
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(len(msgs), 1)
-#         self.assertEqual(msgs[0].message, _('ACLs updated'))
-
-#     @patch('swiftbrowser.views.main.log.exception')
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_expcetion_on_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container, mock_logging):
-#         mock_head_container.return_value = {
-#             'x-container-read': '',
-#             'x-container-write': '',
-#         }
-
-#         mock_post_container.side_effect = client.ClientException('')
-
-#         self.request.method = 'POST'
-#         post = self.request.POST.copy()
-
-#         post.update({
-#                 'username': 'projectfake:userfake',
-#                 'read': 'On',
-#                 'write': 'On'
-#         })
-
-#         self.request.POST = post
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         msgs = [msg for msg in self.request._messages]
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(len(msgs), 1)
-#         self.assertTrue(mock_logging.called)
-#         self.assertEqual(msgs[0].message, _('ACL update failed'))
-
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_make_private(self, mock_head_container, mock_post_container):
-#         """
-#             Verify if the action "Making Private" is
-#             removing ".r:*" from x-container-read header
-#         """
-#         mock_head_container.return_value = {
-#             'x-container-read': '.r:*,projectfake:userfake',
-#             'x-container-write': 'projectfake2:userfake2',
-#         }
-
-#         self.request.method = 'GET'
-#         get = self.request.GET.copy()
-
-#         get.update({'delete': '.r:*,.rlistings'})
-#         self.request.GET = get
-
-#         response = views.edit_acl(self.request, 'fakecontainer')
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(mock_post_container.called)
-
-#         name, args, kargs = mock_post_container.mock_calls[0]
-#         expected_arg = {
-#             'X-Container-Write': 'projectfake2:userfake2,',
-#             'X-Container-Read': 'projectfake:userfake,'
-#         }
-#         self.assertEqual(expected_arg, kargs['headers'])
-
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_make_public(self, mock_head_container, mock_post_container):
-#         """
-#             Verify if the action "Making Public" is
-#             including ".r:*" in x-container-read header
-#         """
-#         mock_head_container.return_value = {
-#             'x-container-read': 'projectfake:userfake',
-#             'x-container-write': 'projectfake2:userfake2',
-#         }
+        expected_arg = {
+            'X-Container-Write': ',projectfake:userfake',
+            'X-Container-Read': ',projectfake:userfake'
+        }
+        self.assertEqual(expected_arg, kargs['headers'])
+
+        msgs = [msg for msg in self.request._messages]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(msgs), 1)
+        self.assertEqual(msgs[0].message, _('ACLs updated'))
+
+    @patch('swiftbrowser.views.main.log.exception')
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_expcetion_on_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container, mock_logging):
+        mock_head_container.return_value = {
+            'x-container-read': '',
+            'x-container-write': '',
+        }
+
+        mock_post_container.side_effect = client.ClientException('')
+
+        self.request.method = 'POST'
+        post = self.request.POST.copy()
 
-#         self.request.method = 'POST'
-#         post = self.request.POST.copy()
+        post.update({
+                'username': 'projectfake:userfake',
+                'read': 'On',
+                'write': 'On'
+        })
 
-#         post.update({'username': '.r:*', 'read': 'On'})
-#         self.request.POST = post
+        self.request.POST = post
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        msgs = [msg for msg in self.request._messages]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(msgs), 1)
+        self.assertTrue(mock_logging.called)
+        self.assertEqual(msgs[0].message, _('ACL update failed'))
+
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_make_private(self, mock_head_container, mock_post_container):
+        """
+            Verify if the action "Making Private" is
+            removing ".r:*" from x-container-read header
+        """
+        mock_head_container.return_value = {
+            'x-container-read': '.r:*,projectfake:userfake',
+            'x-container-write': 'projectfake2:userfake2',
+        }
 
-#         response = views.edit_acl(self.request, 'fakecontainer')
+        self.request.method = 'GET'
+        get = self.request.GET.copy()
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(mock_post_container.called)
+        get.update({'delete': '.r:*,.rlistings'})
+        self.request.GET = get
+
+        response = views.edit_acl(self.request, 'fakecontainer')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(mock_post_container.called)
+
+        name, args, kargs = mock_post_container.mock_calls[0]
+        expected_arg = {
+            'X-Container-Write': 'projectfake2:userfake2,',
+            'X-Container-Read': 'projectfake:userfake,'
+        }
+        self.assertEqual(expected_arg, kargs['headers'])
+
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_make_public(self, mock_head_container, mock_post_container):
+        """
+            Verify if the action "Making Public" is
+            including ".r:*" in x-container-read header
+        """
+        mock_head_container.return_value = {
+            'x-container-read': 'projectfake:userfake',
+            'x-container-write': 'projectfake2:userfake2',
+        }
 
-#         name, args, kargs = mock_post_container.mock_calls[0]
+        self.request.method = 'POST'
+        post = self.request.POST.copy()
 
-#         expected_arg = {
-#             'X-Container-Write': 'projectfake2:userfake2',
-#             'X-Container-Read': 'projectfake:userfake,.r:*'
-#         }
-#         self.assertEqual(expected_arg, kargs['headers'])
+        post.update({'username': '.r:*', 'read': 'On'})
+        self.request.POST = post
 
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_delete_acl_for_user_in_a_public_container(self, mock_head_container, mock_post_container):
-#         """ Verify if is deleting the correct ACL """
-#         mock_head_container.return_value = {
-#             'x-container-read': '.r:*,projectfake:userfake',
-#             'x-container-write': 'projectfake:userfake,projectfake2:userfake2',
-#         }
+        response = views.edit_acl(self.request, 'fakecontainer')
 
-#         self.request.method = 'GET'
-#         get = self.request.GET.copy()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(mock_post_container.called)
 
-#         get.update({'delete': 'projectfake:userfake'})
-#         self.request.GET = get
+        name, args, kargs = mock_post_container.mock_calls[0]
 
-#         response = views.edit_acl(self.request, 'fakecontainer')
+        expected_arg = {
+            'X-Container-Write': 'projectfake2:userfake2',
+            'X-Container-Read': 'projectfake:userfake,.r:*'
+        }
+        self.assertEqual(expected_arg, kargs['headers'])
 
-#         self.assertEqual(response.status_code, 200)
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_delete_acl_for_user_in_a_public_container(self, mock_head_container, mock_post_container):
+        """ Verify if is deleting the correct ACL """
+        mock_head_container.return_value = {
+            'x-container-read': '.r:*,projectfake:userfake',
+            'x-container-write': 'projectfake:userfake,projectfake2:userfake2',
+        }
 
-#         name, args, kargs = mock_post_container.mock_calls[0]
+        self.request.method = 'GET'
+        get = self.request.GET.copy()
 
-#         expected_arg = {
-#             'X-Container-Write': 'projectfake2:userfake2,',
-#             'X-Container-Read': '.r:*,'
-#         }
-#         self.assertEqual(expected_arg, kargs['headers'])
+        get.update({'delete': 'projectfake:userfake'})
+        self.request.GET = get
 
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_delete_acl_for_user_in_a_private_container(self, mock_head_container, mock_post_container):
-#         mock_head_container.return_value = {
-#             'x-container-read': 'projectfake:userfake',
-#             'x-container-write': 'projectfake:userfake,projectfake2:userfake2',
-#         }
+        response = views.edit_acl(self.request, 'fakecontainer')
 
-#         self.request.method = 'GET'
-#         get = self.request.GET.copy()
+        self.assertEqual(response.status_code, 200)
 
-#         get.update({'delete': 'projectfake:userfake'})
-#         self.request.GET = get
+        name, args, kargs = mock_post_container.mock_calls[0]
 
-#         response = views.edit_acl(self.request, 'fakecontainer')
+        expected_arg = {
+            'X-Container-Write': 'projectfake2:userfake2,',
+            'X-Container-Read': '.r:*,'
+        }
+        self.assertEqual(expected_arg, kargs['headers'])
 
-#         self.assertEqual(response.status_code, 200)
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_delete_acl_for_user_in_a_private_container(self, mock_head_container, mock_post_container):
+        mock_head_container.return_value = {
+            'x-container-read': 'projectfake:userfake',
+            'x-container-write': 'projectfake:userfake,projectfake2:userfake2',
+        }
 
-#         name, args, kargs = mock_post_container.mock_calls[0]
+        self.request.method = 'GET'
+        get = self.request.GET.copy()
 
-#         expected_arg = {
-#             'X-Container-Write': 'projectfake2:userfake2,',
-#             'X-Container-Read': ''
-#         }
-#         self.assertEqual(expected_arg, kargs['headers'])
+        get.update({'delete': 'projectfake:userfake'})
+        self.request.GET = get
 
-#     @patch('swiftbrowser.views.main.log.exception')
-#     @patch('swiftbrowser.views.main.client.post_container')
-#     @patch('swiftbrowser.views.main.client.head_container')
-#     def test_edit_acl_delete_acl_exception(self, mock_head_container, mock_post_container, mock_logging):
-#         mock_head_container.return_value = {
-#             'x-container-read': 'projectfake:userfake',
-#             'x-container-write': 'projectfake:userfake',
-#         }
+        response = views.edit_acl(self.request, 'fakecontainer')
 
-#         mock_post_container.side_effect = client.ClientException('')
+        self.assertEqual(response.status_code, 200)
 
-#         self.request.method = 'GET'
-#         get = self.request.GET.copy()
+        name, args, kargs = mock_post_container.mock_calls[0]
 
-#         get.update({'delete': 'projectfake:userfake'})
-#         self.request.GET = get
+        expected_arg = {
+            'X-Container-Write': 'projectfake2:userfake2,',
+            'X-Container-Read': ''
+        }
+        self.assertEqual(expected_arg, kargs['headers'])
 
-#         response = views.edit_acl(self.request, 'fakecontainer')
+    @patch('swiftbrowser.views.main.log.exception')
+    @patch('swiftbrowser.views.main.client.post_container')
+    @patch('swiftbrowser.views.main.client.head_container')
+    def test_edit_acl_delete_acl_exception(self, mock_head_container, mock_post_container, mock_logging):
+        mock_head_container.return_value = {
+            'x-container-read': 'projectfake:userfake',
+            'x-container-write': 'projectfake:userfake',
+        }
 
-#         msgs = [msg for msg in self.request._messages]
+        mock_post_container.side_effect = client.ClientException('')
 
-#         self.assertEqual(len(msgs), 1)
-#         self.assertTrue(mock_logging.called)
-#         self.assertEqual(msgs[0].message, _('ACL update failed'))
-#         self.assertIn('projectfake:userfake', response.content)
+        self.request.method = 'GET'
+        get = self.request.GET.copy()
 
+        get.update({'delete': 'projectfake:userfake'})
+        self.request.GET = get
 
-class TestSwiftbrowserCORS(TestCase):
+        response = views.edit_acl(self.request, 'fakecontainer')
 
-    def setUp(self):
+        msgs = [msg for msg in self.request._messages]
 
-        self.user = fakes.FakeUser(1, 'user')
-        self.user.is_superuser = True
-        self.user.is_authenticated.value = True
-        self.request = fake_request(user=self.user)
+        self.assertEqual(len(msgs), 1)
+        self.assertTrue(mock_logging.called)
+        self.assertEqual(msgs[0].message, _('ACL update failed'))
+        self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
 
-        patch('swiftbrowser.views.main.actionlog',
-              Mock(return_value=None)).start()
 
-        # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
-
-    def tearDown(self):
-        patch.stopall()
+class TestSwiftbrowserCORS(BaseTestCase):
 
     def test_edit_cors_needs_authentication(self):
-        """ Verify if views.edit_cors is requiring a authentication """
-        self.user.is_authenticated.value = False
-        response = views.edit_cors(self.request)
+        response = views.edit_cors(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 

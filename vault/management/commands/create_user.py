@@ -5,6 +5,7 @@ from getpass import getpass
 from django.contrib.auth.models import User, Group
 from django.core.management.base import BaseCommand, CommandError
 
+
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
@@ -21,19 +22,28 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         username = kwargs.get("username")
-        if not username: username = input("Username: ")
+
+        if not username:
+            username = input("Username: ")
+
         if not username:
             self.stdout.write(self.style.ERROR("Username cannot be blank."))
             exit()
 
         email = kwargs.get("email")
-        if not email: email = input("E-mail: ")
+
+        if not email:
+            email = input("E-mail: ")
+
         if not email:
             self.stdout.write(self.style.ERROR("E-mail cannot be blank."))
             exit()
 
         teamName = kwargs.get("teamname")
-        if not teamName: teamName = input("Team: ")
+
+        if not teamName:
+            teamName = input("Team: ")
+
         if not teamName:
             self.stdout.write(self.style.ERROR("Team cannot be blank."))
             exit()
