@@ -58,18 +58,11 @@ The Keystone project on which the Keystone user has the *admin* and *ResellerAdm
 Example value: `Vault`
 
 
-### VAULT_KEYSTONE_API_VERSION
-
-The version of the Identity API used on your Keystone service. Can be either `2` or `3`.
-
-Example value: `2`
-
-
 ### VAULT_KEYSTONE_URL
 
 The URL of your Identity API, including port and version.
 
-Example value: `http://keystone.endpoint:5000/v2.0`
+Example value: `http://keystone.endpoint:5000/v3`
 
 
 ### MAX_FILES_UPLOAD

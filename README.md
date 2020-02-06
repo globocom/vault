@@ -51,7 +51,6 @@ $ export VAULT_MYSQL_PORT=3306
 $ export VAULT_KEYSTONE_USERNAME=keystone_user
 $ export VAULT_KEYSTONE_PASSWORD=keystone_password
 $ export VAULT_KEYSTONE_PROJECT=Vault
-$ export VAULT_KEYSTONE_API_VERSION=3
 $ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v3
 ```
 

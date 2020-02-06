@@ -23,7 +23,7 @@ class KeystoneBase:
                  auth_url=None, config={}):
 
         self.config = {
-            'version': settings.KEYSTONE_VERSION,
+            'version': 3,
             'timeout': settings.KEYSTONE_TIMEOUT,
 
             'auth_url': auth_url or settings.KEYSTONE_URL,
