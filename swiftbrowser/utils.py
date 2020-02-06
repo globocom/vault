@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib import messages
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from swiftclient import client
 
@@ -40,7 +40,7 @@ def get_storage_endpoint(request, endpoint_type):
     project_id = request.session.get('project_id')
 
     if service_catalog is None or project_id is None:
-        msg = ugettext('No project selected')
+        msg = gettext('No project selected')
         log.error(msg)
         messages.add_message(request, messages.ERROR, msg)
         return None

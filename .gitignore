@@ -7,6 +7,7 @@
 .DS_Store
 .env
 .idea/
+__pycache__/
 .project
 .pycharm-venv
 .pydevproject
@@ -18,3 +19,4 @@ statictemp/
 TODO
 vault_static/
 vault_test.db
+

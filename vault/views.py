@@ -16,9 +16,9 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import User, Group
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 
 from actionlogger.actionlogger import ActionLogger
@@ -182,9 +182,9 @@ class VaultLogout(View):
 
 
 def handler500(request):
-    response = render_to_response('500.html', {},
-                                  context_instance=RequestContext(request))
+    response = render('500.html', {}, context_instance=RequestContext(request))
     response.status_code = 500
+
     return response
 
 
@@ -356,8 +356,8 @@ def team_manager_view(request):
 
     context['groups'] = groups
 
-    return render_to_response("vault/team_manager/index.html", context,
-                              context_instance=RequestContext(request))
+    return render("vault/team_manager/index.html", context,
+                  context_instance=RequestContext(request))
 
 
 @login_required
