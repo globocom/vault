@@ -26,13 +26,13 @@ if DEBUG:
 ENVIRON = os.getenv('VAULT_ENVIRON', None)
 
 INSTALLED_APPS = [
-    'vault',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'vault',
     'actionlogger',
     'dashboard',
     'identity',
