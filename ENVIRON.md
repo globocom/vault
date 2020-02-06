@@ -72,13 +72,6 @@ The URL of your Identity API, including port and version.
 Example value: `http://keystone.endpoint:5000/v2.0`
 
 
-### VAULT_KEYSTONE_ROLE
-
-The role registered in your Keystone service that is needed to operate Swift.
-
-Example value: `swiftoperator`
-
-
 ### MAX_FILES_UPLOAD
 
 *(Optional)* The maximum number of files that can be uploaded at once to Swift via the [Bulk Operations middleware](https://www.swiftstack.com/docs/admin/middleware/bulk.html).

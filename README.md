@@ -51,9 +51,8 @@ $ export VAULT_MYSQL_PORT=3306
 $ export VAULT_KEYSTONE_USERNAME=keystone_user
 $ export VAULT_KEYSTONE_PASSWORD=keystone_password
 $ export VAULT_KEYSTONE_PROJECT=Vault
-$ export VAULT_KEYSTONE_API_VERSION=2
-$ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v2.0
-$ export VAULT_KEYSTONE_ROLE=swiftoperator
+$ export VAULT_KEYSTONE_API_VERSION=3
+$ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v3
 ```
 
 For optional variables and more information on each of the environment variables, see [ENVIRON.md](ENVIRON.md).

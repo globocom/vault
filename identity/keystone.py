@@ -25,7 +25,6 @@ class KeystoneBase:
         self.config = {
             'version': settings.KEYSTONE_VERSION,
             'timeout': settings.KEYSTONE_TIMEOUT,
-            'role_id': settings.KEYSTONE_ROLE,
 
             'auth_url': auth_url or settings.KEYSTONE_URL,
             'username': username or settings.KEYSTONE_USERNAME,
@@ -231,9 +230,10 @@ class KeystoneBase:
         # Creates user and add swiftoperator role
         try:
             user_password = Keystone.create_password()
+            swiftop = self.conn.roles.find(name='swiftoperator').id
             user = self.user_create(name='u_{}'.format(project_name),
                                     password=user_password,
-                                    role_id=self.config['role_id'],
+                                    role_id=swiftop,
                                     project_id=project.id)
         except exceptions.Forbidden as err:
             self.project_delete(project.id)
