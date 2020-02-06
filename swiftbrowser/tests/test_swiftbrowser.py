@@ -32,7 +32,6 @@ class BaseTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        patch('identity.keystone.v2_0').start()
         patch('identity.keystone.v3').start()
 
     @classmethod

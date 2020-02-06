@@ -14,7 +14,7 @@ class DashboardTest(TestCase):
         self.request = fake_request(method='GET')
 
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        patch('keystoneclient.v3.client.Client').start()
 
     def tearDown(self):
         patch.stopall()

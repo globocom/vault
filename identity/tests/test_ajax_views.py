@@ -60,13 +60,13 @@ class TestListUserRole(BaseAjaxTestCase):
     @patch('identity.views.ListUserRoleView.get_user_roles')
     def test_list_user_role_return_sorted_users(self, mock_get_user_roles):
         user1 = FakeResource(1)
-        user1.username = 'ZZZ'
+        user1.name = 'ZZZ'
 
         user2 = FakeResource(2)
-        user2.username = 'BBBB'
+        user2.name = 'BBBB'
 
         user3 = FakeResource(3)
-        user3.username = 'LLLL'
+        user3.name = 'LLLL'
 
         self.mock_user_list.return_value = [user1, user2, user3]
         mock_get_user_roles.return_value = []
@@ -75,7 +75,7 @@ class TestListUserRole(BaseAjaxTestCase):
 
         computed = json.loads(response.content)
         computed_names = [x.get('username') for x in computed.get('users')]
-        expected = sorted([user1.username, user2.username, user3.username])
+        expected = sorted([user1.name, user2.name, user3.name])
 
         self.assertEqual(computed_names, expected)
 

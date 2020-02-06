@@ -2,8 +2,8 @@
 
 from uuid import uuid4
 from unittest import TestCase
-from unittest.mock import patch
-from keystoneclient.v2_0.tenants import Tenant
+from unittest.mock import patch, MagicMock
+from keystoneclient.v3.projects import Project
 from keystoneclient import exceptions
 
 from django.conf import settings
@@ -16,8 +16,8 @@ from vault.tests.fakes import fake_request
 from vault.models import GroupProjects
 
 
-class TestKeystoneV2(TestCase):
-    """ Test keystone version 2 """
+class TestKeystoneV3(TestCase):
+    """ Test keystone version 3 """
 
     @classmethod
     def tearDownClass(cls):
@@ -27,7 +27,7 @@ class TestKeystoneV2(TestCase):
     def setUp(self):
         self.request = fake_request()
 
-        self.project = Tenant('123', {
+        self.project = Project('123', {
             u'id': str(uuid4()),
             u'name': 'project_test',
             u'description': 'project description',
@@ -105,7 +105,8 @@ class TestKeystoneV2(TestCase):
                              password='password', project_id='project_id',
                              enabled=True)
 
-        keystone.conn.users.create.assert_called_with('name', 'password', 'email@email.com', 'project_id', True)
+        keystone.conn.users.create.assert_called_with('name', domain=None,
+            email='email@email.com', enabled=True, password='password', project='project_id')
         self.assertFalse(mock_add_user_role.called)
 
     @patch('identity.keystone.Keystone.add_user_role')
@@ -124,12 +125,13 @@ class TestKeystoneV2(TestCase):
         mock_role_get.return_value = fake_role
         mock_project_get.return_value = fake_project
 
-        keystone = Keystone(self.request, 'tenant_name')
+        keystone = Keystone(self.request, 'project_name')
         keystone.user_create('name', email='email@email.com',
                              password='password', project_id='project_id',
                              enabled=True, role_id='role_id')
 
-        keystone.conn.users.create.assert_called_with('name', 'password', 'email@email.com', 'project_id', True)
+        keystone.conn.users.create.assert_called_with('name', domain=None,
+            email='email@email.com', enabled=True, password='password', project='project_id')
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
     @patch('identity.keystone.Keystone.user_create')
@@ -140,7 +142,7 @@ class TestKeystoneV2(TestCase):
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_key_pass.return_value = 'password'
 
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+        keystone = Keystone(self.request, project_name='project_name')
 
         expected = {
             'status': True,
@@ -152,16 +154,20 @@ class TestKeystoneV2(TestCase):
         computed = keystone.vault_project_create(self.project.name, self.group.id,
                                                  description=self.project.description)
 
-        # Criacao do Project
+        # Project creation
         self.mock_project_create.assert_called_with(self.project.name,
                                                     description=self.project.description,
                                                     enabled=True)
 
-        # Criacao do User
+        # swiftoperator role id
+        mock_swiftop_role = self.mock_keystone_conn.return_value. \
+                                roles.find.return_value.id
+
+        # User creation
         mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
                                          password='password',
                                          project_id=self.project.id,
-                                         role_id=settings.KEYSTONE_ROLE)
+                                         role_id=mock_swiftop_role)
 
         mock_gp_create.assert_called_with(group_id=self.group.id,
                                           project_id=self.project.id,
@@ -175,7 +181,7 @@ class TestKeystoneV2(TestCase):
         self.mock_project_create.side_effect = exceptions.Forbidden
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
 
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+        keystone = Keystone(self.request, project_name='project_name')
 
         expected = {'status': False, 'reason': 'Superuser required.'}
         computed = keystone.vault_project_create(self.project.name, 1, description=self.project.description)
@@ -192,11 +198,11 @@ class TestKeystoneV2(TestCase):
                                                                  mock_project_delete,
                                                                  mock_project_create):
 
-        mock_project_create.return_value = Tenant('123',
+        mock_project_create.return_value = Project('123',
             {u'id': self.project.id, u'name': self.project.name})
         mock_key_user.side_effect = exceptions.Forbidden
 
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+        keystone = Keystone(self.request, project_name='project_name')
 
         expected = {'status': False, 'reason': 'Admin required'}
         computed = keystone.vault_project_create(self.project.name, 1, description=self.project.description)
@@ -221,7 +227,7 @@ class TestKeystoneV2(TestCase):
         # Excecao ao salvar no db
         mock_gp_save.side_effect = Exception
 
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+        keystone = Keystone(self.request, project_name='project_name')
 
         expected = {'status': False, 'reason': 'Unable to assign project to group'}
         computed = keystone.vault_project_create(self.project.name, 2, description=self.project.description)
@@ -237,7 +243,7 @@ class TestKeystoneV2(TestCase):
         mock_prj_owner.return_value = {'status': True}
         fake_project = self.mock_project_get.return_value
 
-        keystone = Keystone(self.request, tenant_name='tenant_name')
+        keystone = Keystone(self.request, project_name='project_name')
         computed = keystone.vault_project_update(self.project.id,
                                                  self.project.name,
                                                  self.group.id,
@@ -256,7 +262,7 @@ class TestKeystoneDeleteProject(TestCase):
         self.user_id = 'abcdefghiklmnopq'
         self.user_name = 'user_name'
 
-        self.project = Tenant('321', {
+        self.project = Project('321', {
             u'id': str(uuid4()),
             u'name': 'project_test_delete',
             u'description': 'project test delete description',
@@ -315,7 +321,7 @@ class TestKeystonePermissionToConnect(TestCase):
 
     def test_superuser_creates_keystone_conn(self):
         self.mock_filter.return_value = None
-        self.conn = Keystone(self.request, tenant_name='tenant_name')
+        self.conn = Keystone(self.request, project_name='project_name')
         self.assertTrue(isinstance(self.conn, Keystone))
 
     def test_regular_user_creates_keystone_conn_on_a_allowed_project(self):
@@ -325,7 +331,7 @@ class TestKeystonePermissionToConnect(TestCase):
         self.mock_filter.return_value = [1]
 
         self.request.user.is_superuser = False
-        self.conn = Keystone(self.request, tenant_name='tenant_name')
+        self.conn = Keystone(self.request, project_name='project_name')
 
         self.assertTrue(isinstance(self.conn, Keystone))
 
@@ -336,5 +342,5 @@ class TestKeystonePermissionToConnect(TestCase):
         self.mock_filter.return_value = []
         self.request.user.is_superuser = False
 
-        keystone = Keystone(self.request, tenant_name='abcdefg')
+        keystone = Keystone(self.request, project_name='abcdefg')
         self.assertEqual(keystone.conn, None)

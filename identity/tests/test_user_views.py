@@ -18,7 +18,7 @@ class ListUserTest(TestCase):
         self.request = fake_request(method='GET')
 
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        patch('keystoneclient.v3.client.Client').start()
 
     def tearDown(self):
         patch.stopall()
@@ -80,7 +80,7 @@ class CreateUserTest(TestCase):
               Mock(return_value=[FakeResource(1, 'role1')])).start()
 
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        patch('keystoneclient.v3.client.Client').start()
 
     def tearDown(self):
         patch.stopall()
@@ -245,7 +245,7 @@ class UpdateUserTest(TestCase):
               Mock(return_value=None)).start()
 
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        patch('keystoneclient.v3.client.Client').start()
 
     def tearDown(self):
         patch.stopall()
@@ -269,7 +269,7 @@ class UpdateUserTest(TestCase):
 
         user = FakeResource(1, 'user1')
         user.to_dict = lambda: {'name': user.name}
-        user.project_id = 1
+        user.default_project_id = 1
 
         patch('identity.keystone.Keystone.user_get',
               Mock(return_value=user)).start()

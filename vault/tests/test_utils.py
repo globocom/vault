@@ -9,7 +9,7 @@ import datetime
 from unittest import TestCase
 from unittest.mock import patch
 
-from keystoneclient.v2_0.tenants import Tenant
+from keystoneclient.v3.projects import Project
 
 from vault import utils
 from vault.models import CurrentProject
@@ -21,7 +21,7 @@ class TestVaultUtils(TestCase):
 
     def setUp(self):
         # does not connect to the keystone client
-        patch('keystoneclient.v2_0.client.Client').start()
+        patch('keystoneclient.v3.client.Client').start()
 
     def tearDown(self):
         patch.stopall()
@@ -80,7 +80,7 @@ class TestVaultUtils(TestCase):
         self.assertEqual(paginated_items.number, 1)
 
     def test_set_current_project(self):
-        project = Tenant('123', {})
+        project = Project('123', {})
         project.id = 1
         project.name = 'Teste'
 
@@ -98,7 +98,7 @@ class TestVaultUtils(TestCase):
     def test_get_current_project(self, mock_project, mock_current_project):
         mock_current_project.return_value = CurrentProject()
 
-        project = Tenant('123', {})
+        project = Project('123', {})
         project.id = 1
         project.name = 'Nome'
 
