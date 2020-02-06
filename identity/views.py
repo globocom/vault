@@ -368,7 +368,7 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
         password = context['project_info']['user_password']
 
         keystone = Keystone(request, username=user_name, password=password,
-                            tenant_name=project_name)
+                            project_name=project_name)
 
         context['project_info']['endpoints'] = keystone.get_endpoints()
 
@@ -499,7 +499,7 @@ class DeleteProjectView(BaseProjectView):
 
         try:
             keystone_app = Keystone(request, username=user, password=password,
-                                    tenant_name=project_name)
+                                    project_name=project_name)
         except exceptions.Unauthorized:
             # Falhou ao auntenticar com as credenciais enviadas pelo usuario
             messages.add_message(request, messages.ERROR,

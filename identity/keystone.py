@@ -5,7 +5,7 @@ import string
 import logging
 
 import requests
-from keystoneclient import exceptions, v2_0, v3
+from keystoneclient import exceptions, v3
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 class KeystoneBase:
 
-    def __init__(self, username=None, password=None, tenant_name=None,
+    def __init__(self, username=None, password=None, project_name=None,
                  auth_url=None, config={}):
 
         self.config = {
@@ -30,7 +30,7 @@ class KeystoneBase:
             'auth_url': auth_url or settings.KEYSTONE_URL,
             'username': username or settings.KEYSTONE_USERNAME,
             'password': password or settings.KEYSTONE_PASSWORD,
-            'tenant_name': tenant_name or settings.KEYSTONE_PROJECT,
+            'project_name': project_name or settings.KEYSTONE_PROJECT,
         }
 
         self.config.update(config)
@@ -44,10 +44,7 @@ class KeystoneBase:
         return True
 
     def _create_keystone_connection(self):
-        if self.config['version'] < 3:
-            client = v2_0.client
-        else:
-            client = v3.client
+        client = v3.client
 
         return client.Client(**self.config)
 
@@ -82,10 +79,7 @@ class KeystoneBase:
 
     # based on: https://github.com/openstack/horizon/blob/master/openstack_dashboard/api/keystone.py#L51-L56
     def _project_manager(self):
-        if self.config['version'] < 3:
-            return self.conn.tenants
-        else:
-            return self.conn.projects
+        return self.conn.projects
 
     # based on: https://github.com/openstack/horizon/blob/master/openstack_dashboard/api/keystone.py#L45-L49
     def _user_manager(self, user):
@@ -110,13 +104,9 @@ class KeystoneBase:
     def user_create(self, name, email=None, password=None, enabled=True,
                     domain=None, project_id=None, role_id=None):
 
-        if self.config['version'] < 3:
-            user = self.conn.users.create(name, password, email, project_id,
-                                          enabled)
-        else:
-            user = self.conn.users.create(name, password=password, email=email,
-                                          project=project_id, enabled=enabled,
-                                          domain=domain)
+        user = self.conn.users.create(name, password=password, email=email,
+                                      project=project_id, enabled=enabled,
+                                      domain=domain)
 
         # Assign role and project to user
         if project_id is not None and role_id is not None:
@@ -130,27 +120,16 @@ class KeystoneBase:
         return user
 
     def user_update(self, user, **data):
-        if self.config['version'] < 3:
-            password = data.pop('password')
+        # If password is /False/, removes it to not update with /False/
+        if not data['password']:
+            data.pop('password')
 
-            user = self.conn.users.update(user, **data)
-
-            if password:
-                self.user_update_password(user, password)
-        else:
-            # If password is /False/, removes it to not update with /False/
-            if not data['password']:
-                data.pop('password')
-
-            user = self.conn.users.update(user, **data)
+        user = self.conn.users.update(user, **data)
 
         return user
 
     def user_update_password(self, user, password):
-        if self.config['version'] < 3:
-            return self.conn.users.update_password(user, password)
-        else:
-            return self.conn.users.update(user, password=password)
+        return self.conn.users.update(user, password=password)
 
     def user_delete(self, user_id):
         return self.conn.users.delete(user_id)
@@ -171,19 +150,13 @@ class KeystoneBase:
                        enabled=True, **kwargs):
         conn = self._project_manager()
 
-        if self.config['version'] < 3:
-            return conn.create(name, description, enabled, **kwargs)
-        else:
-            return conn.create(name, domain_id, description=description,
-                               enabled=enabled, **kwargs)
+        return conn.create(name, domain_id, description=description,
+                           enabled=enabled, **kwargs)
 
     def project_update(self, project, **kwargs):
         conn = self._project_manager()
 
-        if self.config['version'] < 3:
-            return conn.update(project.id, **kwargs)
-        else:
-            return conn.update(project, **kwargs)
+        return conn.update(project, **kwargs)
 
     def project_delete(self, project_id):
         conn = self._project_manager()
@@ -221,16 +194,10 @@ class KeystoneBase:
         return roleManager.list(user=user, project=project)
 
     def add_user_role(self, user=None, project=None, role=None):
-        if self.config['version'] < 3:
-            return self.conn.roles.add_user_role(user, role, project)
-        else:
-            return self.conn.roles.grant(role, user=user, project=project)
+        return self.conn.roles.grant(role, user=user, project=project)
 
     def remove_user_role(self, user=None, project=None, role=None):
-        if self.config['version'] < 3:
-            return self.conn.roles.remove_user_role(user, role, project)
-        else:
-            return self.conn.roles.revoke(role, user=user, project=project)
+        return self.conn.roles.revoke(role, user=user, project=project)
 
     def vault_project_create(self, project_name, group_id, description=None,
                              **kwargs):
@@ -455,16 +422,16 @@ class KeystoneBase:
 
 class KeystoneNoRequest(KeystoneBase):
 
-    def __init__(self, username=None, password=None, tenant_name=None,
+    def __init__(self, username=None, password=None, project_name=None,
                  auth_url=None):
         return super(KeystoneNoRequest, self).__init__(username, password,
-                                                       tenant_name, auth_url)
+                                                       project_name, auth_url)
 
 
 class Keystone(KeystoneBase):
 
     def __init__(self, request=None, username=None, password=None,
-                 tenant_name=None, auth_url=None):
+                 project_name=None, auth_url=None):
 
         self.request = request
         extra_config = {
@@ -472,7 +439,7 @@ class Keystone(KeystoneBase):
             'insecure': False,
         }
 
-        super(Keystone, self).__init__(username, password, tenant_name,
+        super(Keystone, self).__init__(username, password, project_name,
                                        auth_url, config=extra_config)
 
     def allow_connection(self):
