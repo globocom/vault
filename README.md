@@ -2,7 +2,7 @@
 Admin webapp for OpenStack Keystone and OpenStack Swift.
 
 ### Short description
-Manage users and tenants on your Keystone service.
+Manage users and projects on your Keystone service.
 
 Manage containers and objects on Swift. (A customized version of [django-swiftbrowser](https://github.com/cschwede/django-swiftbrowser))
 
@@ -95,7 +95,7 @@ $ python manage.py collectstatic --noinput
 # To upload static files to your current swift cluster, do:
 
 $ cd statictemp
-$ swift upload --os-username=<swift-user> --os-password=<swift-pass> --os-tenant-name=<swift-tenant> --os-auth-url=<swift-auth-url> --os-storage-url=<swift-admin-url> <swift-container> vault_static/
+$ swift upload --os-username=<swift-user> --os-password=<swift-pass> --os-project-name=<swift-project> --os-auth-url=<swift-auth-url> --os-storage-url=<swift-admin-url> <swift-container> vault_static/
 ```
 
 ## Running tests
