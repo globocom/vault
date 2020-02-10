@@ -87,14 +87,11 @@ gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 ```
 
 ### Static files
+
+If you want to upload Vault's static files to your current Swift cluster, simply create a project (named here as `<swift-project>`) and, in that project, a container (named here as `<swift-container>`). Then, using the credentials of a user with permissions to write on that container, do the following:
+
 ```
 $ python manage.py collectstatic --noinput
-
-# Upload your static files to your static_url.
-
-# To upload static files to your current swift cluster, do:
-
-$ cd statictemp
 $ swift upload --os-username=<swift-user> --os-password=<swift-pass> --os-project-name=<swift-project> --os-auth-url=<swift-auth-url> --os-storage-url=<swift-admin-url> <swift-container> vault_static/
 ```
 
