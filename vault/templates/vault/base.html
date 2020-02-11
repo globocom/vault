@@ -10,13 +10,13 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" />
+  <!-- <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" /> -->
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/sub-content.css' %}" />
   {% block css %}{% endblock %}
 
   <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
-  <script src="{% static 'vendor/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'vault/js/base.js' %}"></script>
   {% block js_top %}{% endblock %}
 </head>
@@ -51,7 +51,6 @@
 <ul class="messages"></ul>
 
 <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
-
 <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
 <script>
 bootbox.setDefaults({
