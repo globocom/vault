@@ -8,8 +8,16 @@ Manage containers and objects on Swift. (A customized version of [django-swiftbr
 
 ## How Vault works
 
-In Vault, users have teams. A user that is in a team can add another user to their team. Keystone projects are associated to a Vault team, giving members of that team access to that project. Swift accounts are called "projects" inside Vault, as they are directly tied to a corresponding Keystone project. An user can select any project of any team they are a part of and, from there, browse, create, modify and delete that account's containers and objects. Any user can create a new project and associate it to one of their teams.
+### Teams
+Vault has users and teams. Users have the permission to add other users to their teams. This gives them more autonomy.
 
+### Keystone Projects
+Users can create projects that will belong to their teams. A Keystone project corresponds to a Swift account.
+
+### Swift Accounts
+Users can create, modify or delete any container or object from accounts owned by one of their teams.
+
+### Administration
 An admin can create users and teams, as well as add and remove users from those teams. Admins can also manage Keystone projects and users.
 
 ## Running locally with Docker Compose
@@ -88,7 +96,7 @@ gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 
 ### Static files
 
-If you want to upload Vault's static files to your current Swift cluster, simply create a project (named here as `<swift-project>`) and, in that project, a container (named here as `<swift-container>`). Then, using the credentials of a user with permissions to write on that container, do the following:
+If you want to upload Vault's static files to your current Swift cluster, simply create a project (named here as `<swift-project>`) and, in that project, a container (named here as `<swift-container>`). Then, using the credentials of a user with permission to write to that container, do the following:
 
 ```
 $ python manage.py collectstatic --noinput
