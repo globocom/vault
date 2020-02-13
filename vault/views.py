@@ -182,7 +182,7 @@ class VaultLogout(View):
 
 
 def handler500(request):
-    response = render('500.html', {}, context_instance=RequestContext(request))
+    response = render(request, '500.html', {})
     response.status_code = 500
 
     return response
@@ -356,8 +356,7 @@ def team_manager_view(request):
 
     context['groups'] = groups
 
-    return render("vault/team_manager/index.html", context,
-                  context_instance=RequestContext(request))
+    return render(request, "vault/team_manager/index.html", context)
 
 
 @login_required
