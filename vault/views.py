@@ -372,10 +372,8 @@ class OAuthBearerCallback(OAuthCallback):
             username = info.get('email')
 
         try:
-            return User.objects.filter(username=username).first()
-        except Exception as e:
-            print(e)
-
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
             user = User(username=username)
             self._save_user_info(user, info)
 
