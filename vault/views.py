@@ -21,6 +21,8 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from django.template import RequestContext
 
+from allaccess.views import (OAuthCallback, OAuthRedirect)
+
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
 from vault.models import OG
@@ -28,6 +30,7 @@ from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
                          maybe_update_token)
 
+from vault.client import OAuth2BearerClient
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
@@ -340,6 +343,62 @@ class ListUsersTeamsOGsView(HasOgPermissionMixin, FormView):
             })
 
         return self.render_to_response(context)
+
+
+class OAuthBearerCallback(OAuthCallback):
+    " Callback de OAuth2 usando header de bearer"
+
+    def get_client(self, provider):
+        return OAuth2BearerClient(provider)
+
+    def get_login_redirect(self, provider, user, access, new=False):
+        return reverse('dashboard')
+
+    def get_user_id(self, provider, info):
+        identifier = None
+        if hasattr(info, 'get'):
+            identifier = info.get('email')
+
+        if identifier is not None:
+            return identifier
+
+        return super(OAuthBearerCallback, self).get_user_id(provider, info)
+
+    def get_or_create_user(self, provider, access, info):
+        " Vincula o usuário django logado à sua conta "
+        username = info.get('username')
+
+        if username is None:
+            username = info.get('email')
+
+        try:
+            return User.objects.filter(username=username).first()
+        except Exception as e:
+            print(e)
+
+            user = User(username=username)
+            self._save_user_info(user, info)
+
+            return user
+
+    def _save_user_info(self, user, info):
+        if 'email' in info:
+            user.email = info['email']
+
+        if 'name' in info:
+            parts = info['name'].split(' ', 1)
+            user.first_name = parts[0]
+            user.last_name = (len(parts) > 1) and parts[1] or ''
+
+        user.save()
+
+
+class OAuthVaultCallback(OAuthBearerCallback):
+    pass
+
+
+class OAuthVaultRedirect(OAuthRedirect):
+    pass
 
 
 @login_required

@@ -2,6 +2,7 @@
 
 Babel==2.3.4
 Django==3.0.3
+django-all-access==0.9.0
 iso8601==0.1.11
 mysqlclient==1.4.6
 netaddr==0.7.18

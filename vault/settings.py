@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'mzjhdtd6fpisubo863qi%j%!u=q&p_^ban=+*#xzz*0sel^2lp'
+SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
 
 PROJECT = 'vault'
 
@@ -26,6 +26,7 @@ if DEBUG:
 ENVIRON = os.getenv('VAULT_ENVIRON', None)
 
 INSTALLED_APPS = [
+    'allaccess',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allaccess.backends.AuthorizedServiceBackend',
 )
 
 MIDDLEWARE = [
