@@ -374,7 +374,7 @@ class OAuthBearerCallback(OAuthCallback):
         try:
             return User.objects.get(username=username)
         except User.DoesNotExist:
-            user = User(username=username)
+            user = User.objects.create_user(username=username)
             self._save_user_info(user, info)
 
             return user
@@ -396,7 +396,17 @@ class OAuthVaultCallback(OAuthBearerCallback):
 
 
 class OAuthVaultRedirect(OAuthRedirect):
-    pass
+
+    def get_additional_parameters(self, provider):
+        if provider.name == 'facebook':
+            # Request permission to see user's email
+            return {'scope': 'email'}
+        if provider.name == 'google':
+            # Request permission to see user's profile and email
+            perms = ['userinfo.email', 'userinfo.profile']
+            scope = ' '.join(['https://www.googleapis.com/auth/' + p for p in perms])
+            return {'scope': scope}
+        return super(OAuthVaultRedirect, self).get_additional_parameters(provider)
 
 
 @login_required
