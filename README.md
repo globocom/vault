@@ -94,7 +94,13 @@ In a production environment, it is recommended to use a WSGI HTTP server. Here's
 gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 ```
 
-### Static files
+## Authentication
+
+Vault uses the default Django authentication, but also allows for OAuth2 authentication via [django-all-access](https://django-all-access.readthedocs.io/en/latest/). To add an OAuth2 provider, simply use the Django admin. For more information, see [OAUTH2.md](OAUTH2.md).
+
+Only admins can create new users, unless when using OAuth2 authentication.
+
+## Static files
 
 If you want to upload Vault's static files to your current Swift cluster, simply create a project (named here as `<swift-project>`) and, in that project, a container (named here as `<swift-container>`). Then, using the credentials of a user with permission to write to that container, do the following:
 
