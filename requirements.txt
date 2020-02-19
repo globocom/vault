@@ -2,6 +2,7 @@
 
 Babel==2.3.4
 Django==3.0.3
+django3-all-access==0.10.0
 iso8601==0.1.11
 mysqlclient==1.4.6
 netaddr==0.7.18
@@ -12,4 +13,3 @@ python-swiftclient==3.7.1
 pytz==2015.4
 requests==2.19.1
 
--e git+https://github.com/stormers/django-all-access.git#egg=django-all-access
