@@ -15,14 +15,14 @@ urlpatterns = [
     # backstage_accounts (precisa ficar antes das urls do admin)
     url(r'^admin/logout/$', views.VaultLogout.as_view(), name='vault_logout'),
 
-    # OAuth
-    url(r'^accounts/', include('allaccess.urls')),
-
     # OAuthCallback
-    url(r'^admin/vault/callback/(?P<provider>[\w\-]+)/$', views.OAuthVaultCallback.as_view(), name='allaccess-callback'),
+    url(r'^accounts/callback/(?P<provider>[\w\-]+)/$', views.OAuthVaultCallback.as_view(), name='allaccess-callback'),
 
     # OAuthLogin
-    url(r'^admin/vault/login/(?P<provider>[\w\-]+)/$', views.OAuthVaultRedirect.as_view(), name='allaccess-login'),
+    url(r'^accounts/login/(?P<provider>[\w\-]+)/$', views.OAuthVaultRedirect.as_view(), name='allaccess-login'),
+
+    # OAuth
+    url(r'^accounts/', include('allaccess.urls')),
 
     # Admin
     url(r'^admin/', admin.site.urls),
