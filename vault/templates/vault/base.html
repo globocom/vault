@@ -3,16 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{% trans 'Vault' %} - {% block title %}{% endblock %}</title>
+  <title>Vault - {% block title %}{% endblock %}</title>
 
   {% block metatags %}{% endblock %}
 
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}" />
-  <!-- <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" /> -->
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/sub-content.css' %}" />
   {% block css %}{% endblock %}
 
   <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
@@ -23,9 +20,11 @@
 
 <body class="{% with_sidebar %}{% block bodyclass %}{% endblock %}">
 
-{% include "vault/header.html" %}
-{% include "dashboard/sidebar.html" %}
+{% block sidebar %}
+  {% include "dashboard/sidebar.html" %}
+{% endblock %}
 
+{% block main_content %}
 <section id="content" class="container-fluid">
   <div class="row">
     <h2 class="content-title col-md-8 col-sm-6 col-xs-6">
@@ -46,12 +45,14 @@
     </div>
   </div>
 </section>
+{% endblock %}
 
 <!-- messages -->
 <ul class="messages"></ul>
 
 <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
 <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
+
 <script>
 bootbox.setDefaults({
   backdrop: true,
@@ -61,6 +62,7 @@ bootbox.setDefaults({
 </script>
 
 <script>Base.init();</script>
+
 {% if messages %}
 <script>
 {% for message in messages %}

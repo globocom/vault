@@ -3,16 +3,13 @@
 <!DOCTYPE html>
 <html {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
-  <title>{% block title %}{% trans 'Vault Admin' %} - {{ title }}{% endblock %}</title>
+  <title>{% block title %}Vault Admin - {{ title }}{% endblock %}</title>
 
   {% block metatags %}{% endblock %}
 
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}" />
-  <!-- <link rel="stylesheet" type="text/css" href="{% static 'vault/css/vault-bootstrap-theme.css' %}" /> -->
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/sub-content.css' %}" />
   {% block extrastyle %}{% endblock %}
 
   <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
@@ -70,7 +67,6 @@
 <ul class="messages"></ul>
 
 <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
-
 <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
 <script>
 bootbox.setDefaults({
@@ -81,6 +77,7 @@ bootbox.setDefaults({
 </script>
 
 <script>Base.init();</script>
+
 {% if messages %}
 <script>
 {% for message in messages %}
