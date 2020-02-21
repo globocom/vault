@@ -20,6 +20,8 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from django.template import RequestContext
+from django.contrib.auth.views import LoginView
+from allaccess.models import Provider
 
 from allaccess.views import (OAuthCallback, OAuthRedirect)
 
@@ -174,6 +176,21 @@ class SetProjectView(LoginRequiredMixin, View):
 
         return http_redirect
 
+
+class VaultLogin(LoginView):
+    template_name = "vault/login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        providers = []
+
+        for provider in Provider.objects.all():
+            providers.append({"name": provider.name, "url": reverse('allaccess-login', kwargs={'provider': provider.name})})
+
+        context.update({
+            'providers': providers
+        })
+        return context
 
 class VaultLogout(View):
 
