@@ -115,6 +115,10 @@ pip install -r requirements_test.txt
 make tests
 ```
 
+## Creating new apps for Vault
+
+While Vault already delivers an app for Swift management and another for Keystone management, it also allows you to easily implement your own apps. This helps you centralize several services in a single, standardized web interface. For more information, see [APPS.md](APPS.md).
+
 ## Dependencies
 
 - Django
