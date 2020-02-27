@@ -182,14 +182,17 @@ class VaultLogin(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         providers = []
 
         for provider in Provider.objects.all():
             providers.append({"name": provider.name, "url": reverse('allaccess-login', kwargs={'provider': provider.name})})
 
         context.update({
-            'providers': providers
+            'providers': providers,
+            'username': user.get_username()
         })
+
         return context
 
 class VaultLogout(View):
