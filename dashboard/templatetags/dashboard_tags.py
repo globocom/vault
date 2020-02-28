@@ -15,7 +15,7 @@ def info_endpoints():
     endpoints = []
 
     for conf in apps.get_app_configs():
-        if hasattr(conf, 'name'):
-            endpoints.append('/{}/api/info'.format(conf.name))
+        if hasattr(conf, 'app_name'):
+            endpoints.append("'/{}/api/info'".format(conf.name))
 
     return ','.join(endpoints)
