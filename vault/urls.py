@@ -30,15 +30,11 @@ urlpatterns = [
     # Admin
     url(r'^admin/', admin.site.urls),
 
-    # Identity admin
-    url(r'^admin/identity/', include('identity.urls_admin')),
-
     # Identity
     url(r'^identity/', include('identity.urls')),
 
     # Swift
     url(r'^storage/', include('storage.urls')),
-    url(r'^api/storage/', include('storage.api_urls')),
 
     # Team CRUD
     url(r'^team/add/user/?$', views.AddUserTeamView.as_view(), name='team_add_user'),

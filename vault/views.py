@@ -195,6 +195,7 @@ class VaultLogin(LoginView):
 
         return context
 
+
 class VaultLogout(View):
 
     def get(self, request):
