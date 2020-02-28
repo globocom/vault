@@ -155,19 +155,19 @@ a:hover, a:active, a:focus {
 
 /* sidebar */
 #sidebar {
-    position: fixed;
-    left: -50px;
-    top: 50px;
+    position: sticky;
+    left: 0;
+    top: 0;
     bottom: 0;
-    width: 50px;
-    background-color: #18202b;
+    width: 256px;
+    background-color: #285DC1;
     color: #bbb;
     z-index: 8;
 
-    -webkit-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
+    /*-webkit-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
     -moz-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
     -o-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
-    transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
+    transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);*/
 }
 
 .with-sidebar #sidebar {
@@ -227,17 +227,12 @@ a:hover, a:active, a:focus {
 /* content */
 #content {
     position: relative;
-    top: 50px;
     margin-left: 0;
 
     -webkit-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
     -moz-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
     -o-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
     transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
-}
-
-.with-sidebar #content {
-    margin-left: 50px;
 }
 
 .content-title,

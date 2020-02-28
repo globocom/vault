@@ -3,6 +3,11 @@
 
 <!-- sidebar -->
 <nav id="sidebar">
+
+  {% set_project %}
+  <span class="vault-env {% get_vault_env %}">{% get_vault_env %}</span>
+  <a href="#" class="btn-menu-bars"><i class="icon-menu fa fa-bars"></i></a>
+
   <ul class="buttons" id="sidebar-buttons">
     <li>
       <a href="{% url 'dashboard' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
@@ -33,13 +38,12 @@
 </nav>
 <!-- /sidebar -->
 
-<script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
-
 <script type="text/html" id="menu_icon_default">
   <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">
     <i class="icon <%=icon%>"></i>
   </a>
 </script>
+
 <script type="text/javascript">
   {% autoescape off %}
   var urls = [{% info_endpoints %}];
@@ -117,6 +121,4 @@
       });
     })
   });
-
-
 </script>
