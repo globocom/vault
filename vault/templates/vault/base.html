@@ -23,22 +23,24 @@
         {% include "dashboard/sidebar.html" %}
         {% endblock %}
 
-        <h2 class="content-title col-md-8 col-sm-6 col-xs-6">
-          {% block content_title %}{% endblock %}
-          {% block breadcrumb %}
-            <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
-          {% endblock %}
-        </h2>
+        <main role="main" class="col-md-10">
+          <div class="content-top">
+            <div class="content-title">
 
-        <div class="content-top col-md-4 col-sm-6 col-xs-6">
-          {% block content_top %}{% endblock %}
-        </div>
-      </div>
+              <h2>{% block content_title %}{% endblock %}</h2>
 
-      <div class="row">
-        <div class="content-body col-md-12 col-sm-12 col-xs-12">
-          {% block content %}{% endblock %}
-        </div>
+              {% block breadcrumb %}
+                <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
+              {% endblock %}
+
+              {% block content_top %}{% endblock %}
+            </div>
+          </div>
+          <div class="content-body">
+            {% block content %}{% endblock %}
+          </div>
+        </main>
+
       </div>
     </div>
     {% endblock %}

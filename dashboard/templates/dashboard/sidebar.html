@@ -2,7 +2,9 @@
 {% can_view_team_users_ogs as can_view_tusers_ogs %}
 
 <!-- sidebar -->
-<nav id="sidebar">
+<nav id="sidebar" class="col-md-2">
+
+  <h1>Vault</h1>
 
   {% set_project %}
   <span class="vault-env {% get_vault_env %}">{% get_vault_env %}</span>

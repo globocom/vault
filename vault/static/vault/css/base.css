@@ -1,10 +1,14 @@
 body {
-    background-color: #edf0f4;
+    background-color: #f4f4f4;
     font-family: Helvetica, Arial, sans-serif
 }
 
 a:hover, a:active, a:focus {
     outline: 0;
+}
+
+main {
+  margin-left: auto;
 }
 
 #vault-header {
@@ -155,13 +159,13 @@ a:hover, a:active, a:focus {
 
 /* sidebar */
 #sidebar {
-    position: sticky;
+    position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     width: 256px;
     background-color: #285DC1;
-    color: #bbb;
+    color: white;
     z-index: 8;
 
     /*-webkit-transition: all 0.2s cubic-bezier(0.70, 0, 0.175, 1);
@@ -238,8 +242,6 @@ a:hover, a:active, a:focus {
 .content-title,
 .content-top {
     height: 100px;
-    background-color: #C9D9E9;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .content-top {
@@ -250,13 +252,10 @@ a:hover, a:active, a:focus {
     display: flex;
     justify-content: center;
     flex-direction: column;
-
     font-size: 38px;
-    font-weight: 200;
-    color: #333;
+    font-weight: 300;
+    color: #285DC1;
     margin: 0;
-    /*padding-top: 20px;*/
-    /*text-transform: uppercase;*/
 }
 
 .breadcrumbs,
@@ -292,10 +291,6 @@ a:hover, a:active, a:focus {
 
 .content-breadcrumb span:last-child:after {
     content: "";
-}
-
-.content-top {
-    text-align: right;
 }
 
 .content-body {
