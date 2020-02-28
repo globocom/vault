@@ -6,13 +6,13 @@ from unittest import TestCase
 
 from swiftclient import client
 
-from swiftbrowser import utils
+from storage import utils
 
 from vault.tests.fakes import fake_request
-from swiftbrowser.tests import fakes
+from storage.tests import fakes
 
 
-class TestSwiftbrowserUtils(TestCase):
+class TestStorageUtils(TestCase):
 
     def test_remove_duplicates_from_acl(self):
         given = 'projectfake:userfake,projectfake2:userfake2,projectfake:userfake'
@@ -41,7 +41,7 @@ class TestSwiftbrowserUtils(TestCase):
 
         self.assertEqual(modified, expected)
 
-    @patch('swiftbrowser.utils.client.get_account')
+    @patch('storage.utils.client.get_account')
     def test_get_temp_key(self, mock_get_account):
         expected_key = 'asgdia7239rgahsjbfhsd'
         mock_get_account.return_value = [
@@ -52,14 +52,14 @@ class TestSwiftbrowserUtils(TestCase):
 
         self.assertEqual(expected_key, computed_key)
 
-    @patch('swiftbrowser.utils.client.get_account')
+    @patch('storage.utils.client.get_account')
     def test_get_temp_key_get_account_exception(self, mock_get_account):
         mock_get_account.side_effect = client.ClientException('')
         computed_key = utils.get_temp_key('http://fakeurl', 'faketoken', False)
         self.assertIsNone(computed_key)
 
-    @patch('swiftbrowser.utils.client.post_account')
-    @patch('swiftbrowser.utils.client.get_account')
+    @patch('storage.utils.client.post_account')
+    @patch('storage.utils.client.get_account')
     def test_get_temp_key_get_account_no_key_retrieved_on_get_account(self, mock_get_account, mock_post_account):
         mock_get_account.return_value = [{}]
         retrieved_key = utils.get_temp_key('http://fakeurl', 'faketoken', False)
@@ -69,8 +69,8 @@ class TestSwiftbrowserUtils(TestCase):
 
         self.assertEqual(retrieved_key, computed_key)
 
-    @patch('swiftbrowser.utils.client.post_account')
-    @patch('swiftbrowser.utils.client.get_account')
+    @patch('storage.utils.client.post_account')
+    @patch('storage.utils.client.get_account')
     def test_get_temp_key_post_account_exception(self, mock_get_account, mock_post_account):
         mock_get_account.return_value = [{}]
         mock_post_account.side_effect = client.ClientException('')

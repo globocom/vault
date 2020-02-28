@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from swiftbrowser import views
+from storage import views
 
 
 urlpatterns = [
@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^trash/remove/', views.remove_from_trash, name="remove_from_trash"),
     url(r'^trash/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.get_deleted_objects, name="deleted_objects"),
 
-    # Swiftbrowser urls
+    # Storage urls
     url(r'^objects/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.objectview, name="objectview"),
     url(r'^upload/(?P<container>.+?)/(?P<prefix>.+)?$', views.upload, name="upload"),
     url(r'^create_object/(?P<container>.+?)/(?P<prefix>.+)?$', views.create_object, name="create_object"),

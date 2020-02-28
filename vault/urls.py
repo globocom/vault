@@ -37,8 +37,8 @@ urlpatterns = [
     url(r'^identity/', include('identity.urls')),
 
     # Swift
-    url(r'^storage/', include('swiftbrowser.urls')),
-    url(r'^api/storage/', include('swiftbrowser.api_urls')),
+    url(r'^storage/', include('storage.urls')),
+    url(r'^api/storage/', include('storage.api_urls')),
 
     # Team CRUD
     url(r'^team/add/user/?$', views.AddUserTeamView.as_view(), name='team_add_user'),

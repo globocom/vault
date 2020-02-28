@@ -8,14 +8,14 @@ from django import template
 from django.utils.timezone import utc
 from django.template.defaultfilters import stringfilter
 
-from swiftbrowser.views.backup import get_current_backup
+from storage.views.backup import get_current_backup
 
 
 register = template.Library()
 log = logging.getLogger(__name__)
 
 
-@register.inclusion_tag("swiftbrowser/storage_tools.html", takes_context=True)
+@register.inclusion_tag("storage/storage_tools.html", takes_context=True)
 def storage_tools(context):
     meta = context.get('container_meta')
     container = context.get("container")

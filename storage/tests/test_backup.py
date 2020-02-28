@@ -3,8 +3,8 @@
 from unittest.mock import patch, Mock
 from unittest import TestCase
 
-from swiftbrowser.tests import fakes
-from swiftbrowser.views import backup
+from storage.tests import fakes
+from storage.views import backup
 
 from vault.tests.fakes import fake_request
 
@@ -15,7 +15,7 @@ class TestSwiftBackup(TestCase):
         self.request = fake_request(user=False)
 
         # silence log
-        patch('swiftbrowser.views.backup.log',
+        patch('storage.views.backup.log',
               Mock(return_value=None)).start()
 
     def tearDown(self):

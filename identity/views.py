@@ -16,7 +16,7 @@ from django.views.generic.edit import FormView
 
 from keystoneclient import exceptions
 
-from swiftbrowser.utils import delete_swift_account
+from storage.utils import delete_swift_account
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
 from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,

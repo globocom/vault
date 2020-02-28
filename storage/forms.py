@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Forms for swiftbrowser.browser """
+""" Forms for storage.browser """
 
 from django import forms
 from django.core import validators

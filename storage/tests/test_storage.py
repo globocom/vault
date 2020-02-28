@@ -11,8 +11,8 @@ from django.utils.translation import gettext as _
 from django.test.utils import override_settings
 from django.contrib.auth.models import Group, User
 
-from swiftbrowser.tests import fakes
-from swiftbrowser import views
+from storage.tests import fakes
+from storage import views
 
 from vault.tests.fakes import fake_request
 from vault import utils
@@ -23,7 +23,7 @@ class BaseTestCase(TestCase):
     def setUp(self):
         self.request = fake_request()
         self.anonymous_request = fake_request(user=False)
-        patch('swiftbrowser.views.main.actionlog',
+        patch('storage.views.main.actionlog',
               Mock(return_value=None)).start()
 
     def tearDown(self):
@@ -39,7 +39,7 @@ class BaseTestCase(TestCase):
         patch.stopall()
 
 
-class TestSwiftbrowser(BaseTestCase):
+class TestStorage(BaseTestCase):
 
     def test_containerview_needs_authentication(self):
         response = views.containerview(self.anonymous_request)
@@ -96,7 +96,7 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_containerview_redirect_to_dashboard_without_project_in_session(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
         self.request.session['project_id'] = None
@@ -106,7 +106,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(response.url, reverse('dashboard_noproject'))
 
     @patch('requests.get')
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_containerview_list_containters(self, mock_get_account, mock_get):
         mock_get_account.return_value = fakes.get_account()
         mock_get.return_value = fakes.FakeRequestResponse(200, headers={"get": {"X-Bla": "Bla", "X-Ble": "Ble"}})
@@ -126,8 +126,8 @@ class TestSwiftbrowser(BaseTestCase):
         expected = '/storage/objects/container3/'
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.get_account')
     def test_containerview_clientexception(self, mock_get_account, mock_logging):
         mock_get_account.side_effect = client.ClientException('')
         self.request.META.update({'HTTP_HOST': 'localhost'})
@@ -142,7 +142,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(len(msgs), 1)
         self.assertEqual(msgs[0].message, _('Unable to list containers'))
 
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.get_container')
     def test_objectview_list_objects(self, mock_get_container):
         mock_get_container.return_value = fakes.get_container()
 
@@ -160,8 +160,8 @@ class TestSwiftbrowser(BaseTestCase):
         # Botao de views.upload File
         self.assertIn('/storage/upload/fakecontainer/', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.get_container')
     def test_objectview_clientexception(self, mock_get_container, mock_logging):
         mock_get_container.side_effect = client.ClientException('')
         views.objectview(self.request, 'fakecontainer')
@@ -174,9 +174,9 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(len(msgs), 1)
         self.assertEqual(msgs[0].message, _('Access denied'))
 
-    @patch("swiftbrowser.views.main.actionlog.log")
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.put_container')
     def test_create_container_valid_form(self, mock_put_container, mock_logging, mock_log):
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -195,8 +195,8 @@ class TestSwiftbrowser(BaseTestCase):
         user = self.request.user.username
         mock_log.assert_called_with(user, "create", "fakecontainer")
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.put_container')
     def test_create_container_invalid_form(self, mock_put_container, mock_logging):
 
         mock_put_container.side_effect = client.ClientException('')
@@ -220,8 +220,8 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(_('This field is required.'), response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.put_container')
     def test_create_container_invalid_container_names(self, mock_put_container, mock_logging):
 
         mock_put_container.side_effect = client.ClientException('')
@@ -250,8 +250,8 @@ class TestSwiftbrowser(BaseTestCase):
         response = views.create_container(self.request)
         self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.put_container')
     def test_create_container_fail_to_create(self, mock_put_container, mock_logging):
 
         mock_put_container.side_effect = client.ClientException('')
@@ -270,7 +270,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_put_container.called)
         self.assertTrue(mock_logging.called)
 
-    @patch('swiftbrowser.views.main.requests.put')
+    @patch('storage.views.main.requests.put')
     def test_create_object_status_201(self, mock_requests_put):
         mock_requests_put.return_value = fakes.FakeRequestResponse(201)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
@@ -291,7 +291,7 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': prefix})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.requests.put')
+    @patch('storage.views.main.requests.put')
     def test_create_object_status_201_with_prefix(self, mock_requests_put):
         mock_requests_put.return_value = fakes.FakeRequestResponse(201)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
@@ -317,8 +317,8 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': prefix})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.requests.put')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.requests.put')
     def test_create_object_status_401(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(401)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
@@ -332,8 +332,8 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_requests_put.called)
         self.assertFalse(mock_logging.called)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.requests.put')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.requests.put')
     def test_create_object_status_403(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(403)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
@@ -347,8 +347,8 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_requests_put.called)
         self.assertFalse(mock_logging.called)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.requests.put')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.requests.put')
     def test_create_object_status_other_than_above(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(404)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
@@ -364,7 +364,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_requests_put.called)
         self.assertFalse(mock_logging.called)
 
-    @patch('swiftbrowser.views.main.delete_container')
+    @patch('storage.views.main.delete_container')
     def test_delete_container_view_deletes_with_success(self, mock_delete_container):
         mock_delete_container.return_value = True
         self.request.method = 'DELETE'
@@ -374,7 +374,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('Container deleted', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.delete_container')
+    @patch('storage.views.main.delete_container')
     def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
         mock_delete_container.return_value = False
         self.request.method = 'DELETE'
@@ -384,10 +384,10 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(response.status_code, 500)
         self.assertIn('Container delete error', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.get_object')
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch("swiftbrowser.views.main.actionlog.log")
-    @patch('swiftbrowser.views.main.client.delete_container')
+    @patch('storage.views.main.client.get_object')
+    @patch('storage.views.main.client.delete_object')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.client.delete_container')
     def test_delete_container_without_deleting_objects(self,
                                                        mock_delete_container,
                                                        mock_action_log,
@@ -403,10 +403,10 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
-    @patch('swiftbrowser.views.main.client.get_container')
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch("swiftbrowser.views.main.actionlog.log")
-    @patch('swiftbrowser.views.main.client.delete_container')
+    @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.client.delete_container')
     def test_delete_container_deleting_objects(self, mock_delete_container,
                                                mock_action_log,
                                                mock_delete_object,
@@ -425,10 +425,10 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
-    @patch('swiftbrowser.views.main.client.get_container')
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch("swiftbrowser.views.main.actionlog.log")
-    @patch('swiftbrowser.views.main.client.delete_container')
+    @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.client.delete_container')
     def test_delete_container_fail_to_get_objects(self, mock_delete_container,
                                                   mock_action_log,
                                                   mock_delete_object,
@@ -444,11 +444,11 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertFalse(mock_delete_container.called)
         self.assertFalse(mock_action_log.called)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.get_container')
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch("swiftbrowser.views.main.actionlog.log")
-    @patch('swiftbrowser.views.main.client.delete_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.client.delete_container')
     def test_delete_container_fail_to_delete_container(self,
                                                        mock_delete_container,
                                                        mock_action_log,
@@ -468,7 +468,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_delete_object.called)
         self.assertTrue(mock_delete_container.called)
 
-    @patch('swiftbrowser.views.main.client.put_object')
+    @patch('storage.views.main.client.put_object')
     def test_create_pseudofolder_with_no_prefix(self, mock_put_object):
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -498,7 +498,7 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertIn(", 'fakepseudofolder/',", str_call)
 
-    @patch('swiftbrowser.views.main.client.put_object')
+    @patch('storage.views.main.client.put_object')
     def test_create_pseudofolder_with_prefix(self, mock_put_object):
         self.request.method = 'POST'
         post = self.request.POST.copy()
@@ -536,8 +536,8 @@ class TestSwiftbrowser(BaseTestCase):
         expected_foldername = '{0}{1}/'.format(prefix, pseudofolder)
         self.assertIn(expected_foldername, str_call)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.put_object')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.put_object')
     def test_create_pseudofolder_exception(self, mock_put_object, mock_logging):
 
         mock_put_object.side_effect = client.ClientException('')
@@ -557,7 +557,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(mock_put_object.called)
         self.assertTrue(mock_logging.called)
 
-    @patch('swiftbrowser.views.main.client.put_object')
+    @patch('storage.views.main.client.put_object')
     def test_create_pseudofolder_invalid_form(self, mock_put_object):
         self.request.method = 'POST'
         self.request.META.update({
@@ -573,7 +573,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertFalse(mock_put_object.called)
         self.assertIn(_('This field is required.'), response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.delete_object')
+    @patch('storage.views.main.delete_object')
     def test_view_delete_object_inside_a_container(self, mock_delete_object):
 
         mock_delete_object.return_value = True
@@ -593,7 +593,7 @@ class TestSwiftbrowser(BaseTestCase):
         expected = reverse('objectview', kwargs={'container': fakecontainer})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.delete_object')
+    @patch('storage.views.main.delete_object')
     def test_view_delete_object_inside_a_pseudofolder(self, mock_delete_object):
 
         mock_delete_object.return_value = True
@@ -614,7 +614,7 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': fakepseudofolder})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.delete_object')
+    @patch('storage.views.main.delete_object')
     def test_view_delete_object_fail_to_delete(self, mock_delete_object):
 
         mock_delete_object.return_value = False
@@ -634,8 +634,8 @@ class TestSwiftbrowser(BaseTestCase):
         expected = reverse('objectview', kwargs={'container': fakecontainer})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.delete_object')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.delete_object')
     def test_delete_object(self, mock_delete_object, mock_actionlog):
 
         fakecontainer = 'fakecontainer'
@@ -646,8 +646,8 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertTrue(response)
         self.assertTrue(mock_actionlog.called)
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.delete_object')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.delete_object')
     def test_delete_object_fail_to_delete(self, mock_delete_object, mock_actionlog):
 
         mock_delete_object.side_effect = client.ClientException('')
@@ -660,8 +660,8 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertFalse(response)
         self.assertTrue(mock_delete_object.called)
 
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch('storage.views.main.client.get_container')
     def test_delete_empty_pseudofolder(self, mock_get_container, mock_delete_object):
 
         fakecontainer = 'fakecontainer'
@@ -686,8 +686,8 @@ class TestSwiftbrowser(BaseTestCase):
         expected = reverse('objectview', kwargs={'container': fakecontainer})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch('storage.views.main.client.get_container')
     def test_delete_non_empty_pseudofolder(self, mock_get_container, mock_delete_object):
 
         fakecontainer = 'fakecontainer'
@@ -717,14 +717,14 @@ class TestSwiftbrowser(BaseTestCase):
         kargs = mock_delete_object.mock_calls[2][2]
         self.assertEqual(kargs['name'], fakepseudofolder_content[2]['name'])
 
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch('storage.views.main.client.get_container')
     def test_delete_non_empty_pseudofolder_with_some_failures(self, mock_get_container, mock_delete_object):
         # TODO: Find a way to simulate one failures among successful deletes
         pass
 
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch('storage.views.main.client.get_container')
     def test_delete_empty_pseudofolder_inside_other_pseudofolder(self, mock_get_container, mock_delete_object):
 
         prefix = 'fakepseudofolder1/'
@@ -751,8 +751,8 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': prefix})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.client.delete_object')
-    @patch('swiftbrowser.views.main.client.get_container')
+    @patch('storage.views.main.client.delete_object')
+    @patch('storage.views.main.client.get_container')
     def test_delete_pseudofolder_fail(self, mock_get_container, mock_delete_object):
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
@@ -772,7 +772,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(kargs['name'], fakepseudofolder)
         self.assertEqual(kargs['container'], fakecontainer)
 
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_render_upload_view(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
 
@@ -784,7 +784,7 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertIn('enctype="multipart/form-data"', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_render_upload_view_with_prefix(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
 
@@ -796,11 +796,11 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertIn('prefixTest', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_upload_view_without_temp_key_without_prefix(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
 
-        patch('swiftbrowser.views.main.get_temp_key',
+        patch('storage.views.main.get_temp_key',
               Mock(return_value=None)).start()
 
         prefix = ''
@@ -815,11 +815,11 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': prefix})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_upload_view_without_temp_key_with_prefix(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
 
-        patch('swiftbrowser.views.main.get_temp_key',
+        patch('storage.views.main.get_temp_key',
               Mock(return_value=None)).start()
 
         prefix = 'prefix/'
@@ -834,7 +834,7 @@ class TestSwiftbrowser(BaseTestCase):
                                                  'prefix': prefix})
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.requests.get')
+    @patch('storage.views.main.requests.get')
     def test_download(self, mock_get):
         content = b'ola'
         headers = {'Content-Type': 'fake/object'}
@@ -847,7 +847,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(response.content, content)
         self.assertEqual(headers, computed_headers)
 
-    @patch('swiftbrowser.views.main.requests.head')
+    @patch('storage.views.main.requests.head')
     def test_metadataview_return_headers_from_container(self, mock_head):
         headers = {'content-type': 'fake/container'}
         mock_head.return_value = fakes.FakeRequestResponse(content='',
@@ -856,7 +856,7 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertIn('fake/container', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.requests.head')
+    @patch('storage.views.main.requests.head')
     def test_metadataview_return_headers_from_object(self, mock_head):
         headers = {'content-type': 'fake/object'}
         mock_head.return_value = fakes.FakeRequestResponse(content='',
@@ -867,9 +867,9 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertIn('fake/object', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.put_container')
     def test_enable_versioning(self,
                                mock_put_container,
                                mock_post_container,
@@ -890,9 +890,9 @@ class TestSwiftbrowser(BaseTestCase):
         # Create container/update container
         self.assertEqual(mock_actionlog.call_count, 2)
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.put_container')
     def test_enable_versioning_fail_to_create_container(self,
                                                         mock_put_container,
                                                         mock_post_container,
@@ -909,9 +909,9 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(mock_actionlog.call_count, 0)
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.put_container')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.put_container')
     def test_enable_versioning_fail_to_update_container(self,
                                                         mock_put_container,
                                                         mock_post_container,
@@ -928,10 +928,10 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(mock_actionlog.call_count, 1)
 
-    @patch('swiftbrowser.views.main.actionlog.log')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.delete_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.actionlog.log')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.delete_container')
+    @patch('storage.views.main.client.head_container')
     def test_disable_versioning(self,
                                 mock_head_container,
                                 mock_delete_container,
@@ -952,10 +952,10 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(mock_actionlog.call_count, 1)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.delete_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.delete_container')
+    @patch('storage.views.main.client.head_container')
     def test_disable_versioning_fail_to_get_container_headers(self,
                                                        mock_head_container,
                                                        mock_delete_container,
@@ -974,10 +974,10 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(mock_logging.call_count, 1)
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.delete_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.delete_container')
+    @patch('storage.views.main.client.head_container')
     def test_disable_versioning_fail_to_update_container_header(self,
                                                        mock_head_container,
                                                        mock_delete_container,
@@ -1001,8 +1001,8 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(mock_logging.call_count, 1)
 
-    @patch('swiftbrowser.views.main.render')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.render')
+    @patch('storage.views.main.client.head_container')
     def test_object_versioning_view_versioning_disabled(self,
                                                         mock_head_container,
                                                         mock_render):
@@ -1021,9 +1021,9 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(computed['container'], expected['container'])
         self.assertEqual(computed['version_location'], expected['version_location'])
 
-    @patch('swiftbrowser.views.main.render')
-    @patch('swiftbrowser.views.main.client.get_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.render')
+    @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.client.head_container')
     def test_object_versioning_view_versioning_enabled(self,
                                                        mock_head_container,
                                                        mock_get_container,
@@ -1044,7 +1044,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(computed['container'], expected['container'])
         self.assertEqual(computed['version_location'], expected['version_location'])
 
-    @patch('swiftbrowser.views.main.enable_versioning')
+    @patch('storage.views.main.enable_versioning')
     def test_object_versioning_view_enabling_versioning(self, mock_enable):
 
         post = self.request.method = 'POST'
@@ -1063,7 +1063,7 @@ class TestSwiftbrowser(BaseTestCase):
 
         self.assertEqual(headers['Location'], expected)
 
-    @patch('swiftbrowser.views.main.disable_versioning')
+    @patch('storage.views.main.disable_versioning')
     def test_object_versioning_view_disabling_versioning(self, mock_disable):
 
         post = self.request.method = 'POST'
@@ -1083,7 +1083,7 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertEqual(headers['Location'], expected)
 
     @override_settings(SWIFT_HIDE_PREFIXES=['.'])
-    @patch('swiftbrowser.views.main.client.get_account')
+    @patch('storage.views.main.client.get_account')
     def test_filter_containers_with_prefix_listed_in_SWIFT_HIDE_PREFIXES(self, mock_get_account):
         fake_get_acc = fakes.get_account()
         containers = [{'count': 4, 'bytes': 4, 'name': '.container4'}]
@@ -1099,14 +1099,14 @@ class TestSwiftbrowser(BaseTestCase):
         self.assertNotIn('/storage/objects/.container4/', response.content.decode('UTF-8'))
 
 
-class TestSwiftbrowserAcls(BaseTestCase):
+class TestStorageAcls(BaseTestCase):
 
     def test_edit_acl_needs_authentication(self):
         response = views.edit_acl(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_list_acls_container_public(self, mock_get_container):
         """
         Verify the ACL list for a container public and
@@ -1125,7 +1125,7 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertIn('Add ACL', response.content.decode('UTF-8'))
         self.assertIn('.r:*', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_list_acls_container_private(self, mock_get_container):
         """
         Verify the ACL list for a private container with no ACLS and
@@ -1145,7 +1145,7 @@ class TestSwiftbrowserAcls(BaseTestCase):
         expected = 'There are no ACLs for this container yet. Add a new ACL by clicking the red button.'
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_private_container_but_public_for_read_and_write_for_an_user_and_project(self, mock_head_container):
         """
         Verify if it's properly listing container's acl and
@@ -1163,7 +1163,7 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertIn('Add ACL', response.content.decode('UTF-8'))
         self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_public_container_and_public_for_read_for_more_than_one_user_and_project(self, mock_head_container):
         """
         Verify if it's properly listing container's acl for a public container
@@ -1182,8 +1182,8 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
         self.assertIn('projectfake2:userfake2', response.content.decode('UTF-8'))
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container):
         mock_head_container.return_value = {
             'x-container-read': '',
@@ -1217,9 +1217,9 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertEqual(len(msgs), 1)
         self.assertEqual(msgs[0].message, _('ACLs updated'))
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_expcetion_on_grant_read_and_write_permission_for_a_project_and_user(self, mock_head_container, mock_post_container, mock_logging):
         mock_head_container.return_value = {
             'x-container-read': '',
@@ -1248,8 +1248,8 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertTrue(mock_logging.called)
         self.assertEqual(msgs[0].message, _('ACL update failed'))
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_make_private(self, mock_head_container, mock_post_container):
         """
             Verify if the action "Making Private" is
@@ -1278,8 +1278,8 @@ class TestSwiftbrowserAcls(BaseTestCase):
         }
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_make_public(self, mock_head_container, mock_post_container):
         """
             Verify if the action "Making Public" is
@@ -1309,8 +1309,8 @@ class TestSwiftbrowserAcls(BaseTestCase):
         }
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_delete_acl_for_user_in_a_public_container(self, mock_head_container, mock_post_container):
         """ Verify if is deleting the correct ACL """
         mock_head_container.return_value = {
@@ -1336,8 +1336,8 @@ class TestSwiftbrowserAcls(BaseTestCase):
         }
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_delete_acl_for_user_in_a_private_container(self, mock_head_container, mock_post_container):
         mock_head_container.return_value = {
             'x-container-read': 'projectfake:userfake',
@@ -1362,9 +1362,9 @@ class TestSwiftbrowserAcls(BaseTestCase):
         }
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.log.exception')
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_edit_acl_delete_acl_exception(self, mock_head_container, mock_post_container, mock_logging):
         mock_head_container.return_value = {
             'x-container-read': 'projectfake:userfake',
@@ -1389,15 +1389,15 @@ class TestSwiftbrowserAcls(BaseTestCase):
         self.assertIn('projectfake:userfake', response.content.decode('UTF-8'))
 
 
-class TestSwiftbrowserCORS(BaseTestCase):
+class TestStorageCORS(BaseTestCase):
 
     def test_edit_cors_needs_authentication(self):
         response = views.edit_cors(self.anonymous_request)
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_define_novo_host_para_regra_de_cors_no_container(self, mock_head_container, mock_post_container):
         mock_head_container.return_value = {
             'x-container-meta-access-control-allow-origin': '',
@@ -1420,8 +1420,8 @@ class TestSwiftbrowserCORS(BaseTestCase):
 
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.client.post_container')
-    @patch('swiftbrowser.views.main.client.head_container')
+    @patch('storage.views.main.client.post_container')
+    @patch('storage.views.main.client.head_container')
     def test_remove_host_da_regra_de_cors_do_container(self, mock_head_container, mock_post_container):
         mock_head_container.return_value = {
             'x-container-meta-access-control-allow-origin': 'globo.com globoi.com',
@@ -1444,7 +1444,7 @@ class TestSwiftbrowserCORS(BaseTestCase):
 
         self.assertEqual(expected_arg, kargs['headers'])
 
-    @patch('swiftbrowser.views.main.requests.post')
+    @patch('storage.views.main.requests.post')
     def test_remove_from_cache_status_201(self, mock_requests_post):
         mock_requests_post.return_value = fakes.FakeRequestResponse(201)
 

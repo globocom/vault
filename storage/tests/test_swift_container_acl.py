@@ -7,8 +7,8 @@ from unittest import TestCase
 
 from swiftclient import client
 
-from swiftbrowser.tests import fakes
-from swiftbrowser import views
+from storage.tests import fakes
+from storage import views
 
 from vault.tests.fakes import fake_request
 
@@ -25,7 +25,7 @@ class TestSwiftAcl(TestCase):
         self.container = "container_test"
 
         # silence log
-        patch('swiftbrowser.views.log',
+        patch('storage.views.log',
               Mock(return_value=None)).start()
 
         patch('identity.keystone.Keystone',
@@ -46,7 +46,7 @@ class TestSwiftAcl(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('swiftbrowser.views.client.head_container')
+    @patch('storage.views.client.head_container')
     def test_container_acl_status(self, mock_head_container):
         # Private container
         mock_head_container.return_value = {}
@@ -62,8 +62,8 @@ class TestSwiftAcl(TestCase):
 
         self.assertEqual(computed['status'], 'enabled')
 
-    @patch('swiftbrowser.views.client.head_container')
-    @patch('swiftbrowser.views.client.post_container')
+    @patch('storage.views.client.head_container')
+    @patch('storage.views.client.post_container')
     def test_container_acl_update_set_to_private(self, mock_post, mock_head):
         mock_head.return_value = {}
 
@@ -78,8 +78,8 @@ class TestSwiftAcl(TestCase):
         computed_headers = mock_post.call_args[1].get('headers')
         self.assertEqual(computed_headers['x-container-read'], '')
 
-    @patch('swiftbrowser.views.client.head_container')
-    @patch('swiftbrowser.views.client.post_container')
+    @patch('storage.views.client.head_container')
+    @patch('storage.views.client.post_container')
     def test_container_acl_update_set_to_public(self, mock_post, mock_head):
         mock_head.return_value = {}
 

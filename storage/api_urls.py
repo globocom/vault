@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from swiftbrowser import views
+from storage import views
 
 
 urlpatterns = [

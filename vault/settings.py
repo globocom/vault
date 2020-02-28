@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'actionlogger',
     'dashboard',
     'identity',
-    'swiftbrowser',
+    'storage',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -193,7 +193,7 @@ LOGGING = {
             'propagate': True,
             'level': 'ERROR',
         },
-        'swiftbrowser': {
+        'storage': {
             'handlers': ['console'],
             'propagate': True,
             'level': 'ERROR',

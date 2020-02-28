@@ -5,7 +5,7 @@
 {% block title %}Storage - {{ project_name }}{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{% static 'swiftbrowser/css/swiftbrowser.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
 {% block content_title %}Storage{% endblock %}
@@ -176,7 +176,7 @@
 
 {% block js_bottom %}
 <script src="{% static 'vault/js/metadata.js' %}"></script>
-<script src="{% static 'swiftbrowser/js/storage.tools.js' %}"></script>
+<script src="{% static 'storage/js/storage.tools.js' %}"></script>
 <script>
   Metadata.init({ 'showPreview': false });
   Storage.Container.init();

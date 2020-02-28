@@ -106,7 +106,7 @@
 </div>
 {% endif %}
 
-<script src="{% static 'swiftbrowser/js/storage.tools.js' %}"></script>
+<script src="{% static 'storage/js/storage.tools.js' %}"></script>
 <script>
 Storage.Tools.init({
   'deleted_objects_url': '{% if prefix %}{% url "deleted_objects" container prefix %}{% else %}{% url "deleted_objects" container %}{% endif %}?p={{ project_id }}',

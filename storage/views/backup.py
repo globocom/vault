@@ -12,8 +12,8 @@ from django.http import HttpResponse
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 
-from swiftbrowser.models import BackupContainer
-from swiftbrowser.utils import get_token_id, get_storage_endpoint
+from storage.models import BackupContainer
+from storage.utils import get_token_id, get_storage_endpoint
 from vault import utils
 from identity.keystone import Keystone, exceptions
 from actionlogger.actionlogger import ActionLogger

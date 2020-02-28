@@ -25,8 +25,8 @@ from django.template.defaultfilters import filesizeformat
 
 from swiftclient import client
 
-from swiftbrowser.forms import *
-from swiftbrowser.utils import *
+from storage.forms import *
+from storage.utils import *
 
 from dashboard.jsoninfo import JsonInfo
 
@@ -1324,7 +1324,7 @@ def info_json(request):
             self._widgets = [
                 {
                     "type": "default",
-                    "name": "swiftbrowser",
+                    "name": "storage",
                     "title": "S3/Swift",
                     "subtitle": "Object Storage",
                     "color": "#0caed4",
