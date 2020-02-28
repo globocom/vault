@@ -29,10 +29,8 @@
 
 <body class="{% if is_popup %}popup {% endif %}{% with_sidebar %}{% block bodyclass %}{% endblock %}">
 
-{% if not is_popup %}
-  {% include "vault/header.html" %}
-  {% include "dashboard/sidebar.html" %}
-{% endif %}
+{% include "vault/header.html" %}
+{% include "dashboard/sidebar.html" %}
 
 <!-- Content -->
 <section id="content" class="container-fluid">

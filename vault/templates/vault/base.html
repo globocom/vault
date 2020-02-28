@@ -20,6 +20,10 @@
 
 <body class="{% with_sidebar %}{% block bodyclass %}{% endblock %}">
 
+{% block header %}
+  {% include "vault/header.html" %}
+{% endblock %}
+
 {% block sidebar %}
   {% include "dashboard/sidebar.html" %}
 {% endblock %}
