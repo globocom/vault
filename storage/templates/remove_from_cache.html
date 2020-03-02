@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-  <form method="POST" action="{% url "remove_from_cache" %}" class="form-box project-form">
+  <form method="POST" action="{% url "remove_from_cache" project_name %}" class="form-box project-form">
     {% csrf_token %}
     <fieldset class="content">
       <div class="col-md-6">

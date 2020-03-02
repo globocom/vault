@@ -10,10 +10,6 @@
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
-{% block js_top %}
-  <script src="{% static 'identity/js/project.js' %}"></script>
-{% endblock %}
-
 {% block content %}
   <form action="" class="form-box project-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
@@ -57,7 +53,11 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'identity/js/project.js' %}"></script>
 <script>
-Project.Users.init('{{ identity_project_id }}');
+Project.Users.init({
+  'projectId': '{{ identity_project_id }}',
+  'listUrl': '{% url "project_list_users" %}'
+  });
 </script>
 {% endblock %}

@@ -114,16 +114,17 @@ class TestStorage(BaseTestCase):
             'HTTP_HOST': 'localhost'
         })
         response = views.containerview(self.request)
+        project_name = self.request.session.get('project_name')
 
         self.assertEqual(response.status_code, 200)
 
-        expected = '/storage/objects/container1/'
+        expected = '/storage/p/{}/objects/container1/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = '/storage/objects/container2/'
+        expected = '/storage/p/{}/objects/container2/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = '/storage/objects/container3/'
+        expected = '/storage/p/{}/objects/container3/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
     @patch('storage.views.main.log.exception')
@@ -287,8 +288,10 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_requests_put.called)
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': prefix})
+                                                 'prefix': prefix,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.requests.put')
@@ -313,8 +316,10 @@ class TestStorage(BaseTestCase):
         self.assertIn('/fakecontainer/prefix/foo.txt', str_call)
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': prefix})
+                                                 'prefix': prefix,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.log.exception')
@@ -477,8 +482,9 @@ class TestStorage(BaseTestCase):
         self.request.POST = post
 
         response = views.create_pseudofolder(self.request, 'fakecontainer')
+        project_name = self.request.session.get('project_name')
 
-        expected_redirect_arg = ('Location', '/storage/objects/fakecontainer/')
+        expected_redirect_arg = ('Location', '/storage/p/{}/objects/fakecontainer/'.format(project_name))
         self.assertIn(expected_redirect_arg, response.items())
 
         msgs = [msg for msg in self.request._messages]
@@ -513,9 +519,10 @@ class TestStorage(BaseTestCase):
                                             'fakecontainer',
                                             prefix)
 
+        project_name = self.request.session.get('project_name')
         expected_redirect_arg = (
                 'Location',
-                '/storage/objects/fakecontainer/{0}'.format(prefix))
+                '/storage/p/{}/objects/fakecontainer/{}'.format(project_name, prefix))
         self.assertIn(expected_redirect_arg, response.items())
 
         msgs = [msg for msg in self.request._messages]
@@ -590,7 +597,9 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
         headers = dict([i for i in response.items()])
-        expected = reverse('objectview', kwargs={'container': fakecontainer})
+        project_name = self.request.session.get('project_name')
+        expected = reverse('objectview', kwargs={'container': fakecontainer,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.delete_object')
@@ -610,8 +619,10 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': fakepseudofolder})
+                                                 'prefix': fakepseudofolder,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.delete_object')
@@ -631,7 +642,9 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Access denied'))
 
         headers = dict([i for i in response.items()])
-        expected = reverse('objectview', kwargs={'container': fakecontainer})
+        project_name = self.request.session.get('project_name')
+        expected = reverse('objectview', kwargs={'container': fakecontainer,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.actionlog.log')
@@ -683,7 +696,9 @@ class TestStorage(BaseTestCase):
         self.assertEqual(kargs['container'], fakecontainer)
 
         headers = dict([i for i in response.items()])
-        expected = reverse('objectview', kwargs={'container': fakecontainer})
+        project_name = self.request.session.get('project_name')
+        expected = reverse('objectview', kwargs={'container': fakecontainer,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.client.delete_object')
@@ -747,8 +762,10 @@ class TestStorage(BaseTestCase):
         self.assertEqual(kargs['container'], fakecontainer)
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': prefix})
+                                                 'prefix': prefix,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.client.delete_object')
@@ -811,8 +828,10 @@ class TestStorage(BaseTestCase):
         self.assertEqual(response.status_code, 302)
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': prefix})
+                                                 'prefix': prefix,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.client.get_account')
@@ -830,8 +849,10 @@ class TestStorage(BaseTestCase):
         self.assertEqual(response.status_code, 302)
 
         headers = dict([i for i in response.items()])
+        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
-                                                 'prefix': prefix})
+                                                 'prefix': prefix,
+                                                 'project': project_name})
         self.assertEqual(headers['Location'], expected)
 
     @patch('storage.views.main.requests.get')

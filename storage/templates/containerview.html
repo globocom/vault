@@ -11,7 +11,7 @@
 {% block content_title %}Storage{% endblock %}
 
 {% block content_top %}
-  <a href="{% url "create_container" %}" class="btn btn btn-primary">
+  <a href="{% url "create_container" project_name %}" class="btn btn btn-primary">
     <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;{% trans 'Create Container'%}
   </a>
 {% endblock %}
@@ -39,7 +39,7 @@
           <i class="fa fa-inbox"></i>
         </td>
         <td>
-          <strong><a href="{% url "objectview" container=container.name %}?p={{ project_id }}" class="block">{{container.name}}</a></strong>
+          <strong><a href="{% url "objectview" project=project_name container=container.name %}?p={{ project_id }}" class="block">{{container.name}}</a></strong>
         </td>
         <td>
           {{container.count}}
@@ -63,9 +63,9 @@
 
           <script type="text/html" id="html-container-{{ forloop.counter }}">
             <div id="options-container-{{ forloop.counter }}" class="container-options"
-                 data-status-urls='[{ "elementId": "#container-{{ forloop.counter }}-trash", "url": "{% url "container_trash_status" container.name %}" },
-                                    { "elementId": "#container-{{ forloop.counter }}-acl", "url": "{% url "container_acl_status" container.name %}" },
-                                    { "elementId": "#container-{{ forloop.counter }}-backup", "url": "{% url "container_backup_status" container.name %}" }]'>
+                 data-status-urls='[{ "elementId": "#container-{{ forloop.counter }}-trash", "url": "{% url "container_trash_status" project=project_name container=container.name %}" },
+                                    { "elementId": "#container-{{ forloop.counter }}-acl", "url": "{% url "container_acl_status" project=project_name container=container.name %}" },
+                                    { "elementId": "#container-{{ forloop.counter }}-backup", "url": "{% url "container_backup_status" project=project_name container=container.name %}" }]'>
 
               <span class="container-options-name">{{ container.name }}</span>
 
@@ -110,7 +110,7 @@
 
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-trash" class="config-trash config-item"
-                     data-setup-url="{% url 'config_trash_container' container=container.name %}"
+                     data-setup-url="{% url 'config_trash_container' project=project_name container=container.name %}"
                      data-msg-enable="{% trans 'This will enable the Trash for container' %} {{ container.name }}. Continue?"
                      data-msg-disable="{% trans 'Disabling the Trash cannot restore deleted objects' %}. Continue?"
                      data-current-status="">
@@ -123,7 +123,7 @@
                 {% if user.is_staff %}
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-backup" class="config-backup config-item"
-                     data-setup-url="{% url 'config_backup_container' container=container.name %}"
+                     data-setup-url="{% url 'config_backup_container' project=project_name container=container.name %}"
                      data-msg-enable="{% trans 'This will enable Backups for container' %} {{ container.name }}. Continue?"
                      data-msg-disable="{% trans 'This container will no longer perform backups' %}. Continue?"
                      data-current-status="">

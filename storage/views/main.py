@@ -94,6 +94,7 @@ def create_container(request):
     form = CreateContainerForm(request.POST or None)
     if form.is_valid():
         container = form.cleaned_data['containername']
+        project_name = request.session.get('project_name')
 
         try:
             client.put_container(storage_url,
@@ -108,7 +109,7 @@ def create_container(request):
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, _('Access denied'))
 
-        return redirect(containerview)
+        return redirect(containerview, project=project_name)
 
     context = utils.update_default_context(request, {
         'form': form,
@@ -203,7 +204,8 @@ def objectview(request, container, prefix=None):
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
-        return redirect(containerview)
+        project_name = request.session.get('project_name')
+        return redirect(containerview, project=project_name)
 
     prefixes = prefix_list(prefix)
     object_list = pseudofolder_object_list(objects, prefix, public_url)
@@ -228,8 +230,9 @@ def upload(request, container, prefix=None):
     http_conn = client.http_connection(storage_url,
                                        insecure=settings.SWIFT_INSECURE)
 
+    project_name = request.session.get('project_name')
     redirect_url = 'http://{}'.format(request.get_host())
-    redirect_url += reverse('objectview', kwargs={'container': container, })
+    redirect_url += reverse('objectview', kwargs={'container': container, 'project': project_name})
 
     swift_url = storage_url + '/' + container + '/'
     if prefix:
@@ -249,9 +252,9 @@ def upload(request, container, prefix=None):
     if not key:
         messages.add_message(request, messages.ERROR, _('Access denied'))
         if prefix:
-            return redirect(objectview, container=container, prefix=prefix)
+            return redirect(objectview, container=container, prefix=prefix, project=project_name)
         else:
-            return redirect(objectview, container=container)
+            return redirect(objectview, container=container, project=project_name)
 
     hmac_body = '{}\n{}\n{}\n{}\n{}'.format(path, redirect_url, max_file_size,
                                             max_file_count, expires)
@@ -281,6 +284,7 @@ def create_object(request, container, prefix=None):
     """ Create object on Swift """
 
     obj = request.FILES.get('file1')
+    project_name = request.session.get('project_name')
 
     if obj:
         content = obj.read()
@@ -313,9 +317,9 @@ def create_object(request, container, prefix=None):
             messages.add_message(request, messages.ERROR, msg)
 
     if prefix:
-        return redirect(objectview, container=container, prefix=prefix)
+        return redirect(objectview, container=container, prefix=prefix, project=project_name)
     else:
-        return redirect(objectview, container=container)
+        return redirect(objectview, container=container, project=project_name)
 
 
 def download(request, container, objectname):
@@ -350,12 +354,13 @@ def delete_object_view(request, container, objectname):
         messages.add_message(request, messages.ERROR, _('Access denied'))
 
     prefix = '/'.join(objectname.split('/')[:-1])
+    project_name = request.session.get('project_name')
 
     if prefix:
         prefix += '/'
-        return redirect(objectview, container=container, prefix=prefix)
+        return redirect(objectview, container=container, prefix=prefix, project=project_name)
     else:
-        return redirect(objectview, container=container)
+        return redirect(objectview, container=container, project=project_name)
 
 
 def delete_object(request, container, objectname):
@@ -429,12 +434,13 @@ def delete_pseudofolder(request, container, pseudofolder):
     if prefix:
         prefix += '/'
 
+    project_name = request.session.get('project_name')
     actionlog.log(request.user.username, "delete", pseudofolder)
 
     if prefix:
-        return redirect(objectview, container=container, prefix=prefix)
+        return redirect(objectview, container=container, prefix=prefix, project=project_name)
     else:
-        return redirect(objectview, container=container)
+        return redirect(objectview, container=container, project=project_name)
 
 
 @login_required
@@ -458,6 +464,7 @@ def create_pseudofolder(request, container, prefix=None):
 
         content_type = 'application/directory'
         obj = None
+        project_name = request.session.get('project_name')
 
         try:
             client.put_object(storage_url, auth_token,
@@ -472,10 +479,10 @@ def create_pseudofolder(request, container, prefix=None):
 
         if prefix:
             actionlog.log(request.user.username, "create", foldername)
-            return redirect(objectview, container=container, prefix=prefix)
+            return redirect(objectview, container=container, prefix=prefix, project=project_name)
 
         actionlog.log(request.user.username, "create", foldername)
-        return redirect(objectview, container=container)
+        return redirect(objectview, container=container, project=project_name)
 
     prefixes = prefix_list(prefix)
 

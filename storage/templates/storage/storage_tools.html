@@ -109,10 +109,10 @@
 <script src="{% static 'storage/js/storage.tools.js' %}"></script>
 <script>
 Storage.Tools.init({
-  'deleted_objects_url': '{% if prefix %}{% url "deleted_objects" container prefix %}{% else %}{% url "deleted_objects" container %}{% endif %}?p={{ project_id }}',
-  'restore_object_url': '{% url "restore_object" %}?p={{ project_id }}',
-  'trash_remove_url': '{% url "remove_from_trash" %}?p={{ project_id }}',
-  'backup_restore_url': '{% url "backup_restore" %}?p={{ project_id }}',
+  'deleted_objects_url': '{% if prefix %}{% url "deleted_objects" project=project_name container=container prefix=prefix %}{% else %}{% url "deleted_objects" project=project_name container=container %}{% endif %}?p={{ project_id }}',
+  'restore_object_url': '{% url "restore_object" project_name %}?p={{ project_id }}',
+  'trash_remove_url': '{% url "remove_from_trash" project_name %}?p={{ project_id }}',
+  'backup_restore_url': '{% url "backup_restore" project_name %}?p={{ project_id }}',
   'container_name': '{{ container }}',
   'project_name': '{{ project_name }}'
 });

@@ -10,10 +10,6 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/user_teams.css' %}" />
 {% endblock %}
 
-{% block js_top %}
-  <script src="{% static 'vault/js/users_teams.js' %}"></script>
-{% endblock %}
-
 {% block content %}
   <div id="add-user-team">
     <div class="controls">
@@ -55,6 +51,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'vault/js/users_teams.js' %}"></script>
 <script>
 Team.Users.init({
   'addUrl': '{% url "team_add_user" %}',

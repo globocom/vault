@@ -72,6 +72,7 @@ def build_fake_session():
     fake_session = SessionStore()
     fake_session['token_time'] = timedelta(minutes=15) + datetime.utcnow()
     fake_session['project_id'] = '1'
+    fake_session['project_name'] = 'fake_project'
     fake_session['service_catalog'] = {
         'object_store': {'adminURL': 'https://fake.api.globoi.com/v1/AUTH_XPTO',
                          'publicURL': 'http://fake.s3.glbimg.com/v1/AUTH_XPTO',
