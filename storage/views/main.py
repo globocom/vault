@@ -28,8 +28,7 @@ from swiftclient import client
 from storage.forms import *
 from storage.utils import *
 
-from dashboard.jsoninfo import JsonInfo
-
+from vault.jsoninfo import JsonInfo
 from vault import utils
 from actionlogger.actionlogger import ActionLogger
 

@@ -9,7 +9,7 @@ import logging
 from hashlib import md5
 
 from django.contrib import messages
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -175,6 +175,18 @@ class SetProjectView(LoginRequiredMixin, View):
                                  _('Unable to change your project.'))
 
         return http_redirect
+
+
+class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
+    template_name = "vault/dashboard.html"
+
+    def get(self, request, *args, **kwargs):
+
+        context = {
+            "has_team": request.user.groups.count() > 0
+        }
+
+        return self.render_to_response(context)
 
 
 class VaultLogin(LoginView):

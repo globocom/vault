@@ -22,7 +22,7 @@ from identity.keystone import Keystone
 from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
                             ProjectForm, DeleteProjectConfirm)
 
-from dashboard.jsoninfo import JsonInfo
+from vault.jsoninfo import JsonInfo
 from vault import utils
 from vault.models import GroupProjects
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
@@ -734,6 +734,7 @@ class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
                         ]
                     }
                 ]
+
         ksinfo = KeystoneJsonInfo(keystone=self.keystone)
 
         return ksinfo.render(request)
