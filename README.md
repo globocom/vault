@@ -38,7 +38,7 @@ There will also be a non-admin user available. That user's credentials are:
 - *username*: user
 - *password*: user
 
-For more information on the docker implementation see [Docker Implementation](docs/DOCKER.md).
+For more information on the docker implementation see [Docker](docs/DOCKER.md).
 
 ## Basic setup for production environment
 

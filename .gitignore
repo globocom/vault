@@ -11,6 +11,7 @@ __pycache__/
 .project
 .pycharm-venv
 .pydevproject
+.pytest_cache/
 .settings/
 .vscode/
 actions.log
