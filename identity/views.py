@@ -655,86 +655,88 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin,
         return self.render_to_response(context, status=status)
 
 
+class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
+
+    def __init__(self, *args, **kwargs):
+        self.keystone = kwargs["keystone"]
+        super(KeystoneJsonInfo, self).__init__(*args, **kwargs)
+
+    def generate_menu_info(self):
+        self._menu = content = {
+            "name": "Keystone",
+            "icon": "fas fa-key",
+            "url": reverse("admin_projects"),
+            "subitems": [
+                {
+                    "name": "Projects",
+                    "icon": "",
+                    "url": reverse("admin_projects")
+                },
+                {
+                    "name": "Users",
+                    "icon": "",
+                    "url": reverse("admin_list_users")
+                }
+            ]
+        }
+
+    def generate_widget_info(self):
+        try:
+            users = self.keystone.user_list()
+        except Exception as e:
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            self._widgets = {
+                "error": "Unable to list users"
+            }
+            return
+        try:
+            projects = self.keystone.project_list()
+        except Exception as e:
+            log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
+            self._widgets = {
+                "error": "Unable to list projects"
+            }
+            return
+
+        self._widgets = [
+            {
+                "type": "default",
+                "name": "keystone",
+                "title": "Keystone",
+                "subtitle": "Identity Service",
+                "color": "#6faa50",
+                "icon": "fas fa-key",
+                "url": reverse("admin_projects"),
+                "properties": [
+                    {
+                        "name": "projects",
+                        "description": "",
+                        "value": len(projects)
+                    },
+                    {
+                        "name": "users",
+                        "description": "",
+                        "value": len(users)
+                    }
+                ],
+                "buttons": [
+                    {
+                        "name": "Projects",
+                        "url": reverse("admin_projects")
+                    },
+                    {
+                        "name": "Users",
+                        "url": reverse("admin_list_users")
+                    }
+                ]
+            }
+        ]
+
+
 class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
 
     def get(self, request, *args, **kwargs):
-
-        class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
-            def __init__(self, *args, **kwargs):
-                self.keystone = kwargs["keystone"]
-                super(KeystoneJsonInfo, self).__init__(*args, **kwargs)
-
-            def generate_menu_info(self):
-                self._menu = content = {
-                    "name": "Keystone",
-                    "icon": "fas fa-key",
-                    "url": reverse("admin_projects"),
-                    "subitems": [
-                        {
-                            "name": "Projects",
-                            "icon": "",
-                            "url": reverse("admin_projects")
-                        },
-                        {
-                            "name": "Users",
-                            "icon": "",
-                            "url": reverse("admin_list_users")
-                        }
-                    ]
-                }
-
-            def generate_widget_info(self):
-                try:
-                    users = self.keystone.user_list()
-                except Exception as e:
-                    log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
-                    self._widgets = {
-                        "error": "Unable to list users"
-                    }
-                    return
-                try:
-                    projects = self.keystone.project_list()
-                except Exception as e:
-                    log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
-                    self._widgets = {
-                        "error": "Unable to list projects"
-                    }
-                    return
-
-                self._widgets = [
-                    {
-                        "type": "default",
-                        "name": "keystone",
-                        "title": "Keystone",
-                        "subtitle": "Identity Service",
-                        "color": "#6faa50",
-                        "icon": "fas fa-key",
-                        "url": reverse("admin_projects"),
-                        "properties": [
-                            {
-                                "name": "projects",
-                                "description": "",
-                                "value": len(projects)
-                            },
-                            {
-                                "name": "users",
-                                "description": "",
-                                "value": len(users)
-                            }
-                        ],
-                        "buttons": [
-                            {
-                                "name": "Projects",
-                                "url": reverse("admin_projects")
-                            },
-                            {
-                                "name": "Users",
-                                "url": reverse("admin_list_users")
-                            }
-                        ]
-                    }
-                ]
-
         ksinfo = KeystoneJsonInfo(keystone=self.keystone)
 
         return ksinfo.render(request)
+

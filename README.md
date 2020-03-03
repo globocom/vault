@@ -38,7 +38,7 @@ There will also be a non-admin user available. That user's credentials are:
 - *username*: user
 - *password*: user
 
-For more information on the docker implementation see [DOCKER.md](DOCKER.md).
+For more information on the docker implementation see [Docker Implementation](docs/DOCKER.md).
 
 ## Basic setup for production environment
 
@@ -62,7 +62,7 @@ $ export VAULT_KEYSTONE_PROJECT=Vault
 $ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v3
 ```
 
-For optional variables and more information on each of the environment variables, see [ENVIRON.md](ENVIRON.md).
+For optional variables and more information on each of the environment variables, see [Environment Variables](docs/ENVIRON.md).
 
 ### 3. Create a MySQL database and the MySQL user
 ```
@@ -96,7 +96,7 @@ gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 
 ## Authentication
 
-Vault uses the default Django authentication, but also allows for OAuth2 authentication via [django-all-access](https://django-all-access.readthedocs.io/en/latest/). To add an OAuth2 provider, simply use the Django admin. For more information, see [OAUTH2.md](OAUTH2.md).
+Vault uses the default Django authentication, but also allows for OAuth2 authentication via [django-all-access](https://django-all-access.readthedocs.io/en/latest/). To add an OAuth2 provider, simply use the Django admin. For more information, see [OAuth2 Authentication](docs/OAUTH2.md).
 
 Only admins can create new users, unless when using OAuth2 authentication.
 
@@ -117,7 +117,7 @@ make tests
 
 ## Creating new apps for Vault
 
-While Vault already delivers an app for Swift management and another for Keystone management, it also allows you to easily implement your own apps. This helps you centralize several services in a single, standardized web interface. For more information, see [APPS.md](APPS.md).
+While Vault already delivers an app for Swift management and another for Keystone management, it also allows you to easily implement your own apps. This helps you centralize several services in a single, standardized web interface. For more information, see [How to create a Vault App](docs/APPS.md).
 
 ## Dependencies
 
