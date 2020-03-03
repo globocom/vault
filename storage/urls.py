@@ -45,12 +45,10 @@ urlpatterns = [
     url(r'^cache-control/(?P<container>.+?)/(?P<objectname>.+?)?$', views.cache_control, name="cache_control"),
     url(r'^versioning/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.object_versioning, name="object_versioning"),
 
+    # API
+    url(r'^p/(?P<project>.+?)?/api/info$', views.info_json, name="info_json"),
+    url(r'^api/backup-list/?', views.container_backup_list, name="container_backup_list"),
+
     # Storage base url (/)
     url(r'^p/(?P<project>.+?)$', views.containerview, name="containerview"),
-
-    # ===============================================================================================
-
-    # API
-    url(r'^p/(?P<project>.+?)/api/info$', views.info_json, name="info_json"),
-    url(r'^api/backup-list/?', views.container_backup_list, name="container_backup_list"),
 ]

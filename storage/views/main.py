@@ -40,7 +40,7 @@ actionlog = ActionLogger()
 
 @utils.project_required
 @login_required
-def containerview(request):
+def containerview(request, project):
     """ Returns a list of all containers in current account. """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -1290,25 +1290,27 @@ def container_acl_status(request, container):
 
 @utils.project_required
 @login_required
-def info_json(request):
+def info_json(request, project=None):
 
     class SwiftJsonInfo(JsonInfo):
         def generate_menu_info(self):
+            project_name = request.session.get('project_name')
             self._menu = content = {
                 "name": "S3/Swift",
                 "icon": "fa fa-feather-alt",
-                "url": reverse("containerview"),
+                "url": reverse('containerview', kwargs={'project': project_name}),
                 "subitems": [
                     {
                         "name": "Containers",
                         "icon": "",
-                        "url": reverse("containerview")
+                        "url": reverse('containerview', kwargs={'project': project_name})
                     }
                 ]
             }
 
         def generate_widget_info(self):
             storage_url = get_storage_endpoint(request, 'adminURL')
+            project_name = request.session.get('project_name')
 
             if storage_url is None:
                 self._widgets = {
@@ -1336,7 +1338,7 @@ def info_json(request):
                     "subtitle": "Object Storage",
                     "color": "#0caed4",
                     "icon": "fa fa-feather-alt",
-                    "url": reverse("containerview"),
+                    "url": reverse('containerview', kwargs={'project': project_name}),
                     "properties": [
                         {
                             "name": "containers",
@@ -1357,7 +1359,7 @@ def info_json(request):
                     "buttons": [
                         {
                             "name": "Containers",
-                            "url": reverse("containerview")
+                            "url": reverse('containerview', kwargs={'project': project_name})
                         }
                     ]
                 }

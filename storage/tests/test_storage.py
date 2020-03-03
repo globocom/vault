@@ -113,8 +113,8 @@ class TestStorage(BaseTestCase):
         self.request.META.update({
             'HTTP_HOST': 'localhost'
         })
-        response = views.containerview(self.request)
         project_name = self.request.session.get('project_name')
+        response = views.containerview(self.request, project_name)
 
         self.assertEqual(response.status_code, 200)
 
@@ -131,9 +131,10 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.client.get_account')
     def test_containerview_clientexception(self, mock_get_account, mock_logging):
         mock_get_account.side_effect = client.ClientException('')
+        project_name = self.request.session.get('project_name')
         self.request.META.update({'HTTP_HOST': 'localhost'})
 
-        views.containerview(self.request)
+        views.containerview(self.request, project_name)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -1108,13 +1109,14 @@ class TestStorage(BaseTestCase):
     def test_filter_containers_with_prefix_listed_in_SWIFT_HIDE_PREFIXES(self, mock_get_account):
         fake_get_acc = fakes.get_account()
         containers = [{'count': 4, 'bytes': 4, 'name': '.container4'}]
+        project_name = self.request.session.get('project_name')
 
         self.request.META.update({
             'HTTP_HOST': 'localhost'
         })
 
         mock_get_account.return_value = (fake_get_acc[0], containers)
-        response = views.containerview(self.request)
+        response = views.containerview(self.request, project_name)
 
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('/storage/objects/.container4/', response.content.decode('UTF-8'))
