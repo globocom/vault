@@ -2,16 +2,17 @@
 {% load i18n %}
 {% load static %}
 
-{% block content_title %}{% trans 'Listar Times e Usuários' %}{% endblock %}
+{% block content_title %}{% trans 'List Teams and Users' %}{% endblock %}
 
 {% block breadcrumb %}{% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/users_teams_ogs.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/users_teams.css' %}" />
 {% endblock %}
 
 {% block js_top %}
-  <script src="{% static 'vault/js/users_teams_ogs.js' %}"></script>
+  <script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'vault/js/users_teams_list.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -20,23 +21,14 @@
       <div class="field-team">
         <span>&nbsp;{% trans "Team" %}</span>
         <select class="groups">
-          <option value="">Todos</option>
+          <option value="">All</option>
           {% for group in groups %}
             <option value="{{ group.id }}">{{ group.name }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="field-og">
-        <span>&nbsp;OG</span>
-        <select class="ogs">
-          <option value="">Todos</option>
-          {% for og in ogs %}
-            <option value="{{ og.id }}">{{ og.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
       <div class="field-users">
-        <span>&nbsp;Usuário</span>
+        <span>&nbsp;User</span>
         <input type="text" class="users" name="" />
       </div>
     </div>
@@ -46,7 +38,6 @@
         <thead>
           <tr>
             <th width="25%">{% trans 'Team' %}</th>
-            <th width="25%">OG</th>
             <th width="50%">{% trans 'User' %}</th>
           </tr>
         </thead>
@@ -54,7 +45,6 @@
         {% for group in groups %}
           <tr>
             <td class="grp">{{ group.name }}</td>
-            <td class="grp">{{ group.og_name }}</td>
             <td class="grp">
               <ul style="padding-left: 20px;">
               {% for user in group.users %}
@@ -72,6 +62,6 @@
 
 {% block js_bottom %}
 <script>
-Team.UsersOGs.init();
+Team.Users.init();
 </script>
 {% endblock %}

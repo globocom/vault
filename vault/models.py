@@ -29,29 +29,3 @@ class CurrentProject(models.Model):
     class Meta:
         db_table = 'current_project'
         verbose_name_plural = _('Current Project')
-
-
-class OG(models.Model):
-
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, unique=True, null=False)
-    description = models.TextField(max_length=255)
-
-    class Meta:
-        db_table = 'og'
-        verbose_name = _('OG')
-        verbose_name_plural = _('OGs')
-
-    def __unicode__(self):
-        return "{}".format(self.name)
-
-
-class TeamOG(models.Model):
-
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    og = models.ForeignKey(OG, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'team_og'
-        unique_together = (('group'),)
-        verbose_name_plural = _('Team and OG')
