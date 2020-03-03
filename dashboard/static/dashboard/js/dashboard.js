@@ -1,1 +1,0 @@
-var Dashboard = Dashboard || {};

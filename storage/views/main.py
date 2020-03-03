@@ -28,8 +28,7 @@ from swiftclient import client
 from storage.forms import *
 from storage.utils import *
 
-from dashboard.jsoninfo import JsonInfo
-
+from vault.jsoninfo import JsonInfo
 from vault import utils
 from actionlogger.actionlogger import ActionLogger
 
@@ -1288,83 +1287,84 @@ def container_acl_status(request, container):
                         status=status)
 
 
-@utils.project_required
-@login_required
-def info_json(request, project=None):
+class SwiftJsonInfo(JsonInfo):
 
-    class SwiftJsonInfo(JsonInfo):
-        def generate_menu_info(self):
-            project_name = request.session.get('project_name')
-            self._menu = content = {
-                "name": "S3/Swift",
+    def generate_menu_info(self):
+        project_name = request.session.get('project_name')
+        self._menu = content = {
+            "name": "S3/Swift",
+            "icon": "fa fa-feather-alt",
+            "url": reverse("containerview", kwargs={'project': project_name}),
+            "subitems": [
+                {
+                    "name": "Containers",
+                    "icon": "",
+                    "url": reverse("containerview", kwargs={'project': project_name})
+                }
+            ]
+        }
+
+    def generate_widget_info(self):
+        storage_url = get_storage_endpoint(request, 'adminURL')
+        project_name = request.session.get('project_name')
+
+        if storage_url is None:
+            self._widgets = {
+                "error": "Storage URL not found."
+            }
+
+        auth_token = request.session.get('auth_token')
+        http_conn = client.http_connection(storage_url,
+                                             insecure=settings.SWIFT_INSECURE)
+        try:
+            head_acc = client.head_account(storage_url,
+                                             auth_token,
+                                             http_conn=http_conn)
+        except Exception as err:
+            log.exception('Exception: {0}'.format(err))
+            self._widgets = {
+                "error": "Unable to show Swift info."
+            }
+
+        self._widgets = [
+            {
+                "type": "default",
+                "name": "storage",
+                "title": "S3/Swift",
+                "subtitle": "Object Storage",
+                "color": "#0caed4",
                 "icon": "fa fa-feather-alt",
-                "url": reverse('containerview', kwargs={'project': project_name}),
-                "subitems": [
+                "url": reverse("containerview", kwargs={'project': project_name}),
+                "properties": [
+                    {
+                        "name": "containers",
+                        "description": "",
+                        "value": head_acc.get('x-account-container-count')
+                    },
+                    {
+                        "name": "objects",
+                        "description": "",
+                        "value": head_acc.get('x-account-object-count')
+                    },
+                    {
+                        "name": "used space",
+                        "description": "",
+                        "value": filesizeformat(head_acc.get('x-account-bytes-used'))
+                    }
+                ],
+                "buttons": [
                     {
                         "name": "Containers",
-                        "icon": "",
-                        "url": reverse('containerview', kwargs={'project': project_name})
+                        "url": reverse("containerview", kwargs={'project': project_name})
                     }
                 ]
             }
+        ]
 
-        def generate_widget_info(self):
-            storage_url = get_storage_endpoint(request, 'adminURL')
-            project_name = request.session.get('project_name')
 
-            if storage_url is None:
-                self._widgets = {
-                    "error": "Storage URL not found."
-                }
-
-            auth_token = request.session.get('auth_token')
-            http_conn = client.http_connection(storage_url,
-                                                 insecure=settings.SWIFT_INSECURE)
-            try:
-                head_acc = client.head_account(storage_url,
-                                                 auth_token,
-                                                 http_conn=http_conn)
-            except Exception as err:
-                log.exception('Exception: {0}'.format(err))
-                self._widgets = {
-                    "error": "Unable to show Swift info."
-                }
-
-            self._widgets = [
-                {
-                    "type": "default",
-                    "name": "storage",
-                    "title": "S3/Swift",
-                    "subtitle": "Object Storage",
-                    "color": "#0caed4",
-                    "icon": "fa fa-feather-alt",
-                    "url": reverse('containerview', kwargs={'project': project_name}),
-                    "properties": [
-                        {
-                            "name": "containers",
-                            "description": "",
-                            "value": head_acc.get('x-account-container-count')
-                        },
-                        {
-                            "name": "objects",
-                            "description": "",
-                            "value": head_acc.get('x-account-object-count')
-                        },
-                        {
-                            "name": "used space",
-                            "description": "",
-                            "value": filesizeformat(head_acc.get('x-account-bytes-used'))
-                        }
-                    ],
-                    "buttons": [
-                        {
-                            "name": "Containers",
-                            "url": reverse('containerview', kwargs={'project': project_name})
-                        }
-                    ]
-                }
-            ]
-
+@utils.project_required
+@login_required
+def info_json(request, project=None):
     sjinfo = SwiftJsonInfo()
 
     return sjinfo.render(request)

@@ -53,5 +53,6 @@ urlpatterns = [
     url(r'^set-project/(?P<project_id>[\w\-]+)/?$', views.SetProjectView.as_view(), name='set_project'),
 
     # Dashboard
-    url(r'^', include('dashboard.urls')),
+    url(r'^#noproject$', views.DashboardView.as_view(), name='dashboard_noproject'),
+    url(r'^', views.DashboardView.as_view(), name='dashboard'),
 ]

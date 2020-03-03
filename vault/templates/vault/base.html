@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block metatags %}{% endblock %}
 
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}">
@@ -20,7 +21,7 @@
       <div class="row">
 
         {% block sidebar %}
-        {% include "dashboard/sidebar.html" %}
+        {% include "vault/sidebar.html" %}
         {% endblock %}
 
         <main role="main" class="col-md-10">

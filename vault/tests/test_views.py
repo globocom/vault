@@ -7,8 +7,8 @@ from unittest.mock import Mock, MagicMock, patch
 
 from vault.tests.fakes import fake_request, UserFactory
 from identity.tests.fakes import FakeToken
-from vault.views import (SetProjectView, DeleteUserTeamView, AddUserTeamView,
-    ListUserTeamView, UpdateTeamsUsersView)
+from vault.views import (DashboardView, SetProjectView, DeleteUserTeamView,
+                         AddUserTeamView, ListUserTeamView, UpdateTeamsUsersView)
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group, User
 
@@ -30,6 +30,32 @@ class BaseTestCase(TestCase):
     @classmethod
     def tearDownClass(cls):
         patch.stopall()
+
+
+class DashboardTest(TestCase):
+
+    def setUp(self):
+        self.view = DashboardView.as_view()
+        self.request = fake_request(method='GET')
+
+        # does not connect to the keystone client
+        patch('keystoneclient.v3.client.Client').start()
+
+    def tearDown(self):
+        patch.stopall()
+
+    def test_dashboard_needs_authentication(self):
+        req = fake_request(method='GET', user=False)
+        response = self.view(req)
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_show_dashboard(self):
+        response = self.view(self.request)
+        self.assertEqual(response.status_code, 200)
+
+        response.render()
+        self.assertIn(b'Dashboard', response.content)
 
 
 class SetProjectTest(BaseTestCase):

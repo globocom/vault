@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vault',
     'actionlogger',
-    'dashboard',
     'identity',
     'storage',
 ]
