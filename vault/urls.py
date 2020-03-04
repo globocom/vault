@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^team/update/users/?$', views.UpdateTeamsUsersView.as_view(), name='update_teams_users'),
 
     # Team List
-    url(r'^team-users/?$', views.ListUsersTeamsView.as_view(), name='team_list_users'),
+    url(r'^team-users/?$', views.ListUsersTeamsView.as_view(), name='team_users'),
 
     # Team Manage
     url(r'^team/manage/?$', views.team_manager_view, name='team_manage'),

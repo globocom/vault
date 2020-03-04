@@ -667,7 +667,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
         self._menu = content = {
             "name": "Keystone",
             "icon": "fas fa-key",
-            "url": reverse("projects"),
+            "url": reverse("projects", kwargs={'project': project_name}),
             "subitems": [
                 {
                     "name": "Projects",
