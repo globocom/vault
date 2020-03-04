@@ -88,25 +88,9 @@ def get_logout_url(context):
 
 
 @register.simple_tag(takes_context=True)
-def can_view_team_users_ogs(context):
+def can_view_team_users(context):
     user = context.get('user')
-    add_og = False
-    change_og = False
-    delete_og = False
-
-    if len(user.groups.all()) == 0:
-        return (add_og and change_og and delete_og)
-
-    group = user.groups.all()[0]
-
-    for permission in group.permissions.all():
-        try:
-            codename = permission.codename
-            exec(codename + ' = True')
-        except Exception:
-            pass
-
-    return (add_og and change_og and delete_og)
+    return user.is_superuser
 
 
 @register.simple_tag()

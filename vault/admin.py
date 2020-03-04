@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from vault.models import GroupProjects, OG
+from vault.models import GroupProjects
 from vault.forms import GroupAdminForm, GroupProjectsForm
 from identity.keystone import KeystoneNoRequest
 
@@ -48,11 +48,6 @@ class GroupAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-class OGAdmin(admin.ModelAdmin):
-    search_fields = ['name']
-
-
 admin.site.register(GroupProjects, GroupProjectsAdmin)
-admin.site.register(OG, OGAdmin)
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)

@@ -27,7 +27,6 @@ from allaccess.views import (OAuthCallback, OAuthRedirect)
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
-from vault.models import OG
 from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
                          maybe_update_token)
@@ -118,29 +117,6 @@ class SuperUserMixin(LoginRequiredMixin):
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
         return super(SuperUserMixin, self).dispatch(request, *args, **kwargs)
-
-
-class HasOgPermissionMixin(LoginRequiredMixin):
-    """ Mixin for class views that controls the permissions of the OGs """
-
-    def dispatch(self, request, *args, **kwargs):
-        user = self.request.user
-        group = user.groups.all()[0]
-        add_og = False
-        change_og = False
-        delete_og = False
-
-        for permission in group.permissions.all():
-            try:
-                codename = permission.codename
-                exec(codename + ' = True')
-            except Exception:
-                pass
-
-        if not(add_og and change_og and delete_og):
-            return HttpResponseRedirect(reverse('dashboard'))
-
-        return super(HasOgPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
 class JSONResponseMixin:
@@ -345,22 +321,18 @@ class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             return self.render_to_response(context, status=500)
 
 
-class ListUsersTeamsOGsView(HasOgPermissionMixin, FormView):
+class ListUsersTeamsView(SuperUserMixin, FormView):
     template_name = "vault/users_teams_ogs.html"
 
     def get(self, request, *args, **kwargs):
         context = {}
         context['groups'] = []
-        context['ogs'] = []
 
         for index, group in enumerate(Group.objects.all()):
-            team_og = group.teamog_set.first()
-            og_name = team_og.og.name if team_og else ''
 
             context['groups'].append({
                 'id': int(group.id),
                 'name': group.name,
-                'og_name': og_name,
                 'users': []
             })
 
@@ -368,12 +340,6 @@ class ListUsersTeamsOGsView(HasOgPermissionMixin, FormView):
                 context['groups'][index]['users'].append({
                     'email': user.email
                 })
-
-        for og in OG.objects.all():
-            context['ogs'].append({
-                'id': int(og.id),
-                'name': og.name
-            })
 
         return self.render_to_response(context)
 

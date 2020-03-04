@@ -42,35 +42,6 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Groups and Projects',
             },
         ),
-        migrations.CreateModel(
-            name='OG',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255, unique=True)),
-                ('description', models.TextField(max_length=255)),
-            ],
-            options={
-                'db_table': 'og',
-                'verbose_name': 'OG',
-                'verbose_name_plural': 'OGs',
-            },
-        ),
-        migrations.CreateModel(
-            name='TeamOG',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.Group')),
-                ('og', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vault.OG')),
-            ],
-            options={
-                'db_table': 'team_og',
-                'verbose_name_plural': 'Team and OG',
-            },
-        ),
-        migrations.AlterUniqueTogether(
-            name='teamog',
-            unique_together=set([('group',)]),
-        ),
         migrations.AlterUniqueTogether(
             name='groupprojects',
             unique_together=set([('group', 'project')]),

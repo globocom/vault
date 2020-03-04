@@ -8,9 +8,34 @@ While Vault already delivers an app for Swift management and another for Keyston
 
 In order to create an app for Vault, you'll need to create it as a Python package. You won't need to install libraries such as [Bootstrap](https://getbootstrap.com/) and [Font Awesome](https://fontawesome.com/), as your app will already have access to those due to being part of Vault.
 
+For more information on how to transform your Django app into a Python package, see [Django's documentation on packaging apps](https://docs.djangoproject.com/en/3.0/intro/reusable-apps/#packaging-your-app).
+
 ### Decorators and Mixins
 
-// TODO
+When creating your views, Django already offers decorators (for function-based views) and mixins (for class-based views) to help you, such as limiting its access to logged users through the [login_required decorator](https://docs.djangoproject.com/en/3.0/topics/auth/default/#the-login-required-decorator) or the [LoginRequired mixin](https://docs.djangoproject.com/en/3.0/topics/auth/default/#the-loginrequired-mixin).
+
+Vault offers its own decorators and mixins to help you develop your views. One thing that is mandatory is that your views require the user to have a project selected before being given access to them. For that situation, use the `vault.utils.project_required` decorator; in case of a class-based view, use Django's `method_decorator` to apply that to the view's methods. For more information, see [Django's documentation on decorating a class](https://docs.djangoproject.com/en/3.0/topics/class-based-views/intro/#decorating-the-class).
+
+Example:
+
+``` python
+from django.views.generic.base import View
+from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from vault.utils import project_required
+
+class MyView(LoginRequiredMixin, View):
+
+    template_name = 'my_template.html'
+
+    @method_decorator(project_required)
+    def get(self, request, *args, **kwargs):
+
+        return
+
+```
+
+In case your view must be restricted to superusers, you can use the `vault.views.SuperUserMixin` mixin.
 
 ### Templates
 

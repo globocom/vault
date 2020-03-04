@@ -1,5 +1,5 @@
 {% load i18n static dashboard_tags vault_tags %}
-{% can_view_team_users_ogs as can_view_tusers_ogs %}
+{% can_view_team_users as can_view_tusers %}
 
 <!-- sidebar -->
 <nav id="sidebar" class="col-md-2">
@@ -29,9 +29,9 @@
         <i class="icon fa fa-users"></i>
       </a>
     </li>
-    {% if can_view_tusers_ogs %}
+    {% if can_view_tusers %}
     <li>
-      <a href="{% url 'team_list_users_ogs' %}" title="Times e Usuários" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'team_list_users' %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-building"></i>
       </a>
     </li>

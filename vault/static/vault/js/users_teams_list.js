@@ -1,17 +1,16 @@
 var Team = Team || {};
 
 
-Team.UsersOGs = {};
+Team.Users = {};
 
 (function(window, $) {
     'use strict';
 
-    var $main, $groups, $ogs, $users, $usersList;
+    var $main, $groups, $users, $usersList;
 
     function init() {
         $main = $('#search-user-team');
         $groups = $main.find('.groups');
-        $ogs = $main.find('.ogs');
         $users = $main.find('.users');
         $usersList = $main.find('.related-users');
 
@@ -21,12 +20,11 @@ Team.UsersOGs = {};
     function bindEvents() {
         $groups.on('change', function(e) {
             e.preventDefault();
-            $ogs.val('');
             $users.val('');
             $usersList.find('tbody tr').show()
             var searchGroup = this.options[e.target.selectedIndex].text;
 
-            if (searchGroup === 'Todos') {
+            if (searchGroup === 'All') {
                 return;
             }
 
@@ -38,29 +36,9 @@ Team.UsersOGs = {};
             });
         });
 
-        $ogs.on('change', function(e) {
-            e.preventDefault();
-            $groups.val('');
-            $users.val('');
-            $usersList.find('tbody tr').show()
-            var searchOG = this.options[e.target.selectedIndex].text;
-
-            if (searchOG === 'Todos') {
-                return;
-            }
-
-            $usersList.find('tbody tr').each(function() {
-                var og = $(this).find('td:eq(1)').text();
-                if (searchOG !== og) {
-                    $(this).hide()
-                }
-            });
-        });
-
         $users.on('keyup', function(e) {
             e.preventDefault();
             $groups.val('');
-            $ogs.val('');
             $usersList.find('tbody tr').show()
             var searchUser = e.target.value;
 
@@ -69,7 +47,7 @@ Team.UsersOGs = {};
             }
 
             $usersList.find('tbody tr').each(function() {
-                var $td = $(this).find('td:eq(2)');
+                var $td = $(this).find('td:eq(1)');
                 var $li = $td.find('ul li');
                 var match = false;
 
@@ -86,7 +64,7 @@ Team.UsersOGs = {};
         });
     }
 
-    $.extend(Team.UsersOGs, {
+    $.extend(Team.Users, {
         init: init
     });
 
