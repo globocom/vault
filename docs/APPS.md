@@ -43,6 +43,61 @@ When creating your app's pages, it is necessary to extend Vault's base template.
 
 You can then override the contents of your page by using blocks. See [Django's documentation on template inheritance](https://docs.djangoproject.com/en/3.0/ref/templates/language/#template-inheritance) for more information.
 
+Example:
+
+``` html
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}My App{% endblock %}
+{% block content_title %}My App{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/hello.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="panel panel-default">
+  <p>This button leads to Vault's home:</p>
+  <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
+    <i class="fa fa-home"></i>
+  </a>
+</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+  alert("Hello there.");
+</script>
+{% endblock %}
+```
+
+### Installing your app
+
+Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, you need to include your app's urls in vault/urls.py as follows:
+
+``` python
+urlpatterns = [
+    # ...
+
+    # MyApp
+    url(r'^myapp/p/(?P<project>.+?)?/', include('myapp.urls')),
+
+    # ...
+]
+```
+
+**Warning**: The path **must** be `'^<your app's name>/p/?P<project>.+?)?/'`. The app name is required for some of Vault's features, while the `project` variable is mandatory so that every app knows what project the user selected to interact with.
+
+### Creating a widget and/or sidebar menu
+
+// TODO
+
+## Bonus Features
+
 ### Pagination
 
 If your app has a page that lists items and you need to paginate those items, you can use Vault's own pagination feature. To use it, do the following:
@@ -105,11 +160,3 @@ Once that's done on your view, you need to add the pagination Template Tag to yo
 
 {% endblock %}
 ```
-
-### Installing your app
-
-Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. From there, your app's URLs will already be accessible from Vault.
-
-### Creating a widget and/or sidebar menu
-
-// TODO
