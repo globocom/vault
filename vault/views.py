@@ -322,7 +322,7 @@ class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
 
 
 class ListUsersTeamsView(SuperUserMixin, FormView):
-    template_name = "vault/users_teams_ogs.html"
+    template_name = "vault/users_teams.html"
 
     def get(self, request, *args, **kwargs):
         context = {}
