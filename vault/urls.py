@@ -31,10 +31,10 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Identity
-    url(r'^identity/', include('identity.urls')),
+    url(r'^identity/p/(?P<project>.+?)?/', include('identity.urls')),
 
     # Swift
-    url(r'^storage/', include('storage.urls')),
+    url(r'^storage/p/(?P<project>.+?)?/', include('storage.urls')),
 
     # Team CRUD
     url(r'^team/add/user/?$', views.AddUserTeamView.as_view(), name='team_add_user'),

@@ -147,6 +147,7 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.client.get_container')
     def test_objectview_list_objects(self, mock_get_container):
         mock_get_container.return_value = fakes.get_container()
+        project_name = self.request.session.get('project_name')
 
         self.request.META.update({
             'HTTP_HOST': 'localhost'
@@ -160,7 +161,7 @@ class TestStorage(BaseTestCase):
         self.assertIn(expected, response.content.decode('UTF-8'))
 
         # Botao de views.upload File
-        self.assertIn('/storage/upload/fakecontainer/', response.content.decode('UTF-8'))
+        self.assertIn('/storage/p/{}/upload/fakecontainer/'.format(project_name), response.content.decode('UTF-8'))
 
     @patch('storage.views.main.log.exception')
     @patch('storage.views.main.client.get_container')

@@ -43,11 +43,7 @@
         <td>{{ project.team.name }}</td>
         <td>{{ project.enabled }}</td>
         <td>
-          {% if is_admin %}
-          <a href="{% url "admin_edit_project" project.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
-          {% else %}
           <a href="{% url "edit_project" project.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
-          {% endif %}
         </td>
       </tr>
       {% endfor %}

@@ -1289,8 +1289,12 @@ def container_acl_status(request, container):
 
 class SwiftJsonInfo(JsonInfo):
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs["request"]
+        super(SwiftJsonInfo, self).__init__(*args, **kwargs)
+
     def generate_menu_info(self):
-        project_name = request.session.get('project_name')
+        project_name = self.request.session.get('project_name')
         self._menu = content = {
             "name": "S3/Swift",
             "icon": "fa fa-feather-alt",
@@ -1305,15 +1309,15 @@ class SwiftJsonInfo(JsonInfo):
         }
 
     def generate_widget_info(self):
-        storage_url = get_storage_endpoint(request, 'adminURL')
-        project_name = request.session.get('project_name')
+        storage_url = get_storage_endpoint(self.request, 'adminURL')
+        project_name = self.request.session.get('project_name')
 
         if storage_url is None:
             self._widgets = {
                 "error": "Storage URL not found."
             }
 
-        auth_token = request.session.get('auth_token')
+        auth_token = self.request.session.get('auth_token')
         http_conn = client.http_connection(storage_url,
                                              insecure=settings.SWIFT_INSECURE)
         try:
@@ -1365,6 +1369,6 @@ class SwiftJsonInfo(JsonInfo):
 @utils.project_required
 @login_required
 def info_json(request, project=None):
-    sjinfo = SwiftJsonInfo()
+    sjinfo = SwiftJsonInfo(request=request)
 
     return sjinfo.render(request)

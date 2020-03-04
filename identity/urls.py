@@ -6,11 +6,6 @@ from identity import views
 
 
 urlpatterns = [
-    # Admin Project Keystone
-    # url(r'^admin/projects/$', views.ListProjectView.as_view(), name='admin_projects'),
-    # url(r'^admin/project/add/?$', views.CreateProjectView.as_view(), name='admin_add_project'),
-    # url(r'^admin/project/(?P<project_id>[\w\-]+)/?$', views.UpdateProjectView.as_view(), name='admin_edit_project'),
-
     # Admin Users Keystone
     url(r'^users/?$', views.ListUserView.as_view(), name='admin_list_users'),
     url(r'^user/add/?$', views.CreateUserView.as_view(), name='admin_add_user'),

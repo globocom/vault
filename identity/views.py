@@ -659,28 +659,32 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
 
     def __init__(self, *args, **kwargs):
         self.keystone = kwargs["keystone"]
+        self.request = kwargs["request"]
         super(KeystoneJsonInfo, self).__init__(*args, **kwargs)
 
     def generate_menu_info(self):
+        project_name = self.request.session.get('project_name')
         self._menu = content = {
             "name": "Keystone",
             "icon": "fas fa-key",
-            "url": reverse("admin_projects"),
+            "url": reverse("projects"),
             "subitems": [
                 {
                     "name": "Projects",
                     "icon": "",
-                    "url": reverse("admin_projects")
+                    "url": reverse("projects", kwargs={'project': project_name})
                 },
                 {
                     "name": "Users",
                     "icon": "",
-                    "url": reverse("admin_list_users")
+                    "url": reverse("admin_list_users", kwargs={'project': project_name})
                 }
             ]
         }
 
     def generate_widget_info(self):
+        project_name = self.request.session.get('project_name')
+
         try:
             users = self.keystone.user_list()
         except Exception as e:
@@ -706,7 +710,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
                 "subtitle": "Identity Service",
                 "color": "#6faa50",
                 "icon": "fas fa-key",
-                "url": reverse("admin_projects"),
+                "url": reverse("projects", kwargs={'project': project_name}),
                 "properties": [
                     {
                         "name": "projects",
@@ -722,11 +726,11 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
                 "buttons": [
                     {
                         "name": "Projects",
-                        "url": reverse("admin_projects")
+                        "url": reverse("projects", kwargs={'project': project_name})
                     },
                     {
                         "name": "Users",
-                        "url": reverse("admin_list_users")
+                        "url": reverse("admin_list_users", kwargs={'project': project_name})
                     }
                 ]
             }
@@ -736,6 +740,6 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
 class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
 
     def get(self, request, *args, **kwargs):
-        ksinfo = KeystoneJsonInfo(keystone=self.keystone)
+        ksinfo = KeystoneJsonInfo(keystone=self.keystone, request=request)
 
         return ksinfo.render(request)

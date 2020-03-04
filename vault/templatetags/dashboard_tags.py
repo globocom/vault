@@ -8,14 +8,16 @@ from django.conf import settings
 register = template.Library()
 
 
-@register.simple_tag
-def info_endpoints():
+@register.simple_tag(takes_context=True)
+def info_endpoints(context, **kwargs):
     """Templatetag to render a list of info endpoints"""
 
     endpoints = []
+    request = context.get('request')
+    project_name = request.session.get('project_name')
 
     for conf in apps.get_app_configs():
         if hasattr(conf, 'app_name'):
-            endpoints.append("'/{}/api/info'".format(conf.name))
+            endpoints.append("'/{}/p/{}/api/info'".format(conf.name, project_name))
 
     return ','.join(endpoints)

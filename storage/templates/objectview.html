@@ -13,16 +13,16 @@
 
 {% block content_top %}
   {% if prefix %}
-  <a class="btn btn-primary" href="{% url "upload" container=container prefix=prefix %}">
+  <a class="btn btn-primary" href="{% url "upload" project=project_name container=container prefix=prefix %}">
   {% else %}
-  <a class="btn btn-primary" href="{% url "upload" container=container %}">
+  <a class="btn btn-primary" href="{% url "upload" project=project_name container=container %}">
   {% endif %}
   <i class="fa fa-upload"></i>&nbsp;&nbsp;Upload&nbsp;Object</a>
 
   {% if prefix %}
-  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container prefix=prefix %}">
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" project=project_name container=container prefix=prefix %}">
   {% else %}
-  <a class="btn btn-primary" href="{% url "create_pseudofolder" container=container %}">
+  <a class="btn btn-primary" href="{% url "create_pseudofolder" project=project_name container=container %}">
   {% endif %}
   <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
 {% endblock %}
@@ -77,8 +77,8 @@
           <td>
             <button class="btn-meta btn btn-xs btn-default"
               data-name="{{ obj.name }}"
-              data-preview-url="{% url "preview" container=container objectname=obj.name %}"
-              data-meta-url="{% url "metadata" container=container objectname=obj.name %}">
+              data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
               <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
             </button>
           </td>
@@ -89,7 +89,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a href="{% url "delete_pseudofolder" container=container pseudofolder=obj.name %}"
+                  <a href="{% url "delete_pseudofolder" project=project_name container=container pseudofolder=obj.name %}"
                     onclick="return confirm('Delete pseudofolder {{obj.name}}?');">
                     <i class="fas fa-trash"></i>&nbsp;Delete pseudofolder</a>
                 </li>
@@ -116,8 +116,8 @@
           <td>
             <button class="btn-meta btn btn-xs btn-default"
               data-name="{{ obj.name }}"
-              data-preview-url="{% url "preview" container=container objectname=obj.name %}"
-              data-meta-url="{% url "metadata" container=container objectname=obj.name %}">
+              data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
               <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
             </button>
           </td>
@@ -129,13 +129,13 @@
               <ul class="dropdown-menu">
                 <li>
                   <a href="#modal-cache-control" data-target="#modal-cache-control" data-toggle="modal" class="btn-cache-control"
-                     data-cache-control-url="{% url "cache_control" container=container objectname=obj.name %}">
+                     data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=obj.name %}">
                     <i class="fa fa-angle-right"></i>&nbsp;{% trans 'Edit Cache-Control' %}
                   </a>
                 </li>
                 <li class="divider" />
                 <li>
-                  <a href="{% url "delete_object" container=container objectname=obj.name %}"
+                  <a href="{% url "delete_object" project=project_name container=container objectname=obj.name %}"
                     onclick="return confirm('Delete object {{ obj.name }}?');">
                     <i class="fas fa-trash"></i>&nbsp;Delete object</a>
                 </li>
