@@ -1,25 +1,21 @@
-{% load static %}
 {% load i18n %}
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{% trans 'Error 500' %}</title>
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/font.css' %}" />
+  <title>{% trans '500, Something went wrong...' %}</title>
   <style>
-    body { background-color: #e6e8ea; }
-    .error500 { position: absolute; top: 50%; left: 50%; margin-top: -266px; margin-left: -332px; height: 532px; width: 664px; text-align: center; }
-    .vault { font-family: kitchen_policeregular, Helvetica, Arial, sans-serif; font-weight: normal; font-size: 38px; color: #c0c0c0; margin: 0 0 10px; }
-    .text { color: #c0c0c0; font: bold 28px Arial, sans-serif; letter-spacing: -1px; margin: 0; }
+    body { background-color: #f4f4f4; margin: 0; padding: 0; }
+    .error500 { position: absolute; top: 50px; left: 50px; }
+    .vault, .text { color: #777; font: lighter 28px 'Open Sans', Helvetica, Arial, sans-serif; }
+    .vault { font-size: 36px; margin: 0; padding: 0; }
   </style>
 </head>
 <body>
   <div class="error500">
-    <h2 class="vault">{% trans 'Vault' %}</h2>
-    <img src="{% static 'vault/img/500.png' %}" />
+    <h1 class="vault">{% trans 'Vault' %}</h1>
     <p class="text">
-      {% trans 'We are traveling to space to verify our satellites.' %}<br />
-      {% trans 'Come back in a while!' %}
+      {% trans '500, Something went wrong...' %}
     </p>
   </div>
 </body>
