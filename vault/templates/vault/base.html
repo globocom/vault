@@ -20,8 +20,8 @@
 
   <body class="{% with_sidebar %}{% block bodyclass %}{% endblock %}">
     {% block main_content %}
-    <div id="content" class="container-fluid">
-      <div class="row">
+    <div class="container-fluid content">
+      <div class="row content-row">
 
         {% block sidebar %}
         {% include "vault/sidebar.html" %}
@@ -40,7 +40,7 @@
               {% block content_top %}{% endblock %}
             </div>
           </div>
-          <div class="content-body">
+          <div class="container-fluid content-body">
             {% block content %}{% endblock %}
           </div>
         </main>
