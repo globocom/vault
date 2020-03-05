@@ -66,7 +66,7 @@ def switch(request, project_id):
         return HttpResponseRedirect(next_url)
 
     save_current_project(request.user.id, project.id)
-    set_current_project(request, project)
+    set_current_project(request, project.name)
 
     log.info('User [{}] switched to project [{}]'.format(request.user,
                                                          project_id))
@@ -90,7 +90,7 @@ class ProjectCheckMixin:
             current_project = get_current_project(request.user.id)
 
             if current_project is not None:
-                set_current_project(request, current_project)
+                set_current_project(request, current_project.name)
 
         return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
 

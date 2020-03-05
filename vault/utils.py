@@ -66,8 +66,11 @@ def save_current_project(user_id, project_id):
     return current
 
 
-def set_current_project(request, project):
+def set_current_project(request, project_name):
     """Set current project on django session"""
+
+    keystone = KeystoneNoRequest()
+    project = keystone.project_get_by_name(project_name)
 
     request.session['project_id'] = project.id
     request.session['project_name'] = project.name
@@ -141,7 +144,11 @@ def purge_current_project(request, project_id):
 
 def project_required(view_func):
     def _wrapper(request, *args, **kwargs):
-        project_id = request.session.get('project_id')
+        project_name = request.session.get('project_name')
+
+        if 'project' in kwargs:
+            if project_name != kwargs['project']:
+                set_current_project(request, project_name)
 
         maybe_update_token(request)
 
