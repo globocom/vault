@@ -10,11 +10,6 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/users_teams.css' %}" />
 {% endblock %}
 
-{% block js_top %}
-  <script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
-  <script src="{% static 'vault/js/users_teams_list.js' %}"></script>
-{% endblock %}
-
 {% block content %}
   <div id="search-user-team">
     <div class="controls">
@@ -61,6 +56,8 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'vault/js/users_teams_list.js' %}"></script>
 <script>
 Team.Users.init();
 </script>
