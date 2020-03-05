@@ -118,13 +118,13 @@ class TestStorage(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected = '/storage/p/{}/objects/container1/'.format(project_name)
+        expected = '/p/{}/storage/objects/container1/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = '/storage/p/{}/objects/container2/'.format(project_name)
+        expected = '/p/{}/storage/objects/container2/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
-        expected = '/storage/p/{}/objects/container3/'.format(project_name)
+        expected = '/p/{}/storage/objects/container3/'.format(project_name)
         self.assertIn(expected, response.content.decode('UTF-8'))
 
     @patch('storage.views.main.log.exception')
@@ -161,7 +161,7 @@ class TestStorage(BaseTestCase):
         self.assertIn(expected, response.content.decode('UTF-8'))
 
         # Botao de views.upload File
-        self.assertIn('/storage/p/{}/upload/fakecontainer/'.format(project_name), response.content.decode('UTF-8'))
+        self.assertIn('/p/{}/storage/upload/fakecontainer/'.format(project_name), response.content.decode('UTF-8'))
 
     @patch('storage.views.main.log.exception')
     @patch('storage.views.main.client.get_container')
@@ -486,7 +486,7 @@ class TestStorage(BaseTestCase):
         response = views.create_pseudofolder(self.request, 'fakecontainer')
         project_name = self.request.session.get('project_name')
 
-        expected_redirect_arg = ('Location', '/storage/p/{}/objects/fakecontainer/'.format(project_name))
+        expected_redirect_arg = ('Location', '/p/{}/storage/objects/fakecontainer/'.format(project_name))
         self.assertIn(expected_redirect_arg, response.items())
 
         msgs = [msg for msg in self.request._messages]
@@ -524,7 +524,7 @@ class TestStorage(BaseTestCase):
         project_name = self.request.session.get('project_name')
         expected_redirect_arg = (
                 'Location',
-                '/storage/p/{}/objects/fakecontainer/{}'.format(project_name, prefix))
+                '/p/{}/storage/objects/fakecontainer/{}'.format(project_name, prefix))
         self.assertIn(expected_redirect_arg, response.items())
 
         msgs = [msg for msg in self.request._messages]

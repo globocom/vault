@@ -14,7 +14,7 @@
 
 {% block content_top %}
   {{ block.super }}
-  <a href="{% url "add_project" project_name %}" class="btn btn-primary">{% trans 'Create Project' %}</a>
+  <a href="{% url "add_project" %}" class="btn btn-primary">{% trans 'Create Project' %}</a>
 {% endblock %}
 
 {% block content %}

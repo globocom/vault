@@ -18,6 +18,6 @@ def info_endpoints(context, **kwargs):
 
     for conf in apps.get_app_configs():
         if hasattr(conf, 'vault_app'):
-            endpoints.append("'/{}/p/{}/api/info'".format(conf.name, project_name))
+            endpoints.append("'/p/{}/{}/api/info'".format(project_name, conf.name))
 
     return ','.join(endpoints)
