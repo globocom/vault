@@ -27,14 +27,14 @@
               <ul class="dropdown-menu">
                 <li>
                   {% if not public %}
-                  <form method="POST" action="{% url "edit_acl" container=container %}" id="mkpublic">
+                  <form method="POST" action="{% url "edit_acl" project=project_name container=container %}" id="mkpublic">
                     {% csrf_token %}
                     <input name="username" type="hidden" value=".r:*">
                     <input name="read" type="hidden" value="On">
                   </form>
                   <a href="#" onclick="mkpublic.submit()"><i class="fa fa-eye"></i> Make public</a>
                   {% else %}
-                  <a href="{% url "edit_acl" container=container %}?delete=.r:*,.rlistings"><i class="fa fa-eye-slash"></i> Make private</a>
+                  <a href="{% url "edit_acl" project=project_name container=container %}?delete=.r:*,.rlistings"><i class="fa fa-eye-slash"></i> Make private</a>
                   {% endif %}
                 </li>
                 <li class="divider" />
@@ -68,7 +68,7 @@
           {% endif %}
         </td>
         <td>
-          <a class="btn btn-xs btn-danger" href="{% url "edit_acl" container=container%}?delete={{ user }}"><i class="fas fa-trash icon-white"></i></a>
+          <a class="btn btn-xs btn-danger" href="{% url "edit_acl" project=project_name container=container%}?delete={{ user }}"><i class="fas fa-trash icon-white"></i></a>
         </td>
       </tr>
     {% empty %}

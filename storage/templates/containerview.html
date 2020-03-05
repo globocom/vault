@@ -51,7 +51,7 @@
           <button class="btn-meta btn btn-xs btn-default"
                   data-name="{{ container.name }}"
                   data-sub-content-title="{% trans 'Container Metadata' %}"
-                  data-meta-url="{% url "metadata" container=container.name %}">
+                  data-meta-url="{% url "metadata" project=project_name container=container.name %}">
             <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
           </button>
         </td>
@@ -70,7 +70,7 @@
               <span class="container-options-name">{{ container.name }}</span>
 
               <ul class="container-options-items">
-                {% url "edit_cors" container=container.name as edit_cors_url %}
+                {% url "edit_cors" project=project_name container=container.name as edit_cors_url %}
                 {% if edit_cors_url %}
                   <li>
                     <a href="{{ edit_cors_url }}" class="config-cors config-item">
@@ -80,13 +80,13 @@
                 {% endif %}
 
                 <li>
-                  <a href="{% url 'object_versioning' container=container.name %}" class="config-versioning config-item">
+                  <a href="{% url 'object_versioning' project=project_name container=container.name %}" class="config-versioning config-item">
                     <span><i class="icon fa fa-history"></i>{% trans 'Versioning' %}</span>
                   </a>
                 </li>
 
                 {% comment %}
-                {% url "edit_acl" container=container.name as edit_acl_url %}
+                {% url "edit_acl" project=project_name container=container.name as edit_acl_url %}
                 {% if edit_acl_url %}
                   <li>
                     <a href="{{ edit_acl_url }}" class="config-acls config-item">
@@ -98,7 +98,7 @@
 
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-acl" class="config-acl config-item"
-                     data-setup-url="{% url 'container_acl_update' container=container.name %}"
+                     data-setup-url="{% url "container_acl_update" project=project_name container=container.name %}"
                      data-msg-enable="{% trans 'Your container will become public. All objects will be accessible by anyone' %}. Continue?"
                      data-msg-disable="{% trans 'Your container will become private. Authentication token will be required to access any object' %}. Continue?"
                      data-current-status="">
@@ -110,7 +110,7 @@
 
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-trash" class="config-trash config-item"
-                     data-setup-url="{% url 'config_trash_container' project=project_name container=container.name %}"
+                     data-setup-url="{% url "config_trash_container" project=project_name container=container.name %}"
                      data-msg-enable="{% trans 'This will enable the Trash for container' %} {{ container.name }}. Continue?"
                      data-msg-disable="{% trans 'Disabling the Trash cannot restore deleted objects' %}. Continue?"
                      data-current-status="">
@@ -123,7 +123,7 @@
                 {% if user.is_staff %}
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-backup" class="config-backup config-item"
-                     data-setup-url="{% url 'config_backup_container' project=project_name container=container.name %}"
+                     data-setup-url="{% url "config_backup_container" project=project_name container=container.name %}"
                      data-msg-enable="{% trans 'This will enable Backups for container' %} {{ container.name }}. Continue?"
                      data-msg-disable="{% trans 'This container will no longer perform backups' %}. Continue?"
                      data-current-status="">
@@ -136,7 +136,7 @@
 
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-delete" class="btn-delete-container"
-                     data-delete-url="{% url 'delete_container' container=container.name %}"
+                     data-delete-url="{% url "delete_container" project=project_name container=container.name %}"
                      data-msg-delete="{% trans 'Delete container' %} {{container.name}}?">
                     <span><i class="icon fas fa-trash"></i>{% trans 'Delete Container' %}</span>
                   </a>

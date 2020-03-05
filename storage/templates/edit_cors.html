@@ -38,7 +38,7 @@
           {{ host }}
         </td>
         <td>
-          <a class="btn btn-xs btn-danger" href="{% url "edit_cors" container=container%}?delete={{ host }}"><i class="fas fa-trash icon-white"></i></a>
+          <a class="btn btn-xs btn-danger" href="{% url "edit_cors" project=project_name container=container%}?delete={{ host }}"><i class="fas fa-trash icon-white"></i></a>
         </td>
       </tr>
     {% empty %}

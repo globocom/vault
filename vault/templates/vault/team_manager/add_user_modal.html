@@ -10,7 +10,7 @@
         <h3 id="add_user_modalLabel">{% trans 'Add user to' %} <span class="modal-team-name"></span></h3>
       </div>
 
-      <form method="POST" action="{% url 'team_add_user' %}" class="form-inl">
+      <form method="POST" action="{% url "team_add_user" project_name %}" class="form-inl">
         {% csrf_token %}
         <input type="hidden" class="modal-group-id" name="group" value="" />
         

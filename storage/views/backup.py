@@ -202,7 +202,7 @@ def check_backup_conditions(request, container):
 
 @utils.project_required
 @login_required
-def config_backup_container(request, container):
+def config_backup_container(request, project, container):
     action = request.GET.get('status')
     if action is None and action not in ['enabled', 'disabled']:
         return HttpResponse(
@@ -267,7 +267,7 @@ def get_current_backup(container, project_id):
 
 @utils.project_required
 @login_required
-def container_backup_status(request, container):
+def container_backup_status(request, project, container):
     project_id = request.session.get('project_id')
     status, content = 200, {'status': 'disabled'}
 

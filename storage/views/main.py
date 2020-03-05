@@ -155,7 +155,7 @@ def delete_container(request, container, force=True):
 
 
 @login_required
-def delete_container_view(request, container):
+def delete_container_view(request, project, container):
     """ Deletes a container """
 
     if request.method != 'DELETE':
@@ -321,7 +321,7 @@ def create_object(request, container, prefix=None):
         return redirect(objectview, container=container, project=project_name)
 
 
-def download(request, container, objectname):
+def download(request, project, container, objectname):
     """ Download an object from Swift """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -342,7 +342,7 @@ def download(request, container, objectname):
 
 
 @login_required
-def delete_object_view(request, container, objectname):
+def delete_object_view(request, project, container, objectname):
     """ Deletes an object """
 
     response = delete_object(request, container, objectname)
@@ -387,7 +387,7 @@ def delete_object(request, container, objectname):
 
 
 @login_required
-def delete_pseudofolder(request, container, pseudofolder):
+def delete_pseudofolder(request, project, container, pseudofolder):
     """ Deletes an empty object, used as a pseudofolder """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -443,7 +443,7 @@ def delete_pseudofolder(request, container, pseudofolder):
 
 
 @login_required
-def create_pseudofolder(request, container, prefix=None):
+def create_pseudofolder(request, project, container, prefix=None):
     """ Creates a pseudofolder (empty object of type application/directory) """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -647,7 +647,7 @@ def make_public(request, container):
 
 
 @login_required
-def metadataview(request, container, objectname=None):
+def metadataview(request, project, container, objectname=None):
     """ Return object/container/pseudofolder metadata. """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -674,7 +674,7 @@ def metadataview(request, container, objectname=None):
 
 
 @login_required
-def object_versioning(request, container, prefix=None):
+def object_versioning(request, project, container, prefix=None):
     storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
     public_url = get_storage_endpoint(request, 'publicURL') + '/' + container
@@ -821,7 +821,7 @@ def disable_versioning(request, container):
 
 
 @login_required
-def edit_cors(request, container):
+def edit_cors(request, project, container):
     """ Edit CORS on given container. """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -947,7 +947,7 @@ def remove_from_cache(request):
 
 
 @login_required
-def cache_control(request, container, objectname):
+def cache_control(request, project, container, objectname):
     storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
     http_conn = client.http_connection(storage_url,
@@ -1148,7 +1148,7 @@ def remove_from_trash(request):
 
 @utils.project_required
 @login_required
-def config_trash_container(request, container):
+def config_trash_container(request, project, container):
     """ Enable or disable container trash with the metadata
         X-Undelete-Enabled configured to True or False """
 
@@ -1190,7 +1190,7 @@ def config_trash_container(request, container):
 
 @utils.project_required
 @login_required
-def container_trash_status(request, container):
+def container_trash_status(request, project, container):
     storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
     http_conn = client.http_connection(storage_url,
@@ -1216,7 +1216,7 @@ def container_trash_status(request, container):
 
 
 @login_required
-def container_acl_update(request, container):
+def container_acl_update(request, project, container):
     """Make a container public or private"""
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -1257,7 +1257,7 @@ def container_acl_update(request, container):
 
 @utils.project_required
 @login_required
-def container_acl_status(request, container):
+def container_acl_status(request, project, container):
     """
     Makes a head in a container and returns to the context
     status = enabled if it's public, status = disabled for private
