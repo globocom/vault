@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext as _
 from django.conf.urls import include, url
+from django.apps import apps
 
 from vault import views
 
@@ -30,12 +31,6 @@ urlpatterns = [
     # Admin
     url(r'^admin/', admin.site.urls),
 
-    # Identity
-    url(r'^identity/p/(?P<project>.+?)?/', include('identity.urls')),
-
-    # Swift
-    url(r'^storage/p/(?P<project>.+?)?/', include('storage.urls')),
-
     # Team CRUD
     url(r'^team/add/user/?$', views.AddUserTeamView.as_view(), name='team_add_user'),
     url(r'^team/delete/user/?$', views.DeleteUserTeamView.as_view(), name='team_delete_user'),
@@ -52,7 +47,10 @@ urlpatterns = [
     # set project_id session
     url(r'^set-project/(?P<project_id>[\w\-]+)/?$', views.SetProjectView.as_view(), name='set_project'),
 
-    # Dashboard
-    url(r'^#noproject$', views.DashboardView.as_view(), name='dashboard_noproject'),
-    url(r'^', views.DashboardView.as_view(), name='dashboard'),
 ]
+
+for app in apps.app_configs:
+    if 'vault_app' in dir(apps.app_configs[app]):
+        urlpatterns.append(url(rf'^{app}/p/(?P<project>.+?)?/', include(f'{app}.urls')))
+
+urlpatterns.append(url(r'^', views.DashboardView.as_view(), name='dashboard'))

@@ -7,4 +7,4 @@ from django.utils.translation import gettext_lazy as _
 class IdentityConfig(AppConfig):
     name = 'identity'
     verbose_name = _("Identity")
-    app_name = True
+    vault_app = True

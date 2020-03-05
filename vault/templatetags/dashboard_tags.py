@@ -17,7 +17,7 @@ def info_endpoints(context, **kwargs):
     project_name = request.session.get('project_name')
 
     for conf in apps.get_app_configs():
-        if hasattr(conf, 'app_name'):
+        if hasattr(conf, 'vault_app'):
             endpoints.append("'/{}/p/{}/api/info'".format(conf.name, project_name))
 
     return ','.join(endpoints)
