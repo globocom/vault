@@ -199,9 +199,8 @@ class UpdateUserView(BaseUserView):
                 messages.add_message(request, messages.ERROR,
                                      _('Error when update user'))
 
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        context = self.get_context_data(form=form, request=request)
+        return self.render_to_response(context)
 
 
 class DeleteUserView(BaseUserView):

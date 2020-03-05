@@ -4,7 +4,7 @@
 {% block content_title %}{% trans 'Edit User' %}{% endblock %}
 
 {% block content_top %}
-    <a href="{% url "delete_user" user_id %}" class="delete-user btn btn-danger">{% trans 'Delete User' %}</a>
+    <a href="{% url "delete_user" project=project_name user_id=user_id %}" class="delete-user btn btn-danger">{% trans 'Delete User' %}</a>
 {% endblock %}
 
 {% block content %}
