@@ -9,12 +9,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
-{% block js_top %}
-  <script src="{% static 'identity/js/project.js' %}"></script>
-{% endblock %}
-
 {% block content_top %}
-  <a href="{% url "delete_project" identity_project_id %}" class="btn btn-danger">{% trans 'Delete Project' %}</a>
+  <a href="{% url "delete_project" project=project_name project_id=identity_project_id %}" class="btn btn-danger">{% trans 'Delete Project' %}</a>
 {% endblock %}
 
 {% block content %}
@@ -81,13 +77,14 @@
 {% endblock %}
 
 {% block js_bottom %}
+<script src="{% static 'identity/js/project.js' %}"></script>
 <script>
 Project.Users.init({
   'projectId': '{{ identity_project_id }}',
-  'addUrl': '{% url "project_add_user" %}',
-  'deleteUrl': '{% url "project_delete_user" %}',
-  'listUrl': '{% url "project_list_users" %}',
-  'resetPassUrl': '{% url "update_pass" %}'
+  'addUrl': '{% url "project_add_user" project_name %}',
+  'deleteUrl': '{% url "project_delete_user" project_name %}',
+  'listUrl': '{% url "project_list_users" project_name %}',
+  'resetPassUrl': '{% url "update_pass" project_name %}'
 });
 </script>
 {% endblock %}

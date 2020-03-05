@@ -57,11 +57,11 @@
     {% for prj in gp.projects %}
       <li class="project">
         <span class="name">{{ prj.name }}</span>
-        <a class="action" href="{% url 'set_project' prj.id %}" title="{% trans 'Select' %} {{ prj.name }}"></a>
-        <a class="project-edit" href="{% url 'edit_project' prj.id %}" title="{% trans 'Edit Project' %}">
+        <a class="action" href="{% url "set_project" prj.id %}" title="{% trans 'Select' %} {{ prj.name }}"></a>
+        <a class="project-edit" href="{% url "edit_project" project=prj.name project_id=prj.id %}" title="{% trans 'Edit Project' %}">
           <i class="fa fa-pencil-alt"></i>
         </a>
-        <a class="project-delete" href="{% url 'delete_project' prj.id %}" title="{% trans 'Delete Project' %}">
+        <a class="project-delete" href="{% url "delete_project" project=prj.name project_id=prj.id %}" title="{% trans 'Delete Project' %}">
           <i class="fa fa-trash"></i>
         </a>
       </li>

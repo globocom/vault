@@ -56,8 +56,8 @@
 <script src="{% static 'identity/js/project.js' %}"></script>
 <script>
 Project.Users.init({
-  'projectId': '{{ identity_project_id }}',
-  'listUrl': '{% url "project_list_users" %}'
+  'projectId': '{{ project_id }}',
+  'listUrl': '{% url "project_list_users" project_name %}'
   });
 </script>
 {% endblock %}

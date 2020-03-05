@@ -419,7 +419,7 @@ class CreateProjectView(BaseProjectView):
             'user_password': response.get('password')
         }
 
-        return redirect('create_project_success')
+        return redirect('create_project_success', project=project.name)
 
 
 class UpdateProjectView(BaseProjectView):
@@ -427,7 +427,6 @@ class UpdateProjectView(BaseProjectView):
 
     def post(self, request, *args, **kwargs):
         post = request.POST
-
         project = self.keystone.project_get(post.get('id'))
 
         form = ProjectForm(
@@ -469,10 +468,8 @@ class UpdateProjectView(BaseProjectView):
                 messages.add_message(request, messages.ERROR,
                                      _('Error when update project'))
 
-            return self.form_valid(form)
-        else:
-            context = self.get_context_data(form=form, request=request)
-            return self.render_to_response(context)
+        context = self.get_context_data(form=form, request=request)
+        return self.render_to_response(context)
 
 
 class DeleteProjectView(BaseProjectView):
@@ -483,7 +480,6 @@ class DeleteProjectView(BaseProjectView):
         return self.render_to_response({'form': form})
 
     def post(self, request, *args, **kwargs):
-
         form = DeleteProjectConfirm(data=request.POST)
 
         if not form.is_valid():
@@ -520,7 +516,7 @@ class DeleteProjectView(BaseProjectView):
                                  _('Error when delete swift account'))
 
             return HttpResponseRedirect(
-                reverse('edit_project', kwargs={'project_id': project_id}))
+                reverse('edit_project', kwargs={'project_id': project_id, 'project': project_name}))
 
         try:
             self.keystone.vault_project_delete(project_name)
@@ -544,6 +540,9 @@ class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
     def post(self, request, *args, **kwargs):
         project_id = request.POST.get('project')
         context = {}
+
+        if not project_id:
+            return self.render_to_response(context)
 
         try:
             project_users = self.keystone.user_list(project_id=project_id)
@@ -581,7 +580,6 @@ class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
                       JSONResponseMixin):
 
     def post(self, request, *args, **kwargs):
-
         project = request.POST.get('project')
         role = request.POST.get('role')
         user = request.POST.get('user')
