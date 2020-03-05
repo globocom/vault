@@ -152,7 +152,7 @@ def project_required(view_func):
 
         maybe_update_token(request)
 
-        if project_id is None:
+        if project_name is None:
             messages.add_message(
                 request, messages.ERROR, _('Select a project')
             )
