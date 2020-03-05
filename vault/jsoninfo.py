@@ -26,7 +26,7 @@ class JsonInfo:
 
     @property
     def widget_info(self):
-        self.generate_widget_info()
+        self.validate_widget_info()
         status = 500 if "error" in self._widgets else 200
         content = self._widgets
         return HttpResponse(json.dumps(content),
@@ -36,7 +36,7 @@ class JsonInfo:
     @property
     def all_info(self):
         self.generate_menu_info()
-        self.generate_widget_info()
+        self.validate_widget_info()
         status = 500 if "error" in self._menu or \
                         "error" in self._widgets else 200
         content = {
@@ -54,6 +54,27 @@ class JsonInfo:
     def generate_widget_info(self):
         # Method must be overriden
         pass
+
+    def translate_color(self, color):
+        colors = {
+            "blue": "#1e4794",
+            "purple": "#622bab",
+            "red": "#cc543f",
+            "orange": "#b5821b",
+            "yellow": "#bfb411",
+            "green": "#688f10",
+            "pink": "#a35aa3",
+            "brown": "#7a5407",
+            "gray": "#757575"
+        }
+
+        return colors.get(color, colors["gray"])
+
+    def validate_widget_info(self):
+        self.generate_widget_info()
+        for widget in self._widgets:
+            if 'color' in widget:
+                widget['color'] = self.translate_color(widget['color'])
 
     def render(self, request):
         option = request.GET.get("opt", "all").lower()

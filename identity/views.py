@@ -661,7 +661,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
 
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
-        self._menu = content = {
+        self._menu = {
             "name": "Keystone",
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
@@ -705,7 +705,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
                 "name": "keystone",
                 "title": "Keystone",
                 "subtitle": "Identity Service",
-                "color": "#6faa50",
+                "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),
                 "properties": [
