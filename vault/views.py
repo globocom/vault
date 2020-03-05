@@ -159,6 +159,7 @@ class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
     def get(self, request, *args, **kwargs):
 
         context = {
+            "project_name": request.session.get('project_name'),
             "has_team": request.user.groups.count() > 0
         }
 

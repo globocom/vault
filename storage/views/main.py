@@ -82,7 +82,7 @@ def _hide_containers_with_prefixes(containers):
 
 @utils.project_required
 @login_required
-def create_container(request):
+def create_container(request, project):
     """ Creates a container (empty object of type application/directory) """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -179,7 +179,7 @@ def delete_container_view(request, container):
 
 @utils.project_required
 @login_required
-def objectview(request, container, prefix=None):
+def objectview(request, project, container, prefix=None):
     """ Returns list of all objects in current container. """
 
     for hide_prefix in settings.SWIFT_HIDE_PREFIXES:
@@ -221,7 +221,7 @@ def objectview(request, container, prefix=None):
 
 
 @login_required
-def upload(request, container, prefix=None):
+def upload(request, project, container, prefix=None):
     """ Display upload form using swift formpost """
 
     storage_url = get_storage_endpoint(request, 'adminURL')

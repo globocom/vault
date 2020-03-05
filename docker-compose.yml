@@ -16,9 +16,7 @@ services:
 
     keystone:
         container_name: vault_keystone
-        build:
-            context: ./
-            dockerfile: helpers/docker/keystone/Dockerfile
+        image: stormers/vault-keystone:1.0.0
         volumes:
             - vol_keystone:/etc/keystone
         depends_on:
@@ -32,9 +30,7 @@ services:
 
     swift:
         container_name: vault_swift
-        build:
-            context: ./
-            dockerfile: helpers/docker/swift/Dockerfile
+        image: stormers/vault-swift:1.0.0
         volumes:
             - vol_swift:/swift/nodes
         depends_on:
