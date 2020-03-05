@@ -28,21 +28,27 @@
         {% endblock %}
 
         <main role="main" class="col-md-10">
-          <div class="content-top">
-            <div class="content-title">
 
-              <h2>{% block content_title %}{% endblock %}</h2>
+          <div class="container-fluid content-top">
+            <div class="row content-title">
 
-              {% block breadcrumb %}
-                <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
-              {% endblock %}
+              <div class="col-md-12">
+                <h2>{% block content_title %}{% endblock %}</h2>
 
-              {% block content_top %}{% endblock %}
+                {% block breadcrumb %}
+                  <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
+                {% endblock %}
+
+                {% block content_top %}{% endblock %}
+              </div>
+
             </div>
           </div>
+
           <div class="container-fluid content-body">
             {% block content %}{% endblock %}
           </div>
+
         </main>
 
       </div>

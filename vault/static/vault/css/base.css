@@ -21,8 +21,15 @@ main {
   background-size: 256px;
 }
 
-.with-sidebar #sidebar {
-  left: 0;
+#sidebar .vault-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+#sidebar .vault-logo img {
+  width: 55%;
 }
 
 #sidebar .buttons {
@@ -97,7 +104,6 @@ main {
   font-size: 38px;
   font-weight: 300;
   color: #285DC1;
-  margin: 0;
 }
 
 .breadcrumbs,

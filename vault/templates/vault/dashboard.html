@@ -9,12 +9,11 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/widget.css' %}" />
 {% endblock %}
 
-{% block content_title %}{% trans 'Dashboard' %}{% endblock %}
+{% block content_title %}{{ project_name }}{% endblock %}
 {% block breadcrumb %}{% endblock %}
 
 {% block content_top %}
   {{ block.super }}
-  <a href="{% url "add_project" project_name %}" class="btn btn-primary">{% trans 'Create Project' %}</a>
 {% endblock %}
 
 {% block content %}
