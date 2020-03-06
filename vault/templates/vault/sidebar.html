@@ -7,34 +7,46 @@
   <a href="{% url 'dashboard' %}" class="vault-logo">
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
-
-  {% set_project %}
   <span class="vault-env {% get_vault_env %}">{% get_vault_env %}</span>
-  <a href="#" class="btn-menu-bars"><i class="icon-menu fa fa-bars"></i></a>
 
-  <ul class="buttons" id="sidebar-buttons">
+  {#% set_project %#}
+
+  <div class="current-project dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{ project_name }}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#"><i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
+      <a class="dropdown-item" href="#"><i class="icon fa fa-edit"></i> {% trans "Edit Project" %}</a>
+    </div>
+  </div>
+
+  <ul class="app-menus" id="sidebar-app-menus">
     <li>
       <a href="{% url 'dashboard' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-home"></i>
+        <i class="icon fa fa-home"></i> Home
       </a>
     </li>
-    {% if user.is_staff %}
-    <li>
-      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-cog"></i>
-      </a>
-    </li>
-    {% endif %}
     <li>
       <a href="{% url 'update_teams_users' %}" title="{% trans 'Manage Team' %}"
          data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-users"></i>
+        <i class="icon fa fa-users-cog"></i> Manage my Team
       </a>
     </li>
+  </ul>
+
+  <ul class="admin-menus" id="sidebar-admin-menus">
+    {% if user.is_staff %}
+    <li>
+      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-cog"></i> Settings
+      </a>
+    </li>
+    {% endif %}
     {% if can_view_tusers %}
     <li>
       <a href="{% url 'team_users' %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-building"></i>
+        <i class="icon fa fa-building"></i> Teams and Users
       </a>
     </li>
     {% endif %}
@@ -42,7 +54,7 @@
 
   <script type="text/html" id="menu_icon_default">
     <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">
-      <i class="icon <%=icon%>"></i>
+      <i class="icon <%=icon%>"></i> <%=name%>
     </a>
   </script>
 

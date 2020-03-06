@@ -1,0 +1,57 @@
+#sidebar {
+  position: relative;
+  width: 256px;
+  color: white;
+  background: #285DC1 url(../img/bg-sidebar.svg) scroll no-repeat top left;
+  background-size: 256px;
+}
+
+#sidebar .vault-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+#sidebar .vault-logo img {
+  width: 55%;
+}
+
+#sidebar .buttons {
+  margin: 0;
+}
+
+#sidebar .buttons a,
+#sidebar .buttons span {
+  font-size: 20px;
+  width: 49px;
+  height: 50px;
+  display: block;
+  line-height: 50px;
+  text-align: center;
+  color: #ccc;
+}
+
+.tooltip-inner {
+  white-space: nowrap; /* bootstrap tooltip */
+}
+
+#sidebar .buttons span {
+  color: #444;
+}
+
+#sidebar .buttons a.logout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #555;
+}
+
+#sidebar .buttons a:hover {
+  color: #fff;
+}
+
+#sidebar ul {
+  padding: 0;
+  list-style: none;
+}
