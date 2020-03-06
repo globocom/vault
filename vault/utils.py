@@ -72,8 +72,13 @@ def set_current_project(request, project_name):
     keystone = KeystoneNoRequest()
     project = keystone.project_get_by_name(project_name)
 
-    request.session['project_id'] = project.id
-    request.session['project_name'] = project.name
+    if project != None:
+        request.session['project_id'] = project.id
+        request.session['project_name'] = project.name
+    else:
+        # Project doesn't exist
+        request.session.pop('project_id')
+        request.session.pop('project_name')
 
     return maybe_update_token(request)
 
@@ -148,7 +153,8 @@ def project_required(view_func):
 
         if 'project' in kwargs:
             if project_name != kwargs['project']:
-                set_current_project(request, project_name)
+                set_current_project(request, kwargs['project'])
+                project_name = request.session.get('project_name')
 
         maybe_update_token(request)
 

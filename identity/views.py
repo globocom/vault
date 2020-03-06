@@ -349,6 +349,7 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, TemplateView):
 class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'identity/project_create_success.html'
 
+    @method_decorator(utils.project_required)
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(request=request, **kwargs)
         return self.render_to_response(context)
