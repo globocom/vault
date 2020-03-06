@@ -79,16 +79,20 @@ class TestVaultUtils(TestCase):
 
         self.assertEqual(paginated_items.number, 1)
 
-    def test_set_current_project(self):
+    @patch('identity.keystone.KeystoneNoRequest.project_get_by_name')
+    def test_set_current_project(self, mock_project):
         project = Project('123', {})
         project.id = 1
         project.name = 'Teste'
+
+        mock_project.return_value = project
 
         request = fake_request(method='GET')
         request.user = UserFactory(id='999', username='u_user_test')
         patch('identity.keystone.Keystone._create_keystone_connection').start()
 
-        utils.set_current_project(request, project)
+        project_name = request.session['project_name']
+        utils.set_current_project(request, project_name)
 
         self.assertEqual(request.session['project_id'], 1)
         self.assertEqual(request.session['project_name'], 'Teste')

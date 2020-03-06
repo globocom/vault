@@ -72,7 +72,7 @@ def set_current_project(request, project_name):
     keystone = KeystoneNoRequest()
     project = keystone.project_get_by_name(project_name)
 
-    if project != None:
+    if project is not None:
         request.session['project_id'] = project.id
         request.session['project_name'] = project.name
     else:
@@ -162,7 +162,7 @@ def project_required(view_func):
             messages.add_message(
                 request, messages.ERROR, _('Select a project')
             )
-            return HttpResponseRedirect(reverse('dashboard_noproject'))
+            return HttpResponseRedirect(reverse('add_project'))
 
         return view_func(request, *args, **kwargs)
 

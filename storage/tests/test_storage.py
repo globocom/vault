@@ -100,10 +100,11 @@ class TestStorage(BaseTestCase):
     def test_containerview_redirect_to_dashboard_without_project_in_session(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
         self.request.session['project_id'] = None
-        response = views.containerview(self.request)
+
+        response = views.containerview(self.request, None)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('dashboard_noproject'))
+        self.assertEqual(response.url, reverse('add_project'))
 
     @patch('requests.get')
     @patch('storage.views.main.client.get_account')

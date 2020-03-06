@@ -73,7 +73,7 @@ class ListUserView(SuperUserMixin, WithKeystoneMixin, TemplateView):
 
 class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
     form_class = UserForm
-    success_url = reverse_lazy('admin_list_users')
+    success_url = reverse_lazy('add_project')
 
     def _fill_project_choices(self, form):
         if self.keystone and 'project' in form.fields:
@@ -206,7 +206,6 @@ class UpdateUserView(BaseUserView):
 class DeleteUserView(BaseUserView):
 
     def get(self, request, *args, **kwargs):
-
         try:
             self.keystone.user_delete(kwargs.get('user_id'))
             messages.add_message(request, messages.SUCCESS,
@@ -219,11 +218,14 @@ class DeleteUserView(BaseUserView):
             messages.add_message(request, messages.ERROR,
                                  _('Error when delete user'))
 
-        return HttpResponseRedirect(self.success_url)
+        project_name = request.session.get('project_name')
+        success_url = reverse('admin_list_users', kwargs={'project': project_name})
+
+        return HttpResponseRedirect(success_url)
 
 
 class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('add_project')
 
     def get(self, request, *args, **kwargs):
 
@@ -378,7 +380,7 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
-    success_url = reverse_lazy('projects')
+    success_url = reverse_lazy('add_project')
 
     def post(self, request, *args, **kwargs):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
@@ -531,7 +533,10 @@ class DeleteProjectView(BaseProjectView):
         # purge project from current projects
         utils.purge_current_project(request, project_id)
 
-        return HttpResponseRedirect(self.success_url)
+        project_name = request.session.get('project_name')
+        success_url = reverse('projects', kwargs={'project': project_name})
+
+        return HttpResponseRedirect(success_url)
 
 
 class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View,

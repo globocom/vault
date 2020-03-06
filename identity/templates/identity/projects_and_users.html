@@ -7,7 +7,7 @@
       <tbody>
         <tr class="model-projectsandusers">
           <th scope="row">
-            <a href="{% url 'projects' %}">{% trans 'Projects' %}</a>
+            <a href="{% url 'projects' project_name %}">{% trans 'Projects' %}</a>
           </th>
           <td>
             <a href="{% url 'add_project' %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
@@ -15,10 +15,10 @@
         </tr>
         <tr class="model-projectsandusers">
           <th scope="row">
-            <a href="{% url 'admin_list_users' %}">{% trans 'Users' %}</a>
+            <a href="{% url 'admin_list_users' project_name %}">{% trans 'Users' %}</a>
           </th>
           <td>
-            <a href="{% url 'admin_add_user' %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
+            <a href="{% url 'admin_add_user' project_name %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
           </td>
         </tr>
       </tbody>
