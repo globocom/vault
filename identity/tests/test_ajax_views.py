@@ -71,6 +71,10 @@ class TestListUserRole(BaseAjaxTestCase):
         self.mock_user_list.return_value = [user1, user2, user3]
         mock_get_user_roles.return_value = []
 
+        post = self.request.POST.copy()
+        post.update({'project': 1})
+        self.request.POST = post
+
         response = self.view(self.request)
 
         computed = json.loads(response.content)

@@ -50,14 +50,15 @@ class TestSwiftAcl(TestCase):
     def test_container_acl_status(self, mock_head_container):
         # Private container
         mock_head_container.return_value = {}
-        response = views.container_acl_status(self.request, self.container)
+        project_name = self.request.session.get('project_name')
+        response = views.container_acl_status(self.request, project_name, self.container)
         computed = json.loads(response.content)
 
         self.assertEqual(computed['status'], 'disabled')
 
         # Public container
         mock_head_container.return_value = {'x-container-read': '.r:*'}
-        response = views.container_acl_status(self.request, self.container)
+        response = views.container_acl_status(self.request, project_name, self.container)
         computed = json.loads(response.content)
 
         self.assertEqual(computed['status'], 'enabled')
@@ -71,8 +72,9 @@ class TestSwiftAcl(TestCase):
         _get = self.request.GET.copy()
         _get.update({'status': 'disabled'})
         self.request.GET = _get
+        project_name = self.request.session.get('project_name')
 
-        response = views.container_acl_update(self.request, self.container)
+        response = views.container_acl_update(self.request, project_name, self.container)
 
         # Check header POST to the container
         computed_headers = mock_post.call_args[1].get('headers')
@@ -87,8 +89,9 @@ class TestSwiftAcl(TestCase):
         _get = self.request.GET.copy()
         _get.update({'status': 'enabled'})
         self.request.GET = _get
+        project_name = self.request.session.get('project_name')
 
-        response = views.container_acl_update(self.request, self.container)
+        response = views.container_acl_update(self.request, project_name, self.container)
 
         # Check header POST to the container
         computed_headers = mock_post.call_args[1].get('headers')

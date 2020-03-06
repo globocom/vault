@@ -734,7 +734,7 @@ def object_versioning(request, project, container, prefix=None):
             messages.add_message(request, messages.ERROR,
                                  'Action is required.')
 
-        return redirect(object_versioning, container=container)
+        return redirect(object_versioning, project=project, container=container)
 
 
 def enable_versioning(request, container):

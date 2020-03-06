@@ -153,7 +153,7 @@ class TestStorage(BaseTestCase):
             'HTTP_HOST': 'localhost'
         })
 
-        response = views.objectview(self.request, 'fakecontainer')
+        response = views.objectview(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
 
@@ -167,7 +167,8 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.client.get_container')
     def test_objectview_clientexception(self, mock_get_container, mock_logging):
         mock_get_container.side_effect = client.ClientException('')
-        views.objectview(self.request, 'fakecontainer')
+        project_name = self.request.session.get('project_name')
+        views.objectview(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -186,8 +187,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'containername': 'fakecontainer'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        views.create_container(self.request)
+        views.create_container(self.request, project_name)
         msgs = [msg for msg in self.request._messages]
 
         self.assertEqual(len(msgs), 1)
@@ -212,8 +214,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'containername': ''})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.create_container(self.request)
+        response = views.create_container(self.request, project_name)
         msgs = [msg for msg in self.request._messages]
 
         self.assertEqual(len(msgs), 0)
@@ -237,8 +240,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'containername': '.'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.create_container(self.request)
+        response = views.create_container(self.request, project_name)
         msgs = [msg for msg in self.request._messages]
 
         self.assertEqual(len(msgs), 0)
@@ -250,7 +254,7 @@ class TestStorage(BaseTestCase):
 
         post.update({'containername': '..'})
         self.request.POST = post
-        response = views.create_container(self.request)
+        response = views.create_container(self.request, project_name)
         self.assertIn('Enter a valid name consisting of letters, numbers, underscores or hyphens.', response.content.decode('UTF-8'))
 
     @patch('storage.views.main.log.exception')
@@ -264,8 +268,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'containername': 'fakecontainer'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        views.create_container(self.request)
+        views.create_container(self.request, project_name)
         msgs = [msg for msg in self.request._messages]
 
         self.assertEqual(len(msgs), 1)
@@ -375,7 +380,8 @@ class TestStorage(BaseTestCase):
     def test_delete_container_view_deletes_with_success(self, mock_delete_container):
         mock_delete_container.return_value = True
         self.request.method = 'DELETE'
-        response = views.delete_container_view(self.request, container='container')
+        project_name = self.request.session.get('project_name')
+        response = views.delete_container_view(self.request, project_name, 'container')
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 200)
@@ -385,7 +391,8 @@ class TestStorage(BaseTestCase):
     def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
         mock_delete_container.return_value = False
         self.request.method = 'DELETE'
-        response = views.delete_container_view(self.request, container='container')
+        project_name = self.request.session.get('project_name')
+        response = views.delete_container_view(self.request, project_name, 'container')
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 500)
@@ -482,9 +489,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'foldername': 'fakepseudofolder'})
         self.request.POST = post
-
-        response = views.create_pseudofolder(self.request, 'fakecontainer')
         project_name = self.request.session.get('project_name')
+
+        response = views.create_pseudofolder(self.request, project_name, 'fakecontainer')
 
         expected_redirect_arg = ('Location', '/storage/p/{}/objects/fakecontainer/'.format(project_name))
         self.assertIn(expected_redirect_arg, response.items())
@@ -513,15 +520,16 @@ class TestStorage(BaseTestCase):
 
         prefix = 'prefix/'
         pseudofolder = 'fakepseudofolder'
+        project_name = self.request.session.get('project_name')
 
         post.update({'foldername': pseudofolder})
         self.request.POST = post
 
         response = views.create_pseudofolder(self.request,
+                                            project_name,
                                             'fakecontainer',
                                             prefix)
 
-        project_name = self.request.session.get('project_name')
         expected_redirect_arg = (
                 'Location',
                 '/storage/p/{}/objects/fakecontainer/{}'.format(project_name, prefix))
@@ -556,8 +564,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'foldername': 'fakepseudofolder'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        views.create_pseudofolder(self.request, 'fakecontainer')
+        views.create_pseudofolder(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -576,8 +585,9 @@ class TestStorage(BaseTestCase):
 
         post.update({'foldername': ''})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.create_pseudofolder(self.request, 'fakecontainer')
+        response = views.create_pseudofolder(self.request, project_name, 'fakecontainer')
 
         self.assertFalse(mock_put_object.called)
         self.assertIn(_('This field is required.'), response.content.decode('UTF-8'))
@@ -589,8 +599,10 @@ class TestStorage(BaseTestCase):
 
         fakecontainer = 'fakecontainer'
         fakeobject_name = 'fakeobject'
+        project_name = self.request.session.get('project_name')
 
         response = views.delete_object_view(self.request,
+                                            project_name,
                                             fakecontainer,
                                             fakeobject_name)
 
@@ -599,7 +611,6 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'project': project_name})
         self.assertEqual(headers['Location'], expected)
@@ -612,8 +623,10 @@ class TestStorage(BaseTestCase):
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
         fakeobject_name = fakepseudofolder + 'fakeobject'
+        project_name = self.request.session.get('project_name')
 
         response = views.delete_object_view(self.request,
+                                            project_name,
                                             fakecontainer,
                                             fakeobject_name)
 
@@ -621,7 +634,6 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Object deleted'))
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': fakepseudofolder,
                                                  'project': project_name})
@@ -634,8 +646,10 @@ class TestStorage(BaseTestCase):
 
         fakecontainer = 'fakecontainer'
         fakeobject_name = 'fakeobject'
+        project_name = self.request.session.get('project_name')
 
         response = views.delete_object_view(self.request,
+                                            project_name,
                                             fakecontainer,
                                             fakeobject_name)
 
@@ -644,7 +658,6 @@ class TestStorage(BaseTestCase):
         self.assertEqual(msgs[0].message, _('Access denied'))
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'project': project_name})
         self.assertEqual(headers['Location'], expected)
@@ -681,11 +694,12 @@ class TestStorage(BaseTestCase):
 
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
+        project_name = self.request.session.get('project_name')
 
         mock_get_container.return_value = ['stats', [{'name': fakepseudofolder}]]
 
-        response = views.delete_pseudofolder(self.request, fakecontainer,
-                                             fakepseudofolder)
+        response = views.delete_pseudofolder(self.request, project_name,
+                                             fakecontainer, fakepseudofolder)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -698,7 +712,6 @@ class TestStorage(BaseTestCase):
         self.assertEqual(kargs['container'], fakecontainer)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'project': project_name})
         self.assertEqual(headers['Location'], expected)
@@ -709,6 +722,7 @@ class TestStorage(BaseTestCase):
 
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
+        project_name = self.request.session.get('project_name')
 
         fakepseudofolder_content = [
             {'name': fakepseudofolder},
@@ -718,7 +732,7 @@ class TestStorage(BaseTestCase):
 
         mock_get_container.return_value = ['stats', fakepseudofolder_content]
 
-        views.delete_pseudofolder(self.request, fakecontainer, fakepseudofolder)
+        views.delete_pseudofolder(self.request, project_name, fakecontainer, fakepseudofolder)
 
         msgs = [msg for msg in self.request._messages]
         self.assertEqual(msgs[0].message, 'Pseudofolder and 2 objects deleted.')
@@ -747,11 +761,12 @@ class TestStorage(BaseTestCase):
         prefix = 'fakepseudofolder1/'
         fakecontainer = 'fakecontainer'
         fakepseudofolder = prefix + 'fakepseudofolder2/'
+        project_name = self.request.session.get('project_name')
 
         mock_get_container.return_value = ['stats', [{'name': fakepseudofolder}]]
 
-        response = views.delete_pseudofolder(self.request, fakecontainer,
-                                             fakepseudofolder)
+        response = views.delete_pseudofolder(self.request, project_name,
+                                             fakecontainer, fakepseudofolder)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -764,7 +779,6 @@ class TestStorage(BaseTestCase):
         self.assertEqual(kargs['container'], fakecontainer)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix,
                                                  'project': project_name})
@@ -775,11 +789,12 @@ class TestStorage(BaseTestCase):
     def test_delete_pseudofolder_fail(self, mock_get_container, mock_delete_object):
         fakecontainer = 'fakecontainer'
         fakepseudofolder = 'fakepseudofolder/'
+        project_name = self.request.session.get('project_name')
 
         mock_delete_object.side_effect = client.ClientException('')
         mock_get_container.return_value = ['stats', [{'name': fakepseudofolder}]]
 
-        views.delete_pseudofolder(self.request, fakecontainer, fakepseudofolder)
+        views.delete_pseudofolder(self.request, project_name, fakecontainer, fakepseudofolder)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -794,12 +809,13 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.client.get_account')
     def test_render_upload_view(self, mock_get_account):
         mock_get_account.return_value = fakes.get_account()
+        project_name = self.request.session.get('project_name')
 
         self.request.META.update({
             'HTTP_HOST': 'localhost'
         })
 
-        response = views.upload(self.request, 'fakecontainer')
+        response = views.upload(self.request, project_name, 'fakecontainer')
 
         self.assertIn('enctype="multipart/form-data"', response.content.decode('UTF-8'))
 
@@ -824,13 +840,13 @@ class TestStorage(BaseTestCase):
 
         prefix = ''
         fakecontainer = 'fakecontainer'
+        project_name = self.request.session.get('project_name')
 
-        response = views.upload(self.request, fakecontainer, prefix)
+        response = views.upload(self.request, project_name, fakecontainer, prefix)
 
         self.assertEqual(response.status_code, 302)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix,
                                                  'project': project_name})
@@ -845,13 +861,13 @@ class TestStorage(BaseTestCase):
 
         prefix = 'prefix/'
         fakecontainer = 'fakecontainer'
+        project_name = self.request.session.get('project_name')
 
-        response = views.upload(self.request, fakecontainer, prefix)
+        response = views.upload(self.request, project_name, fakecontainer, prefix)
 
         self.assertEqual(response.status_code, 302)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix,
                                                  'project': project_name})
@@ -861,9 +877,10 @@ class TestStorage(BaseTestCase):
     def test_download(self, mock_get):
         content = b'ola'
         headers = {'Content-Type': 'fake/object'}
+        project_name = self.request.session.get('project_name')
         mock_get.return_value = fakes.FakeRequestResponse(content=content,
                                                           headers=headers)
-        response = views.download(self.request, 'fakecontainer', 'fakeobject')
+        response = views.download(self.request, project_name, 'fakecontainer', 'fakeobject')
 
         computed_headers = dict([i for i in response.items()])
 
@@ -873,9 +890,10 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.requests.head')
     def test_metadataview_return_headers_from_container(self, mock_head):
         headers = {'content-type': 'fake/container'}
+        project_name = self.request.session.get('project_name')
         mock_head.return_value = fakes.FakeRequestResponse(content='',
                                                           headers=headers)
-        response = views.metadataview(self.request, 'fakecontainer')
+        response = views.metadataview(self.request, project_name, 'fakecontainer')
 
         self.assertIn('fake/container', response.content.decode('UTF-8'))
 
@@ -1030,8 +1048,9 @@ class TestStorage(BaseTestCase):
                                                         mock_head_container,
                                                         mock_render):
         mock_head_container.return_value = {}
+        project_name = self.request.session.get('project_name')
 
-        views.object_versioning(self.request, 'fakecontainer')
+        views.object_versioning(self.request, project_name, 'fakecontainer')
 
         kargs = mock_render.mock_calls[0][1]
         computed = kargs[2]
@@ -1053,8 +1072,9 @@ class TestStorage(BaseTestCase):
                                                        mock_render):
         mock_head_container.return_value = {'x-versions-location': 'abc'}
         mock_get_container.return_value = (None, [])
+        project_name = self.request.session.get('project_name')
 
-        views.object_versioning(self.request, 'fakecontainer')
+        views.object_versioning(self.request, project_name, 'fakecontainer')
 
         kargs = mock_render.mock_calls[0][1]
         computed = kargs[2]
@@ -1072,17 +1092,18 @@ class TestStorage(BaseTestCase):
 
         post = self.request.method = 'POST'
         post = self.request.POST.copy()
+        project_name = self.request.session.get('project_name')
 
         post.update({'action': 'enable'})
         self.request.POST = post
 
-        response = views.object_versioning(self.request, 'fakecontainer')
+        response = views.object_versioning(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(mock_enable.call_count, 1)
 
         headers = dict([i for i in response.items()])
         expected = reverse('object_versioning',
-                           kwargs={'container': 'fakecontainer'})
+                           kwargs={'project': project_name, 'container': 'fakecontainer'})
 
         self.assertEqual(headers['Location'], expected)
 
@@ -1091,17 +1112,18 @@ class TestStorage(BaseTestCase):
 
         post = self.request.method = 'POST'
         post = self.request.POST.copy()
+        project_name = self.request.session.get('project_name')
 
         post.update({'action': 'disable'})
         self.request.POST = post
 
-        response = views.object_versioning(self.request, 'fakecontainer')
+        response = views.object_versioning(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(mock_disable.call_count, 1)
 
         headers = dict([i for i in response.items()])
         expected = reverse('object_versioning',
-                           kwargs={'container': 'fakecontainer'})
+                           kwargs={'project': project_name, 'container': 'fakecontainer'})
 
         self.assertEqual(headers['Location'], expected)
 
@@ -1432,11 +1454,12 @@ class TestStorageCORS(BaseTestCase):
             'HTTP_HOST': 'localhost'
         })
         post = self.request.POST.copy()
+        project_name = self.request.session.get('project_name')
 
         post.update({'host': 'globo.com'})
         self.request.POST = post
 
-        views.edit_cors(self.request, 'fakecontainer')
+        views.edit_cors(self.request, project_name, 'fakecontainer')
 
         name, args, kargs = mock_post_container.mock_calls[0]
 
@@ -1456,11 +1479,12 @@ class TestStorageCORS(BaseTestCase):
             'HTTP_HOST': 'localhost'
         })
         get = self.request.GET.copy()
+        project_name = self.request.session.get('project_name')
 
         get.update({'delete': 'globo.com'})
         self.request.GET = get
 
-        views.edit_cors(self.request, 'fakecontainer')
+        views.edit_cors(self.request, project_name, 'fakecontainer')
 
         name, args, kargs = mock_post_container.mock_calls[0]
 
