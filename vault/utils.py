@@ -75,6 +75,8 @@ def set_current_project(request, project_name):
     if project is not None:
         request.session['project_id'] = project.id
         request.session['project_name'] = project.name
+
+        save_current_project(request.user.id, project.id)
     else:
         # Project doesn't exist
         request.session.pop('project_id')
