@@ -24,13 +24,11 @@
   <script src="{% static 'vendor/js/jquery-2.1.1.min.js' %}"></script>
   <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'vault/js/base.js' %}"></script>
-  {% block js_top %}{% endblock %}
 </head>
 
 <body class="{% if is_popup %}popup {% endif %}{% with_sidebar %}{% block bodyclass %}{% endblock %}">
 
-{% include "vault/header.html" %}
-{% include "dashboard/sidebar.html" %}
+{% include "vault/sidebar.html" %}
 
 <!-- Content -->
 <section id="content" class="container-fluid">

@@ -31,7 +31,7 @@ class MyView(LoginRequiredMixin, View):
     @method_decorator(project_required)
     def get(self, request, *args, **kwargs):
 
-        return
+        return render()
 
 ```
 
@@ -77,20 +77,7 @@ Example:
 
 ### Installing your app
 
-Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, you need to include your app's urls in vault/urls.py as follows:
-
-``` python
-urlpatterns = [
-    # ...
-
-    # MyApp
-    url(r'^myapp/p/(?P<project>.+?)?/', include('myapp.urls')),
-
-    # ...
-]
-```
-
-**Warning**: The path **must** be `'^<your app's name>/p/?P<project>.+?)?/'`. The app name is required for some of Vault's features, while the `project` variable is mandatory so that every app knows what project the user selected to interact with.
+Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, your app's URLs will be accessible at /&lt;your_app_name&gt;/p/&lt;selected_project&gt;/. You can access the selected project in your views by accessing the `project` argument.
 
 ### Creating a widget and/or sidebar menu
 
@@ -112,7 +99,7 @@ from vault.utils import generic_pagination
 
 # ...
 
-def my_view(request):
+def my_view(request, project):
 
     my_items = get_item_list()
 

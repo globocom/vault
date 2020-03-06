@@ -2,55 +2,9 @@ var Base = Base || {};
 
 
 Base.init = function() {
-    Base.Menu.init();
     Base.SubContent.init();
     Base.SetProject.init();
 };
-
-
-Base.Menu = {};
-
-(function(window, $) {
-    'use strict';
-
-    var $body, $btn_menu, $version, $has_version;
-
-    function init() {
-        $body = $('body');
-        $btn_menu = $('.btn-menu-bars');
-        $version = $('.version')
-        $has_version = $('.has-version')
-        bindEvents();
-    }
-
-    function bindEvents() {
-        $btn_menu.on('click', function() {
-            if($body.hasClass('with-sidebar')) {
-                $body.removeClass('with-sidebar');
-                Base.Cookie.erase('show_sidebar');
-            } else {
-                $body.addClass('with-sidebar');
-                Base.Cookie.create('show_sidebar', 1);
-            }
-        });
-
-        $has_version.on('dblclick', function() {
-            window.has_version = !window.has_version
-
-            $version.hide()
-            if (window.has_version) {
-                $version.show()
-            }
-        });
-
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-
-    $.extend(Base.Menu, {
-        init: init
-    });
-
-})(window, jQuery);
 
 
 Base.Forms = {};

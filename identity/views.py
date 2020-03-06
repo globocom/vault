@@ -349,6 +349,7 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, TemplateView):
 class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'identity/project_create_success.html'
 
+    @method_decorator(utils.project_required)
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(request=request, **kwargs)
         return self.render_to_response(context)
@@ -661,7 +662,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
 
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
-        self._menu = content = {
+        self._menu = {
             "name": "Keystone",
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
@@ -705,7 +706,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
                 "name": "keystone",
                 "title": "Keystone",
                 "subtitle": "Identity Service",
-                "color": "#6faa50",
+                "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),
                 "properties": [
