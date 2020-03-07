@@ -1,5 +1,4 @@
 {% load i18n static dashboard_tags vault_tags %}
-{% can_view_team_users as can_view_tusers %}
 
 <!-- sidebar -->
 <nav id="sidebar" class="col-md-2">
@@ -7,7 +6,6 @@
   <a href="{% url 'dashboard' %}" class="vault-logo">
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
-  <span class="vault-env {% get_vault_env %}">{% get_vault_env %}</span>
 
   {#% set_project %#}
 
@@ -19,6 +17,10 @@
       <a class="dropdown-item" href="#"><i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
       <a class="dropdown-item" href="#"><i class="icon fa fa-edit"></i> {% trans "Edit Project" %}</a>
     </div>
+  </div>
+
+  <div class="separator">
+    <span>Main</span>
   </div>
 
   <ul class="app-menus" id="sidebar-app-menus">
@@ -35,22 +37,26 @@
     </li>
   </ul>
 
+  {% if user.is_staff %}
+  <div class="separator">
+    <span>Admin</span>
+  </div>
+
   <ul class="admin-menus" id="sidebar-admin-menus">
-    {% if user.is_staff %}
     <li>
       <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-cog"></i> Settings
       </a>
     </li>
-    {% endif %}
-    {% if can_view_tusers %}
     <li>
       <a href="{% url 'team_users' %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-building"></i> Teams and Users
       </a>
     </li>
-    {% endif %}
   </ul>
+  {% endif %}
+
+  <div class="vault-env {% get_vault_env %}">{% get_vault_env %}</div>
 
   <script type="text/html" id="menu_icon_default">
     <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">

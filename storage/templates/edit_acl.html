@@ -14,16 +14,16 @@
 {% block content %}
   {% include "addacl_modal.html" %}
 
-  <div class="panel panel-default">
-    <table class="items-list table table-bordered table-striped table-hover">
+  <div class="vault-table-container">
+    <table class="items-list table table-striped table-hover">
       <thead>
         <tr>
-          <th style="width: 1em;"></th>
+          <th></th>
           <th>Name</th>
-          <th style="width: 7.5em;"></th>
-          <th style="width: 1em;">
+          <th></th>
+          <th>
             <div class="dropdown pull-right">
-              <a class="dropdown-toggle btn btn-xs btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
+              <a class="dropdown-toggle btn btn-sm btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
               <ul class="dropdown-menu">
                 <li>
                   {% if not public %}
@@ -60,15 +60,15 @@
         </td>
         <td style="text-align:right;">
           {% if permission.read %}
-          <a class="btn btn-xs btn-success">Read</a>
+          <a class="btn btn-sm btn-success">Read</a>
           {% endif %}
 
           {% if permission.write %}
-          <a class="btn btn-xs btn-danger">Write</a>
+          <a class="btn btn-sm btn-danger">Write</a>
           {% endif %}
         </td>
         <td>
-          <a class="btn btn-xs btn-danger" href="{% url "edit_acl" project=project_name container=container%}?delete={{ user }}"><i class="fas fa-trash icon-white"></i></a>
+          <a class="btn btn-sm btn-danger" href="{% url "edit_acl" project=project_name container=container%}?delete={{ user }}"><i class="fas fa-trash icon-white"></i></a>
         </td>
       </tr>
     {% empty %}

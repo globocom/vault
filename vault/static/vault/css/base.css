@@ -22,22 +22,21 @@ main {
   height: 100%;
 }
 
-.content-title,
-.content-top {
-  height: 100px;
-}
-
-.content-top {
-  line-height: 100px;
-}
-
 .content-title {
   display: flex;
   justify-content: center;
-  flex-direction: column;
+  flex-flow: column;
+  height: 100px;
+}
+
+.content-title h2 {
   font-size: 38px;
-  font-weight: 300;
+  font-weight: lighter;
   color: #285DC1;
+}
+
+.content-top {
+  height: 50px;
 }
 
 .breadcrumbs,

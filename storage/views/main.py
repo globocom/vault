@@ -1299,7 +1299,7 @@ class SwiftJsonInfo(JsonInfo):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         self._menu = {
-            "name": "S3/Swift",
+            "name": "Object Storage",
             "icon": "fa fa-feather-alt",
             "url": reverse("containerview", kwargs={'project': project_name}),
             "subitems": [
@@ -1337,7 +1337,7 @@ class SwiftJsonInfo(JsonInfo):
             {
                 "type": "default",
                 "name": "storage",
-                "title": "S3/Swift",
+                "title": "Swift",
                 "subtitle": "Object Storage",
                 "color": "red",
                 "icon": "fa fa-feather-alt",

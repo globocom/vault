@@ -50,16 +50,16 @@
 
   {% storage_tools %}
 
-  <div class="panel panel-default">
-    <table class="items-list table table-bordered table-striped table-hover">
+  <div class="vault-table-container">
+    <table class="items-list table table-striped table-hover">
       <thead>
         <tr>
-          <th width="2%"></th>
-          <th width="65%">Name</th>
-          <th width="15%">Created</th>
-          <th width="10%">Size</th>
-          <th width="6%">&nbsp;</th>
-          <th width="2%">&nbsp;</th>
+          <th></th>
+          <th>Name</th>
+          <th>Created</th>
+          <th>Size</th>
+          <th>&nbsp;</th>
+          <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -75,7 +75,7 @@
           <td></td>
           <td></td>
           <td>
-            <button class="btn-meta btn btn-xs btn-default"
+            <button class="btn-meta btn btn-sm btn-default"
               data-name="{{ obj.name }}"
               data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
               data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
@@ -84,7 +84,7 @@
           </td>
           <td>
             <div class="dropdown pull-right">
-              <a class="btn-config dropdown-toggle btn btn-xs btn-default" data-toggle="dropdown">
+              <a class="btn-config dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown">
                 <i class="fa fa-cog icon-white"></i>
               </a>
               <ul class="dropdown-menu">
@@ -114,7 +114,7 @@
             {{obj.bytes|filesizeformat}}
           </td>
           <td>
-            <button class="btn-meta btn btn-xs btn-default"
+            <button class="btn-meta btn btn-sm btn-default"
               data-name="{{ obj.name }}"
               data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
               data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
@@ -123,7 +123,7 @@
           </td>
           <td>
             <div class="dropdown pull-right">
-              <a class="btn-config dropdown-toggle btn btn-xs btn-default" data-toggle="dropdown">
+              <a class="btn-config dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown">
                 <i class="fa fa-cog icon-white"></i>
               </a>
               <ul class="dropdown-menu">

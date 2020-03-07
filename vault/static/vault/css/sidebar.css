@@ -17,41 +17,55 @@
   width: 55%;
 }
 
-#sidebar .buttons {
+#sidebar .separator {
+  margin: 30px 0 15px;
+  padding-left: 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+#sidebar .icon {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#sidebar li {
   margin: 0;
 }
 
-#sidebar .buttons a,
-#sidebar .buttons span {
-  font-size: 20px;
-  width: 49px;
-  height: 50px;
+#sidebar li a,
+#sidebar li span {
+  font-size: 12px;
+  padding-left: 10px;
   display: block;
-  line-height: 50px;
-  text-align: center;
-  color: #ccc;
+  line-height: 30px;
+  color: #fff;
+  text-decoration: none;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
 }
 
-.tooltip-inner {
-  white-space: nowrap; /* bootstrap tooltip */
-}
-
-#sidebar .buttons span {
+#sidebar li span {
   color: #444;
 }
 
-#sidebar .buttons a.logout {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  color: #555;
-}
-
-#sidebar .buttons a:hover {
+#sidebar li a:hover {
   color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 #sidebar ul {
   padding: 0;
   list-style: none;
+}
+
+#sidebar .vault-env {
+  position: absolute;
+  padding-left: 25px;
+  bottom: 5px;
+  left: 0;
+  opacity: 0.75;
+  text-transform: uppercase;
+  color: white;
+  font-weight: bolder;
 }

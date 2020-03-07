@@ -1,8 +1,8 @@
 {% load i18n %}
 
 {% if user.is_staff and user.is_superuser %}
-  <div class="app-projectsandusers module panel panel-default">
-    <table class="items-list table table-bordered table-striped table-hover">
+  <div class="app-projectsandusers module">
+    <table class="items-list table table-striped table-hover">
       <caption>{% trans 'Keystone' %}</caption>
       <tbody>
         <tr class="model-projectsandusers">
@@ -10,7 +10,7 @@
             <a href="{% url 'projects' project_name %}">{% trans 'Projects' %}</a>
           </th>
           <td>
-            <a href="{% url 'add_project' %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
+            <a href="{% url 'add_project' %}" class="addlink btn btn-sm btn-default">{% trans 'Add' %}</a>
           </td>
         </tr>
         <tr class="model-projectsandusers">
@@ -18,7 +18,7 @@
             <a href="{% url 'admin_list_users' project_name %}">{% trans 'Users' %}</a>
           </th>
           <td>
-            <a href="{% url 'admin_add_user' project_name %}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a>
+            <a href="{% url 'admin_add_user' project_name %}" class="addlink btn btn-sm btn-default">{% trans 'Add' %}</a>
           </td>
         </tr>
       </tbody>

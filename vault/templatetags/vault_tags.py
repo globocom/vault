@@ -87,12 +87,6 @@ def get_logout_url(context):
     return logout_url
 
 
-@register.simple_tag(takes_context=True)
-def can_view_team_users(context):
-    user = context.get('user')
-    return user.is_superuser
-
-
 @register.simple_tag()
 def url_replace(get_parameters, **kwargs):
     query = get_parameters

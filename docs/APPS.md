@@ -59,7 +59,7 @@ Example:
 
 {% block content %}
 
-<div class="panel panel-default">
+<div class="card">
   <p>This button leads to Vault's home:</p>
   <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
     <i class="fa fa-home"></i>
@@ -124,7 +124,7 @@ Once that's done on your view, you need to add the pagination Template Tag to yo
 
 {% block content %}
 
-<div class="panel panel-default">
+<div class="vault-table-container">
   <table id="container-list" class="table table-bordered table-striped table-hover">
     <thead>
       <tr>

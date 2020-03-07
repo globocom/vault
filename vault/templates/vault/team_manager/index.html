@@ -17,21 +17,21 @@
     <div class="team">
       <div class="team-top">
         <span class="team-name">{{ group.name }}</span>
-        <a class="btn btn-primary btn-xs btn-add-user"
+        <a class="btn btn-primary btn-sm btn-add-user"
            href="#add_user_modal" data-target="#add_user_modal" data-toggle="modal"
            data-group-id="{{ group.id }}" data-group-name="{{ group.name }}">
           {% trans 'Add new user to' %} {{ group.name }}
         </a>
       </div>
-      <div class="panel panel-default">
+      <div class="vault-table-container">
 
-        <table id="container-list" class="items-list table table-bordered table-striped table-hover">
+        <table id="container-list" class="items-list table table-striped table-hover">
           <thead>
             <tr>
-              <th width="32%">Name</th>
-              <th width="32%">username</th>
-              <th width="32%">email</th>
-              <th width="4%">&nbsp;</th>
+              <th>Name</th>
+              <th>username</th>
+              <th>email</th>
+              <th>&nbsp;</th>
             </tr>
           </thead>
           <tbody>
@@ -41,7 +41,7 @@
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td>
-                <a href="#" class="btn btn-danger btn-xs btn-remove-user"
+                <a href="#" class="btn btn-danger btn-sm btn-remove-user"
                    data-group-id="{{ group.id }}" data-user-id="{{ user.id }}">
                   <i class="fa fa-times"></i>
                 </a>

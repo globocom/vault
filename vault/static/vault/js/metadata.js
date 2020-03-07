@@ -11,7 +11,7 @@ var Metadata = Metadata || {};
         }, opts);
 
         $btnMeta = $('.btn-meta');
-        $btnPreview = $('<a href="#" target="_blank" class="btn-preview btn btn-xs btn-primary">preview</a>');
+        $btnPreview = $('<a href="#" target="_blank" class="btn-preview btn btn-sm btn-primary">preview</a>');
 
         bindEvents();
     }

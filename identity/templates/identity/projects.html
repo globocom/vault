@@ -16,17 +16,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="panel panel-default">
-  <table class="items-list table table-bordered table-striped table-hover">
+<div class="vault-table-container">
+  <table class="items-list table table-striped table-hover">
     <thead>
       <tr>
-        <th width="15%">{% trans 'Project' %}</th>
-        <th width="30%">{% trans 'Project Id' %}</th>
-        <th width="40%">{% trans 'Description' %}</th>
-        <th width="10%">{% trans 'Created By' %}</th>
-        <th width="10%">{% trans 'Owner' %}</th>
-        <th width="10%">{% trans 'Enabled' %}</th>
-        <th width="5%"></th>
+        <th>{% trans 'Project' %}</th>
+        <th>{% trans 'Project Id' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th>{% trans 'Created By' %}</th>
+        <th>{% trans 'Owner' %}</th>
+        <th>{% trans 'Enabled' %}</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -43,7 +43,9 @@
         <td>{{ project.team.name }}</td>
         <td>{{ project.enabled }}</td>
         <td>
-          <a href="{% url "edit_project" project=project_name project_id=project.id %}" class="edit-item btn btn-default btn-xs">{% trans 'Edit' %}</a>
+          <a href="{% url 'edit_project' project=project_name project_id=project.id %}" class="edit-item btn btn-primary btn-sm ">
+            {% trans 'Edit' %}
+          </a>
         </td>
       </tr>
       {% endfor %}
