@@ -7,7 +7,7 @@
 {% block content_title %}{% trans 'Users' %}{% endblock %}
 
 {% block content_top %}
-  <a href="{% url "admin_add_user" project=project_name %}" class="create-user btn btn-primary">
+  <a href="{% url "admin_add_user" project=project_name %}" class="create-user btn btn-primary btn-sm">
     <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;{% trans 'Create User' %}
   </a>
 {% endblock %}
@@ -30,7 +30,7 @@
         <td>{{ user.email }}</td>
         <td>{{ user.enabled }}</td>
         <td>
-          <a href="{% url 'edit_user' project=project_name user_id=user.id %}" class="edit-item btn btn-default btn-sm">{% trans 'Edit' %}</a>
+          <a href="{% url 'edit_user' project=project_name user_id=user.id %}" class="edit-item btn btn-light btn-sm">{% trans 'Edit' %}</a>
         </td>
       </tr>
       {% endfor %}

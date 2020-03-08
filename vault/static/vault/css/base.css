@@ -23,6 +23,7 @@ main {
 }
 
 .content-title {
+  position: relative;
   display: flex;
   justify-content: center;
   flex-flow: column;
@@ -33,6 +34,39 @@ main {
   font-size: 38px;
   font-weight: lighter;
   color: #285DC1;
+  margin-bottom: 8px;
+}
+
+.content-title .vault-user-info {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  margin-top: -21px;
+  right: 0;
+  height: 42px;
+  width: 80px;
+  padding: 0;
+}
+
+.content-title .vault-user-info a {
+  display: inherit;
+  color: #aaa;
+}
+
+.content-title .vault-user-info a:hover {
+  text-decoration: none;
+  color: #777;
+}
+
+.content-title .vault-user-info .user {
+  font-size: 42px;
+}
+
+.content-title .vault-user-info .notification {
+  font-size: 21px;
+  margin-right: 20px;
 }
 
 .content-top {
@@ -42,14 +76,12 @@ main {
 .breadcrumbs,
 .content-breadcrumb {
   display: block;
-  margin-top: 8px;
   color: #666;
   font-size: 16px;
   text-transform: none;
   font-weight: 300;
 
   /* for long breadcrumbs */
-  height: 20px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

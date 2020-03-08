@@ -31,6 +31,7 @@
 
 #sidebar li {
   margin: 0;
+  margin-right: -15px;
 }
 
 #sidebar li a,
@@ -61,11 +62,15 @@
 
 #sidebar .vault-env {
   position: absolute;
-  padding-left: 25px;
-  bottom: 5px;
+  width: 100%;
+  font-size: 12px;
+  font-weight: bolder;
+  text-align: center;
+  padding: 3px 0;
+  top: 0;
   left: 0;
   opacity: 0.75;
   text-transform: uppercase;
   color: white;
-  font-weight: bolder;
+  background-color: rgba(0, 0, 0, 0.1);
 }
