@@ -1,0 +1,43 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}
+{% if inexistent_project %}Vault Error - Project "{{inexistent_project}}" doesn't exist
+{% elif not_owned_project %}Vault Error - Unauthorized on project "{{not_owned_project}}"
+{% else %}Error
+{% endif %}
+{% endblock %}
+{% block content_title %}
+{% if inexistent_project %}Vault Error - Project "{{inexistent_project}}" doesn't exist
+{% elif not_owned_project %}Vault Error - Unauthorized on project "{{not_owned_project}}"
+{% else %}Error
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+{% if project_name %}
+<div class="card">
+  <div class="card-body">
+    <p>Return to project "{{project_name}}":</p>
+    <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
+      <i class="icon fa fa-home"></i> {% trans "Home" %}</a>
+    </a>
+  </div>
+</div>
+<br>
+{% endif %}
+<div class="card">
+  <div class="card-body">
+    <p>Select a different project:</p>
+    <a href="{% url "projects" %}" class="create-project btn btn-primary">
+      <i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
+    </a>
+  </div>
+</div>
+
+{% endblock %}
