@@ -60,10 +60,12 @@ Example:
 {% block content %}
 
 <div class="card">
-  <p>This button leads to Vault's home:</p>
-  <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
-    <i class="fa fa-home"></i>
-  </a>
+  <div class="card-body">
+    <p>This button leads to Vault's home:</p>
+    <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
+      <i class="fa fa-home"></i>
+    </a>
+  </div>
 </div>
 
 {% endblock %}
@@ -77,7 +79,7 @@ Example:
 
 ### Installing your app
 
-Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, your app's URLs will be accessible at /&lt;your_app_name&gt;/p/&lt;selected_project&gt;/. You can access the selected project in your views by accessing the `project` argument.
+Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, your app's URLs will be accessible at /p/&lt;selected_project&gt;/&lt;your_app_name&gt;/. You can access the selected project in your views by accessing the `project` argument.
 
 ### Creating a widget and/or sidebar menu
 
