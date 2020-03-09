@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from django.conf.urls import include, url
 from django.apps import apps
 
-from identity.views import CreateProjectView
+from identity.views import ListProjectView, CreateProjectView
 
 from vault import views
 
@@ -49,8 +49,9 @@ urlpatterns = [
     # set project_id session
     url(r'^set-project/(?P<project_id>[\w\-]+)/?$', views.SetProjectView.as_view(), name='set_project'),
 
-    # Project Creation
-    url(r'^identity/project/add/?$', CreateProjectView.as_view(), name='add_project'),
+    # Project
+    url(r'^project/?$', ListProjectView.as_view(), name='projects'),
+    url(r'^project/add/?$', CreateProjectView.as_view(), name='add_project'),
 
 ]
 

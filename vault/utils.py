@@ -8,6 +8,7 @@ from swiftclient import client
 
 from django.conf import settings
 from django.contrib import messages
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -149,6 +150,16 @@ def purge_current_project(request, project_id):
     return True
 
 
+def project_error(request, *args, **kwargs):
+    context = {
+        "project_name": request.session.get('project_name'),
+        "inexistent_project": kwargs.get("inexistent_project"),
+        "not_owned_project": kwargs.get("not_owned_project")
+    }
+
+    return render(request, "vault/project_error.html", context)
+
+
 def project_required(view_func):
     def _wrapper(request, *args, **kwargs):
         project_name = request.session.get('project_name')
@@ -160,11 +171,8 @@ def project_required(view_func):
 
         maybe_update_token(request)
 
-        if project_name is None:
-            messages.add_message(
-                request, messages.ERROR, _('Select a project')
-            )
-            return HttpResponseRedirect(reverse('add_project'))
+        if project_name != kwargs['project']:
+            return project_error(request, inexistent_project=kwargs['project'])
 
         return view_func(request, *args, **kwargs)
 
