@@ -23,54 +23,73 @@ main {
 }
 
 .content-title {
+  /*box-sizing: border-box;*/
   position: relative;
   display: flex;
   justify-content: center;
   flex-flow: column;
-  height: 100px;
+  height: 140px;
 }
 
 .content-title h2 {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: lighter;
   color: #285DC1;
-  margin-bottom: 8px;
+  height: 40px;
+  margin: 0;
 }
 
-.content-title .vault-user-info {
+.content-title h3 {
+  font-size: 40px;
+  font-weight: lighter;
+  color: #285DC1;
+}
+
+.content-title .content-title-top {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  position: relative;
+  height: 100px;
+}
+
+.content-title-top .vault-user-info {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   position: absolute;
   top: 50%;
-  margin-top: -21px;
+  margin-top: -16px;
   right: 0;
-  height: 42px;
+  height: 32px;
   width: 80px;
   padding: 0;
 }
 
-.content-title .vault-user-info a {
+.content-title-top .vault-user-info a {
   display: inherit;
   color: #aaa;
 }
 
-.content-title .vault-user-info a:hover {
+.content-title-top .vault-user-info a:hover {
   text-decoration: none;
   color: #777;
 }
 
-.content-title .vault-user-info .user {
-  font-size: 42px;
+.content-title-top .vault-user-info .user {
+  font-size: 32px;
 }
 
-.content-title .vault-user-info .notification {
+.content-title-top .vault-user-info .notification {
   font-size: 21px;
   margin-right: 20px;
 }
 
 .content-top {
-  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100px;
 }
 
 .breadcrumbs,
@@ -107,7 +126,7 @@ main {
 }
 
 .content-body {
-  margin-top: 30px;
+
 }
 
 /* form */
