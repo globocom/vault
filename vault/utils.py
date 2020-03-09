@@ -78,10 +78,10 @@ def set_current_project(request, project_name):
         request.session['project_name'] = project.name
 
         save_current_project(request.user.id, project.id)
-    else:
-        # Project doesn't exist
-        request.session.pop('project_id')
-        request.session.pop('project_name')
+    # else:
+    #     # Project doesn't exist
+    #     request.session.pop('project_id')
+    #     request.session.pop('project_name')
 
     return maybe_update_token(request)
 

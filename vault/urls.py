@@ -59,4 +59,5 @@ for app in apps.app_configs:
     if 'vault_app' in dir(apps.app_configs[app]):
         urlpatterns.append(url(rf'^p/(?P<project>.+?)/{app}/', include(f'{app}.urls')))
 
-urlpatterns.append(url(r'^', views.DashboardView.as_view(), name='dashboard'))
+urlpatterns.append(url(r'^p/(?P<project>.+?)/', views.DashboardView.as_view(), name='dashboard'))
+urlpatterns.append(url(r'^', views.main_page, name='main'))

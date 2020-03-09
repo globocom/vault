@@ -2,7 +2,7 @@
 
 <nav id="sidebar" class="col-md-2">
 
-  <a href="{% url 'dashboard' %}" class="vault-logo">
+  <a href="{% url 'main' %}" class="vault-logo">
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
 
@@ -24,7 +24,7 @@
 
   <ul class="app-menus" id="sidebar-app-menus">
     <li>
-      <a href="{% url 'dashboard' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'main' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-home"></i> Home
       </a>
     </li>
