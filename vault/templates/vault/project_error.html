@@ -24,7 +24,7 @@
 <div class="card">
   <div class="card-body">
     <p>Return to project "{{project_name}}":</p>
-    <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
+    <a href="{% url "dashboard" project_name %}" class="create-project btn btn-primary">
       <i class="icon fa fa-home"></i> {% trans "Home" %}</a>
     </a>
   </div>
@@ -34,7 +34,7 @@
 <div class="card">
   <div class="card-body">
     <p>Select a different project:</p>
-    <a href="{% url "projects" %}" class="create-project btn btn-primary">
+    <a href="{% url "change_project" %}" class="create-project btn btn-primary">
       <i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
     </a>
   </div>

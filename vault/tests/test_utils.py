@@ -92,7 +92,7 @@ class TestVaultUtils(TestCase):
         patch('identity.keystone.Keystone._create_keystone_connection').start()
 
         project_name = request.session['project_name']
-        utils.set_current_project(request, project_name)
+        utils.set_current_project(request, project)
 
         self.assertEqual(request.session['project_id'], 1)
         self.assertEqual(request.session['project_name'], 'Teste')

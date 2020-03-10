@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.conf.urls import include, url
 from django.utils.translation import gettext as _
 
-from identity.views import ListProjectView, CreateProjectView
+from identity.views import ListProjectView, CreateProjectView, ChangeProjectView
 
 from vault import views
 from vault.forms import VaultLoginForm
@@ -48,18 +48,16 @@ urlpatterns = [
     url(r'^team/manage/?$', views.team_manager_view, name='team_manage'),
     url(r'^team/manage/outsideusers/?$', views.list_users_outside_a_group, name='outside_users'),
 
-    # set project_id session
-    url(r'^set-project/(?P<project_id>[\w\-]+)/?$', views.SetProjectView.as_view(), name='set_project'),
-
     # Project
-    url(r'^project/?$', ListProjectView.as_view(), name='projects'),
     url(r'^project/add/?$', CreateProjectView.as_view(), name='add_project'),
+    url(r'^project/change/?$', ChangeProjectView.as_view(), name='change_project'),
+    url(r'^project/(?P<project_id>[\w\-]+)/set/?$', views.SetProjectView.as_view(), name='set_project'),
 
 ]
 
 for app in apps.app_configs:
     if 'vault_app' in dir(apps.app_configs[app]):
-        urlpatterns.append(url(rf'^p/(?P<project>.+?)/{app}/', include(f'{app}.urls')))
+        urlpatterns.append(url(rf'^p/(?P<project>.+?)?/{app}/', include(f'{app}.urls')))
 
-urlpatterns.append(url(r'^p/(?P<project>.+?)/', views.DashboardView.as_view(), name='dashboard'))
+urlpatterns.append(url(r'^p/(?P<project>.+?)?/', views.DashboardView.as_view(), name='dashboard'))
 urlpatterns.append(url(r'^', views.main_page, name='main'))

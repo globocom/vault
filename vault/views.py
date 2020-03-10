@@ -27,6 +27,7 @@ from allaccess.views import (OAuthCallback, OAuthRedirect)
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
+from vault.models import GroupProjects
 from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
                          maybe_update_token, project_required)
@@ -66,7 +67,7 @@ def switch(request, project_id):
         return HttpResponseRedirect(next_url)
 
     save_current_project(request.user.id, project.id)
-    set_current_project(request, project.name)
+    set_current_project(request, project)
 
     log.info('User [{}] switched to project [{}]'.format(request.user,
                                                          project_id))
@@ -81,7 +82,6 @@ class ProjectCheckMixin:
 
     @method_decorator(project_required)
     def dispatch(self, request, *args, **kwargs):
-
         return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
 
 
