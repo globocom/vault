@@ -43,7 +43,7 @@ def containerview(request, project):
     """ Returns a list of all containers in current account. """
 
     if not project:
-        return redirect('add_project')
+        return redirect('change_project')
 
     storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)

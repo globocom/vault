@@ -1,0 +1,49 @@
+{% extends "vault/base.html" %}
+{% load i18n static pagination %}
+
+{% block title %}{% trans 'Edit Project' %}{% endblock %}
+{% block content_title %}{% trans 'Edit Project' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block content_top %}
+  <a href="{% url "add_project" %}" class="create-project btn btn-primary btn-sm">
+    <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="vault-table-container">
+  <table class="items-list table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>{% trans 'Project' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td>{{ project.name }}</td>
+        <td>{{ project.description }}</td>
+        <td>
+          <a href="{% url "set_project" project.id %}" class="edit-item btn btn-light btn-sm ">
+            {% trans 'Choose' %}
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% pagination projects %}
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}

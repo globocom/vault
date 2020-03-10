@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from django.conf.urls import include, url
 from django.apps import apps
 
-from identity.views import ListProjectView, CreateProjectView
+from identity.views import ListProjectView, CreateProjectView, ChangeProjectView
 
 from vault import views
 
@@ -46,12 +46,10 @@ urlpatterns = [
     url(r'^team/manage/?$', views.team_manager_view, name='team_manage'),
     url(r'^team/manage/outsideusers/?$', views.list_users_outside_a_group, name='outside_users'),
 
-    # set project_id session
-    url(r'^set-project/(?P<project_id>[\w\-]+)/?$', views.SetProjectView.as_view(), name='set_project'),
-
     # Project
-    url(r'^project/?$', ListProjectView.as_view(), name='projects'),
     url(r'^project/add/?$', CreateProjectView.as_view(), name='add_project'),
+    url(r'^project/change/?$', ChangeProjectView.as_view(), name='change_project'),
+    url(r'^project/(?P<project_id>[\w\-]+)/set/?$', views.SetProjectView.as_view(), name='set_project'),
 
 ]
 

@@ -73,7 +73,7 @@ class ListUserView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Templat
 
 class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
     form_class = UserForm
-    success_url = reverse_lazy('add_project')
+    success_url = reverse_lazy('change_project')
 
     def _fill_project_choices(self, form):
         if self.keystone and 'project' in form.fields:
@@ -225,7 +225,7 @@ class DeleteUserView(BaseUserView):
 
 
 class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
-    success_url = reverse_lazy('add_project')
+    success_url = reverse_lazy('change_project')
 
     def get(self, request, *args, **kwargs):
 
@@ -379,7 +379,7 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
-    success_url = reverse_lazy('add_project')
+    success_url = reverse_lazy('change_project')
 
     def post(self, request, *args, **kwargs):
         form = ProjectForm(initial={'user': request.user}, data=request.POST)
@@ -421,6 +421,43 @@ class CreateProjectView(BaseProjectView):
         }
 
         return redirect('create_project_success', project=project.name)
+
+
+class ChangeProjectView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
+    template_name = "identity/project_change.html"
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(request=request, **kwargs)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangeProjectView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+
+        context['projects'] = utils.generic_pagination(self._get_data(), page)
+
+        return context
+
+    def _get_data(self):
+        """ Retrieve sorted list of projects """
+        user = self.request.user
+        groups = user.groups.all()
+        keystone = Keystone(self.request)
+        projects = []
+
+        for group in groups:
+            gps = GroupProjects.objects.filter(group=group.id)
+            gps_ks = filter(lambda x: x.enabled, keystone.project_list())
+
+            for gp in gps:
+                for gp_ks in gps_ks:
+                    if gp.project == gp_ks.id:
+                        projects.append(gp_ks)
+                        break
+
+            projects.sort(key=lambda x: x.name.lower())
+
+        return projects
 
 
 class UpdateProjectView(BaseProjectView):

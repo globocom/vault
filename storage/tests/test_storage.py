@@ -104,7 +104,7 @@ class TestStorage(BaseTestCase):
         response = views.containerview(self.request, None)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('add_project'))
+        self.assertEqual(response.url, reverse('change_project'))
 
     @patch('requests.get')
     @patch('storage.views.main.client.get_account')
