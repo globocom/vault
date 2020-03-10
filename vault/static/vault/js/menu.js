@@ -77,8 +77,8 @@ var VaultMenu = (function(window) {
       "url": "#"
     }, obj));
 
-    var widgets = document.getElementById("sidebar-buttons");
-    widgets.appendChild(wid);
+    var sidebar_menu = document.getElementById("sidebar-app-menus");
+    sidebar_menu.appendChild(wid);
   }
 
   return {

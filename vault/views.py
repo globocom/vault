@@ -30,7 +30,7 @@ from identity.keystone import Keystone
 from vault.models import GroupProjects
 from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
-                         maybe_update_token, project_check)
+                         maybe_update_token, project_required)
 
 from vault.client import OAuth2BearerClient
 
@@ -47,7 +47,7 @@ def _build_next_url(request):
     if next_url:
         return next_url
 
-    return reverse('dashboard')
+    return reverse('main')
 
 
 def switch(request, project_id):
@@ -57,7 +57,7 @@ def switch(request, project_id):
         raise ValueError(_("Missing 'project_id'"))
 
     keystone = Keystone(request)
-    next_url = reverse('dashboard')  # _build_next_url(request)
+    next_url = reverse('main')  # _build_next_url(request)
 
     try:
         project = keystone.project_get(project_id)
@@ -80,14 +80,8 @@ def switch(request, project_id):
 class ProjectCheckMixin:
     """Mixin for Views to check and set user current project"""
 
+    @method_decorator(project_required)
     def dispatch(self, request, *args, **kwargs):
-        current_project = kwargs.get('project')
-
-        check = project_check(request, current_project)
-
-        if not check:
-            return HttpResponseRedirect(reverse('add_project'))
-
         return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
 
 
@@ -141,7 +135,7 @@ class SetProjectView(LoginRequiredMixin, View):
         try:
             http_redirect = switch(request, kwargs.get('project_id'))
         except ValueError as err:
-            http_redirect = HttpResponseRedirect(reverse('dashboard'))
+            http_redirect = HttpResponseRedirect(reverse('main'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), err))
             messages.add_message(request, messages.ERROR,
                                  _('Unable to change your project.'))
@@ -187,7 +181,7 @@ class VaultLogout(View):
         user = request.user
         logout(request)
         log.info('User logged out: [{}]'.format(user))
-        return HttpResponseRedirect(reverse('dashboard'))
+        return HttpResponseRedirect(reverse('main'))
 
 
 def handler500(request):
@@ -348,7 +342,7 @@ class OAuthBearerCallback(OAuthCallback):
         return OAuth2BearerClient(provider)
 
     def get_login_redirect(self, provider, user, access, new=False):
-        return reverse('dashboard')
+        return reverse('main')
 
     def get_user_id(self, provider, info):
         identifier = None
@@ -441,3 +435,15 @@ def list_users_outside_a_group(request):
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json')
+
+
+@login_required
+def main_page(request):
+    project = request.session.get('project_name')
+
+    if project:
+        return HttpResponseRedirect(reverse('dashboard',
+                    kwargs={'project': project}))
+
+    else:
+        return HttpResponseRedirect(reverse('projects'))

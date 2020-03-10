@@ -15,8 +15,8 @@
   </h4>
   <br />
 
-  <div class="panel panel-default" id="credentials">
-    <table class="project-created items-list table table-bordered table-striped">
+  <div class="vault-table-container" id="credentials">
+    <table class="project-created items-list table table-striped">
       <caption>{% trans 'Credentials' %}</caption>
       <tr>
         <th width="20%">{% trans 'Project' %}</th>
@@ -36,8 +36,8 @@
       </tr>
     </table>
   </div>
-  <div class="panel panel-default">
-    <div class="panel-body">
+  <div class="card">
+    <div class="card-body">
       <button class="btn btn-info btn-copy-clipboard" data-copied-msg="{% trans 'Copied!' %}" id="btn-copy-clipboard">
         {% trans 'Copy to Clipboard' %}
       </button>
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <div class="panel panel-default">
+  <div class="vault-table-container">
     <table class="project-created items-list table table-bordered table-striped">
       <caption>S3/Swift endpoints</caption>
       <tr>

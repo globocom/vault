@@ -23,8 +23,8 @@
     {% for app in app_list %}
       <div class="col-md-6">
 
-      <div class="app-{{ app.app_label }} module panel panel-default">
-        <table class="items-list table table-bordered table-striped table-hover">
+      <div class="app-{{ app.app_label }} module vault-table-container">
+        <table class="items-list table table-striped table-hover">
         <caption>
           <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
         </caption>
@@ -37,13 +37,13 @@
           {% endif %}
 
           {% if model.add_url %}
-            <td><a href="{{ model.add_url }}" class="addlink btn btn-xs btn-default">{% trans 'Add' %}</a></td>
+            <td><a href="{{ model.add_url }}" class="addlink btn btn-sm btn-default">{% trans 'Add' %}</a></td>
           {% else %}
             <td>&nbsp;</td>
           {% endif %}
 
           {% if model.admin_url %}
-            <td><a href="{{ model.admin_url }}" class="changelink btn btn-xs btn-default">{% trans 'Change' %}</a></td>
+            <td><a href="{{ model.admin_url }}" class="changelink btn btn-sm btn-default">{% trans 'Change' %}</a></td>
           {% else %}
             <td>&nbsp;</td>
           {% endif %}

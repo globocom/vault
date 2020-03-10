@@ -27,7 +27,7 @@ def with_sidebar(context):
 @register.simple_tag(takes_context=True)
 def get_vault_env(context):
     request = context.get("request")
-    envs = ["dev", "qa", "qa1", "qa2", "prod", "beta"]
+    envs = ["dev", "qa", "qa1", "qa2", "prod", "beta", "docker"]
 
     if settings.ENVIRON in envs:
         return settings.ENVIRON
@@ -85,12 +85,6 @@ def get_logout_url(context):
         request.META['HTTP_HOST']
     )
     return logout_url
-
-
-@register.simple_tag(takes_context=True)
-def can_view_team_users(context):
-    user = context.get('user')
-    return user.is_superuser
 
 
 @register.simple_tag()

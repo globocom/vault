@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/widget.css' %}" />
 {% endblock %}
 
-{% block content_title %}{{ project_name }}{% endblock %}
+{% block content_main_title %}{{ project_name }}{% endblock %}
+
 {% block breadcrumb %}{% endblock %}
 
 {% block content_top %}
@@ -41,13 +42,14 @@
   </style>
 
   <div class="widget service <%=name%>">
+
     <a class="head" href="<%=url%>">
-      <i class="icon <%=icon%>"></i>
       <span class="name">
         <%=title%>
         <span class="info"><%=subtitle%></span>
       </span>
     </a>
+
     <div class="content">
       <% for ( var i = 0; i < properties.length; i++ ) { %>
       <div class="item-box">
@@ -61,7 +63,7 @@
 
     <div class="base">
       <% for ( var i = 0; i < buttons.length; i++ ) { %>
-      <a class="btn btn-xs btn-primary" href="<%=buttons[i].url%>"><%=buttons[i].name%></a>
+      <a class="btn btn-sm btn-light" href="<%=buttons[i].url%>"><%=buttons[i].name%></a>
       <% } %>
     </div>
   </div>

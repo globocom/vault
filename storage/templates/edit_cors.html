@@ -20,13 +20,13 @@
 {% block content %}
   {% include "addcors_modal.html" %}
 
-  <div class="panel panel-default">
-    <table class="items-list table table-bordered table-striped table-hover">
+  <div class="vault-table-container">
+    <table class="items-list table table-striped table-hover">
       <thead>
         <tr>
-          <th style="width: 1em;"></th>
+          <th></th>
           <th>Name</th>
-          <th style="width: 1em;"></th>
+          <th></th>
         </tr>
     </thead>
 
@@ -38,7 +38,7 @@
           {{ host }}
         </td>
         <td>
-          <a class="btn btn-xs btn-danger" href="{% url "edit_cors" project=project_name container=container%}?delete={{ host }}"><i class="fas fa-trash icon-white"></i></a>
+          <a class="btn btn-sm btn-danger" href="{% url "edit_cors" project=project_name container=container%}?delete={{ host }}"><i class="fas fa-trash icon-white"></i></a>
         </td>
       </tr>
     {% empty %}

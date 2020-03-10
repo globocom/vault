@@ -11,7 +11,7 @@ Team.Users = {};
                      '<td class="usr"></td>',
                      '<td class="grp"></td>',
                      '<td>',
-                       '<a href="#" class="remove-usr btn btn-danger btn-xs">',
+                       '<a href="#" class="remove-usr btn btn-danger btn-sm">',
                          '<i class="fa fa-times"></i>',
                        '</a>',
                      '</td>',

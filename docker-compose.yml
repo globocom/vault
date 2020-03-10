@@ -69,6 +69,7 @@ services:
             VAULT_KEYSTONE_PROJECT: Vault
             VAULT_KEYSTONE_USERNAME: u_vault
             VAULT_KEYSTONE_PASSWORD: u_vault
+            VAULT_ENVIRON: docker
         networks:
             vault_net:
                 ipv4_address: 10.5.0.2
