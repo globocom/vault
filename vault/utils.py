@@ -66,21 +66,16 @@ def save_current_project(user_id, project_id):
     return current
 
 
-def set_current_project(request, project_name):
+def set_current_project(request, project):
     """Set current project on django session"""
-
-    keystone = KeystoneNoRequest()
-    project = keystone.project_get_by_name(project_name)
 
     if project is not None:
         request.session['project_id'] = project.id
         request.session['project_name'] = project.name
-
-        save_current_project(request.user.id, project.id)
     else:
         # Project doesn't exist
-        request.session.pop('project_id')
-        request.session.pop('project_name')
+        request.session.pop('project_id', None)
+        request.session.pop('project_name', None)
 
     return maybe_update_token(request)
 
@@ -149,22 +144,42 @@ def purge_current_project(request, project_id):
     return True
 
 
+def project_check(request, current_project):
+    project_id = request.session.get('project_id')
+    user = request.user
+
+    if current_project:
+        keystone = Keystone(request)
+        project = keystone.project_get_by_name(current_project)
+
+        if not project:
+            messages.add_message(request, messages.WARNING, u"Unauthorized")
+            return False
+
+        if not project_id or project.id != project_id:
+            groups = user.groups.all()
+            group_projects = GroupProjects.objects.filter(group_id__in=[group.id for group in groups])
+
+            if group_projects.filter(project=project.id).count() == 0:
+                messages.add_message(request, messages.WARNING, u"Unauthorized")
+                return False
+
+            save_current_project(user.id, project.id)
+            set_current_project(request, project)
+
+    return True
+
+
 def project_required(view_func):
     def _wrapper(request, *args, **kwargs):
-        project_name = request.session.get('project_name')
+        current_project = kwargs.get('project')
 
-        if 'project' in kwargs:
-            if project_name != kwargs['project']:
-                set_current_project(request, kwargs['project'])
-                project_name = request.session.get('project_name')
+        check = project_check(request, current_project)
+
+        if not check:
+            return HttpResponseRedirect(reverse('add_project'))
 
         maybe_update_token(request)
-
-        if project_name is None:
-            messages.add_message(
-                request, messages.ERROR, _('Select a project')
-            )
-            return HttpResponseRedirect(reverse('add_project'))
 
         return view_func(request, *args, **kwargs)
 

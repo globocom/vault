@@ -27,9 +27,10 @@ from allaccess.views import (OAuthCallback, OAuthRedirect)
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
+from vault.models import GroupProjects
 from vault.utils import (update_default_context, save_current_project,
                          set_current_project, get_current_project,
-                         maybe_update_token)
+                         maybe_update_token, project_check)
 
 from vault.client import OAuth2BearerClient
 
@@ -66,7 +67,7 @@ def switch(request, project_id):
         return HttpResponseRedirect(next_url)
 
     save_current_project(request.user.id, project.id)
-    set_current_project(request, project.name)
+    set_current_project(request, project)
 
     log.info('User [{}] switched to project [{}]'.format(request.user,
                                                          project_id))
@@ -80,17 +81,12 @@ class ProjectCheckMixin:
     """Mixin for Views to check and set user current project"""
 
     def dispatch(self, request, *args, **kwargs):
-        session_items = ['project_id', 'project_name']
+        current_project = kwargs.get('project')
 
-        has_project = False
-        for item in session_items:
-            has_project = item in request.session
+        check = project_check(request, current_project)
 
-        if not has_project:
-            current_project = get_current_project(request.user.id)
-
-            if current_project is not None:
-                set_current_project(request, current_project.name)
+        if not check:
+            return HttpResponseRedirect(reverse('add_project'))
 
         return super(ProjectCheckMixin, self).dispatch(request, *args, **kwargs)
 

@@ -25,7 +25,7 @@ from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
 from vault.jsoninfo import JsonInfo
 from vault import utils
 from vault.models import GroupProjects
-from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin
+from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin, ProjectCheckMixin
 
 
 log = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class WithKeystoneMixin:
         return super(WithKeystoneMixin, self).dispatch(request, *args, **kwargs)
 
 
-class ListUserView(SuperUserMixin, WithKeystoneMixin, TemplateView):
+class ListUserView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, TemplateView):
     template_name = "identity/users.html"
 
     def get_context_data(self, **kwargs):
@@ -310,7 +310,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
         return context
 
 
-class ListProjectView(SuperUserMixin, WithKeystoneMixin, TemplateView):
+class ListProjectView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, TemplateView):
     template_name = "identity/projects.html"
 
     def get(self, request, *args, **kwargs):
@@ -322,7 +322,6 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, TemplateView):
         context = super(ListProjectView, self).get_context_data(**kwargs)
         page = self.request.GET.get('page', 1)
 
-        context['is_admin'] = '/admin/identity/' in self.request.path
         context['projects'] = utils.generic_pagination(self._get_data(), page)
 
         return context
