@@ -26,7 +26,7 @@
   <script src="{% static 'vault/js/base.js' %}"></script>
 </head>
 
-<body class="{% if is_popup %}popup {% endif %}{% with_sidebar %}{% block bodyclass %}{% endblock %}">
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
 
 {% include "vault/sidebar.html" %}
 

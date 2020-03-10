@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from django.contrib import admin
-from django.utils.translation import gettext as _
-from django.conf.urls import include, url
+from django import forms
 from django.apps import apps
+from django.contrib import admin
+from django.conf.urls import include, url
+from django.utils.translation import gettext as _
 
 from identity.views import ListProjectView, CreateProjectView
 
 from vault import views
+from vault.forms import VaultLoginForm
 
 admin.site.index_title = _("Admin Dashboard")
 
@@ -15,7 +17,7 @@ admin.site.index_title = _("Admin Dashboard")
 urlpatterns = [
 
     # sobreescrevendo admin:login
-    url(r'^admin/login/$', views.VaultLogin.as_view(), name='vault_login'),
+    url(r'^admin/login/$', views.VaultLogin.as_view(authentication_form=VaultLoginForm), name='vault_login'),
 
     # sobreescrevendo admin:logout devido ao redirect loop gerado pelo
     # backstage_accounts (precisa ficar antes das urls do admin)

@@ -165,7 +165,10 @@ class VaultLogin(LoginView):
         providers = []
 
         for provider in Provider.objects.all():
-            providers.append({"name": provider.name, "url": reverse('allaccess-login', kwargs={'provider': provider.name})})
+            providers.append({
+                "name": provider.name,
+                "url": reverse('allaccess-login', kwargs={'provider': provider.name})
+            })
 
         context.update({
             'providers': providers,

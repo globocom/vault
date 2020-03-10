@@ -18,60 +18,18 @@
     <script src="{% static 'vault/js/base.js' %}"></script>
   </head>
 
-  <body class="{% block bodyclass %}{% endblock %}">
+  <body class="bare {% block bodyclass %}{% endblock %}">
     {% block main_content %}
     <div class="container-fluid content">
-      <div class="row content-row">
+      <div class="row">
 
-        {% block sidebar %}
-          {% include "vault/sidebar.html" %}
-        {% endblock %}
+        <main role="main" class="col-md-12">
 
-        <main role="main" class="col-md-10">
-
-          <div class="container-fluid">
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <div class="content-title">
-                  <div class="content-title-top">
-
-                    <h3>{% block content_title %}{% endblock %}</h3>
-                    {% block breadcrumb %}
-                      <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
-                    {% endblock %}
-
-                    <div class="vault-user-info">
-                      <a href="#" class="user">
-                        <i class="fas fa-user-circle"></i>
-                      </a>
-                      <!-- <a href="#" class="notification">
-                        <i class="fas fa-bell"></i>
-                      </a> -->
-                    </div>
-
-                  </div>
-
-                  <h2>{% block content_main_title %}{% endblock %}</h2>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <div class="content-top">
-                  {% block content_top %}{% endblock %}
-                </div>
-
-              </div>
-            </div>
-
+          <div class="content-top">
+            {% block content_top %}{% endblock %}
           </div>
 
-          <div class="container-fluid content-body">
+          <div class="content-body">
             {% block content %}{% endblock %}
           </div>
 

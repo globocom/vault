@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from django.forms import ModelForm, ChoiceField, ModelMultipleChoiceField
+from django import forms
 from django.forms.widgets import Select
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group, User
+from django.contrib.auth.forms import AuthenticationForm
 
 from vault.models import GroupProjects
 from identity.keystone import KeystoneNoRequest
 
 
-class GroupAdminForm(ModelForm):
+class VaultLoginForm(AuthenticationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VaultLoginForm, self).__init__(*args, **kwargs)
+
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+
+
+class GroupAdminForm(forms.ModelForm):
 
     class Meta:
         model = Group
@@ -17,7 +27,7 @@ class GroupAdminForm(ModelForm):
 
     choices = ((0, ''),)
 
-    users = ModelMultipleChoiceField(
+    users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         required=False,
         widget=FilteredSelectMultiple('users', False)
@@ -50,11 +60,11 @@ def get_project_choices():
     return tuple(project_list)
 
 
-class GroupProjectsForm(ModelForm):
+class GroupProjectsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GroupProjectsForm, self).__init__(*args, **kwargs)
-        self.fields['project'] = ChoiceField(choices=get_project_choices(), required=True)
+        self.fields['project'] = forms.ChoiceField(choices=get_project_choices(), required=True)
 
     class Meta:
         model = GroupProjects

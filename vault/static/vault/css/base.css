@@ -1,3 +1,6 @@
+@import url('bare.css');
+@import url('box.css');
+@import url('login.css');
 @import url('sidebar.css');
 
 body {
@@ -23,7 +26,6 @@ main {
 }
 
 .content-title {
-  /*box-sizing: border-box;*/
   position: relative;
   display: flex;
   justify-content: center;
@@ -125,9 +127,7 @@ main {
   content: "";
 }
 
-.content-body {
-
-}
+.content-body {}
 
 /* form */
 .form-box {
