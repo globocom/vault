@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/widget.css' %}" />
 {% endblock %}
 
-{% block content_main_title %}{{ project_name }}{% endblock %}
+{% block some_top_info %}Dashboard{% endblock %}
+{% block content_title %}{{ project_name }}{% endblock %}
 
 {% block breadcrumb %}{% endblock %}
 
@@ -59,7 +60,7 @@
           <div class="item-box-break"></div>
         <% } %>
       <% } %>
-    </div> 
+    </div>
 
     <div class="base">
       <% for ( var i = 0; i < buttons.length; i++ ) { %>
