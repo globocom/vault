@@ -449,4 +449,4 @@ def main_page(request):
                     kwargs={'project': project}))
 
     else:
-        return HttpResponseRedirect(reverse('projects'))
+        return HttpResponseRedirect(reverse('change_project'))
