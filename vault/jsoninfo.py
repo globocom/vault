@@ -12,12 +12,13 @@ class JsonInfo:
 
     def __init__(self, *args, **kwargs):
 
+        self.request = kwargs["request"]
         self._menu = {}
         self._widgets = []
 
     @property
     def menu_info(self):
-        self.generate_menu_info()
+        self._menu = self.generate_menu_info()
         status = 500 if "error" in self._menu else 200
         if status == 500:
             log.error('Error on {}\'s menu info: {}'.format(
@@ -43,7 +44,7 @@ class JsonInfo:
 
     @property
     def all_info(self):
-        self.generate_menu_info()
+        self._menu = self.generate_menu_info()
         self.validate_widget_info()
         status = 200
         if "error" in self._menu:
@@ -66,29 +67,30 @@ class JsonInfo:
 
     def generate_menu_info(self):
         # Method must be overriden
-        pass
+        return {}
 
     def generate_widget_info(self):
         # Method must be overriden
-        pass
+        return []
 
     def translate_color(self, color):
         colors = {
-            "blue": "#1e4794",
-            "purple": "#622bab",
+            "blue": "#3eadcc",
+            "purple": "#821aa8",
             "red": "#cc543f",
-            "orange": "#b5821b",
-            "yellow": "#bfb411",
+            "orange": "#cc8c3e",
+            "yellow": "#ad9e2e",
             "green": "#688f10",
-            "pink": "#a35aa3",
-            "brown": "#7a5407",
+            "cyan": "3ecc9a",
+            "pink": "#aa1398",
+            "brown": "#8e4b10",
             "gray": "#757575"
         }
 
         return colors.get(color, colors["gray"])
 
     def validate_widget_info(self):
-        self.generate_widget_info()
+        self._widgets = self.generate_widget_info()
         for widget in self._widgets:
             widget["type"] = widget.get("type", "default")
             widget["name"] = widget.get("name", type(self).__name__)

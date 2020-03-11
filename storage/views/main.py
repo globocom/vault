@@ -1292,13 +1292,9 @@ def container_acl_status(request, project, container):
 
 class SwiftJsonInfo(JsonInfo):
 
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs["request"]
-        super(SwiftJsonInfo, self).__init__(*args, **kwargs)
-
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
-        self._menu = {
+        return {
             "name": "Object Storage",
             "icon": "fas fa-cube",
             "url": reverse("containerview", kwargs={'project': project_name}),
@@ -1316,7 +1312,7 @@ class SwiftJsonInfo(JsonInfo):
         project_name = self.request.session.get('project_name')
 
         if storage_url is None:
-            self._widgets = {
+            return {
                 "error": "Storage URL not found."
             }
 
@@ -1329,12 +1325,11 @@ class SwiftJsonInfo(JsonInfo):
                                              http_conn=http_conn)
         except Exception as err:
             log.exception('Exception: {0}'.format(err))
-            self._widgets = {
+            return {
                 "error": "Unable to show Swift info."
             }
-            return
 
-        self._widgets = [
+        return [
             {
                 "type": "default",
                 "name": "storage",
