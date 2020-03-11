@@ -94,6 +94,14 @@ main {
   height: 100px;
 }
 
+.content-top .btn {
+  margin-right: 10px;
+}
+
+.content-top .btn:last-child {
+  margin-right: 0;
+}
+
 .breadcrumbs,
 .content-breadcrumb {
   display: block;
@@ -119,7 +127,7 @@ main {
 
 .content-breadcrumb a:after,
 .content-breadcrumb span:after {
-  content: "›";
+  content: "/";
   margin: 0 5px;
 }
 
@@ -277,8 +285,18 @@ main {
   color: #333;
 }
 
-.table.items-list td {
+.table.items-list {
+  margin-bottom: 0;
+}
+
+.table.items-list td,
+.table.items-list th {
   font-size: 14px;
+  vertical-align: middle;
+}
+
+.table.items-list th {
+  border-top: 0;
 }
 
 .bubble {

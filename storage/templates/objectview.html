@@ -28,17 +28,17 @@
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" project_name %}">Containers</a>
+  <a href="{% url 'containerview' project_name %}">Containers</a>
 
   {% if prefix %}
-    <a class="u" href="{% url "objectview" project=project_name container=container  %}">{{ container }}</a>
+    <a class="u" href="{% url 'objectview' project=project_name container=container  %}">{{ container }}</a>
   {% else %}
     <span>{{ container }}</span>
   {% endif %}
 
   {% for prefix in prefixes %}
     {% if forloop.counter < prefixes|length %}
-      <a href="{% url "objectview" project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+      <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
     {% else %}
       {{ prefix.display_name }}
     {% endif %}
@@ -50,8 +50,8 @@
 
   {% storage_tools %}
 
-  <div class="vault-table-container">
-    <table class="items-list table table-striped table-hover">
+  <div class="box vault-table-container">
+    <table class="items-list table table-hover">
       <thead>
         <tr>
           <th></th>
