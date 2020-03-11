@@ -1332,6 +1332,7 @@ class SwiftJsonInfo(JsonInfo):
             self._widgets = {
                 "error": "Unable to show Swift info."
             }
+            return
 
         self._widgets = [
             {
