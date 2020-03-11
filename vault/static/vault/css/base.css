@@ -28,17 +28,17 @@ main {
 .content-title {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   flex-flow: column;
   height: 140px;
 }
 
 .content-title h2 {
-  font-size: 40px;
+  font-size: 48px;
   font-weight: lighter;
   color: #285DC1;
-  height: 40px;
   margin: 0;
+  height: 52px;
 }
 
 .content-title h3 {
@@ -47,51 +47,62 @@ main {
   color: #285DC1;
 }
 
-.content-title .content-title-top {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  position: relative;
-  height: 100px;
+.content-title .some-top-info {
+  color: #777;
+  font-size: 22px;
+  font-weight: lighter;
+  margin-bottom: 18px;
 }
 
-.content-title-top .vault-user-info {
+.content-title .vault-user-info {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   position: absolute;
-  top: 50%;
-  margin-top: -16px;
+  top: 40px;
   right: 0;
   height: 32px;
   width: 80px;
   padding: 0;
 }
 
-.content-title-top .vault-user-info a {
+.content-title .vault-user-info a {
   display: inherit;
   color: #aaa;
 }
 
-.content-title-top .vault-user-info a:hover {
+.content-title .vault-user-info a:hover {
   text-decoration: none;
   color: #777;
 }
 
-.content-title-top .vault-user-info .user {
+.content-title .vault-user-info .user {
   font-size: 32px;
 }
 
-.content-title-top .vault-user-info .notification {
+.content-title .vault-user-info .notification {
   font-size: 21px;
   margin-right: 20px;
 }
 
 .content-top {
+  position: relative;
+  height: 100px;
+}
+
+.content-top .top-main,
+.content-top .top-base {
   display: flex;
+  height: 50%;
+}
+
+.content-top .top-main {
+  align-items: flex-end;
+}
+
+.content-top .top-base {
   align-items: center;
   justify-content: flex-end;
-  height: 100px;
 }
 
 .content-top .btn {
@@ -105,8 +116,8 @@ main {
 .breadcrumbs,
 .content-breadcrumb {
   display: block;
-  color: #666;
-  font-size: 16px;
+  color: #333;
+  font-size: 18px;
   text-transform: none;
   font-weight: 300;
 
@@ -140,11 +151,11 @@ main {
 /* form */
 .form-box {
   display: block;
-  margin-bottom: 20px;
   overflow: hidden;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  margin-bottom: 30px;
 }
 
 .form-box label {
@@ -156,9 +167,9 @@ main {
 }
 
 .form-box .base {
-  border-top: 1px solid #bbb;
-  padding: 20px 10px;
-  background-color: #ddd;
+  border-top: 1px solid #ccc;
+  padding: 20px;
+  background-color: #eee;
   text-align: right;
 }
 
@@ -286,17 +297,18 @@ main {
 }
 
 .table.items-list {
-  margin-bottom: 0;
+  margin: -15px 0;
 }
 
 .table.items-list td,
 .table.items-list th {
-  font-size: 14px;
+  font-size: 13px;
   vertical-align: middle;
 }
 
-.table.items-list th {
+.table.items-list thead th {
   border-top: 0;
+  /*font-weight: */
 }
 
 .bubble {

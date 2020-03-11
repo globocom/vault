@@ -2,7 +2,7 @@
 
 {% block title %}Storage - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Object Storage{% endblock %}
 
 {% block content_breadcrumb %}
   <a href="{% url "containerview" project_name %}">Containers</a>
@@ -13,15 +13,17 @@
   <form method="POST" action="{% url "create_container" project_name %}" class="form-box project-form">
     {% csrf_token %}
     <fieldset class="content">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="form-group">
-            {{ form.containername.label_tag }}
-            {{ form.containername }}
-            {{ form.containername.errors }}
-            <span class="help-block">
-                Enter name of container here. Use only letters, numbers, underscore or hyphens.
-                Please note that you can not rename it afterwards.
-            </span>
+          {{ form.containername.label_tag }}
+          {{ form.containername }}
+          {{ form.containername.errors }}
+
+          <br>
+          <span class="help-block">
+            Enter name of container here. Use only letters, numbers, underscore or hyphens.<br>
+            Please note that you can not rename it afterwards.
+          </span>
         </div>
 
       <div class="col-md-6">&nbsp;</div>

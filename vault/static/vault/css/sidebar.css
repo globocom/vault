@@ -90,10 +90,10 @@
 }
 
 #sidebar .sidebar-secrets .vault-env {
-  font-size: 42px;
+  font-size: 32px;
   font-weight: bolder;
   text-align: center;
-  opacity: 0.1;
+  opacity: 0.15;
   text-transform: uppercase;
   color: white;
 }

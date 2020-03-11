@@ -3,13 +3,13 @@
 {% load i18n static %}
 {% load pagination storage_tags %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}Object Storage - {{ project_name }}{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Object Storage{% endblock %}
 
 {% block content_top %}
   {% if prefix %}
