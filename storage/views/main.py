@@ -251,13 +251,16 @@ def object(request, project, container, objectname):
         else:
             system_headers[item] = metadata[item]
 
+    prefixes = prefix_list(objectname)
     context = utils.update_default_context(request, {
         'project': project,
         'container': container,
         'objectname': objectname,
         'public_url': public_url,
         'custom_headers': custom_headers,
-        'system_headers': system_headers
+        'system_headers': system_headers,
+        'prefix': objectname,
+        'prefixes': prefixes,
     })
 
     return render(request, "object.html", context)
