@@ -31,11 +31,12 @@
     <fieldset class="content">
       <div class="col-md-6">
         <div class="form-group">
-            <label for="filetmp">File(s):</label><br />
-            <input id="file" name="file1" type="file" class="file-loading" multiple>
-            <span class="help-block">
-                Please select up to {{ max_file_count }} files to upload.
-            </span>
+          <label for="filetmp">File(s):</label><br />
+          <input id="file" name="file1" type="file" class="form-control-file" multiple>
+          <br>
+          <span class="help-block">
+            Please select up to {{ max_file_count }} files to upload.
+          </span>
         </div>
       <div class="col-md-6">&nbsp;</div>
     </fieldset>

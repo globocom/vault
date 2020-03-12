@@ -42,10 +42,12 @@
 {% endblock %}
 
 {% block content %}
-<h3>System Headers</h3>
 
-<div class="table-metadata">
-  <table class="items-list table table-striped table-hover">
+<h3>System Headers</h3>
+<br>
+
+<div class="box table-metadata">
+  <table class="items-list table table-hover">
     <thead>
       <tr>
         <th>Name</th>
@@ -77,38 +79,49 @@
 </div>
 
 <h3>Custom Metadata</h3>
-<a class="btn btn-outline-dark btn-custom-metadata" href="javascript:void(0);">Add new header</a>
+<br>
 
-<div class="table-custom-metadata"
-     data-custom-meta-url="{% url "edit_custom_metadata" project=project_name container=container objectname=objectname %}">
-  <table class="items-list table table-striped table-hover">
-    <thead>
-      <tr>
-        <th style="width: 16em;">Name</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for key, value in custom_headers.items %}
-      <tr>
-        <td>
-          <div style="display: flex; align-items: center; justify-content: space-around;">
-            <span style="width: 80%;">x-object-meta-</span>
-            <input type="text" class="form-control" value="{{key}}" />
-          </div>
-        </td>
-        <td>
-          <div style="display: flex; align-items: center; justify-content: space-around;">
-            <input type="text" class="form-control" value="{{value}}" />
-            <i class="fa fa-trash-alt" style="width: 1%;margin: 8px;"></i>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div style="margin-bottom: 15px;">
+  <a class="btn btn-primary btn-sm btn-custom-metadata" href="javascript:void(0);">
+    <i class="fas fa-plus"></i>&nbsp;Add new header
+  </a>
 </div>
-<a class="btn btn-primary btn-save" href="javascript:void(0);">Save</a>
+
+<div class="form-box table-custom-metadata"
+     data-custom-meta-url="{% url "edit_custom_metadata" project=project_name container=container objectname=objectname %}">
+  <div class="content">
+    <table class="items-list table table-hover">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Name</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in custom_headers.items %}
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+              <span style="width: 80%;">x-object-meta-</span>
+              <input type="text" class="form-control" value="{{key}}" />
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+              <input type="text" class="form-control" value="{{value}}" />
+              <i class="fa fa-trash-alt" style="width: 1%;margin: 8px;"></i>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="base">
+    <a class="btn btn-primary btn-save" href="javascript:void(0);">Save</a>
+  </div>
+</div>
 
 {% include "modal_cache_control.html" %}
 {% endblock %}

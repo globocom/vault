@@ -6,23 +6,23 @@
 {% block title %}Object Storage - {{ project_name }}{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
 {% block content_title %}Object Storage{% endblock %}
 
 {% block content_top %}
   {% if prefix %}
-  <a class="btn btn-primary btn-sm" href="{% url "upload" project=project_name container=container prefix=prefix %}">
+  <a class="btn btn-primary btn-sm" href="{% url 'upload' project=project_name container=container prefix=prefix %}">
   {% else %}
-  <a class="btn btn-primary btn-sm" href="{% url "upload" project=project_name container=container %}">
+  <a class="btn btn-primary btn-sm" href="{% url 'upload' project=project_name container=container %}">
   {% endif %}
   <i class="fa fa-upload"></i>&nbsp;&nbsp;Upload&nbsp;Object</a>
 
   {% if prefix %}
-  <a class="btn btn-primary btn-sm" href="{% url "create_pseudofolder" project=project_name container=container prefix=prefix %}">
+  <a class="btn btn-primary btn-sm" href="{% url 'create_pseudofolder' project=project_name container=container prefix=prefix %}">
   {% else %}
-  <a class="btn btn-primary btn-sm" href="{% url "create_pseudofolder" project=project_name container=container %}">
+  <a class="btn btn-primary btn-sm" href="{% url 'create_pseudofolder' project=project_name container=container %}">
   {% endif %}
   <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
 {% endblock %}
