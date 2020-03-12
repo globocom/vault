@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block content_title %}{% trans 'Gerenciar Usuários e Times' %}{% endblock %}
+{% block content_title %}{% trans 'Manage Users and Teams' %}{% endblock %}
 
 {% block breadcrumb %}{% endblock %}
 
@@ -16,7 +16,6 @@
       <span>&nbsp;{% trans 'User' %}</span>
       <select class="users">
         <option value="">---</option>
-        <option value=""></option>
       {% for user in users %}
         <option value="{{ user.id }}">{{ user.name }}</option>
       {% endfor %}
@@ -25,7 +24,6 @@
       <span>&nbsp;{% trans "Team" %}</span>
       <select class="groups">
         <option value="">---</option>
-        <option value=""></option>
       {% for group in groups %}
         <option value="{{ group.id }}">{{ group.name }}</option>
       {% endfor %}
