@@ -9,6 +9,8 @@ import json
 import hmac
 import logging
 import requests
+import re
+
 from datetime import datetime
 
 from hashlib import sha1
@@ -221,6 +223,44 @@ def objectview(request, project, container, prefix=None):
     })
 
     return render(request, "objectview.html", context)
+
+
+@utils.project_required
+@login_required
+def object(request, project, container, objectname):
+    """ Returns selected object in current container. """
+
+    storage_url = get_storage_endpoint(request, 'adminURL')
+    headers = {'X-Storage-Token': get_token_id(request)}
+    custom_headers = {}
+    system_headers = {}
+
+    url = '{0}/{1}'.format(storage_url, container)
+    if objectname:
+        url = '{0}/{1}'.format(url, str(objectname))
+
+    response = requests.head(url, headers=headers,
+                             verify=not settings.SWIFT_INSECURE)
+
+    metadata = dict(response.headers)
+    public_url = '{}/{}/{}'.format(get_storage_endpoint(request, 'publicURL'), container, objectname)
+
+    for item in metadata:
+        if 'x-object-meta-' in item.lower():
+            custom_headers[re.sub('x-object-meta-', '', item.lower())] = metadata[item]
+        else:
+            system_headers[item] = metadata[item]
+
+    context = utils.update_default_context(request, {
+        'project': project,
+        'container': container,
+        'objectname': objectname,
+        'public_url': public_url,
+        'custom_headers': custom_headers,
+        'system_headers': system_headers
+    })
+
+    return render(request, "object.html", context)
 
 
 @login_required
@@ -949,6 +989,44 @@ def remove_from_cache(request):
     return render(request, 'remove_from_cache.html', context)
 
 
+@utils.project_required
+@login_required
+def edit_custom_metadata(request, project, container, objectname):
+    storage_url = get_storage_endpoint(request, 'adminURL')
+    auth_token = get_token_id(request)
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    content, status = {}, 200
+    custom_headers = request.POST.dict()
+    system_headers = {}
+
+    headers = client.head_object(storage_url, auth_token, container,
+                                 objectname, http_conn=http_conn)
+
+    for item in headers:
+        if 'x-object-meta-' not in item.lower():
+            system_headers[item] = headers[item]
+
+    system_headers.update(custom_headers)
+
+    try:
+        client.post_object(storage_url, auth_token, container, objectname,
+                           headers=system_headers, http_conn=http_conn)
+
+        content = {"message": _("Custom Metadata updated")}
+        msg = "Custom Metadata header on object {}/{}".format(container,
+                                                            objectname)
+        actionlog.log(request.user.username, "update", msg)
+    except client.ClientException as err:
+        content, status = {"message": _("Custom Metadata update failed")}, 500
+        log.exception("Exception: {}".format(err))
+
+    return HttpResponse(json.dumps(content),
+                        content_type='application/json',
+                        status=status)
+
+
 @login_required
 def cache_control(request, project, container, objectname):
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -979,7 +1057,7 @@ def cache_control(request, project, container, objectname):
         client.post_object(storage_url, auth_token, container, objectname,
                            headers=headers, http_conn=http_conn)
 
-        content = {"message": _("Cache-Control updated")}
+        content = {"message": _("Cache-Control updated"), "cache_control": headers["cache-control"]}
         msg = "Cache-Control header on object {}/{}".format(container,
                                                             objectname)
         actionlog.log(request.user.username, "update", msg)

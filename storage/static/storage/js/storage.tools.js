@@ -468,3 +468,104 @@ Storage.Container = {};
     });
 
 })(window, jQuery);
+
+
+Storage.Object = {};
+
+(function(window, $) {
+    'use strict';
+
+    var $btnCustomMetadata, $tableCustomMetadata, $btnSave, row, customMetadata;
+
+    function init() {
+        $btnCustomMetadata = $('.btn-custom-metadata');
+        $tableCustomMetadata = $('.table-custom-metadata');
+        $btnSave = $('.btn-save');
+        customMetadata = {};
+        row = ['<tr>',
+                    '<td>',
+                        '<div style="display: flex; align-items: center; justify-content: space-around;">',
+                            '<span style="width: 80%;">x-object-meta-</span>',
+                            '<input type="text" class="form-control" value="" />',
+                        '</div>',
+                    '</td>',
+                    '<td>',
+                        '<div style="display: flex; align-items: center; justify-content: space-around;">',
+                            '<input type="text" class="form-control" value="" />',
+                            '<i class="fa fa-trash-alt" style="width: 1%;margin: 8px;"></i>',
+                        '</div>',
+                    '</td>',
+                '</tr>'].join('');
+
+        bindEvents();
+        Base.CSRF.fix();
+    }
+
+    function bindEvents() {
+        $btnCustomMetadata.on('click', function(e) {
+            e.preventDefault();
+            _add_new_header()
+        });
+
+        $btnSave.on('click', function(e) {
+            e.preventDefault();
+            _save()
+        });
+
+        $(document).on('click', '.fa-trash-alt', function(e) {
+            e.preventDefault();
+            _remove($(this));
+        });
+    }
+
+    function _add_new_header() {
+        var $tbody = $tableCustomMetadata.find('tbody');
+        $tbody.append(row);
+    }
+
+    function _save() {
+        var url = $tableCustomMetadata.data('custom-meta-url');
+        var $tbody = $tableCustomMetadata.find('tbody');
+
+        $tbody.find('tr').each(function(index, tr) {
+            var $td = $(tr).find('td');
+            var key = $($td[0]).find('input').val();
+            var value = $($td[1]).find('input').val();
+            if ($.trim(key) !== '') {
+                customMetadata['x-object-meta-' + key] = value;
+            }
+            console.log(customMetadata);
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: customMetadata
+        })
+        .done(function (data) {
+            Base.Messages.setMessage({
+                description: data.message,
+                type: 'success'
+            });
+        })
+        .fail(function (data) {
+            Base.Messages.setMessage({
+                description: data.message,
+                type: 'error'
+            });
+        });
+    }
+
+    function _remove(object) {
+        var $tr = object.parents('tr');
+        var $td = $tr.find('td:first');
+        var value = $td.find('input').val();
+        delete customMetadata[value];
+        $tr.remove();
+    }
+
+    $.extend(Storage.Object, {
+        init: init
+    });
+
+})(window, jQuery);

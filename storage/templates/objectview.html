@@ -103,7 +103,7 @@
             <i class="fa fa-file"></i>
           </td>
           <td>
-            <span class="block"><a href='{{obj.public_url}}' target="_blank">{{obj.name|lastpart}}</a></span>
+            <span class="block"><a href='{% url "object" project=project_name container=container objectname=obj.name %}'>{{obj.name|lastpart}}</a></span>
             <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{ obj.public_url }}"
                     title="{% trans 'Click to copy URL' %}">Copy URL</button>
           </td>

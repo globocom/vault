@@ -1,0 +1,130 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+{% load pagination storage_tags %}
+
+{% block title %}Object - {{ project_name }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
+{% endblock %}
+
+{% block content_title %}Object{% endblock %}
+
+{% block content_top %}
+  <a class="btn btn-primary btn-sm" href="{% url "preview" project=project_name container=container objectname=objectname %}" target="_blank">
+  <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Open</a>
+
+  <a class="btn btn-primary btn-sm" href="{% url "download" project=project_name container=container objectname=objectname %}" download>
+  <i class="fa fa-download"></i>&nbsp;&nbsp;Download</a>
+
+  <a class="btn btn-primary btn-sm" href="{{public_url}}" target="_blank">
+  <i class="fa fa-link"></i>&nbsp;&nbsp;Public&nbsp;URL</a>
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" project_name %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url "objectview" project=project_name container=container  %}">{{ container }}</a>
+  {% else %}
+    <span>{{ container }}</span>
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url "objectview" project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+  <span>{{ objectname }}</span>
+
+{% endblock %}
+
+{% block content %}
+<h3>System Headers</h3>
+
+<div class="table-metadata">
+  <table class="items-list table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key, value in system_headers.items %}
+      <tr>
+        <td>
+          {% if key == 'Cache-Control' %}
+            <a href="#modal-cache-control" data-target="#modal-cache-control" data-toggle="modal" class="btn-cache-control"
+                     data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">{{key}}</a>
+          {% else %}
+            {{key}}
+          {% endif %}
+        </td>
+        <td>
+          {% if key == 'Cache-Control' %}
+            <span class="cache-control">{{value}}</span>
+          {% else %}
+            {{value}}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h3>Custom Metadata</h3>
+<a class="btn btn-outline-dark btn-custom-metadata" href="javascript:void(0);">Add new header</a>
+
+<div class="table-custom-metadata"
+     data-custom-meta-url="{% url "edit_custom_metadata" project=project_name container=container objectname=objectname %}">
+  <table class="items-list table table-striped table-hover">
+    <thead>
+      <tr>
+        <th style="width: 16em;">Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key, value in custom_headers.items %}
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; justify-content: space-around;">
+            <span style="width: 80%;">x-object-meta-</span>
+            <input type="text" class="form-control" value="{{key}}" />
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; align-items: center; justify-content: space-around;">
+            <input type="text" class="form-control" value="{{value}}" />
+            <i class="fa fa-trash-alt" style="width: 1%;margin: 8px;"></i>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<a class="btn btn-primary btn-save" href="javascript:void(0);">Save</a>
+
+{% include "modal_cache_control.html" %}
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vault/js/metadata.js' %}"></script>
+<script src="{% static 'storage/js/storage.tools.js' %}"></script>
+<script>
+  Storage.Object.init();
+  Metadata.CacheControl.init({
+    'callBack': function(callback) {
+      var cache_control = document.getElementsByClassName("cache-control");
+      cache_control[0].textContent = callback;
+    }
+  });
+</script>
+{% endblock %}

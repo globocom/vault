@@ -79,10 +79,14 @@ Metadata.CacheControl = {};
 (function(window, $) {
     'use strict';
 
-    var $btnCacheControl, $formCacheControl, $btnSend, $inputMaxAge,
+    var options, $btnCacheControl, $formCacheControl, $btnSend, $inputMaxAge,
         cacheUrl = '';
 
-    function init() {
+    function init(opts) {
+        options = $.extend({
+            'callBack': null
+        }, opts);
+
         $btnCacheControl = $('.btn-cache-control');
         $formCacheControl = $('#form-cache-control');
         $inputMaxAge = $formCacheControl.find('input[name=maxage]');
@@ -155,6 +159,9 @@ Metadata.CacheControl = {};
             }
         })
         .done(function (data) {
+            if (options.callBack) {
+              options.callBack(data.cache_control)
+            }
             Base.Messages.setMessage({
                 description: data.message,
                 type: 'success'
