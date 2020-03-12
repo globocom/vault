@@ -8,6 +8,7 @@
 
 {% block css %}
 <link href="{% static 'vendor/css/fileinput.min.css' %}" media="all" rel="stylesheet" type="text/css" />
+<link href="{% static 'vendor/css/themes/explorer-fas/theme.min.css' %}" media="all" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content_breadcrumb %}
@@ -32,7 +33,9 @@
       <div class="col-md-6">
         <div class="form-group">
           <label for="filetmp">File(s):</label><br />
-          <input id="file" name="file1" type="file" class="form-control-file" multiple>
+          <div class="file-loading">
+            <input id="file" name="file[]" type="file" class="file" multiple data-theme="fas" data-browse-on-zone-click="true">
+          </div>
           <br>
           <span class="help-block">
             Please select up to {{ max_file_count }} files to upload.
@@ -49,7 +52,8 @@
 
 {% block js_bottom %}
 <script src="{% static 'vendor/js/fileinput.min.js' %}"></script>
-<script src="{% static 'vendor/js/fileinput.theme.js' %}"></script>
+<script src="{% static 'vendor/js/themes/fas/theme.min.js' %}"></script>
+<script src="{% static 'vendor/js/themes/explorer-fas/theme.min.js' %}"></script>
 <script>
 $(document).on('ready', function() {
     $("#file").fileinput({

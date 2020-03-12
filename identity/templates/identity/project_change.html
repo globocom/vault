@@ -1,43 +1,84 @@
-{% extends "vault/base.html" %}
+{% extends "vault/base_bare.html" %}
 {% load i18n static pagination %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
-{% block content_title %}{% trans 'Projects' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
+{% block some_top_info %}
+<div class="logo">
+  <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+</div>
+{% endblock %}
+
 {% block content_top %}
-  <a href="{% url "add_project" %}" class="create-project btn btn-primary btn-sm">
-    <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
-  </a>
+<div class="row justify-content-center project-select">
+  <div class="col-md-8">
+    <div class="row justify-content-between project-select-row">
+      <div class="col-md-2">
+        <div class="logo">
+          <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="vault-user-info">
+          <a href="#" class="user">
+            <i class="fas fa-user-circle"></i>
+          </a>
+          <!-- <a href="#" class="notification">
+            <i class="fas fa-bell"></i>
+          </a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="row justify-content-between project-select-row">
+      <div class="col-md-2">
+        <h2>{% block content_title %}{% trans 'Projects' %}{% endblock %}</h2>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url "add_project" %}" class="create-project card btn">
+          <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="vault-table-container">
-  <table class="items-list table table-striped table-hover">
-    <thead>
-      <tr>
-        <th>{% trans 'Project' %}</th>
-        <th>{% trans 'Description' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for project in projects %}
-      <tr>
-        <td>{{ project.name }}</td>
-        <td>{{ project.description }}</td>
-        <td>
-          <a href="{% url "set_project" project.id %}" class="edit-item btn btn-light btn-sm ">
-            {% trans 'Choose' %}
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="box vault-table-container">
+      <table class="items-list table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>{% trans 'Project' %}</th>
+            <th>{% trans 'Description' %}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project in projects %}
+          <tr>
+            <td>{{ project.name }}</td>
+            <td>{{ project.description }}</td>
+            <td>
+              <a href="{% url "set_project" project.id %}" class="edit-item btn btn-light btn-sm ">
+                {% trans 'Choose' %}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% pagination projects %}
 {% endblock %}
