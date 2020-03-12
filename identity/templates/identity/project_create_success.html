@@ -8,61 +8,89 @@
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
+{% block breadcrumb %}
+  {% trans 'Save this information to access the services' %}
+{% endblock %}
+
 {% block content %}
-  <h4>
-    <i class="icon-warning fa fa-warning"></i>
-    {% trans 'Save this information to access the services' %}
-  </h4>
-  <br />
+  <div class="form-box credentials">
 
-  <div class="vault-table-container" id="credentials">
-    <table class="project-created items-list table table-striped">
-      <caption>{% trans 'Credentials' %}</caption>
-      <tr>
-        <th width="20%">{% trans 'Project' %}</th>
-        <td>{{ project_info.project_name }}</td>
-      </tr>
-      <tr>
-        <th>{% trans 'Username' %}</th>
-        <td>{{ project_info.user_name }}</td>
-      </tr>
-      <tr>
-        <th>{% trans 'Password' %}</th>
-        <td>{{ project_info.user_password }}</td>
-      </tr>
-      <tr>
-        <th>Auth URL</th>
-        <td>{{ project_info.auth_url }}</td>
-      </tr>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <button class="btn btn-info btn-copy-clipboard" data-copied-msg="{% trans 'Copied!' %}" id="btn-copy-clipboard">
-        {% trans 'Copy to Clipboard' %}
-      </button>
-      <button class="btn btn-info btn-download" id="btn-download">
-        {% trans 'Download Credentials' %}
-      </button>
+    <div class="content">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <h4>Credentials</h4>
+
+        <table class="table items-list">
+          <tr>
+            <th width="15%">{% trans 'Project' %}</th>
+            <td>{{ project_info.project_name }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Username' %}</th>
+            <td>{{ project_info.user_name }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Password' %}</th>
+            <td>{{ project_info.user_password }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Authentication URL' %}</th>
+            <td>{{ project_info.auth_url }}</td>
+          </tr>
+        </table>
+
+      </div>
     </div>
+
+    </div>
+
+    <div class="base">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <button class="btn btn-info btn-sm btn-copy-clipboard" data-copied-msg="{% trans 'Copied!' %}" id="btn-copy-clipboard">
+          {% trans 'Copy to Clipboard' %}
+        </button>
+
+        <button class="btn btn-info btn-sm btn-download" id="btn-download">
+          {% trans 'Download Credentials' %}
+        </button>
+
+      </div>
+    </div>
+
+    </div>
+
   </div>
 
-  <div class="vault-table-container">
-    <table class="project-created items-list table table-bordered table-striped">
-      <caption>S3/Swift endpoints</caption>
-      <tr>
-        <th width="20%">Admin URL</th>
-        <td>{{ project_info.endpoints.object_store.adminURL }}</td>
-      </tr>
-      <tr>
-        <th>Public URL</th>
-        <td>{{project_info.endpoints.object_store.publicURL }}</td>
-      </tr>
-      <tr>
-        <th>Internal URL</th>
-        <td>{{ project_info.endpoints.object_store.internalURL }}</td>
-      </tr>
-    </table>
+  <div class="box credentials">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <h4>Object Storage Endpoints</h4>
+
+        <table class="items-list table">
+          <tr>
+            <th width="15%">Admin URL</th>
+            <td>{{ project_info.endpoints.object_store.adminURL }}</td>
+          </tr>
+          <tr>
+            <th>Public URL</th>
+            <td>{{project_info.endpoints.object_store.publicURL }}</td>
+          </tr>
+          <tr>
+            <th>Internal URL</th>
+            <td>{{ project_info.endpoints.object_store.internalURL }}</td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
   </div>
 {% endblock %}
 

@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block content_top %}
-  <a href="{% url "delete_project" project=project_name project_id=identity_project_id %}" class="btn btn-danger">{% trans 'Delete Project' %}</a>
+  <a href="{% url 'delete_project' project=project_name project_id=identity_project_id %}" class="btn btn-sm btn-danger">
+    <i class="fas fa-trash"></i>&nbsp;{% trans 'Delete Project' %}
+  </a>
 {% endblock %}
 
 {% block content %}
@@ -20,56 +22,62 @@
     {{ form.action }}
 
     <fieldset class="content">
-      <div class="col-md-6">
-        <div class="form-group">
-          {{ form.name.label_tag }}
-          {{ form.name }}
-          {{ form.name.errors }}
-        </div>
+      <div class="row">
 
-        {% if user_project %}
+        <div class="col-md-6">
           <div class="form-group">
-            <div class="lbl-user">{% trans 'Project User:' %}</div>
-            <input type='text' name='user_project' class="form-control" readonly="readonly" value='{{ user_project }}' />
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+
+          {% if user_project %}
+            <div class="form-group">
+              <div class="lbl-user">{% trans 'Project User:' %}</div>
+              <input type='text' name='user_project' class="form-control" readonly="readonly" value='{{ user_project }}' />
+            </div>
+
+            <div class="form-group">
+              <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
+              <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
+            </div>
+          {% endif %}
+
+          <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {{ form.description.errors }}
           </div>
 
           <div class="form-group">
-            <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
-            <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
+            {{ form.enabled.label_tag }}
+            {{ form.enabled }}
+            {{ form.enabled.errors }}
           </div>
-        {% endif %}
 
-        <div class="form-group">
-          {{ form.description.label_tag }}
-          {{ form.description }}
-          {{ form.description.errors }}
+          <div class="form-group">
+            {{ form.group.label_tag }}<br />
+            {{ form.group }}
+            {{ form.group.errors }}
+          </div>
         </div>
 
-        <div class="form-group">
-          {{ form.enabled.label_tag }}
-          {{ form.enabled }}
-          {{ form.enabled.errors }}
+        <div class="col-md-6">
+          {% if show_roles %}
+            {% include "identity/_project_members.html" %}
+          {%  endif %}
+
+          {% include "identity/_project_metadata.html" %}
         </div>
 
-        <div class="form-group">
-          {{ form.group.label_tag }}<br />
-          {{ form.group }}
-          {{ form.group.errors }}
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        {% if show_roles %}
-          {% include "identity/_project_members.html" %}
-        {%  endif %}
-
-        {% include "identity/_project_metadata.html" %}
-      </div>
+      </div> <!-- .row -->
     </fieldset>
 
     <fieldset class="base">
-      <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">{% trans 'Save Project' %}</button>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit">{% trans 'Save Project' %}</button>
+        </div>
       </div>
     </fieldset>
 

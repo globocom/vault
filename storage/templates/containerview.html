@@ -48,17 +48,18 @@
           {{container.bytes|filesizeformat}}
         </td>
         <td>
-          <button class="btn-meta btn btn-sm btn-light"
+          <button class="btn-meta btn btn-sm btn-light" title="Container Metadata"
                   data-name="{{ container.name }}"
                   data-sub-content-title="{% trans 'Container Metadata' %}"
                   data-meta-url="{% url 'metadata' project=project_name container=container.name %}">
-            <i class="fas fa-list-alt"></i><!-- &nbsp;{% trans 'Metadata' %} -->
+            <i class="fas fa-list-alt"></i>
           </button>
         </td>
         <td>
-          <a class="btn-options btn btn-sm btn-light" data-container-id="container-{{ forloop.counter }}">
-            <i class="fas fa-cog icon-white"></i><!-- &nbsp;{% trans 'Container Options' %} -->
-          </a>
+          <button class="btn-options btn btn-sm btn-light" title="Container Options"
+                  data-container-id="container-{{ forloop.counter }}">
+            <i class="fas fa-cog icon-white"></i>
+          </button>
 
           <script type="text/html" id="html-container-{{ forloop.counter }}">
             <div id="options-container-{{ forloop.counter }}" class="container-options"

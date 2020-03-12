@@ -25,7 +25,8 @@ from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
 from vault.jsoninfo import JsonInfo
 from vault import utils
 from vault.models import GroupProjects
-from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin, ProjectCheckMixin
+from vault.views import (SuperUserMixin, JSONResponseMixin,
+                         LoginRequiredMixin, ProjectCheckMixin)
 
 
 log = logging.getLogger(__name__)
@@ -257,7 +258,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
         if not project_id:
             project_id = form.data.get('id')
 
-        # Mostra a gerencia de roles qd for superuser acessando admin
+        # Show role manager when superuser
         context['show_roles'] = request.user.is_superuser and \
                                 '/admin/identity/' in request.path
 
@@ -515,7 +516,9 @@ class DeleteProjectView(BaseProjectView):
 
     def get(self, request, *args, **kwargs):
         form = DeleteProjectConfirm()
-        return self.render_to_response({'form': form})
+        return self.render_to_response(
+            self.get_context_data(form=form, request=request)
+        )
 
     def post(self, request, *args, **kwargs):
         form = DeleteProjectConfirm(data=request.POST)
@@ -535,7 +538,7 @@ class DeleteProjectView(BaseProjectView):
             keystone_app = Keystone(request, username=user, password=password,
                                     project_name=project_name)
         except exceptions.Unauthorized:
-            # Falhou ao auntenticar com as credenciais enviadas pelo usuario
+            # Fail to authenticate with sent credentials
             messages.add_message(request, messages.ERROR,
                                  _('Invalid credentials.'))
 
@@ -566,11 +569,11 @@ class DeleteProjectView(BaseProjectView):
             messages.add_message(request, messages.ERROR,
                                  _('Error when delete project'))
 
-        # purge project from current projects
+        # Purge project from current projects
         utils.purge_current_project(request, project_id)
 
         project_name = request.session.get('project_name')
-        success_url = reverse('projects', kwargs={'project': project_name})
+        success_url = reverse('change_project')
 
         return HttpResponseRedirect(success_url)
 

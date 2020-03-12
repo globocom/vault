@@ -119,6 +119,7 @@ class ProjectForm(forms.Form):
     group = forms.ModelChoiceField(
         label=_('Group'),
         required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Group.objects.all())
 
     def clean_description(self):

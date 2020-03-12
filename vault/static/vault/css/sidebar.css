@@ -29,10 +29,6 @@
   font-size: 14px;
 }
 
-/*#sidebar .current-project button:hover {
-  opacity: 0.85;
-}*/
-
 #sidebar .current-project button.p-name {
   width: 75%;
   text-align: left;

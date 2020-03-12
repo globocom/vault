@@ -4,6 +4,7 @@
 @import url('sidebar.css');
 
 body {
+  font-size: 14px;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   height: 100vh;
   background: #f4f4f4 url(../img/bg-main.svg) fixed no-repeat bottom right;
@@ -312,6 +313,11 @@ main {
 .table.items-list thead th {
   border-top: 0;
   /*font-weight: */
+}
+
+.table.items-list tbody tr:first-child th,
+.table.items-list tbody tr:first-child td {
+  border-top: 0;
 }
 
 .bubble {

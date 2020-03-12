@@ -24,13 +24,13 @@
 }
 
 .widget .name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 300;
   display: inline-block;
 }
 
 .widget .info {
-  font-size: 26px;
+  font-size: 30px;
   display: block;
 }
 
@@ -96,4 +96,20 @@
 .widget .content .item-box-break {
   flex-basis: 100%;
   height: 0;
+}
+
+.widget-dummy {
+  min-height: 400px;
+  background-color: #eee;
+  border-radius: 10px;
+
+  animation-name: pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pulse {
+  from { background-color: #eee; }
+  50% { background-color: #ddd; }
+  to { background-color: #eee; }
 }

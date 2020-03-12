@@ -23,7 +23,7 @@ from django.template import RequestContext
 from django.contrib.auth.views import LoginView
 from allaccess.models import Provider
 
-from allaccess.views import (OAuthCallback, OAuthRedirect)
+from allaccess.views import OAuthCallback, OAuthRedirect
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone

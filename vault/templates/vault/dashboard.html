@@ -6,7 +6,6 @@
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/dashboard.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/widget.css' %}" />
 {% endblock %}
 
 {% block some_top_info %}Dashboard{% endblock %}
@@ -20,16 +19,20 @@
 
 {% block content %}
   {% if has_team %}
-  <ul class="row dashboard-widgets" id="dashboard-widgets"></ul>
+    <ul class="row dashboard-widgets" id="dashboard-widgets">
+      <li class="col-md-4">
+        <div class="widget-dummy"></div>
+      </li>
+    </ul>
   {% else %}
-  <div class="widget no-team alert alert-warning">
-    <i class="icon-warning fa fa-exclamation-triangle"></i>
-    <span>
-      <strong>
-        {% trans "You are not associated with a team. Contact the administrator to add you to a team." %}
-      </strong>
-    </span>
-  </div>
+    <div class="widget no-team alert alert-warning">
+      <i class="icon-warning fa fa-exclamation-triangle"></i>
+      <span>
+        <strong>
+          {% trans "You are not associated with a team. Contact the administrator to add you to a team." %}
+        </strong>
+      </span>
+    </div>
   {% endif %}
 
 {% endblock %}
@@ -40,8 +43,7 @@
   .<%=name%> .head { background-color: <%=color%>; }
   </style>
 
-  <div class="box widget service <%=name%>">
-
+  <div class="box widget <%=name%>">
     <div class="head">
       <span class="name">
         <%=title%>
@@ -76,37 +78,43 @@
   var urls = [{% info_endpoints %}];
   {% endautoescape %}
 
-  Promise.all(urls.map(u=>fetch(u + "?opt=widgets"))).then(responses => {
+  Promise.all(urls.map(u=>fetch(u + "?opt=widgets")))
+  .then(responses => {
     return Promise.all(responses.map(res => res.text()));
-  }).then(datas => {
+  })
+  .then(datas => {
+    var widgets = document.getElementById("dashboard-widgets");
+    widgets.innerHTML = '';
+
     datas.forEach(data => {
       try {
         data = JSON.parse(data);
       } catch (err) {
         return;
       }
+
       data.forEach(d => {
-      var wid = document.createElement("li");
-      if (d.type == "default") {
-        wid.className = "col-md-4";
-        wid.innerHTML = tmpl("widget_default", Object.assign({
-          "name": "default",
-          "color": "#aaaaaa",
-          "icon": "fas fa-question-circle",
-          "title": "",
-          "url": "#",
-          "subtitle": "",
-          "properties": [],
-          "buttons": []
-        }, d));
-      }
-      var widgets = document.getElementById("dashboard-widgets");
-      widgets.appendChild(wid);
+        var wid = document.createElement("li");
+        if (d.type == "default") {
+          wid.className = "col-md-4";
+          wid.innerHTML = tmpl("widget_default", Object.assign({
+            "name": "default",
+            "color": "#aaaaaa",
+            "icon": "fas fa-question-circle",
+            "title": "",
+            "url": "#",
+            "subtitle": "",
+            "properties": [],
+            "buttons": []
+          }, d));
+        }
+
+        widgets.appendChild(wid);
+      });
     });
 
-  })
-});
-
+  });
 </script>
 {% endif %}
+
 {% endblock %}

@@ -6,10 +6,8 @@
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
 
-  {#% set_project %#}
-
   <div class="current-project btn-group">
-  {% if project_name %}
+  {% if project_name and project_id %}
     <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">{{ project_name }}</button>
     <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
