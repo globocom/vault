@@ -39,19 +39,19 @@ urlpatterns = [
     url(r'^team/add/user/?$', views.AddUserTeamView.as_view(), name='team_add_user'),
     url(r'^team/delete/user/?$', views.DeleteUserTeamView.as_view(), name='team_delete_user'),
     url(r'^team/list/users/?$', views.ListUserTeamView.as_view(), name='team_list_users'),
-    url(r'^team/update/users/?$', views.UpdateTeamsUsersView.as_view(), name='update_teams_users'),
+    url(r'^p/(?P<project>.+?)?/team/update/users/?$', views.UpdateTeamsUsersView.as_view(), name='update_teams_users'),
 
     # Team List
-    url(r'^team-users/?$', views.ListUsersTeamsView.as_view(), name='team_users'),
-
-    # Team Manage
-    url(r'^team/manage/?$', views.team_manager_view, name='team_manage'),
-    url(r'^team/manage/outsideusers/?$', views.list_users_outside_a_group, name='outside_users'),
+    url(r'^p/(?P<project>.+?)?/team-users/?$', views.ListUsersTeamsView.as_view(), name='team_users'),
 
     # Project
     url(r'^project/add/?$', CreateProjectView.as_view(), name='add_project'),
     url(r'^project/change/?$', ChangeProjectView.as_view(), name='change_project'),
     url(r'^project/(?P<project_id>[\w\-]+)/set/?$', views.SetProjectView.as_view(), name='set_project'),
+
+    # Team Manage
+    url(r'^p/(?P<project>.+?)?/team/manage/?$', views.team_manager_view, name='team_manage'),
+    url(r'^p/(?P<project>.+?)?/team/manage/outsideusers/?$', views.list_users_outside_a_group, name='outside_users'),
 
 ]
 

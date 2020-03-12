@@ -223,6 +223,8 @@ class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
                     'name': grp.name
                 })
 
+            context = update_default_context(request, context)
+
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
@@ -404,7 +406,7 @@ class OAuthVaultRedirect(OAuthRedirect):
 
 
 @login_required
-def team_manager_view(request):
+def team_manager_view(request, project=None):
     context = {}
     groups = []
 
