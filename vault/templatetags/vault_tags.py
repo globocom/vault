@@ -15,16 +15,6 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def with_sidebar(context):
-    req = context.get("request")
-    body_cls = ""
-    if req.COOKIES.get("show_sidebar"):
-        body_cls = "with-sidebar "
-
-    return body_cls
-
-
-@register.simple_tag(takes_context=True)
 def get_vault_env(context):
     request = context.get("request")
     envs = ["dev", "qa", "qa1", "qa2", "prod", "beta", "docker"]

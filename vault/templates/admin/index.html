@@ -23,8 +23,8 @@
     {% for app in app_list %}
       <div class="col-md-6">
 
-      <div class="app-{{ app.app_label }} module vault-table-container">
-        <table class="items-list table table-striped table-hover">
+      <div class="box app-{{ app.app_label }} module vault-table-container">
+        <table class="items-list table table-hover">
         <caption>
           <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
         </caption>

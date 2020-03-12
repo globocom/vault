@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/widget.css' %}" />
 {% endblock %}
 
-{% block content_main_title %}{{ project_name }}{% endblock %}
+{% block some_top_info %}Dashboard{% endblock %}
+{% block content_title %}{{ project_name }}{% endblock %}
 
 {% block breadcrumb %}{% endblock %}
 
@@ -36,30 +37,30 @@
 {% block js_bottom %}
 <script type="text/html" id="widget_default">
   <style>
-  .<%=name%> .head:hover,
-  .<%=name%> .head:hover .icon { color: <%=color%> }
-  .<%=name%> .item-box { background-color: <%=color%> }
+  .<%=name%> .head { background-color: <%=color%>; }
   </style>
 
-  <div class="widget service <%=name%>">
+  <div class="box widget service <%=name%>">
 
-    <a class="head" href="<%=url%>">
+    <div class="head">
       <span class="name">
         <%=title%>
         <span class="info"><%=subtitle%></span>
       </span>
-    </a>
+    </div>
 
     <div class="content">
-      <% for ( var i = 0; i < properties.length; i++ ) { %>
-      <div class="item-box">
-        <%=properties[i].description%>
-        <span class="big-number"><%=properties[i].value%></span>
-        <%=properties[i].name%>
-      </div>
+      <% for (var i = 0; i < properties.length; i++) { %>
+        <div class="item-box">
+          <%=properties[i].description%>
+          <span class="big-number"><%=properties[i].value%></span>
+          <%=properties[i].name%>
+        </div>
+        <% if ((i+1) % 2 == 0) { %>
+          <div class="item-box-break"></div>
+        <% } %>
       <% } %>
-
-    </div> <!-- .content -->
+    </div>
 
     <div class="base">
       <% for ( var i = 0; i < buttons.length; i++ ) { %>
@@ -87,7 +88,7 @@
       data.forEach(d => {
       var wid = document.createElement("li");
       if (d.type == "default") {
-        wid.className = "widget col-md-4";
+        wid.className = "col-md-4";
         wid.innerHTML = tmpl("widget_default", Object.assign({
           "name": "default",
           "color": "#aaaaaa",

@@ -698,13 +698,12 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
 
     def __init__(self, *args, **kwargs):
         self.keystone = kwargs["keystone"]
-        self.request = kwargs["request"]
         super(KeystoneJsonInfo, self).__init__(*args, **kwargs)
 
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
-        self._menu = {
-            "name": "Identity Service",
+        return {
+            "name": "Identity",
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
             "subitems": [
@@ -728,25 +727,23 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
             users = self.keystone.user_list()
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
-            self._widgets = {
+            return {
                 "error": "Unable to list users"
             }
-            return
         try:
             projects = self.keystone.project_list()
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
-            self._widgets = {
+            return {
                 "error": "Unable to list projects"
             }
-            return
 
-        self._widgets = [
+        return [
             {
                 "type": "default",
                 "name": "keystone",
                 "title": "Keystone",
-                "subtitle": "Identity Service",
+                "subtitle": "Identity",
                 "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),

@@ -14,7 +14,7 @@ For more information on how to transform your Django app into a Python package, 
 
 When creating your views, Django already offers decorators (for function-based views) and mixins (for class-based views) to help you, such as limiting its access to logged users through the [login_required decorator](https://docs.djangoproject.com/en/3.0/topics/auth/default/#the-login-required-decorator) or the [LoginRequired mixin](https://docs.djangoproject.com/en/3.0/topics/auth/default/#the-loginrequired-mixin).
 
-Vault offers its own decorators and mixins to help you develop your views. One thing that is mandatory is that your views require the user to have a project selected before being given access to them. For that situation, use the `vault.utils.project_required` decorator; in case of a class-based view, use Django's `method_decorator` to apply that to the view's methods. For more information, see [Django's documentation on decorating a class](https://docs.djangoproject.com/en/3.0/topics/class-based-views/intro/#decorating-the-class).
+Vault offers its own decorators and mixins to help you develop your views. One thing that is mandatory is that your views require the user to have a project selected before being given access to them. For that situation, use the `vault.utils.project_required` decorator; in case of a class-based view, use the `vault.views.ProjectCheckMixin`. For more information, see [Django's documentation on decorating a class](https://docs.djangoproject.com/en/3.0/topics/class-based-views/intro/#decorating-the-class).
 
 Example:
 
@@ -83,7 +83,102 @@ Install your app as a Python package, then append its name to the end of vault/s
 
 ### Creating a widget and/or sidebar menu
 
-// TODO
+After your app is installed and its views are accessible, you'll need a way to visit them via Vault's main page. For that purpose, you must create an item in the sidebar menu and, optionally, one or more widgets that show some important information and shortcut buttons.
+
+To do that, you must create a class that extends from `vault.jsoninfo.JsonInfo` and overrides its `generate_menu_info` and `generate_widget_info`, respectively.
+
+- `generate_menu_info` must return a dictionary in the following format:
+``` python
+{
+    "name": "My Service",
+    "icon": "far fa-question-circle", # The class of a Font Awesome icon
+    "url": reverse("myapp_main_page", kwargs={'project': project_name}),
+}
+```
+
+- `generate_widget_info` must return a list of dictionaries, each representing a widget, in the following format:
+``` python
+[
+    {
+        "name": "myapp", # this is used to differentiate your widget in the CSS
+        "title": "MyApp", # the technology behind the service, i.e Keystone
+        "subtitle": "My Service", # the service itself, i.e Identity Service
+        "color": "green", # the color of your widget, defaults to gray
+        "icon": "fas fa-key", # The class of a Font Awesome icon
+        "properties": [
+            {
+                "description": "", # text above the value
+                "value": 50 # value of something important
+                "name": "important things", # text below the value
+            }
+        ],
+        "buttons": [
+            {
+                "name": "Things",
+                "url": reverse("myapp_list_things", kwargs={'project': project_name})
+            }
+        ]
+    }
+]
+```
+
+Then, make a view that, on a get request, instantiates that class and returns its `render()` method. Since all URLs will require the user's current project, you can access it from your instance's `self.request.session` variable. Your view can also be exclusive to specific users, such as superusers or users in a specific team, making other users unable to see the your app's menu item and widgets.
+
+Ex:
+
+``` python
+from vault.jsoninfo import JsonInfo
+
+class MyAppJsonInfo(JsonInfo):
+    def generate_menu_info(self):
+        project_name = self.request.session.get('project_name')
+        return {
+            "name": "My Service",
+            "icon": "far fa-question-circle",
+            "url": reverse("myapp_main_page", kwargs={'project': project_name}),
+        }
+
+    def generate_widget_info(self):
+        project_name = self.request.session.get('project_name')
+        return [
+            {
+                "name": "myapp",
+                "title": "MyApp",
+                "subtitle": "My Service",
+                "color": "green",
+                "icon": "fas fa-key",
+                "properties": [
+                    {
+                        "description": "",
+                        "value": 50
+                        "name": "important things",
+                    }
+                ],
+                "buttons": [
+                    {
+                        "name": "Things",
+                        "url": reverse("myapp_list_things", kwargs={'project': project_name})
+                    }
+                ]
+            }
+        ]
+
+
+@utils.project_required
+@login_required
+def info_json(request, project=None):
+    info = MyAppJsonInfo(request=request)
+
+    return info.render(request)
+```
+
+Finally, you must create the URL for your view. It must be added to your `urls.py` file exactly as follows:
+
+``` python
+# ...
+url(r'^api/info$', views.info_json, name="info_json"),
+# ...
+```
 
 ## Bonus Features
 

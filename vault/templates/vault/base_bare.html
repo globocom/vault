@@ -18,67 +18,18 @@
     <script src="{% static 'vault/js/base.js' %}"></script>
   </head>
 
-  <body class="{% block bodyclass %}{% endblock %}">
+  <body class="bare {% block bodyclass %}{% endblock %}">
     {% block main_content %}
     <div class="container-fluid content">
-      <div class="row content-row">
+      <div class="row">
 
-        {% block sidebar %}
-          {% include "vault/sidebar.html" %}
-        {% endblock %}
+        <main role="main" class="col-md-12">
 
-        <main role="main" class="col-md-10">
-
-          <div class="container-fluid">
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <div class="content-title">
-
-                  <span class="some-top-info">
-                    {% block some_top_info %}{{ project_name }}{% endblock %}
-                  </span>
-
-                  <h2>{% block content_title %}{% endblock %}</h2>
-
-                  <div class="vault-user-info">
-                    <a href="#" class="user">
-                      <i class="fas fa-user-circle"></i>
-                    </a>
-                    <!-- <a href="#" class="notification">
-                      <i class="fas fa-bell"></i>
-                    </a> -->
-                  </div>
-
-                </div> <!-- .content-title -->
-
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <div class="content-top">
-
-                  <div class="top-main">
-                    {% block breadcrumb %}
-                      <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
-                    {% endblock %}
-                  </div>
-
-                  <div class="top-base">
-                    {% block content_top %}{% endblock %}
-                  </div>
-
-                </div> <!-- .content-top -->
-
-              </div>
-            </div>
-
+          <div class="content-top">
+            {% block content_top %}{% endblock %}
           </div>
 
-          <div class="container-fluid content-body">
+          <div class="content-body">
             {% block content %}{% endblock %}
           </div>
 

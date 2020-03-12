@@ -3,13 +3,13 @@
 {% load i18n static %}
 {% load pagination storage_tags %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}Object Storage - {{ project_name }}{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Object Storage{% endblock %}
 
 {% block content_top %}
   {% if prefix %}
@@ -28,17 +28,17 @@
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" project_name %}">Containers</a>
+  <a href="{% url 'containerview' project_name %}">Containers</a>
 
   {% if prefix %}
-    <a class="u" href="{% url "objectview" project=project_name container=container  %}">{{ container }}</a>
+    <a class="u" href="{% url 'objectview' project=project_name container=container  %}">{{ container }}</a>
   {% else %}
     <span>{{ container }}</span>
   {% endif %}
 
   {% for prefix in prefixes %}
     {% if forloop.counter < prefixes|length %}
-      <a href="{% url "objectview" project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+      <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
     {% else %}
       {{ prefix.display_name }}
     {% endif %}
@@ -50,46 +50,46 @@
 
   {% storage_tools %}
 
-  <div class="vault-table-container">
-    <table class="items-list table table-striped table-hover">
+  <div class="box vault-table-container">
+    <table class="items-list table table-hover">
       <thead>
         <tr>
-          <th></th>
+          <th style="width: 3%"></th>
           <th>Name</th>
           <th>Created</th>
           <th>Size</th>
-          <th>&nbsp;</th>
-          <th>&nbsp;</th>
+          <th style="width: 5%">&nbsp;</th>
+          <th style="width: 5%">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
       {% for obj in objects %}
         {% if 'prefix' in obj %}
         <tr>
-          <td><i class="fa fa-inbox"></i></td>
+          <td><i class="fas fa-folder"></i></td>
           <td>
-            <a href="{% url "objectview" project=project_name container=container prefix=obj.prefix %}?p={{ project_id }}">
+            <a href="{% url 'objectview' project=project_name container=container prefix=obj.prefix %}?p={{ project_id }}">
               <strong>{{obj.prefix|lastpart}}</strong>
             </a>
           </td>
           <td></td>
           <td></td>
           <td>
-            <button class="btn-meta btn btn-sm btn-default"
+            <button class="btn-meta btn btn-sm btn-light"
               data-name="{{ obj.name }}"
-              data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
-              data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
-              <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+              data-preview-url="{% url 'preview' project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url 'metadata' project=project_name container=container objectname=obj.name %}">
+              <i class="fas fa-list-alt"></i><!-- &nbsp;{% trans 'Metadata' %} -->
             </button>
           </td>
           <td>
             <div class="dropdown pull-right">
-              <a class="btn-config dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown">
-                <i class="fa fa-cog icon-white"></i>
+              <a class="btn-config dropdown-toggle btn btn-sm btn-light" data-toggle="dropdown">
+                <i class="fas fa-cog icon-white"></i>
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a href="{% url "delete_pseudofolder" project=project_name container=container pseudofolder=obj.name %}"
+                  <a href="{% url 'delete_pseudofolder' project=project_name container=container pseudofolder=obj.name %}"
                     onclick="return confirm('Delete pseudofolder {{obj.name}}?');">
                     <i class="fas fa-trash"></i>&nbsp;Delete pseudofolder</a>
                 </li>
@@ -114,28 +114,28 @@
             {{obj.bytes|filesizeformat}}
           </td>
           <td>
-            <button class="btn-meta btn btn-sm btn-default"
+            <button class="btn-meta btn btn-sm btn-light"
               data-name="{{ obj.name }}"
-              data-preview-url="{% url "preview" project=project_name container=container objectname=obj.name %}"
-              data-meta-url="{% url "metadata" project=project_name container=container objectname=obj.name %}">
-              <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+              data-preview-url="{% url 'preview' project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url 'metadata' project=project_name container=container objectname=obj.name %}">
+              <i class="fa fa-list-alt"></i><!-- &nbsp;{% trans 'Metadata' %} -->
             </button>
           </td>
           <td>
             <div class="dropdown pull-right">
-              <a class="btn-config dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown">
+              <a class="btn-config dropdown-toggle btn btn-sm btn-light" data-toggle="dropdown">
                 <i class="fa fa-cog icon-white"></i>
               </a>
               <ul class="dropdown-menu">
                 <li>
                   <a href="#modal-cache-control" data-target="#modal-cache-control" data-toggle="modal" class="btn-cache-control"
-                     data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=obj.name %}">
+                     data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=obj.name %}">
                     <i class="fa fa-angle-right"></i>&nbsp;{% trans 'Edit Cache-Control' %}
                   </a>
                 </li>
                 <li class="divider" />
                 <li>
-                  <a href="{% url "delete_object" project=project_name container=container objectname=obj.name %}"
+                  <a href="{% url 'delete_object' project=project_name container=container objectname=obj.name %}"
                     onclick="return confirm('Delete object {{ obj.name }}?');">
                     <i class="fas fa-trash"></i>&nbsp;Delete object</a>
                 </li>

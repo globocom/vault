@@ -18,7 +18,9 @@
     </div>
   </div>
 
-  <div class="sidebar-secrets"></div>
+  <div class="sidebar-secrets">
+    <div class="vault-env {% get_vault_env %}">{% get_vault_env %}</div>
+  </div>
 
   <div class="separator">
     <span>Main</span>
@@ -56,8 +58,6 @@
     </li>
   </ul>
   {% endif %}
-
-  <div class="vault-env {% get_vault_env %}">{% get_vault_env %}</div>
 
   <script type="text/html" id="menu_icon_default">
     <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">

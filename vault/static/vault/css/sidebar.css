@@ -31,15 +31,11 @@
   border-radius: 20px;
   background-color: rgba(0, 0, 0, 0.2);
   border: none;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 #sidebar .current-project button:hover {
   opacity: 0.85;
-}
-
-#sidebar .sidebar-secrets {
-  height: 100px;
 }
 
 #sidebar .separator {
@@ -86,17 +82,18 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-#sidebar .vault-env {
-  position: absolute;
-  width: 100%;
-  font-size: 12px;
+#sidebar .sidebar-secrets {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+#sidebar .sidebar-secrets .vault-env {
+  font-size: 32px;
   font-weight: bolder;
   text-align: center;
-  padding: 3px 0;
-  top: 0;
-  left: 0;
-  opacity: 0.75;
+  opacity: 0.15;
   text-transform: uppercase;
   color: white;
-  background-color: rgba(0, 0, 0, 0.1);
 }

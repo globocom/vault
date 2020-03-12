@@ -2,16 +2,16 @@
 
 {% load i18n static pagination %}
 
-{% block title %}Storage - {{ project_name }}{% endblock %}
+{% block title %}Object Storage - {{ project_name }}{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Object Storage{% endblock %}
 
 {% block content_top %}
-  <a href="{% url "create_container" project_name %}" class="btn btn btn-primary btn-sm">
+  <a href="{% url 'create_container' project_name %}" class="btn btn btn-primary btn-sm">
     <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;{% trans 'Create Container'%}
   </a>
 {% endblock %}
@@ -20,23 +20,23 @@
 
 {% block content %}
 
-<div class="vault-table-container">
-  <table id="container-list" class="items-list table table-striped table-hover">
+<div class="box vault-table-container">
+  <table id="container-list" class="items-list table table-hover">
     <thead>
       <tr>
-        <th></th>
+        <th style="width: 3%"></th>
         <th>{% trans 'Name' %}</th>
         <th>{% trans 'Objects' %}</th>
         <th>{% trans 'Size' %}</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
+        <th style="width: 5%">&nbsp;</th>
+        <th style="width: 5%">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
     {% for container in containers %}
       <tr>
         <td>
-          <i class="fa fa-inbox"></i>
+          <i class="fas fa-inbox"></i>
         </td>
         <td>
           <strong><a href="{% url 'objectview' project=project_name container=container.name %}" class="block">{{container.name}}</a></strong>
@@ -48,17 +48,16 @@
           {{container.bytes|filesizeformat}}
         </td>
         <td>
-          <button class="btn-meta btn btn-sm btn-default"
+          <button class="btn-meta btn btn-sm btn-light"
                   data-name="{{ container.name }}"
                   data-sub-content-title="{% trans 'Container Metadata' %}"
                   data-meta-url="{% url 'metadata' project=project_name container=container.name %}">
-            <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+            <i class="fas fa-list-alt"></i><!-- &nbsp;{% trans 'Metadata' %} -->
           </button>
         </td>
         <td>
-          <a class="btn-options dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown"
-            data-container-id="container-{{ forloop.counter }}">
-            <i class="fa fa-cog icon-white"></i>
+          <a class="btn-options btn btn-sm btn-light" data-container-id="container-{{ forloop.counter }}">
+            <i class="fas fa-cog icon-white"></i><!-- &nbsp;{% trans 'Container Options' %} -->
           </a>
 
           <script type="text/html" id="html-container-{{ forloop.counter }}">
@@ -158,7 +157,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <th colspan="5" class="center">
+        <th colspan="6" class="center">
           {{ account_stat.x_account_bytes_used|filesizeformat }}
           {% if account_stat.x_account_meta_quota_bytes %}
             of {{account_stat.x_account_meta_quota_bytes|filesizeformat}}
