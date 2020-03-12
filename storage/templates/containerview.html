@@ -24,19 +24,19 @@
   <table id="container-list" class="items-list table table-hover">
     <thead>
       <tr>
-        <th style="width: 2%"></th>
+        <th style="width: 3%"></th>
         <th>{% trans 'Name' %}</th>
         <th>{% trans 'Objects' %}</th>
         <th>{% trans 'Size' %}</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
+        <th style="width: 5%">&nbsp;</th>
+        <th style="width: 5%">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
     {% for container in containers %}
       <tr>
         <td>
-          <i class="fa fa-inbox"></i>
+          <i class="fas fa-inbox"></i>
         </td>
         <td>
           <strong><a href="{% url 'objectview' project=project_name container=container.name %}" class="block">{{container.name}}</a></strong>
@@ -48,17 +48,16 @@
           {{container.bytes|filesizeformat}}
         </td>
         <td>
-          <button class="btn-meta btn btn-sm btn-default"
+          <button class="btn-meta btn btn-sm btn-light"
                   data-name="{{ container.name }}"
                   data-sub-content-title="{% trans 'Container Metadata' %}"
                   data-meta-url="{% url 'metadata' project=project_name container=container.name %}">
-            <i class="fa fa-list-alt"></i>&nbsp;{% trans 'Metadata' %}
+            <i class="fas fa-list-alt"></i><!-- &nbsp;{% trans 'Metadata' %} -->
           </button>
         </td>
         <td>
-          <a class="btn-options dropdown-toggle btn btn-sm btn-default" data-toggle="dropdown"
-            data-container-id="container-{{ forloop.counter }}">
-            <i class="fa fa-cog icon-white"></i>
+          <a class="btn-options btn btn-sm btn-light" data-container-id="container-{{ forloop.counter }}">
+            <i class="fas fa-cog icon-white"></i><!-- &nbsp;{% trans 'Container Options' %} -->
           </a>
 
           <script type="text/html" id="html-container-{{ forloop.counter }}">

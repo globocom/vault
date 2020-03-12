@@ -98,6 +98,9 @@ main {
 
 .content-top .top-main {
   align-items: flex-end;
+  color: #333;
+  font-size: 18px;
+  text-transform: none;
 }
 
 .content-top .top-base {
@@ -119,7 +122,6 @@ main {
   color: #333;
   font-size: 18px;
   text-transform: none;
-  font-weight: 300;
 
   /* for long breadcrumbs */
   white-space: nowrap;
@@ -140,6 +142,7 @@ main {
 .content-breadcrumb span:after {
   content: "/";
   margin: 0 5px;
+  color: #333;
 }
 
 .content-breadcrumb span:last-child:after {

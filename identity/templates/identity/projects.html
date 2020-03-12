@@ -1,13 +1,15 @@
 {% extends "vault/base.html" %}
 {% load i18n static pagination %}
 
-{% block title %}{% trans 'Project' %}{% endblock %}
-
-{% block content_title %}{% trans 'Projects' %}{% endblock %}
+{% block title %}Identity{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
+
+{% block content_title %}Identity{% endblock %}
+
+{% block breadcrumb %}{% trans 'Projects' %}{% endblock %}
 
 {% block content_top %}
   <a href="{% url "add_project" %}" class="create-project btn btn-primary btn-sm">

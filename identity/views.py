@@ -703,7 +703,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         return {
-            "name": "Identity Service",
+            "name": "Identity",
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
             "subitems": [
@@ -743,7 +743,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
                 "type": "default",
                 "name": "keystone",
                 "title": "Keystone",
-                "subtitle": "Identity Service",
+                "subtitle": "Identity",
                 "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),
