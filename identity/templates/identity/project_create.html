@@ -16,7 +16,7 @@
     {{ form.id }}
 
     <fieldset class="content">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="form-group">
           {{ form.name.label_tag }}
           {{ form.name }}
@@ -36,11 +36,12 @@
         </div>
 
       </div>
+
       {% if show_roles %}
-      <div class="col-md-6">
+      <div class="col-md-12">
         {% include "identity/_project_members.html" %}
       </div>
-        {% endif %}
+      {% endif %}
     </fieldset>
 
     <fieldset class="base">
