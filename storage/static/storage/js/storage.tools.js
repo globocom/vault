@@ -532,9 +532,10 @@ Storage.Object = {};
             var key = $($td[0]).find('input').val();
             var value = $($td[1]).find('input').val();
             if ($.trim(key) !== '') {
-                customMetadata['x-object-meta-' + key] = value;
+                var slug = _convert_to_slug(key);
+                customMetadata['x-object-meta-' + slug] = value;
+                $($td[0]).find('input').val(slug);
             }
-            console.log(customMetadata);
         });
 
         $.ajax({
@@ -562,6 +563,13 @@ Storage.Object = {};
         var value = $td.find('input').val();
         delete customMetadata[value];
         $tr.remove();
+    }
+
+    function _convert_to_slug(text) {
+        return $.trim(text)
+            .toLowerCase()
+            .replace(/[^\w ]+/g,'')
+            .replace(/ +/g,'-');
     }
 
     $.extend(Storage.Object, {
