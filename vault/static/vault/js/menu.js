@@ -1,17 +1,13 @@
 var VaultMenu = (function(window) {
   'use strict';
 
-  var urls, options, $changeProject, $editProject;
+  var urls, options;
 
   function init(opts) {
     options = $.extend({
-        'endpoints': null,
-        'changeProject': null,
-        'editProject': null
+        'endpoints': null
     }, opts);
 
-    $changeProject = $('.dropdown-item.change');
-    $editProject = $('.dropdown-item.edit');
     urls = options.endpoints;
 
     var currentDate = new Date();
@@ -66,17 +62,7 @@ var VaultMenu = (function(window) {
     bindEvents();
   }
 
-  function bindEvents() {
-    $changeProject.on('click', function() {
-      window.location.href = options.changeProject;
-    });
-
-    $editProject.on('click', function() {
-      if (options.editProject) {
-        window.location.href = options.editProject;
-      }
-    });
-  }
+  function bindEvents() {}
 
   function dateToString(date) {
     return date.getFullYear() + '-'

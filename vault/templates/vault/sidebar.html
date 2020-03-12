@@ -8,14 +8,17 @@
 
   {#% set_project %#}
 
-  <div class="current-project dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{ project_name }}
+  <div class="current-project btn-group">
+  {% if project_name %}
+    <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">{{ project_name }}</button>
+    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
     </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item change" href="#"><i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
-      <a class="dropdown-item edit" href="#"><i class="icon fa fa-edit"></i> {% trans "Edit Project" %}</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{% url 'change_project' %}">{% trans "Change Project" %}</a>
+      <a class="dropdown-item" href="{% url 'edit_project' project_id %}">{% trans "Edit Project" %}</a>
     </div>
+  {% endif %}
   </div>
 
   <div class="sidebar-secrets">
@@ -70,9 +73,7 @@
   <script>
     {% autoescape off %}
     VaultMenu.init({
-        'endpoints': [{% info_endpoints %}],
-        'changeProject': '{% url "change_project" %}',
-        'editProject': '{% if project_name %}{% url "projects" project_name %}{% endif %}'
+      'endpoints': [{% info_endpoints %}]
     });
     {% endautoescape %}
   </script>
