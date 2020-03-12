@@ -162,3 +162,12 @@
 .service-name.vault {
     background-color: dodgerblue;
 }
+
+.logo img {
+    width: 50%;
+}
+
+.project-select-row {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
