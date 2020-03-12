@@ -243,7 +243,12 @@ def object(request, project, container, objectname):
                              verify=not settings.SWIFT_INSECURE)
 
     metadata = dict(response.headers)
+
+    if 'Cache-Control' not in metadata.keys():
+        metadata["Cache-Control"] = 'public, max-age=216000'
+
     public_url = '{}/{}/{}'.format(get_storage_endpoint(request, 'publicURL'), container, objectname)
+    prefixes = prefix_list(objectname)
 
     for item in metadata:
         if 'x-object-meta-' in item.lower():
@@ -251,7 +256,6 @@ def object(request, project, container, objectname):
         else:
             system_headers[item] = metadata[item]
 
-    prefixes = prefix_list(objectname)
     context = utils.update_default_context(request, {
         'project': project,
         'container': container,
