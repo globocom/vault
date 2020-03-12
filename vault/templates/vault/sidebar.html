@@ -13,8 +13,8 @@
       {{ project_name }}
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item" href="#"><i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
-      <a class="dropdown-item" href="#"><i class="icon fa fa-edit"></i> {% trans "Edit Project" %}</a>
+      <a class="dropdown-item change" href="#"><i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
+      <a class="dropdown-item edit" href="#"><i class="icon fa fa-edit"></i> {% trans "Edit Project" %}</a>
     </div>
   </div>
 
@@ -69,9 +69,12 @@
 
   <script>
     {% autoescape off %}
-    var endpoints = [{% info_endpoints %}];
+    VaultMenu.init({
+        'endpoints': [{% info_endpoints %}],
+        'changeProject': '{% url "change_project" %}',
+        'editProject': '{% if project_name %}{% url "projects" project_name %}{% endif %}'
+    });
     {% endautoescape %}
-    VaultMenu.init(endpoints);
   </script>
 
 </nav>

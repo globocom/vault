@@ -1,10 +1,18 @@
 var VaultMenu = (function(window) {
   'use strict';
 
-  var urls;
+  var urls, options, $changeProject, $editProject;
 
-  function init(endpoints) {
-    urls = endpoints;
+  function init(opts) {
+    options = $.extend({
+        'endpoints': null,
+        'changeProject': null,
+        'editProject': null
+    }, opts);
+
+    $changeProject = $('.dropdown-item.change');
+    $editProject = $('.dropdown-item.edit');
+    urls = options.endpoints;
 
     var currentDate = new Date();
     var currentDateString = dateToString(currentDate);
@@ -52,6 +60,21 @@ var VaultMenu = (function(window) {
           renderMenuItem(jsonData);
         });
       })
+    });
+
+    Base.CSRF.fix();
+    bindEvents();
+  }
+
+  function bindEvents() {
+    $changeProject.on('click', function() {
+      window.location.href = options.changeProject;
+    });
+
+    $editProject.on('click', function() {
+      if (options.editProject) {
+        window.location.href = options.editProject;
+      }
     });
   }
 
