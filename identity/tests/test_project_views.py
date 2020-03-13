@@ -273,13 +273,13 @@ class DeleteProjectTest(TestCase):
         """
 
         mock_render = patch(
-            'identity.views.DeleteProjectView.render_to_response').start()
+            'identity.views.DeleteProjectView.get_context_data').start()
 
         fake_resource = FakeResource()
         self.form.return_value = fake_resource
         _ = self.view(self.request)
 
-        computed_form = mock_render.call_args[0][0].get('form')
+        computed_form = mock_render.call_args[1].get('form')
         self.assertEqual(fake_resource, computed_form)
 
     def test_post_invalid_form(self):
