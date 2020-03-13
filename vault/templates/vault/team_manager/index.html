@@ -15,6 +15,7 @@
   <section class="team-manager">
   {% for group in groups %}
     <div class="team">
+      
       <div class="team-top">
         <span class="team-name">{{ group.name }}</span>
         <a class="btn btn-primary btn-sm btn-add-user"
@@ -23,8 +24,8 @@
           {% trans 'Add new user to' %} {{ group.name }}
         </a>
       </div>
-      <div class="box vault-table-container">
-
+      
+      <div class="box">
         <table id="container-list" class="items-list table table-hover">
           <thead>
             <tr>

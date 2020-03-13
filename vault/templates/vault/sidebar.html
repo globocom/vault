@@ -65,15 +65,11 @@
       <i class="icon <%=icon%>"></i> <%=name%>
     </a>
   </script>
-
   <script src="{% static 'vault/js/menu.js' %}"></script>
-
   <script>
-    {% autoescape off %}
     VaultMenu.init({
-      'endpoints': [{% info_endpoints %}]
+      'endpoints': [{% autoescape off %}{% info_endpoints %}{% endautoescape %}]
     });
-    {% endautoescape %}
   </script>
 
 </nav>

@@ -25,21 +25,20 @@
     </div>
   {% endif %}
 
-  {% if form.non_field_errors %}
-    {% for error in form.non_field_errors %}
-      <div class="errornote alert alert-danger">
-        {{ error }}
-      </div>
-    {% endfor %}
-  {% endif %}
-
   <div class="row justify-content-center">
     <div class="col-4">
 
-      <div class="box login-box">
-
-        {% if user.is_authenticated %}
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
           <div class="errornote alert alert-danger">
+            {{ error }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="box login-box">
+        {% if user.is_authenticated %}
+          <div class="errornote alert alert-warning">
             {% blocktrans trimmed %}
               You are authenticated as {{ username }}, but are not authorized to access this page. Would you like to login to a different account?
             {% endblocktrans %}

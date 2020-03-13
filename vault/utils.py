@@ -153,7 +153,7 @@ def project_check(request, current_project):
         project = keystone.project_get_by_name(current_project)
 
         if not project:
-            messages.add_message(request, messages.WARNING, u"Unauthorized")
+            # messages.add_message(request, messages.WARNING, u"Unauthorized")
             return False
 
         if not project_id or project.id != project_id:
@@ -161,7 +161,7 @@ def project_check(request, current_project):
             group_projects = GroupProjects.objects.filter(group_id__in=[group.id for group in groups])
 
             if group_projects.filter(project=project.id).count() == 0:
-                messages.add_message(request, messages.WARNING, u"Unauthorized")
+                # messages.add_message(request, messages.WARNING, u"Unauthorized")
                 return False
 
             save_current_project(user.id, project.id)

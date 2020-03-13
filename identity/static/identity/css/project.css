@@ -167,11 +167,19 @@
   background-color: dodgerblue;
 }
 
-.logo img {
-  width: 50%;
+.project-select .logo img {
+  width: 100%;
+}
+
+.project-select .logo {
+  width: 100%;
 }
 
 .project-select-row {
-  padding-top: 25px;
-  padding-bottom: 25px;
+  display: flex;
+  height: 100px;
+}
+
+.p-top {
+  padding: 30px 0;
 }

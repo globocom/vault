@@ -9,26 +9,26 @@
 
 {% block content_top %}
   {% if version_location %}
-  <form method="POST" action="{% url "object_versioning" project=project_name container=container %}">
+  <form method="POST" action="{% url 'object_versioning' project=project_name container=container %}">
     {% csrf_token %}
     <input type="hidden" name="action" value="disable">
-    <button class="btn btn-danger" type="submit">Disable Versioning</button>
+    <button class="btn btn-sm btn-danger" type="submit">Disable Versioning</button>
   </form>
   {% endif %}
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" project_name %}">Containers</a>
+  <a href="{% url 'containerview' project_name %}">Containers</a>
 
   {% if prefix %}
-    <a class="u" href="{% url "object_versioning" project=project_name container=container %}">Object versions from {{ container }}</a>
+    <a class="u" href="{% url 'object_versioning' project=project_name container=container %}">Object versions from {{ container }}</a>
   {% else %}
     Object versions from {{ container }}
   {% endif %}
 
   {% for prefix in prefixes %}
     {% if forloop.counter < prefixes|length %}
-      <a href="{% url "object_versioning" project=project_name container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+      <a href="{% url 'object_versioning' project=project_name container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
     {% else %}
       {{ prefix.display_name }}
     {% endif %}
@@ -38,8 +38,8 @@
 
 {% block content %}
   {% if version_location %}
-  <div class="vault-table-container">
-  <table class="items-list table table-striped table-hover">
+  <div class="box">
+  <table class="items-list table table-hover">
     <thead>
       <tr>
         <th style="width: 0.5em;"></th>
@@ -51,12 +51,11 @@
     <tbody>
       {% if objects %}
         {% for obj in objects %}
-        <tbody>
           {% if 'prefix' in obj %}
           <tr>
             <td><i class="fa fa-inbox"></i></td>
             <td>
-              <a href="{% url "object_versioning" project=project_name container=container prefix=obj.prefix %}"><strong>{{ obj.prefix|lastpart }}</strong></a>
+              <a href="{% url 'object_versioning' project=project_name container=container prefix=obj.prefix %}"><strong>{{ obj.prefix|lastpart }}</strong></a>
             </td>
             <td></td>
             <td></td>
@@ -70,7 +69,7 @@
               {{ obj.name|lastpart }}
               <button class="btn-meta btn btn-sm"
                       data-name="{{ obj.name }}"
-                      data-meta-url="{% url "metadata" project=project_name container=version_location objectname=obj.name %}">show&nbsp;metadata</button>
+                      data-meta-url="{% url 'metadata' project=project_name container=version_location objectname=obj.name %}">show&nbsp;metadata</button>
             </td>
             <td>
               {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
@@ -80,7 +79,6 @@
             </td>
           </tr>
           {% endif %}
-        </tbody>
         {% endfor %}
       {% else %}
         <tr>
@@ -91,9 +89,11 @@
       {% endif %}
     </tbody>
   </table>
+
   </div>
+
   {% else %}
-    <form method="POST" action="{% url "object_versioning" project=project_name container=container %}" class="form-box project-form">
+    <form method="POST" action="{% url 'object_versioning' project=project_name container=container %}" class="form-box project-form">
       {% csrf_token %}
       <input type="hidden" name="action" value="enable">
       <fieldset class="content">
@@ -113,5 +113,7 @@
       </fieldset>
     </form>
   {% endif %}
-{% pagination objects %}
+  
+  {% pagination objects %}
+
 {% endblock %}

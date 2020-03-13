@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<div class="vault-user-info">
+  <div class="dropdown">
+    <a href="#" class="user" data-toggle="dropdown">
+      <i class="fas fa-user-circle"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+      <h6 class="dropdown-header">{{ logged_user }}</h6>
+      <div class="dropdown-divider"></div>
+      <a href="{% url 'vault_logout' %}" class="dropdown-item">
+        {% trans 'Logout' %}
+      </a>
+    </div>
+  </div>
+
+  <!-- <a href="#" class="notification">
+    <i class="fas fa-bell"></i>
+  </a> -->
+</div>

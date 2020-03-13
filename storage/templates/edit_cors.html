@@ -12,23 +12,23 @@
 {% endblock %}
 
 {% block content_top %}
-  <a href="#addcors_modal" data-target="#addcors_modal" data-toggle="modal" class="btn btn-primary">
-    <i class="fa fa-server"></i>&nbsp;&nbsp;Add Host
+  <a class="btn btn-primary btn-sm" href="#addcors_modal" data-target="#addcors_modal" data-toggle="modal">
+    <i class="fas fa-server"></i>&nbsp;&nbsp;Add Host
   </a>
 {% endblock %}
 
 {% block content %}
   {% include "addcors_modal.html" %}
 
-  <div class="vault-table-container">
-    <table class="items-list table table-striped table-hover">
+  <div class="box">
+    <table class="items-list table table-hover">
       <thead>
         <tr>
-          <th></th>
+          <th style="width: 3%"></th>
           <th>Name</th>
-          <th></th>
+          <th style="width: 5%"></th>
         </tr>
-    </thead>
+      </thead>
 
     <tbody>
     {% for host in cors %}
@@ -38,7 +38,9 @@
           {{ host }}
         </td>
         <td>
-          <a class="btn btn-sm btn-danger" href="{% url "edit_cors" project=project_name container=container%}?delete={{ host }}"><i class="fas fa-trash icon-white"></i></a>
+          <a class="btn btn-sm btn-danger" href="{% url 'edit_cors' project=project_name container=container%}?delete={{ host }}">
+            <i class="fas fa-trash icon-white"></i>
+          </a>
         </td>
       </tr>
     {% empty %}

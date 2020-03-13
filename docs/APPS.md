@@ -221,8 +221,8 @@ Once that's done on your view, you need to add the pagination Template Tag to yo
 
 {% block content %}
 
-<div class="vault-table-container">
-  <table id="container-list" class="table table-bordered table-striped table-hover">
+<div class="box">
+  <table id="container-list" class="table table-hover">
     <thead>
       <tr>
         <th>Name</th>
