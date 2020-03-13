@@ -52,6 +52,7 @@
       <tr>
         <th style="width: 30%">Name</th>
         <th>Value</th>
+        <th style="width: 5%">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
@@ -59,8 +60,13 @@
       <tr>
         <td>
           {% if key == 'Cache-Control' %}
-            <a href="#modal-cache-control" data-target="#modal-cache-control" data-toggle="modal" class="btn-cache-control"
-                     data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">{{key}}</a>
+            <a href="#modal-cache-control"
+               class="btn-cache-control"
+               data-target="#modal-cache-control"
+               data-toggle="modal"
+               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
+              {{key}}
+            </a>
           {% else %}
             {{key}}
           {% endif %}
@@ -70,6 +76,29 @@
             <span class="cache-control">{{value}}</span>
           {% else %}
             {{value}}
+          {% endif %}
+        </td>
+        <td>
+          {% if key == 'Cache-Control' %}
+            {% if value == '' %}
+            <a href="#modal-cache-control"
+               class="btn-cache-control add btn btn-sm btn-light"
+               title="Add Cache-Control"
+               data-target="#modal-cache-control"
+               data-toggle="modal"
+               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
+              <i class="fas fa-plus-square"></i>
+            </a>
+            {% else %}
+            <a href="#modal-cache-control"
+               class="btn-cache-control add btn btn-sm btn-light"
+               title="Edit Cache-Control"
+               data-target="#modal-cache-control"
+               data-toggle="modal"
+               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
+              <i class="fas fa-edit"></i>
+            </a>
+            {% endif %}
           {% endif %}
         </td>
       </tr>
@@ -134,6 +163,10 @@
   Metadata.CacheControl.init({
     'callBack': function(callback) {
       var cache_control = document.getElementsByClassName("cache-control");
+      var cache_control_link = document.getElementsByClassName("btn-cache-control add");
+      var cache_control_icon = cache_control_link[0].getElementsByTagName('i');
+      cache_control_link[0].title = 'Edit Cache-Control';
+      cache_control_icon[0].className = 'fas fa-edit';
       cache_control[0].textContent = callback;
     }
   });

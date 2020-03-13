@@ -245,7 +245,7 @@ def object(request, project, container, objectname):
     metadata = dict(response.headers)
 
     if 'Cache-Control' not in metadata.keys():
-        metadata["Cache-Control"] = 'public, max-age=216000'
+        metadata["Cache-Control"] = ''
 
     public_url = '{}/{}/{}'.format(get_storage_endpoint(request, 'publicURL'), container, objectname)
     prefixes = prefix_list(objectname)
