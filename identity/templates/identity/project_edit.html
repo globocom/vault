@@ -65,7 +65,7 @@
         <div class="col-md-6">
           {% if show_roles %}
             {% include "identity/_project_members.html" %}
-          {%  endif %}
+          {% endif %}
 
           {% include "identity/_project_metadata.html" %}
         </div>
@@ -85,14 +85,18 @@
 {% endblock %}
 
 {% block js_bottom %}
-<script src="{% static 'identity/js/project.js' %}"></script>
-<script>
-Project.Users.init({
-  'projectId': '{{ identity_project_id }}',
-  'addUrl': '{% url "project_add_user" project_name %}',
-  'deleteUrl': '{% url "project_delete_user" project_name %}',
-  'listUrl': '{% url "project_list_users" project_name %}',
-  'resetPassUrl': '{% url "update_pass" project_name %}'
-});
-</script>
+
+  {% if show_roles %}
+    <script src="{% static 'identity/js/project.js' %}"></script>
+    <script>
+    Project.Users.init({
+      'projectId': '{{ identity_project_id }}',
+      'addUrl': '{% url "project_add_user" project_name %}',
+      'deleteUrl': '{% url "project_delete_user" project_name %}',
+      'listUrl': '{% url "project_list_users" project_name %}',
+      'resetPassUrl': '{% url "update_pass" project_name %}'
+    });
+    </script>
+  {% endif %}
+
 {% endblock %}

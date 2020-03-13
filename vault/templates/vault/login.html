@@ -26,7 +26,7 @@
   {% endif %}
 
   <div class="row justify-content-center">
-    <div class="col-4">
+    <div class="col-6">
 
       {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
@@ -45,7 +45,7 @@
           </div>
         {% endif %}
 
-        <h2>Login</h2>
+        <h3>Login</h3>
 
         <section class="d-flex justify-content-center">
           <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}

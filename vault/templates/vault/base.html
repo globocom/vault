@@ -20,7 +20,7 @@
 
   <body class="{% block bodyclass %}{% endblock %}">
     {% block main_content %}
-    <div class="container-fluid content">
+    <div class="container-fluid main-content">
       <div class="row content-row">
 
         {% block sidebar %}
@@ -38,7 +38,7 @@
                   <span class="some-top-info">
                     {% block some_top_info %}{{ project_name }}{% endblock %}
                   </span>
-                  
+
                   <h2>{% block content_title %}{% endblock %}</h2>
 
                   {% include 'vault/user_info.html' %}

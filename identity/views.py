@@ -259,8 +259,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
             project_id = form.data.get('id')
 
         # Show role manager when superuser
-        context['show_roles'] = request.user.is_superuser and \
-                                '/admin/identity/' in request.path
+        context['show_roles'] = request.user.is_superuser
 
         if project_id:
             project = self.keystone.project_get(project_id).to_dict()

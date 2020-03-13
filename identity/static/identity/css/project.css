@@ -1,6 +1,6 @@
 #add-user-role {
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 50px;
 }
 
 #add-user-role.disabled {
@@ -37,7 +37,7 @@
 #add-user-role .controls {
   padding: 0 10px;
   background-color: #ddd;
-  border-radius: 2px;
+  border-radius: 5px;
   line-height: 50px;
   min-height: 50px;
   margin-bottom: 25px;
@@ -47,17 +47,16 @@
   position: relative;
   background-color: #eee;
   margin-bottom: 15px;
-  border-radius: 3px;
+  border-radius: 5px;
   min-height: 74px;
   overflow: hidden;
 }
 
-#add-user-role .box-users .loader-gif {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -45px;
-  margin-top: -8px;
+#add-user-role .box-users .box-loader {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 #add-user-role .related-users {
@@ -97,6 +96,7 @@
 
 #add-user-role .remove-usr {
   float: right;
+  font-size: 12px;
 }
 
 #add-user-role .dropdown-menu {
@@ -167,19 +167,30 @@
   background-color: dodgerblue;
 }
 
-.project-select .logo img {
-  width: 100%;
+.change-project-list {
+  min-height: 300px;
 }
 
-.project-select .logo {
-  width: 100%;
+.create-project-btn {
+  padding: 15px 30px;
+  font-weight: normal;
+  font-size: 16px;
+  white-space: nowrap;
+  text-align: center;
+  background-color: white;
+  color: #333;
+  opacity: .85;
+  border-radius: 5px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.project-select-row {
-  display: flex;
-  height: 100px;
+.create-project-btn:hover {
+  text-decoration: none;
+  color: #333;
+  opacity: 1;
 }
 
-.p-top {
-  padding: 30px 0;
+.create-project-btn .icon {
+  display: inline-block;
+  margin-right: 10px;
 }

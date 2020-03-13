@@ -1,4 +1,4 @@
-@import url('bare.css');
+@import url('base_bare.css');
 @import url('box.css');
 @import url('login.css');
 @import url('sidebar.css');
@@ -20,7 +20,7 @@ main {
 }
 
 /* content */
-.content,
+.main-content,
 .content-row {
   position: relative;
   height: 100%;

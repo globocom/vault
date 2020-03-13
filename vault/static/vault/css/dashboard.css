@@ -69,6 +69,7 @@
 }
 
 .widget .content {
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   flex-direction: row;

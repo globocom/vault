@@ -1,0 +1,47 @@
+.bare .main-content {
+  background: transparent url(../img/bg-bare.svg) fixed no-repeat top left;
+  background-size: 100%;
+}
+
+.bare .content-top {
+  height: auto;
+}
+
+.bare-head-left,
+.bare-head-right,
+.bare-title-left,
+.bare-title-right {
+  display: flex;
+  height: 100px;
+  align-items: center;
+}
+
+.bare-head-right,
+.bare-title-right {
+  justify-content: flex-end;
+}
+
+.bare-title-left,
+.bare-title-right {
+  height: 140px;
+}
+
+.bare-head-left .logo {
+  width: 85%;
+}
+
+.bare-title-left h2 {
+  color: white;
+  font-size: 38px;
+  font-weight: lighter;
+}
+
+.bare-head-right .vault-user-info .user {
+  color: white;
+  opacity: .75;
+}
+
+.bare-head-right .vault-user-info .user:hover {
+  color: white;
+  opacity: 1;
+}
