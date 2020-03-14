@@ -6,6 +6,7 @@
 .widget {
   box-sizing: border-box;
   padding-top: 120px;
+  padding-bottom: 60px;
   position: relative;
   margin-bottom: 30px;
   min-height: 400px;
@@ -31,6 +32,7 @@
 
 .widget .info {
   font-size: 30px;
+  font-size: 2.05vw;
   display: block;
 }
 
