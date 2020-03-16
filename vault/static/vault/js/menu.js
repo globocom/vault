@@ -8,27 +8,36 @@ var VaultMenu = (function(window) {
         'endpoints': null
     }, opts);
 
-    urls = options.endpoints;
+    urls = options.endpoints.sort();
 
     var currentDate = new Date();
     var currentDateString = dateToString(currentDate);
     var cachedUrls = [];
 
-    urls.forEach(function(u) {
+    for (var i = urls.length - 1; i >= 0; i--) {
       try {
+        var u = urls[i];
         var cache = JSON.parse(localStorage.getItem(u + "?opt=menu"));
-        if (cache.expires > currentDateString) {
+        if (cache && currentDateString <= cache.expires) {
           renderMenuItem(JSON.parse(cache.content));
           cachedUrls.push(u);
+        } else {
+          getContent(cachedUrls);
+          break;
         }
       } catch (err) {
         // err
       }
-    });
+    }
+  }
+
+  function getContent(cachedUrls) {
+    var currentDate = new Date();
+    var currentDateString = dateToString(currentDate);
 
     urls = urls.filter(function(u) {
       return !cachedUrls.includes(u);
-    });
+    }).sort();
 
     Promise.all(urls.map(function(u) {
       return fetch(u + "?opt=menu");
@@ -55,14 +64,9 @@ var VaultMenu = (function(window) {
 
           renderMenuItem(jsonData);
         });
-      })
+      });
     });
-
-    Base.CSRF.fix();
-    bindEvents();
   }
-
-  function bindEvents() {}
 
   function dateToString(date) {
     return date.getFullYear() + '-'
@@ -88,7 +92,22 @@ var VaultMenu = (function(window) {
 
     var sidebar_menu = document.getElementById("sidebar-app-menus");
     sidebar_menu.appendChild(wid);
+
+    var submenu = document.createElement("ul");
+    obj.subitems.forEach(function(item) {
+      var subitems = document.createElement("li");
+      subitems.innerHTML = tmpl("menu_icon_default", Object.assign({
+        "name": "default",
+        "icon": "fas fa-question-circle",
+        "url": "#"
+      }, item));
+      submenu.appendChild(subitems)
+    });
+
+    wid.appendChild(submenu);
   }
+
+  function renderSubMenuItem(obj) {}
 
   return {
     init: init

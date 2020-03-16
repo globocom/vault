@@ -67,8 +67,10 @@
   </script>
   <script src="{% static 'vault/js/menu.js' %}"></script>
   <script>
-    VaultMenu.init({
-      'endpoints': [{% autoescape off %}{% info_endpoints %}{% endautoescape %}]
+    $(document).ready(function() {
+      VaultMenu.init({
+        'endpoints': [{% autoescape off %}{% info_endpoints %}{% endautoescape %}]
+      });
     });
   </script>
 
