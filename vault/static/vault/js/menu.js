@@ -4,7 +4,7 @@ var VaultMenu = (function(window) {
   var urls, options;
 
   function init(opts) {
-    options = $.extend({
+    options = Object.assign({
         'endpoints': null
     }, opts);
 
@@ -87,6 +87,7 @@ var VaultMenu = (function(window) {
 
   function renderMenuItem(obj) {
     var wid = document.createElement("li");
+
     wid.innerHTML = tmpl("menu_icon_default", Object.assign({
       "name": "default",
       "icon": "fas fa-question-circle",
@@ -97,11 +98,13 @@ var VaultMenu = (function(window) {
     sidebar_menu.appendChild(wid);
 
     var submenu = document.createElement("ul");
+    submenu.classList.add('sub-menu');
+
     obj.subitems.forEach(function(item) {
       var subitems = document.createElement("li");
-      subitems.innerHTML = tmpl("menu_icon_default", Object.assign({
+      subitems.innerHTML = tmpl("submenu_icon_default", Object.assign({
         "name": "default",
-        "icon": "fas fa-question-circle",
+        "icon": "fas fa-caret-right",
         "url": "#"
       }, item));
       submenu.appendChild(subitems)

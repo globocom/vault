@@ -52,7 +52,8 @@
 
 #sidebar .icon {
   display: inline-block;
-  margin-right: 10px;
+  width: 25px;
+  /*margin-right: 10px;*/
 }
 
 #sidebar ul {
@@ -69,6 +70,7 @@
 #sidebar li a,
 #sidebar li span {
   font-size: 13px;
+  font-weight: bold;
   padding-left: 10px;
   display: block;
   line-height: 30px;
@@ -85,6 +87,26 @@
 #sidebar li a:hover {
   color: #fff;
   background-color: rgba(26, 62, 127, 0.75);
+}
+
+#sidebar ul.sub-menu {
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
+
+#sidebar ul.sub-menu .icon {
+  width: 15px;
+}
+
+#sidebar ul.sub-menu li {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+#sidebar ul.sub-menu li a,
+#sidebar ul.sub-menu li span {
+  font-size: 12px;
+  font-weight: normal;
 }
 
 #sidebar .sidebar-secrets {

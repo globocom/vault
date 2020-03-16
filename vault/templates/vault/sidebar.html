@@ -33,38 +33,45 @@
         <i class="icon fa fa-home"></i> Home
       </a>
     </li>
+  </ul>
+
+  <div class="separator">
+    <span>Settings</span>
+  </div>
+
+  <ul class="admin-menus" id="sidebar-admin-menus">
     <li>
       <a href="{% url 'update_teams_users' project_name %}" title="{% trans 'Manage Team' %}"
          data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-users-cog"></i> Manage my Team
       </a>
     </li>
-  </ul>
-
-  {% if user.is_staff %}
-  <div class="separator">
-    <span>Admin</span>
-  </div>
-
-  <ul class="admin-menus" id="sidebar-admin-menus">
-    <li>
-      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-cog"></i> Settings
-      </a>
-    </li>
+    {% if user.is_staff %}
     <li>
       <a href="{% url 'team_users' %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-building"></i> Teams and Users
       </a>
     </li>
+    <li>
+      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
+        <i class="icon fa fa-cog"></i> Vault Admin
+      </a>
+    </li>
+    {% endif %}
   </ul>
-  {% endif %}
 
   <script type="text/html" id="menu_icon_default">
-    <a href="<%=url%>" title="<%=name%>" data-toggle="tooltip" data-placement="right">
+    <a href="<%=url%>" title="<%=name%>">
       <i class="icon <%=icon%>"></i> <%=name%>
     </a>
   </script>
+
+  <script type="text/html" id="submenu_icon_default">
+    <a href="<%=url%>" title="<%=name%>">
+      <i class="icon fas fa-caret-right"></i> <%=name%>
+    </a>
+  </script>
+
   <script src="{% static 'vault/js/menu.js' %}"></script>
   <script>
     $(document).ready(function() {
