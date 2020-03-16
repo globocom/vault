@@ -32,12 +32,12 @@ class GroupProjectsAdmin(admin.ModelAdmin):
     list_display = ('group_name', 'project_name')
 
     def group_name(self, obj):
-        return u'<a href="/admin/vault/groupprojects/{}/">{}</a>'.format(obj.id, obj.group.name)
+        return obj.group.name
     group_name.allow_tags = True
     group_name.short_description = 'group'
 
     def project_name(self, obj):
-        return u'<span>{}</span>'.format(self.project_list.get(obj.project, ''))
+        return self.project_list.get(obj.project, '')
     project_name.allow_tags = True
     project_name.short_description = 'project'
 

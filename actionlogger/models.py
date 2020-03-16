@@ -14,5 +14,5 @@ class Audit(models.Model):
     class Meta:
         db_table = 'audit'
 
-    def __unicode__(self):
+    def __str__(self):
         return "{} - {} - {} - {}".format(self.user, self.action, self.item, self.created_at)

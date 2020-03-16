@@ -39,7 +39,7 @@ class GroupAdminForm(forms.ModelForm):
             self.fields['users'].initial = self.instance.user_set.all()
 
     def save_m2m(self):
-        self.instance.user_set = self.cleaned_data['users']
+        self.instance.user_set.set(self.cleaned_data['users'])
 
     def save(self, *args, **kwargs):
         instance = super(GroupAdminForm, self).save()
