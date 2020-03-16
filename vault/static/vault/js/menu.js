@@ -43,6 +43,7 @@ var VaultMenu = (function(window) {
       return fetch(u + "?opt=menu");
     }))
     .then(function(responses) {
+
       return responses.map(function(res) {
         var url = res.url.replace(location.origin, '');
 
@@ -66,6 +67,8 @@ var VaultMenu = (function(window) {
         });
       });
     });
+
+    Base.CSRF.fix();
   }
 
   function dateToString(date) {

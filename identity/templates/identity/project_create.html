@@ -1,14 +1,13 @@
-{% extends "vault/base.html" %}
-{% load i18n %}
-
-{% load static %}
+{% extends "vault/base_bare.html" %}
+{% load i18n static %}
 
 {% block title %}{% trans 'Create Project' %}{% endblock %}
-{% block content_title %}{% trans 'Create Project' %}{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
+
+{% block title_left %}{% trans 'Create Project' %}{% endblock %}
 
 {% block content %}
   <form action="" class="form-box project-form" method="POST">
@@ -16,32 +15,31 @@
     {{ form.id }}
 
     <fieldset class="content">
-      <div class="col-md-12">
-        <div class="form-group">
-          {{ form.name.label_tag }}
-          {{ form.name }}
-          {{ form.name.errors }}
-        </div>
 
-        <div class="form-group">
-          {{ form.description.label_tag }}
-          {{ form.description }}
-          {{ form.description.errors }}
-        </div>
+      <div class="row">
 
-        <div class="form-group">
-          {{ form.group.label_tag }}
-          {{ form.group }}
-          {{ form.group.errors }}
+        <div class="col-md-12">
+          <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+
+          <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {{ form.description.errors }}
+          </div>
+
+          <div class="form-group">
+            {{ form.group.label_tag }}
+            {{ form.group }}
+            {{ form.group.errors }}
+          </div>
         </div>
 
       </div>
 
-      {% if show_roles %}
-      <div class="col-md-12">
-        {% include "identity/_project_members.html" %}
-      </div>
-      {% endif %}
     </fieldset>
 
     <fieldset class="base">

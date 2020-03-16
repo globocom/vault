@@ -7,87 +7,46 @@
   <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
 {% endblock %}
 
-{% block some_top_info %}
-<div class="logo">
-  <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
-</div>
-{% endblock %}
+{% block title_left %}{% trans 'Projects' %}{% endblock %}
 
-{% block content_top %}
-<div class="row justify-content-center">
-  
-  <div class="col-md-8">
-    <div class="row justify-content-between">
-
-      <div class="p-logo p-top col-md-2">
-        <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
-      </div>
-
-      <div class="p-user-info p-top col-md-2">
-        {% include 'vault/user_info.html' %}
-      </div>
-      
-    </div>
-  </div>
-
-</div>
-
-<div class="row justify-content-center">
-  
-  <div class="col-md-8">
-    <div class="row justify-content-between">
-
-      <div class="p-title p-top col-md-2">
-        <h2>{% trans 'Projects' %}</h2>
-      </div>
-
-      <div class="p-create-btn p-top col-md-2">
-        <a href="{% url 'add_project' %}" class="create-project-btn">
-          <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
-        </a>
-      </div>
-
-    </div>
-  </div>
-
-</div>
+{% block title_right %}
+  <a href="{% url 'add_project' %}" class="create-project-btn">
+    <i class="icon fas fa-project-diagram"></i>&nbsp;{% trans 'Create Project' %}
+  </a>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-8">
 
-    <div class="box">
-      <table class="items-list table table-hover">
-      
-        <thead>
-          <tr>
-            <th>{% trans 'Project' %}</th>
-            <th>{% trans 'Description' %}</th>
-            <th style="width: 20%;"></th>
-          </tr>
-        </thead>
-      
-        <tbody>
-          {% for project in projects %}
-          <tr>
-            <td>{{ project.name }}</td>
-            <td>{{ project.description }}</td>
-            <td>
-              <a href="{% url 'set_project' project.id %}" class="btn btn-primary btn-sm">
-                {% trans 'Select this Project' %}
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
+<div class="box change-project-list">
+  <table class="items-list table table-hover">
 
-      </table>
-    </div> <!-- .box -->
+    <thead>
+      <tr>
+        <th style="width: 25%">{% trans 'Project' %}</th>
+        <th>{% trans 'Description' %}</th>
+        <th></th>
+      </tr>
+    </thead>
 
-  </div>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td>{{ project.name }}</td>
+        <td>{{ project.description }}</td>
+        <td style="text-align: right">
+          <a href="{% url 'set_project' project.id %}" class="btn btn-primary btn-sm">
+            {% trans 'Select this Project' %}
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
 </div>
+
 {% pagination projects %}
+
 {% endblock %}
 
 {% block js_bottom %}
