@@ -49,10 +49,11 @@ Base.Messages = {};
 
     var msg_tmpl = ['<li>',
                         '<span class="msg">',
-                        '<span class="text"></span>',
-                        '<a class="close-btn">',
-                            '<i class="icon fa fa-times"></i>',
-                        '</a>',
+                            '<span class="msg-type-color"></span>',
+                            '<span class="text"></span>',
+                            '<a class="close-btn">',
+                                '<i class="icon fa fa-times"></i>',
+                            '</a>',
                         '</span>',
                     '</li>'].join('');
 

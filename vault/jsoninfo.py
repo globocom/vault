@@ -75,14 +75,14 @@ class JsonInfo:
 
     def translate_color(self, color):
         colors = {
-            "blue": "#3eadcc",
-            "purple": "#821aa8",
+            "blue": "#3e95cc",
+            "purple": "#8b40a9",
             "red": "#cc543f",
-            "orange": "#cc8c3e",
-            "yellow": "#ad9e2e",
+            "orange": "#e6762c",
+            "yellow": "#f5bc00",
             "green": "#688f10",
-            "cyan": "3ecc9a",
-            "pink": "#aa1398",
+            "cyan": "#29cac1",
+            "pink": "#df6c98",
             "brown": "#8e4b10",
             "gray": "#757575"
         }

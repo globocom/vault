@@ -4,14 +4,14 @@
 {% block content_title %}{% trans 'Edit User' %}{% endblock %}
 
 {% block content_top %}
-    <a href="{% url "delete_user" project=project_name user_id=user_id %}" class="delete-user btn btn-danger">{% trans 'Delete User' %}</a>
+  <a href="{% url 'delete_user' project=project_name user_id=user_id %}" class="delete-user btn btn-danger">{% trans 'Delete User' %}</a>
 {% endblock %}
 
 {% block content %}
   <form action="" class="form-box user-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
     {{ form.id }}
-    
+
     <fieldset class="content">
       <div class="col-md-6">
         <div class="form-group">

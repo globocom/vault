@@ -180,7 +180,7 @@ main {
 /* messages */
 .messages {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 50%;
   margin-left: -35%;
   width: 70%;
@@ -196,12 +196,22 @@ main {
 .messages .msg {
   position: relative;
   margin: 15px 15px 0;
-  padding: 8px 40px 8px 16px;
-  background-color: rgba(85, 85, 85, 0.9);
+  padding: 20px 80px 20px 30px;
+  background-color: #444;
   color: white;
-  font-size: 16px;
-  border-radius: 2px;
+  font-size: 18px;
+  border-radius: 10px;
   display: inline-block;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
+}
+
+.messages .msg .msg-type-color {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10px;
 }
 
 .messages .close-btn {
@@ -209,7 +219,7 @@ main {
   top:12px;
   right: 15px;
   font-size: 14;
-  color: white;
+  color: rgba(255, 255, 255, 0.3);
   z-index: 99;
   cursor: pointer;
 }
@@ -229,15 +239,14 @@ main {
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   margin-right: 12px;
 }
 
-.success .msg { background-color: rgba(0, 111, 13, 0.85); }
-.warning .msg { background-color: rgba(200, 127, 0, 0.85); }
-.error .msg,
-.danger .msg { background-color: rgba(156, 5, 5, 0.85); }
-.info .msg { background-color: rgba(0, 80, 200, 0.85); }
+.success .msg .msg-type-color { background-color: #688f10; }
+.warning .msg .msg-type-color { background-color: #f5bc00; }
+.error .msg .msg-type-color,
+.danger .msg .msg-type-color { background-color: #cc543f; }
+.info .msg .msg-type-color { background-color: #3e95cc; }
 
 /* loading */
 .loading {

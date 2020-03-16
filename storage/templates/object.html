@@ -12,28 +12,28 @@
 {% block content_title %}Object{% endblock %}
 
 {% block content_top %}
-  <a class="btn btn-primary btn-sm" href="{% url "preview" project=project_name container=container objectname=objectname %}" target="_blank">
+  <a class="btn btn-primary btn-sm" href="{% url 'preview' project=project_name container=container objectname=objectname %}" target="_blank">
   <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Open</a>
 
-  <a class="btn btn-primary btn-sm" href="{% url "download" project=project_name container=container objectname=objectname %}" download>
+  <a class="btn btn-primary btn-sm" href="{% url 'download' project=project_name container=container objectname=objectname %}" download>
   <i class="fa fa-download"></i>&nbsp;&nbsp;Download</a>
 
-  <a class="btn btn-primary btn-sm" href="{{public_url}}" target="_blank">
+  <a class="btn btn-primary btn-sm" href="{{ public_url }}" target="_blank">
   <i class="fa fa-link"></i>&nbsp;&nbsp;Public&nbsp;URL</a>
 {% endblock %}
 
 {% block content_breadcrumb %}
-  <a href="{% url "containerview" project_name %}">Containers</a>
+  <a href="{% url 'containerview' project_name %}">Containers</a>
 
   {% if prefix %}
-    <a class="u" href="{% url "objectview" project=project_name container=container  %}">{{ container }}</a>
+    <a class="u" href="{% url 'objectview' project=project_name container=container  %}">{{ container }}</a>
   {% else %}
     <span>{{ container }}</span>
   {% endif %}
 
   {% for prefix in prefixes %}
     {% if forloop.counter < prefixes|length %}
-      <a href="{% url "objectview" project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+      <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
     {% else %}
       {{ prefix.display_name }}
     {% endif %}
@@ -52,7 +52,7 @@
       <tr>
         <th style="width: 30%">Name</th>
         <th>Value</th>
-        <th style="width: 5%">&nbsp;</th>
+        <th style="width: 20%"></th>
       </tr>
     </thead>
     <tbody>
@@ -64,38 +64,38 @@
                class="btn-cache-control"
                data-target="#modal-cache-control"
                data-toggle="modal"
-               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
-              {{key}}
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
+              {{ key }}
             </a>
           {% else %}
-            {{key}}
+            {{ key }}
           {% endif %}
         </td>
         <td>
           {% if key == 'Cache-Control' %}
-            <span class="cache-control">{{value}}</span>
+            <span class="cache-control">{{ value }}</span>
           {% else %}
-            {{value}}
+            {{ value }}
           {% endif %}
         </td>
         <td>
           {% if key == 'Cache-Control' %}
             {% if value == '' %}
             <a href="#modal-cache-control"
-               class="btn-cache-control add btn btn-sm btn-light"
+               class="btn-cache-control add btn btn-sm btn-primary"
                title="Add Cache-Control"
                data-target="#modal-cache-control"
                data-toggle="modal"
-               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
-              <i class="fas fa-plus-square"></i>
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
+              <i class="fas fa-plus-square"></i> Add Cache-Control
             </a>
             {% else %}
             <a href="#modal-cache-control"
-               class="btn-cache-control add btn btn-sm btn-light"
+               class="btn-cache-control add btn btn-sm btn-primary"
                title="Edit Cache-Control"
                data-target="#modal-cache-control"
                data-toggle="modal"
-               data-cache-control-url="{% url "cache_control" project=project_name container=container objectname=objectname %}">
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
               <i class="fas fa-edit"></i>
             </a>
             {% endif %}
@@ -117,7 +117,7 @@
 </div>
 
 <div class="form-box table-custom-metadata"
-     data-custom-meta-url="{% url "edit_custom_metadata" project=project_name container=container objectname=objectname %}">
+     data-custom-meta-url="{% url 'edit_custom_metadata' project=project_name container=container objectname=objectname %}">
   <div class="content">
     <table class="items-list table table-hover">
       <thead>
