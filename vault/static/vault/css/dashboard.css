@@ -3,6 +3,66 @@
   padding: 0;
 }
 
+.dashboard-info {
+  padding: 30px;
+}
+
+.dashboard-info .last-login,
+.dashboard-info .useful-links {
+  margin-bottom: 30px;
+}
+
+.dashboard-info h4 {
+  font-size: 18px;
+  font-weight: normal;
+  color: #333;
+}
+
+.dashboard-info span {
+  font-size: 14px;
+  color: #777;
+}
+
+.useful-links .item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 10px;
+  color: #777;
+}
+
+.useful-links .item:hover {
+  text-decoration: none;
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.useful-links .item:hover .text {
+  color: #333;
+}
+
+.useful-links .item .icon {
+  font-size: 32px;
+  width: 40px;
+  margin-right: 10px;
+}
+
+.useful-links .item .text {
+  flex-grow: 1;
+}
+
+.useful-links .item-title {
+  display: block;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+
+}
+
+.useful-links .item-text {
+  font-size: 12px;
+}
+
 .widget {
   box-sizing: border-box;
   padding-top: 120px;
@@ -107,8 +167,12 @@
   border-radius: 10px;
 
   animation-name: pulse;
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   animation-iteration-count: infinite;
+}
+
+.widget-dummy.two {
+  animation-duration: 1s;
 }
 
 @keyframes pulse {

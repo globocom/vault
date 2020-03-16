@@ -151,7 +151,8 @@ class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
         context = update_default_context(request, {
             "project_name": request.session.get('project_name'),
             "project_id": request.session.get('project_id'),
-            "has_team": request.user.groups.count() > 0
+            "has_team": request.user.groups.count() > 0,
+            "last_login": request.user.last_login
         })
 
         return self.render_to_response(context)

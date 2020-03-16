@@ -18,22 +18,40 @@
 {% endblock %}
 
 {% block content %}
-  {% if has_team %}
-    <ul class="row dashboard-widgets" id="dashboard-widgets">
-      <li class="col-md-4">
-        <div class="widget-dummy"></div>
-      </li>
-    </ul>
-  {% else %}
-    <div class="widget no-team alert alert-warning">
-      <i class="icon-warning fa fa-exclamation-triangle"></i>
-      <span>
-        <strong>
-          {% trans "You are not associated with a team. Contact the administrator to add you to a team." %}
-        </strong>
-      </span>
+  <div class="row">
+    <div class="col-md-8">
+
+      <ul class="row dashboard-widgets" id="dashboard-widgets">
+        <li class="col-md-6">
+          <div class="widget-dummy"></div>
+        </li>
+        <li class="col-md-6">
+          <div class="widget-dummy two"></div>
+        </li>
+      </ul>
+
     </div>
-  {% endif %}
+    <div class="col-md-4">
+
+      <div class="dashboard-info">
+        <div class="last-login">
+          <h4>Last Login</h4>
+          <span>{{ last_login }}</span>
+        </div>
+
+        <div class="useful-links">
+          <a href="{% url 'update_teams_users' project_name %}" class="item">
+            <i class="icon fas fa-users-cog"></i>
+            <span class="text">
+              <strong class="item-title">Manage my Team</strong>
+              <span class="item-text">Add or remove someone in your team</span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 {% endblock %}
 
 {% block js_bottom %}
@@ -95,7 +113,7 @@
       data.forEach(d => {
         var wid = document.createElement("li");
         if (d.type == "default") {
-          wid.className = "col-md-4";
+          wid.className = "col-md-6";
           wid.innerHTML = tmpl("widget_default", Object.assign({
             "name": "default",
             "color": "#aaaaaa",
