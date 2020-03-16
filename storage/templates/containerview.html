@@ -120,7 +120,7 @@
                   </a>
                 </li>
 
-                {% if user.is_staff %}
+                {% if backup_obj %}
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-backup" class="config-backup config-item"
                      data-setup-url="{% url "config_backup_container" project=project_name container=container.name %}"
