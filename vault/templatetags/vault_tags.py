@@ -38,7 +38,8 @@ def set_project(context):
 
     for group in groups:
         gps = GroupProjects.objects.filter(group=group.id)
-        gps_ks = filter(lambda x: x.enabled, keystone.project_list())
+        gps_ks = [x for x in
+                filter(lambda x: x.enabled, keystone.project_list())]
         gp_projs = []
 
         for gp in gps:

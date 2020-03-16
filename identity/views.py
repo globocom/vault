@@ -447,7 +447,8 @@ class ChangeProjectView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
 
         for group in groups:
             gps = GroupProjects.objects.filter(group=group.id)
-            gps_ks = filter(lambda x: x.enabled, keystone.project_list())
+            gps_ks = [x for x in
+                    filter(lambda x: x.enabled, keystone.project_list())]
 
             for gp in gps:
                 for gp_ks in gps_ks:
