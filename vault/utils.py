@@ -150,6 +150,10 @@ def project_check(request, current_project):
 
     if current_project:
         keystone = Keystone(request)
+
+        if not keystone.conn:
+            return False
+
         project = keystone.project_get_by_name(current_project)
 
         if not project:
