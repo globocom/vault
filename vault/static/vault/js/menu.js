@@ -4,71 +4,79 @@ var VaultMenu = (function(window) {
   var urls, options;
 
   function init(opts) {
+    const execute = (url) => {
+      return new Promise((resolve, reject) => {
+        fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }).then((response) => {
+          if(response.ok) {
+            resolve(response.json());
+          }
+        }).catch(function(error) {
+          resolve({});
+        });
+      })
+    }
+    const promises = []
+    const query = "?opt=menu";
+
+    var currentDate = new Date();
+    var currentDateString = dateToString(currentDate);
+    var cachedUrls = [];
+    var contents = []
+
     options = Object.assign({
         'endpoints': null
     }, opts);
 
     urls = options.endpoints.sort();
 
-    var currentDate = new Date();
-    var currentDateString = dateToString(currentDate);
-    var cachedUrls = [];
+    for (var i = 0; i < urls.length; i++) {
+      var url = urls[i] + query;
+      var cache = localStorage.getItem(url);
 
-    for (var i = urls.length - 1; i >= 0; i--) {
-      try {
-        var u = urls[i];
-        var cache = JSON.parse(localStorage.getItem(u + "?opt=menu"));
-        if (cache && currentDateString <= cache.expires) {
-          renderMenuItem(JSON.parse(cache.content));
-          cachedUrls.push(u);
-        } else {
-          getContent(cachedUrls);
-          break;
-        }
-      } catch (err) {
-        // err
+      if (cache && currentDateString <= JSON.parse(cache).expires) {
+        cachedUrls.push(url);
+        contents.push(JSON.parse(cache).content);
       }
     }
-  }
 
-  function getContent(cachedUrls) {
-    var currentDate = new Date();
-    var currentDateString = dateToString(currentDate);
-
-    urls = urls.filter(function(u) {
-      return !cachedUrls.includes(u);
+    let urlsNoCached = urls.filter(function(url) {
+      return !cachedUrls.includes(url + query);
     }).sort();
 
-    Promise.all(urls.map(function(u) {
-      return fetch(u + "?opt=menu");
-    }))
-    .then(function(responses) {
+    if (urlsNoCached.length === 0) {
+      for (var i = 0; i < contents.length; i++) {
+        renderMenuItem(contents[i]);
+      }
+      return;
+    }
 
-      return responses.map(function(res) {
-        var url = res.url.replace(location.origin, '');
+    for (var i = urls.length - 1; i >= 0; i--) {
+      promises.push(execute(urls[i] + query));
+    }
 
-        var text = res.text().then(function(data) {
-          try {
-            var jsonData = JSON.parse(data);
-          } catch (err) {
-            return;
-          }
+    Promise.all(promises).then((response) => {
+      var responses = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-          var cache = localStorage.getItem(url);
-          if (cache === null || JSON.parse(cache).expires <= currentDateString) {
-            var expireDate = new Date(currentDate.getTime() + 5 * 60000);
-            localStorage.setItem(url, JSON.stringify({
-              "content": data,
-              "expires": dateToString(expireDate)
-            }));
-          }
+      return responses.map(function(data, index) {
+        var url = urls[index].replace(location.origin, '') + query;
+        var cache = localStorage.getItem(url);
 
-          renderMenuItem(jsonData);
-        });
+        if (!cache || JSON.parse(cache).expires <= currentDateString) {
+          var expireDate = new Date(currentDate.getTime() + 5 * 60000);
+          localStorage.setItem(url, JSON.stringify({
+            "content": data,
+            "expires": dateToString(expireDate)
+          }));
+        }
+        renderMenuItem(data);
       });
-    });
 
-    Base.CSRF.fix();
+    })
   }
 
   function dateToString(date) {
