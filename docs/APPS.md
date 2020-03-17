@@ -93,8 +93,17 @@ To do that, you must create a class that extends from `vault.jsoninfo.JsonInfo` 
     "name": "My Service",
     "icon": "far fa-question-circle", # The class of a Font Awesome icon
     "url": reverse("myapp_main_page", kwargs={'project': project_name}),
+    "subitems": [ # optional
+        {
+            "name": "Things",
+            "icon": "",
+            "url": reverse("projects", kwargs={'project': project_name})
+        },
+    ]
 }
 ```
+
+Note that your app doesn't need to have subitems. Also, if every page is accessible via your app's subitems, the `url` key becomes optional.
 
 - `generate_widget_info` must return a list of dictionaries, each representing a widget, in the following format:
 ``` python
