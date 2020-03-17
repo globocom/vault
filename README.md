@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo-black.svg?raw=true" alt="Vault logo" style="width: 50%" />
+	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo-black.svg" alt="Vault logo" style="width: 50%" />
 </p>
 
 # Vault
