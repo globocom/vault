@@ -11,9 +11,9 @@ Team.Users = {};
                      '<td class="usr"></td>',
                      '<td class="grp"></td>',
                      '<td>',
-                       '<a href="#" class="remove-usr btn btn-danger btn-sm">',
+                       '<button class="remove-usr btn btn-danger btn-sm" data-toggle="modal" data-target="#removeModal">',
                          '<i class="fa fa-times"></i>',
-                       '</a>',
+                       '</button>',
                      '</td>',
                    '</tr>'].join('');
 
@@ -59,7 +59,17 @@ Team.Users = {};
 
         $main.on('click', '.remove-usr', function(e) {
             e.preventDefault();
-            removeUserTeam($(this).closest('tr'));
+            let $row = $(this).closest('tr');
+            let $usr = $row.children('.usr').text();
+            let $grp = $row.children('.grp').text();
+            let $message = $('#removeModal > .modal-dialog > .modal-content > .modal-body > p');
+            $message.text("User \"" + $usr +
+                "\" will lose access to all projects owned by \"" + $grp +
+                "\"! Continue?");
+            let $confirmBtn = $('#removeModalConfirm');
+            $confirmBtn.on('click', function(e) {
+                removeUserTeam($row);
+            });
         });
 
     }
