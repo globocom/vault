@@ -48,7 +48,7 @@
     </li>
     {% if user.is_staff %}
     <li>
-      <a href="{% url 'team_users' %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'team_users' project_name %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
         <i class="icon fa fa-building"></i> Teams and Users
       </a>
     </li>
