@@ -152,7 +152,7 @@ class DashboardView(LoginRequiredMixin, ProjectCheckMixin, TemplateView):
             "project_name": request.session.get('project_name'),
             "project_id": request.session.get('project_id'),
             "has_team": request.user.groups.count() > 0,
-            "last_login": request.user.last_login
+            "last_login": str(request.user.last_login)
         })
 
         return self.render_to_response(context)
