@@ -185,22 +185,22 @@ LOGGING = {
         'identity': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': 'DEBUG',
         },
         'vault': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': 'DEBUG',
         },
         'storage': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': 'DEBUG',
         },
         'dashboard': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': 'DEBUG',
         }
     },
 }
