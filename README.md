@@ -1,5 +1,9 @@
 <p align="center">
-	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo.png" alt="Vault logo" />
+	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo.png" alt="Vault Logo" />
+</p>
+
+<p align="center">
+    <img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/screenshot.png" alt="Vault Screenshot" />
 </p>
 
 # Vault
