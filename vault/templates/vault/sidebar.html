@@ -24,37 +24,37 @@
   </div>
 
   <div class="separator">
-    <span>Main</span>
+    <span>{% trans 'Main' %}</span>
   </div>
 
   <ul class="app-menus" id="sidebar-app-menus">
     <li>
       <a href="{% url 'main' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-home"></i> Home
+        <i class="icon fa fa-home"></i> {% trans 'Home' %}
       </a>
     </li>
   </ul>
 
   <div class="separator">
-    <span>Settings</span>
+    <span>{% trans 'Settings' %}</span>
   </div>
 
   <ul class="admin-menus" id="sidebar-admin-menus">
     <li>
       <a href="{% url 'update_teams_users' project_name %}" title="{% trans 'Manage Team' %}"
          data-toggle="tooltip" data-placement="right">
-        <i class="icon fas fa-users-cog"></i> Manage my Team
+        <i class="icon fas fa-users-cog"></i> {% trans 'Manage my Team' %}
       </a>
     </li>
     {% if user.is_staff %}
     <li>
       <a href="{% url 'team_users' project_name %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-building"></i> Teams and Users
+        <i class="icon fa fa-building"></i> {% trans 'Teams and Users' %}
       </a>
     </li>
     <li>
       <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
-        <i class="icon fa fa-cog"></i> Vault Admin
+        <i class="icon fa fa-cog"></i> {% trans 'Vault Admin' %}
       </a>
     </li>
     {% endif %}

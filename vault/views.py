@@ -185,7 +185,7 @@ class VaultLogout(View):
     def get(self, request):
         user = request.user
         logout(request)
-        log.info('User logged out: [{}]'.format(user))
+        log.info(_('User logged out:') + ' [{}]'.format(user))
         return HttpResponseRedirect(reverse('main'))
 
 
@@ -207,7 +207,7 @@ class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
         try:
             all_groups_id = [group.id for group in Group.objects.all()]
 
-            # Usuarios sem time
+            # Users without a team
             users = (User.objects
                          .exclude(groups__in=all_groups_id)
                          .order_by('username'))

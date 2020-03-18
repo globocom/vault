@@ -1,0 +1,1007 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-18 18:06+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: actionlogger/apps.py:9
+msgid "Actionlogger"
+msgstr ""
+
+#: identity/apps.py:9
+msgid "Identity"
+msgstr ""
+
+#: identity/forms.py:20
+msgid "User Name"
+msgstr ""
+
+#: identity/forms.py:25 identity/templates/identity/users.html:23
+msgid "Email"
+msgstr ""
+
+#: identity/forms.py:30 identity/forms.py:149
+#: identity/templates/identity/project_create_success.html:35
+msgid "Password"
+msgstr ""
+
+#: identity/forms.py:35
+msgid "Confirm Password"
+msgstr ""
+
+#: identity/forms.py:40
+msgid "Primary Project"
+msgstr ""
+
+#: identity/forms.py:45 identity/forms.py:113
+#: identity/templates/identity/projects.html:30
+#: identity/templates/identity/users.html:24
+msgid "Enabled"
+msgstr ""
+
+#: identity/forms.py:53 identity/tests/test_user_views.py:356
+msgid "Passwords did not match"
+msgstr ""
+
+#: identity/forms.py:96
+msgid "Project Name"
+msgstr ""
+
+#: identity/forms.py:102
+msgid "Project Name must be an alphanumeric."
+msgstr ""
+
+#: identity/forms.py:108 identity/templates/identity/project_change.html:26
+#: identity/templates/identity/projects.html:27
+msgid "Description"
+msgstr ""
+
+#: identity/forms.py:120
+msgid "Group"
+msgstr ""
+
+#: identity/forms.py:130
+msgid "Project description cannot be empty."
+msgstr ""
+
+#: identity/forms.py:138 identity/templates/identity/users.html:22
+#: vault/templates/vault/user_edit_teams.html:17
+#: vault/templates/vault/user_edit_teams.html:41
+#: vault/templates/vault/users_teams.html:36
+msgid "User"
+msgstr ""
+
+#: identity/forms.py:143
+msgid "Confirm project user"
+msgstr ""
+
+#: identity/forms.py:154
+msgid "Confirm password"
+msgstr ""
+
+#: identity/keystone.py:472
+msgid "Permission denied to manage this project"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:4
+msgid "Manage Users:"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:13
+msgid "with role:"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:21
+#: identity/templates/identity/projects_and_users.html:13
+#: identity/templates/identity/projects_and_users.html:21
+#: vault/templates/admin/index.html:40
+#: vault/templates/vault/user_edit_teams.html:33
+msgid "Add"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:32
+msgid "user"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:33
+msgid "role"
+msgstr ""
+
+#: identity/templates/identity/_project_members.html:42
+msgid "Create project to manage users"
+msgstr ""
+
+#: identity/templates/identity/_project_metadata.html:5
+msgid "Project Metadata"
+msgstr ""
+
+#: identity/templates/identity/_project_metadata.html:10
+msgid "Source platform"
+msgstr ""
+
+#: identity/templates/identity/_project_metadata.html:20
+msgid "Created by team"
+msgstr ""
+
+#: identity/templates/identity/_project_metadata.html:26
+msgid "Current team owner"
+msgstr ""
+
+#: identity/templates/identity/project_change.html:4
+#: identity/templates/identity/project_change.html:10
+#: identity/templates/identity/projects.html:12
+#: identity/templates/identity/projects_and_users.html:10
+msgid "Projects"
+msgstr ""
+
+#: identity/templates/identity/project_change.html:14
+#: identity/templates/identity/project_create.html:4
+#: identity/templates/identity/project_create.html:10
+#: identity/templates/identity/project_create.html:47
+#: identity/templates/identity/projects.html:16
+msgid "Create Project"
+msgstr ""
+
+#: identity/templates/identity/project_change.html:25
+#: identity/templates/identity/project_create_success.html:27
+#: identity/templates/identity/projects.html:25
+msgid "Project"
+msgstr ""
+
+#: identity/templates/identity/project_change.html:38
+msgid "Select this Project"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:4
+#: identity/templates/identity/project_create_success.html:5
+msgid "Project Created"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:12
+msgid "Save the information below to access the services"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:31
+msgid "Username"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:39
+msgid "Authentication URL"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:54
+msgid "Copied!"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:55
+msgid "Copy to Clipboard"
+msgstr ""
+
+#: identity/templates/identity/project_create_success.html:59
+msgid "Download Credentials"
+msgstr ""
+
+#: identity/templates/identity/project_delete_confirm.html:4
+#: identity/templates/identity/project_delete_confirm.html:5
+#: identity/templates/identity/project_delete_confirm.html:40
+#: identity/templates/identity/project_edit.html:14
+#: vault/templates/vault/set_project.html:64
+msgid "Delete Project"
+msgstr ""
+
+#: identity/templates/identity/project_delete_confirm.html:13
+msgid "Warning!"
+msgstr ""
+
+#: identity/templates/identity/project_delete_confirm.html:14
+msgid "All objects will be deleted. This action is irreversible!"
+msgstr ""
+
+#: identity/templates/identity/project_edit.html:5
+#: identity/templates/identity/project_edit.html:6
+#: vault/templates/vault/set_project.html:61
+#: vault/templates/vault/sidebar.html:17
+msgid "Edit Project"
+msgstr ""
+
+#: identity/templates/identity/project_edit.html:36
+msgid "Project User:"
+msgstr ""
+
+#: identity/templates/identity/project_edit.html:41
+msgid "Reset Password"
+msgstr ""
+
+#: identity/templates/identity/project_edit.html:42
+msgid "New password:"
+msgstr ""
+
+#: identity/templates/identity/project_edit.html:79
+msgid "Save Project"
+msgstr ""
+
+#: identity/templates/identity/projects.html:26
+msgid "Project Id"
+msgstr ""
+
+#: identity/templates/identity/projects.html:28
+msgid "Created By"
+msgstr ""
+
+#: identity/templates/identity/projects.html:29
+msgid "Owner"
+msgstr ""
+
+#: identity/templates/identity/projects.html:49
+#: identity/templates/identity/users.html:35
+msgid "Edit"
+msgstr ""
+
+#: identity/templates/identity/projects_and_users.html:6
+msgid "Keystone"
+msgstr ""
+
+#: identity/templates/identity/projects_and_users.html:18
+#: identity/templates/identity/users.html:5
+#: identity/templates/identity/users.html:9
+msgid "Users"
+msgstr ""
+
+#: identity/templates/identity/user_create.html:4
+#: identity/templates/identity/user_create.html:8
+#: identity/templates/identity/user_create.html:67
+#: identity/templates/identity/users.html:13
+msgid "Create User"
+msgstr ""
+
+#: identity/templates/identity/user_edit.html:3
+#: identity/templates/identity/user_edit.html:4
+msgid "Edit User"
+msgstr ""
+
+#: identity/templates/identity/user_edit.html:7
+msgid "Delete User"
+msgstr ""
+
+#: identity/templates/identity/user_edit.html:59
+msgid "Save User"
+msgstr ""
+
+#: identity/templates/identity/widgets/keystone.html:32
+msgid "projects"
+msgstr ""
+
+#: identity/templates/identity/widgets/keystone.html:36
+msgid "users"
+msgstr ""
+
+#: identity/tests/test_project_views.py:65 identity/views.py:345
+msgid "Unable to list projects"
+msgstr ""
+
+#: identity/tests/test_user_views.py:56 identity/views.py:67
+msgid "Unable to list users"
+msgstr ""
+
+#: identity/tests/test_user_views.py:147
+msgid "This field is required"
+msgstr ""
+
+#: identity/tests/test_user_views.py:171
+msgid "Enter a valid email address"
+msgstr ""
+
+#: identity/tests/test_user_views.py:203 identity/views.py:163
+msgid "Error when create user"
+msgstr ""
+
+#: identity/tests/test_user_views.py:320 identity/views.py:201
+msgid "Error when update user"
+msgstr ""
+
+#: identity/tests/test_user_views.py:406 identity/views.py:213
+msgid "Successfully deleted user"
+msgstr ""
+
+#: identity/tests/test_user_views.py:419 identity/views.py:220
+msgid "Error when delete user"
+msgstr ""
+
+#: identity/views.py:46
+msgid "Authorization error"
+msgstr ""
+
+#: identity/views.py:65 identity/views.py:161 identity/views.py:199
+#: identity/views.py:218 identity/views.py:308 identity/views.py:343
+#: identity/views.py:506 identity/views.py:568 identity/views.py:614
+#: identity/views.py:648 identity/views.py:732 identity/views.py:739
+#: vault/views.py:66 vault/views.py:139 vault/views.py:230 vault/views.py:257
+#: vault/views.py:292 vault/views.py:318
+msgid "Exception:"
+msgstr ""
+
+#: identity/views.py:156
+msgid "Successfully created user"
+msgstr ""
+
+#: identity/views.py:194
+msgid "Successfully updated user"
+msgstr ""
+
+#: identity/views.py:498
+msgid "Successfully updated project"
+msgstr ""
+
+#: identity/views.py:508
+msgid "Error when update project"
+msgstr ""
+
+#: identity/views.py:543
+msgid "Invalid credentials."
+msgstr ""
+
+#: identity/views.py:557
+msgid "Error when delete swift account"
+msgstr ""
+
+#: identity/views.py:565
+msgid "Successfully deleted project."
+msgstr ""
+
+#: identity/views.py:570
+msgid "Error when delete project"
+msgstr ""
+
+#: identity/views.py:642
+msgid "User already registered with this role"
+msgstr ""
+
+#: identity/views.py:643 vault/views.py:279
+msgid "Conflict:"
+msgstr ""
+
+#: identity/views.py:647
+msgid "Error adding user"
+msgstr ""
+
+#: identity/views.py:672
+msgid "Error removing user"
+msgstr ""
+
+#: identity/views.py:693
+msgid "Error updating password"
+msgstr ""
+
+#: storage/apps.py:9
+msgid "Swift Browser"
+msgstr ""
+
+#: storage/templates/containerview.html:15
+msgid "Create Container"
+msgstr ""
+
+#: storage/templates/containerview.html:28
+#: storage/templates/storage/storage_tools.html:43
+msgid "Name"
+msgstr ""
+
+#: storage/templates/containerview.html:29
+msgid "Objects"
+msgstr ""
+
+#: storage/templates/containerview.html:30
+#: storage/templates/storage/storage_tools.html:44
+msgid "Size"
+msgstr ""
+
+#: storage/templates/containerview.html:53
+msgid "Container Metadata"
+msgstr ""
+
+#: storage/templates/containerview.html:77
+msgid "Set CORS"
+msgstr ""
+
+#: storage/templates/containerview.html:84
+msgid "Versioning"
+msgstr ""
+
+#: storage/templates/containerview.html:103
+msgid ""
+"Your container will become public. All objects will be accessible by anyone"
+msgstr ""
+
+#: storage/templates/containerview.html:104
+msgid ""
+"Your container will become private. Authentication token will be required to "
+"access any object"
+msgstr ""
+
+#: storage/templates/containerview.html:106
+msgid "Checking ACL"
+msgstr ""
+
+#: storage/templates/containerview.html:107
+msgid "Set as private"
+msgstr ""
+
+#: storage/templates/containerview.html:108
+msgid "Set as public"
+msgstr ""
+
+#: storage/templates/containerview.html:115
+msgid "This will enable the Trash for container"
+msgstr ""
+
+#: storage/templates/containerview.html:116
+msgid "Disabling the Trash cannot restore deleted objects"
+msgstr ""
+
+#: storage/templates/containerview.html:118
+msgid "Checking Trash"
+msgstr ""
+
+#: storage/templates/containerview.html:119
+msgid "Disable Trash"
+msgstr ""
+
+#: storage/templates/containerview.html:120
+msgid "Enable Trash"
+msgstr ""
+
+#: storage/templates/containerview.html:128
+msgid "This will enable Backups for container"
+msgstr ""
+
+#: storage/templates/containerview.html:129
+msgid "This container will no longer perform backups"
+msgstr ""
+
+#: storage/templates/containerview.html:131
+msgid "Checking Backup"
+msgstr ""
+
+#: storage/templates/containerview.html:132
+msgid "Disable Backup"
+msgstr ""
+
+#: storage/templates/containerview.html:133
+msgid "Enable Backup"
+msgstr ""
+
+#: storage/templates/containerview.html:141
+msgid "Delete container"
+msgstr ""
+
+#: storage/templates/containerview.html:142
+msgid "Delete Container"
+msgstr ""
+
+#: storage/templates/objectview.html:95
+msgid "Delete pseudofolder"
+msgstr ""
+
+#: storage/templates/objectview.html:110
+msgid "Click to copy URL"
+msgstr ""
+
+#: storage/templates/objectview.html:135
+msgid "Edit Cache-Control"
+msgstr ""
+
+#: storage/templates/objectview.html:140
+msgid "Delete object"
+msgstr ""
+
+#: storage/templates/objectview.html:172
+msgid "URL copied!"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:9
+#: storage/templates/storage/storage_tools.html:30
+msgid "Trash"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:15
+#: storage/templates/storage/storage_tools.html:80
+msgid "Backup"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:32
+msgid ""
+"There is already an object with this name in the container, we suggest a new "
+"name. If you need to edit, click on the new name and then click restore."
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:63
+#: storage/templates/storage/storage_tools.html:101
+msgid "Close"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:84
+msgid "Restore Backup"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:86
+msgid "Daily"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:87
+msgid "Weekly"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:88
+msgid "Monthly"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:91
+msgid "The backup will be restored to a container with the following name"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:95
+msgid "The backup service for this container was requested on"
+msgstr ""
+
+#: storage/templates/storage/storage_tools.html:96
+msgid "If you want to restore a backup, please contact Vault administrator"
+msgstr ""
+
+#: storage/templates/storage/widgets/swift.html:35
+msgid "containers"
+msgstr ""
+
+#: storage/templates/storage/widgets/swift.html:39
+msgid "objects"
+msgstr ""
+
+#: storage/templates/storage/widgets/swift.html:43
+msgid "total space"
+msgstr ""
+
+#: storage/tests/test_storage.py:146 storage/views/main.py:61
+msgid "Unable to list containers"
+msgstr ""
+
+#: storage/tests/test_storage.py:180 storage/tests/test_storage.py:278
+#: storage/tests/test_storage.py:344 storage/tests/test_storage.py:359
+#: storage/tests/test_storage.py:575 storage/tests/test_storage.py:659
+#: storage/tests/test_storage.py:1015 storage/tests/test_storage.py:1042
+#: storage/views/main.py:114 storage/views/main.py:210
+#: storage/views/main.py:302 storage/views/main.py:362
+#: storage/views/main.py:403 storage/views/main.py:527
+#: storage/views/main.py:811 storage/views/main.py:822
+#: storage/views/main.py:845 storage/views/main.py:861
+#: storage/views/main.py:1298 storage/views/main.py:1370
+msgid "Access denied"
+msgstr ""
+
+#: storage/tests/test_storage.py:197 storage/views/main.py:109
+msgid "Container created"
+msgstr ""
+
+#: storage/tests/test_storage.py:228 storage/tests/test_storage.py:594
+msgid "This field is required."
+msgstr ""
+
+#: storage/tests/test_storage.py:295 storage/tests/test_storage.py:318
+#: storage/views/main.py:359
+msgid "Object created"
+msgstr ""
+
+#: storage/tests/test_storage.py:503 storage/tests/test_storage.py:542
+#: storage/views/main.py:524
+msgid "Pseudofolder created"
+msgstr ""
+
+#: storage/tests/test_storage.py:612 storage/tests/test_storage.py:635
+#: storage/views/main.py:401
+msgid "Object deleted"
+msgstr ""
+
+#: storage/tests/test_storage.py:708 storage/tests/test_storage.py:775
+#: storage/views/main.py:465
+msgid "Pseudofolder deleted"
+msgstr ""
+
+#: storage/tests/test_storage.py:803 storage/views/main.py:476
+msgid "Fail to delete pseudofolder"
+msgstr ""
+
+#: storage/tests/test_storage.py:1265 storage/views/main.py:581
+msgid "ACLs updated"
+msgstr ""
+
+#: storage/tests/test_storage.py:1296 storage/tests/test_storage.py:1435
+#: storage/views/main.py:589 storage/views/main.py:626
+msgid "ACL update failed"
+msgstr ""
+
+#: storage/utils.py:43 vault/templates/vault/set_project.html:41
+msgid "No project selected"
+msgstr ""
+
+#: storage/views/backup.py:195
+msgid ""
+"Error when activate container backup. Container can not contain more than {} "
+"objects"
+msgstr ""
+
+#: storage/views/backup.py:198
+msgid ""
+"Error when activate container backup. Container can not contain more than {}"
+msgstr ""
+
+#: storage/views/backup.py:209
+msgid "Wrong \"status\" parameter"
+msgstr ""
+
+#: storage/views/backup.py:225
+msgid "Backup enabled for container"
+msgstr ""
+
+#: storage/views/backup.py:229
+msgid "Backup disabled for container"
+msgstr ""
+
+#: storage/views/backup.py:236
+msgid "Backup status error: can't set backup user permission"
+msgstr ""
+
+#: storage/views/backup.py:242
+msgid "Error when update container backup status"
+msgstr ""
+
+#: storage/views/backup.py:293
+msgid "Can't find any container to backup"
+msgstr ""
+
+#: storage/views/main.py:167
+msgid "Bad parameters"
+msgstr ""
+
+#: storage/views/main.py:171
+msgid "Container deleted"
+msgstr ""
+
+#: storage/views/main.py:176
+msgid "Container delete error"
+msgstr ""
+
+#: storage/views/main.py:473
+msgid "Could not delete all objects"
+msgstr ""
+
+#: storage/views/main.py:618
+msgid "ACL removed"
+msgstr ""
+
+#: storage/views/main.py:678 storage/views/main.py:1322
+msgid "Container is now public"
+msgstr ""
+
+#: storage/views/main.py:681 storage/views/main.py:1326
+msgid "Container is now private"
+msgstr ""
+
+#: storage/views/main.py:691
+msgid "Container ACL update failed"
+msgstr ""
+
+#: storage/views/main.py:825
+msgid "Versioning enabled"
+msgstr ""
+
+#: storage/views/main.py:868
+msgid "Versioning disabled"
+msgstr ""
+
+#: storage/views/main.py:905
+msgid "CORS updated"
+msgstr ""
+
+#: storage/views/main.py:913 storage/views/main.py:948
+msgid "CORS update failed"
+msgstr ""
+
+#: storage/views/main.py:940
+msgid "CORS removed"
+msgstr ""
+
+#: storage/views/main.py:984
+msgid ""
+"URLs scheduled to be removed. Grab some coffee, it takes 2 to 3 minutes to "
+"remove."
+msgstr ""
+
+#: storage/views/main.py:990
+msgid "Fail to schedule URLs to be removed."
+msgstr ""
+
+#: storage/views/main.py:1024
+msgid "Custom Metadata updated"
+msgstr ""
+
+#: storage/views/main.py:1029
+msgid "Custom Metadata update failed"
+msgstr ""
+
+#: storage/views/main.py:1049
+msgid "Days must be greater than 0"
+msgstr ""
+
+#: storage/views/main.py:1067
+msgid "Cache-Control updated"
+msgstr ""
+
+#: storage/views/main.py:1072
+msgid "Cache-Control update failed"
+msgstr ""
+
+#: storage/views/main.py:1202
+msgid "Object restored"
+msgstr ""
+
+#: storage/views/main.py:1251
+msgid "Trash disabled for container"
+msgstr ""
+
+#: storage/views/main.py:1258
+msgid "Trash enabled for container"
+msgstr ""
+
+#: storage/widgets.py:38
+msgid "Unable to show Swift info"
+msgstr ""
+
+#: vault/apps.py:9 vault/templates/500.html:16
+msgid "Vault"
+msgstr ""
+
+#: vault/models.py:18
+msgid "Groups and Projects"
+msgstr ""
+
+#: vault/models.py:31
+msgid "Current Project"
+msgstr ""
+
+#: vault/settings.py:94
+msgid "English"
+msgstr ""
+
+#: vault/settings.py:95
+msgid "Portuguese"
+msgstr ""
+
+#: vault/templates/500.html:6 vault/templates/500.html:18
+msgid "500, Something went wrong..."
+msgstr ""
+
+#: vault/templates/admin/index.html:29
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: vault/templates/admin/index.html:46
+#: vault/templates/vault/set_project.html:35
+msgid "Change"
+msgstr ""
+
+#: vault/templates/admin/index.html:59
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: vault/templates/vault/dashboard.html:5
+#: vault/templates/vault/dashboard.html:11
+msgid "Dashboard"
+msgstr ""
+
+#: vault/templates/vault/dashboard.html:38
+msgid "Last Login"
+msgstr ""
+
+#: vault/templates/vault/dashboard.html:46
+#: vault/templates/vault/sidebar.html:46
+msgid "Manage my Team"
+msgstr ""
+
+#: vault/templates/vault/dashboard.html:47
+msgid "Add or remove someone in your team"
+msgstr ""
+
+#: vault/templates/vault/login.html:8
+msgid "login"
+msgstr ""
+
+#: vault/templates/vault/login.html:21
+msgid "Please correct the error below."
+msgstr ""
+
+#: vault/templates/vault/login.html:23
+msgid "Please correct the errors below."
+msgstr ""
+
+#: vault/templates/vault/login.html:42
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+
+#: vault/templates/vault/login.html:67
+msgid "Forgotten your password or username?"
+msgstr ""
+
+#: vault/templates/vault/login.html:71
+msgid "Login"
+msgstr ""
+
+#: vault/templates/vault/pagination.html:11
+msgid "of"
+msgstr ""
+
+#: vault/templates/vault/pagination.html:17
+msgid "next"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:4
+msgid "Error"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:21
+#, python-format
+msgid "Vault Error - Project \"%(inexistent_project)s\" doesn't exist'"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:38
+msgid "Return to project"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:40
+#: vault/templates/vault/sidebar.html:32 vault/templates/vault/sidebar.html:33
+msgid "Home"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:48
+msgid "Select a different project:"
+msgstr ""
+
+#: vault/templates/vault/project_error.html:50
+#: vault/templates/vault/sidebar.html:16
+msgid "Change Project"
+msgstr ""
+
+#: vault/templates/vault/remove_user_modal.html:9
+msgid "Remove user from team"
+msgstr ""
+
+#: vault/templates/vault/remove_user_modal.html:16
+#: vault/templates/vault/team_manager/add_user_modal.html:25
+msgid "Cancel"
+msgstr ""
+
+#: vault/templates/vault/remove_user_modal.html:17
+msgid "Remove"
+msgstr ""
+
+#: vault/templates/vault/set_project.html:30
+msgid "current project"
+msgstr ""
+
+#: vault/templates/vault/set_project.html:44
+msgid "Click here to select a project"
+msgstr ""
+
+#: vault/templates/vault/set_project.html:60
+msgid "Select"
+msgstr ""
+
+#: vault/templates/vault/sidebar.html:27
+msgid "Main"
+msgstr ""
+
+#: vault/templates/vault/sidebar.html:39 vault/templates/vault/sidebar.html:56
+msgid "Settings"
+msgstr ""
+
+#: vault/templates/vault/sidebar.html:44
+msgid "Manage Team"
+msgstr ""
+
+#: vault/templates/vault/sidebar.html:52
+msgid "Teams and Users"
+msgstr ""
+
+#: vault/templates/vault/sidebar.html:57
+msgid "Vault Admin"
+msgstr ""
+
+#: vault/templates/vault/team_manager/add_user_modal.html:10
+msgid "Add user to"
+msgstr ""
+
+#: vault/templates/vault/team_manager/add_user_modal.html:18
+msgid "Select a user"
+msgstr ""
+
+#: vault/templates/vault/team_manager/add_user_modal.html:24
+msgid "Add User"
+msgstr ""
+
+#: vault/templates/vault/team_manager/index.html:5
+#: vault/templates/vault/team_manager/index.html:6
+#: vault/templates/vault/user_edit_teams.html:5
+msgid "Manage Users and Teams"
+msgstr ""
+
+#: vault/templates/vault/team_manager/index.html:24
+msgid "Add new user to"
+msgstr ""
+
+#: vault/templates/vault/user_edit_teams.html:25
+#: vault/templates/vault/user_edit_teams.html:42
+#: vault/templates/vault/users_teams.html:17
+#: vault/templates/vault/users_teams.html:35
+msgid "Team"
+msgstr ""
+
+#: vault/templates/vault/user_info.html:12
+msgid "Logout"
+msgstr ""
+
+#: vault/templates/vault/users_teams.html:5
+msgid "List Teams and Users"
+msgstr ""
+
+#: vault/templates/vault/users_teams.html:19
+msgid "All"
+msgstr ""
+
+#: vault/tests/test_views.py:91 vault/views.py:141
+msgid "Unable to change your project."
+msgstr ""
+
+#: vault/urls.py:14
+msgid "Admin Dashboard"
+msgstr ""
+
+#: vault/views.py:57
+msgid "Missing 'project_id'"
+msgstr ""
+
+#: vault/views.py:65
+msgid "Can't find this project"
+msgstr ""
+
+#: vault/views.py:75
+msgid "Project selected: {}"
+msgstr ""
+
+#: vault/views.py:188
+msgid "User logged out:"
+msgstr ""
+
+#: vault/views.py:278
+msgid "User already registered with this team"
+msgstr ""
+
+#: vault/views.py:291
+msgid "Error adding user, check user team"
+msgstr ""
+
+#: vault/views.py:317
+msgid "Error removing user, check user and team"
+msgstr ""
