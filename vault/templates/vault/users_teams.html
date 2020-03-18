@@ -16,7 +16,7 @@
       <div class="field-team">
         <span>&nbsp;{% trans "Team" %}</span>
         <select class="groups">
-          <option value="">{% trans 'All' %}</option>
+          <option value="All">{% trans 'All' %}</option>
           {% for group in groups %}
             <option value="{{ group.id }}">{{ group.name }}</option>
           {% endfor %}
