@@ -339,6 +339,8 @@ class ListUsersTeamsView(SuperUserMixin, FormView):
                     'email': user.email
                 })
 
+        context = update_default_context(request, context)
+
         return self.render_to_response(context)
 
 
