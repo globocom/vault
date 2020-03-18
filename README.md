@@ -6,9 +6,10 @@
     <img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/screenshot.png" alt="Vault Screenshot" />
 </p>
 
+# Vault
+
 [![build status](https://api.travis-ci.org/globocom/vault.svg?branch=master)](http://travis-ci.org/globocom/vault)
 
-# Vault
 Admin webapp for OpenStack Keystone and OpenStack Swift.
 
 ### Short description
