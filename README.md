@@ -1,5 +1,9 @@
 <p align="center">
-	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo-black.svg" alt="Vault logo" style="width: 50%" />
+	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo.png" alt="Vault Logo" />
+</p>
+
+<p align="center">
+    <img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/screenshot.png" alt="Vault Screenshot" />
 </p>
 
 [![build status](https://api.travis-ci.org/globocom/vault.svg?branch=master)](http://travis-ci.org/globocom/vault)
