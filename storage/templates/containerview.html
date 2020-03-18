@@ -111,8 +111,8 @@
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-trash" class="config-trash config-item"
                      data-setup-url="{% url "config_trash_container" project=project_name container=container.name %}"
-                     data-msg-enable="{% trans 'This will enable the Trash for container' %} {{ container.name }}. Continue?"
-                     data-msg-disable="{% trans 'Disabling the Trash cannot restore deleted objects' %}. Continue?"
+                     data-msg-enable="{% blocktrans %}This will enable the Trash for container {{ container.name }}. Continue?{% endblocktrans %}"
+                     data-msg-disable="{% trans 'By disabling the Trash, it will no longer be possible to restore deleted objects. Continue?' %}"
                      data-current-status="">
                     <span class="item-verifying"><i class="icon fa fa-spinner fa-pulse"></i>{% trans 'Checking Trash' %}</span>
                     <span class="item-enabled"><i class="icon fa fa-toggle-on"></i>{% trans 'Disable Trash' %}</span>
@@ -137,7 +137,7 @@
                 <li>
                   <a href="#" id="container-{{ forloop.counter }}-delete" class="btn-delete-container"
                      data-delete-url="{% url "delete_container" project=project_name container=container.name %}"
-                     data-msg-delete="{% trans 'Delete container' %} {{container.name}}?">
+                     data-msg-delete="{% blocktrans %}Delete container {{container.name}}?{% endblocktrans %}">
                     <span><i class="icon fas fa-trash"></i>{% trans 'Delete Container' %}</span>
                   </a>
                 </li>

@@ -192,10 +192,10 @@ def check_backup_conditions(request, container):
                              verify=not settings.SWIFT_INSECURE)
 
     if int(response.headers['X-Container-Object-Count']) >= backup_object_count_value:
-        return False, _('Error when activate container backup. Container can not contain more than {} objects').format(backup_object_count_value)
+        return False, _('Error when activating container backup. Container cannot contain more than {} objects').format(backup_object_count_value)
 
     if int(response.headers['X-Container-Bytes-Used']) >= backup_object_bytes_value:
-        return False, _('Error when activate container backup. Container can not contain more than {}').format(backup_object_count_value)
+        return False, _('Error when activating container backup. Container cannot contain more than {}').format(backup_object_count_value)
 
     return True, 'Success'
 
@@ -239,7 +239,7 @@ def config_backup_container(request, project, container):
                                                                   container))
         else:
             status = 500
-            msg = _('Error when update container backup status')
+            msg = _('Error when updating container backup status')
             log.error('{}. Project: {}, Container: {}'.format(msg,
                                                               project_name,
                                                               container))
