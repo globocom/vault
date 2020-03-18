@@ -8,7 +8,7 @@ from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView, UpdateProjectUserPasswordView)
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class ListUserTest(TestCase):

@@ -9,7 +9,7 @@ import time
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 
 from storage.models import BackupContainer

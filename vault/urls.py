@@ -4,7 +4,7 @@ from django import forms
 from django.apps import apps
 from django.contrib import admin
 from django.conf.urls import include, url
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from identity.views import ListProjectView, CreateProjectView, ChangeProjectView
 

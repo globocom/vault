@@ -7,7 +7,7 @@ import requests
 from swiftclient import client
 
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.test.utils import override_settings
 from django.contrib.auth.models import Group, User
 
