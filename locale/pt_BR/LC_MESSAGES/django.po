@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-18 22:10+0000\n"
+"POT-Creation-Date: 2020-03-18 22:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -175,6 +175,10 @@ msgstr "Projeto Criado"
 msgid "Save the information below to access the services"
 msgstr "Salve a informação abaixo para acessar os serviços"
 
+#: identity/templates/identity/project_create_success.html:23
+msgid "Credentials"
+msgstr "Credenciais"
+
 #: identity/templates/identity/project_create_success.html:31
 msgid "Username"
 msgstr "Nome de usuário"
@@ -194,6 +198,10 @@ msgstr "Copiar para Área de Transferência"
 #: identity/templates/identity/project_create_success.html:59
 msgid "Download Credentials"
 msgstr "Baixar Credenciais"
+
+#: identity/templates/identity/project_create_success.html:74
+msgid "Object Storage Endpoints"
+msgstr "Endpoints de Object Storage"
 
 #: identity/templates/identity/project_delete_confirm.html:4
 #: identity/templates/identity/project_delete_confirm.html:5
