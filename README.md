@@ -2,6 +2,8 @@
 	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo-black.svg" alt="Vault logo" style="width: 50%" />
 </p>
 
+[![build status](https://api.travis-ci.org/globocom/vault.svg?branch=master)](http://travis-ci.org/globocom/vault)
+
 # Vault
 Admin webapp for OpenStack Keystone and OpenStack Swift.
 
