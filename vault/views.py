@@ -16,7 +16,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from django.template import RequestContext
@@ -185,7 +185,7 @@ class VaultLogout(View):
     def get(self, request):
         user = request.user
         logout(request)
-        log.info('User logged out: [{}]'.format(user))
+        log.info(_('User logged out:') + ' [{}]'.format(user))
         return HttpResponseRedirect(reverse('main'))
 
 
@@ -207,7 +207,7 @@ class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
         try:
             all_groups_id = [group.id for group in Group.objects.all()]
 
-            # Usuarios sem time
+            # Users without a team
             users = (User.objects
                          .exclude(groups__in=all_groups_id)
                          .order_by('username'))
@@ -275,7 +275,7 @@ class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             groupsofuser = user.groups.all()
             for groupuser in groupsofuser:
                 if groupuser.name == group.name:
-                    context['msg'] = _('User already registered with this team')
+                    context['msg'] = str(_('User already registered with this team'))
                     log.exception('{}{}'.format(_('Conflict:'), context['msg']))
                     return self.render_to_response(context, status=500)
 
@@ -288,7 +288,7 @@ class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error adding user, check user team')
+            context['msg'] = str(_('Error adding user, check user team'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
@@ -314,7 +314,7 @@ class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error removing user, check user and team')
+            context['msg'] = str(_('Error removing user, check user and team'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
@@ -338,6 +338,8 @@ class ListUsersTeamsView(SuperUserMixin, FormView):
                 context['groups'][index]['users'].append({
                     'email': user.email
                 })
+
+        context = update_default_context(request, context)
 
         return self.render_to_response(context)
 

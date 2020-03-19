@@ -72,6 +72,13 @@ Example value: `http://keystone.endpoint:5000/v3`
 Default value: `10`
 
 
+### VAULT_LANGUAGE
+
+*(Optional)* The language used by Vault. Must be one of the languages in vault/settings.py's `LANGUAGES` list.
+
+Default value: `en-us`
+
+
 ### VAULT_PAGINATION_SIZE
 
 *(Optional)* The number of items displayed per page when listing something in Vault, such as Swift objects or Keystone users.

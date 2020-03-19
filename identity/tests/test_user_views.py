@@ -200,7 +200,7 @@ class CreateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, _('Error when create user'))
+        self.assertEqual(msgs[0].message, _('Error when creating user'))
 
 
 class UpdateTeamsUsersViewTest(TestCase):
@@ -317,7 +317,7 @@ class UpdateUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, _('Error when update user'))
+        self.assertEqual(msgs[0].message, _('Error when updating user'))
 
     @patch('identity.keystone.Keystone.user_update')
     def test_update_user_change_password_exception(self, mock_user_update):
@@ -416,7 +416,7 @@ class DeleteUserTest(TestCase):
         msgs = [msg for msg in self.request._messages]
 
         self.assertGreater(len(msgs), 0)
-        self.assertEqual(msgs[0].message, _('Error when delete user'))
+        self.assertEqual(msgs[0].message, _('Error when deleting user'))
 
 
 class UpdateProjectUserPasswordTest(TestCase):
@@ -484,4 +484,4 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 500)
-        self.assertIn(b'Error updating password', response.content)
+        self.assertIn(_('Error updating password'), response.content.decode())

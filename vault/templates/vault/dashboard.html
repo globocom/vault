@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vault/css/dashboard.css' %}" />
 {% endblock %}
 
-{% block some_top_info %}Dashboard{% endblock %}
+{% block some_top_info %}{% trans 'Dashboard' %}{% endblock %}
 {% block content_title %}{{ project_name }}{% endblock %}
 
 {% block breadcrumb %}{% endblock %}
@@ -35,7 +35,7 @@
 
       <div class="dashboard-info">
         <div class="last-login">
-          <h4>Last Login</h4>
+          <h4>{% trans 'Last Login' %}</h4>
           <span>{{ last_login }}</span>
         </div>
 
@@ -43,8 +43,8 @@
           <a href="{% url 'update_teams_users' project_name %}" class="item">
             <i class="icon fas fa-users-cog"></i>
             <span class="text">
-              <strong class="item-title">Manage my Team</strong>
-              <span class="item-text">Add or remove someone in your team</span>
+              <strong class="item-title">{% trans 'Manage my Team' %}</strong>
+              <span class="item-text">{% trans 'Add or remove someone in your team' %}</span>
             </span>
           </a>
         </div>
@@ -134,7 +134,6 @@
 </script>
 {% endif %}
 <script>
-
   let $last_login = $('.last-login > span');
   let last_login_date = new Date('{{ last_login }}');
   $('.last-login > span').text(last_login_date.toISOString().split('T')[0] + ' ' +

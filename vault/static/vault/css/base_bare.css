@@ -45,3 +45,18 @@
   color: white;
   opacity: 1;
 }
+
+.vault-error {
+  padding: 100px;
+}
+
+.vault-error h2 {
+  font-weight: lighter;
+  margin-bottom: 30px;
+}
+
+.vault-error a {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 15px;
+}

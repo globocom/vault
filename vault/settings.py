@@ -89,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = os.getenv('VAULT_LANGUAGE', 'en-us')
 LANGUAGES = (
     ('en', _('English')),
     ('pt-BR', _('Portuguese')),

@@ -7,6 +7,9 @@
 </p>
 
 # Vault
+
+[![build status](https://api.travis-ci.org/globocom/vault.svg?branch=master)](http://travis-ci.org/globocom/vault)
+
 Admin webapp for OpenStack Keystone and OpenStack Swift.
 
 ### Short description

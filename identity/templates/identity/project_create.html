@@ -47,16 +47,5 @@
         <button class="btn btn-primary" type="submit">{% trans 'Create Project' %}</button>
       </div>
     </fieldset>
-
   </form>
-{% endblock %}
-
-{% block js_bottom %}
-<script src="{% static 'identity/js/project.js' %}"></script>
-<script>
-Project.Users.init({
-  'projectId': '{{ project_id }}',
-  'listUrl': '{% url "project_list_users" project_name %}'
-  });
-</script>
 {% endblock %}

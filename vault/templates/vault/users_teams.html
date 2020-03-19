@@ -16,14 +16,14 @@
       <div class="field-team">
         <span>&nbsp;{% trans "Team" %}</span>
         <select class="groups">
-          <option value="">All</option>
+          <option value="All">{% trans 'All' %}</option>
           {% for group in groups %}
             <option value="{{ group.id }}">{{ group.name }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="field-users">
-        <span>&nbsp;User</span>
+        <span>&nbsp;{% trans 'User' %}</span>
         <input type="text" class="users" name="" />
       </div>
     </div>

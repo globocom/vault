@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404, HttpResponseRedirect
@@ -168,12 +168,12 @@ def delete_container_view(request, project, container):
                             content_type='application/json',
                             status=400)
 
-    status, content = 200, {'message': _('Container deleted')}
+    status, content = 200, {'message': str(_('Container deleted'))}
 
     deleted = delete_container(request, container)
     if not deleted:
         status = 500
-        msg = _('Container delete error')
+        msg = str(_('Container delete error'))
         content['message'] = msg
         log.error('{}. Container: {}'.format(msg, container))
 
@@ -684,11 +684,11 @@ def make_public(request, container):
         client.post_container(storage_url, auth_token, container,
                               headers=headers, http_conn=http_conn)
 
-        content = {"message": message}
+        content = {"message": str(message)}
         msg = "X-Container-Read header on container {}".format(container)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": _("Container ACL update failed")}, 500
+        content, status = {"message": str(_("Container ACL update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
@@ -1323,9 +1323,9 @@ def container_acl_update(request, project, container):
         public = True
     else:
         headers['x-container-read'] = ''
-        msg = _('Container is now private')
+        msg = str(_('Container is now private'))
 
-    status, content = 200, {'message': msg}
+    status, content = 200, {'message': str(msg)}
 
     try:
         client.post_container(storage_url, auth_token, container,
@@ -1380,12 +1380,12 @@ class SwiftJsonInfo(JsonInfo):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         return {
-            "name": "Object Storage",
+            "name": str(_("Object Storage")),
             "icon": "fas fa-cube",
             "url": reverse("containerview", kwargs={'project': project_name}),
             "subitems": [
                 {
-                    "name": "Containers",
+                    "name": str(_("Containers")),
                     "icon": "",
                     "url": reverse("containerview", kwargs={'project': project_name})
                 }
@@ -1418,31 +1418,31 @@ class SwiftJsonInfo(JsonInfo):
             {
                 "type": "default",
                 "name": "storage",
-                "title": "Swift",
-                "subtitle": "Object Storage",
+                "title": str(_("Swift")),
+                "subtitle": str(_("Object Storage")),
                 "color": "red",
                 "icon": "fas fa-cube",
                 "url": reverse("containerview", kwargs={'project': project_name}),
                 "properties": [
                     {
-                        "name": "containers",
+                        "name": str(_("containers")),
                         "description": "",
                         "value": head_acc.get('x-account-container-count')
                     },
                     {
-                        "name": "objects",
+                        "name": str(_("objects")),
                         "description": "",
                         "value": head_acc.get('x-account-object-count')
                     },
                     {
-                        "name": "used space",
+                        "name": str(_("used space")),
                         "description": "",
                         "value": filesizeformat(head_acc.get('x-account-bytes-used'))
                     }
                 ],
                 "buttons": [
                     {
-                        "name": "Containers",
+                        "name": str(_("Containers")),
                         "url": reverse("containerview", kwargs={'project': project_name})
                     }
                 ]

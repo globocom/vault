@@ -24,7 +24,7 @@ Team.Users = {};
             $usersList.find('tbody tr').show()
             var searchGroup = this.options[e.target.selectedIndex].text;
 
-            if (searchGroup === 'All') {
+            if (this.options[e.target.selectedIndex].value === 'All') {
                 return;
             }
 

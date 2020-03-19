@@ -9,7 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
@@ -160,7 +160,7 @@ class CreateUserView(BaseUserView):
                 log.exception('{}{}'.format(
                     _('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     _('Error when create user'))
+                                     _('Error when creating user'))
 
             return self.form_valid(form)
         else:
@@ -198,7 +198,7 @@ class UpdateUserView(BaseUserView):
                 log.exception('{}{}'.format(
                     _('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     _('Error when update user'))
+                                     _('Error when updating user'))
 
         context = self.get_context_data(form=form, request=request)
         return self.render_to_response(context)
@@ -217,7 +217,7 @@ class DeleteUserView(BaseUserView):
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(request, messages.ERROR,
-                                 _('Error when delete user'))
+                                 _('Error when deleting user'))
 
         project_name = request.session.get('project_name')
         success_url = reverse('admin_list_users', kwargs={'project': project_name})
@@ -505,7 +505,7 @@ class UpdateProjectView(BaseProjectView):
                 log.exception('{}{}'.format(
                     _('Exception:').encode('UTF-8'), e))
                 messages.add_message(request, messages.ERROR,
-                                     _('Error when update project'))
+                                     _('Error when updating project'))
 
         context = self.get_context_data(form=form, request=request)
         return self.render_to_response(context)
@@ -554,7 +554,7 @@ class DeleteProjectView(BaseProjectView):
 
         if not swift_del_result:
             messages.add_message(request, messages.ERROR,
-                                 _('Error when delete swift account'))
+                                 _('Error when deleting swift account'))
 
             return HttpResponseRedirect(
                 reverse('edit_project', kwargs={'project_id': project_id, 'project': project_name}))
@@ -567,7 +567,7 @@ class DeleteProjectView(BaseProjectView):
         except Exception as e:
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             messages.add_message(request, messages.ERROR,
-                                 _('Error when delete project'))
+                                 _('Error when deleting project'))
 
         # Purge project from current projects
         utils.purge_current_project(request, project_id)
@@ -639,12 +639,12 @@ class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             return self.render_to_response(context)
 
         except exceptions.Conflict as e:
-            context['msg'] = _('User already registered with this role')
+            context['msg'] = str(_('User already registered with this role'))
             log.exception('{}{}'.format(_('Conflict:'), e))
             return self.render_to_response(context, status=500)
 
         except Exception as e:
-            context['msg'] = _('Error adding user')
+            context['msg'] = str(_('Error adding user'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
@@ -669,7 +669,7 @@ class DeleteUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error removing user')
+            context['msg'] = str(_('Error removing user'))
             log.exception('Exception: {}'.format(e))
             return self.render_to_response(context, status=500)
 
@@ -690,7 +690,7 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin,
             actionlog.log(request.user.username, 'update', user)
 
         except Exception as e:
-            context = {'msg': _('Error updating password')}
+            context = {'msg': str(_('Error updating password'))}
             log.exception('Exception: {}'.format(e))
             status = 500
 
@@ -706,17 +706,17 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         return {
-            "name": "Identity",
+            "name": str(_("Identity")),
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
             "subitems": [
                 {
-                    "name": "Projects",
+                    "name": str(_("Projects")),
                     "icon": "",
                     "url": reverse("projects", kwargs={'project': project_name})
                 },
                 {
-                    "name": "Users",
+                    "name": str(_("Users")),
                     "icon": "",
                     "url": reverse("admin_list_users", kwargs={'project': project_name})
                 }
@@ -745,30 +745,30 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
             {
                 "type": "default",
                 "name": "keystone",
-                "title": "Keystone",
-                "subtitle": "Identity",
+                "title": str(_("Keystone")),
+                "subtitle": str(_("Identity")),
                 "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),
                 "properties": [
                     {
-                        "name": "projects",
+                        "name": str(_("projects")),
                         "description": "",
                         "value": len(projects)
                     },
                     {
-                        "name": "users",
+                        "name": str(_("users")),
                         "description": "",
                         "value": len(users)
                     }
                 ],
                 "buttons": [
                     {
-                        "name": "Projects",
+                        "name": str(_("Projects")),
                         "url": reverse("projects", kwargs={'project': project_name})
                     },
                     {
-                        "name": "Users",
+                        "name": str(_("Users")),
                         "url": reverse("admin_list_users", kwargs={'project': project_name})
                     }
                 ]

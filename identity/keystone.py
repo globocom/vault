@@ -8,7 +8,7 @@ import requests
 from keystoneclient import exceptions, v3
 
 from django.conf import settings
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
 
 from vault.models import GroupProjects

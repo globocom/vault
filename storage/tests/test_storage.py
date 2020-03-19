@@ -386,7 +386,7 @@ class TestStorage(BaseTestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Container deleted', response.content.decode('UTF-8'))
+        self.assertIn(_('Container deleted'), response.content.decode('unicode-escape'))
 
     @patch('storage.views.main.delete_container')
     def test_delete_container_view_deletes_with_failure(self, mock_delete_container):
@@ -397,7 +397,7 @@ class TestStorage(BaseTestCase):
 
         self.assertTrue(mock_delete_container.called)
         self.assertEqual(response.status_code, 500)
-        self.assertIn('Container delete error', response.content.decode('UTF-8'))
+        self.assertIn(_('Container delete error'), response.content.decode('UTF-8'))
 
     @patch('storage.views.main.client.get_object')
     @patch('storage.views.main.client.delete_object')
