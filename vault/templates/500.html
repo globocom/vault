@@ -1,22 +1,19 @@
-{% load i18n %}
+{% extends "vault/base_bare.html" %}
+{% load i18n static %}
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{% trans '500, Something went wrong...' %}</title>
-  <style>
-    body { background-color: #f4f4f4; margin: 0; padding: 0; }
-    .error500 { position: absolute; top: 50px; left: 50px; }
-    .vault, .text { color: #777; font: lighter 28px 'Open Sans', Helvetica, Arial, sans-serif; }
-    .vault { font-size: 36px; margin: 0; padding: 0; }
-  </style>
-</head>
-<body>
-  <div class="error500">
-    <h1 class="vault">{% trans 'Vault' %}</h1>
-    <p class="text">
-      {% trans '500, Something went wrong...' %}
-    </p>
+{% block title %}{% trans 'Error' %}{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      
+      <div class="vault-error">
+        <h1>Error</h1>
+        <h2>{% trans '500, Something went wrong...' %}</h2>
+      </div>
+    
+    </div>
   </div>
-</body>
-</html>
+</div>
+{% endblock %}

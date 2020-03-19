@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-19 00:54+0000\n"
+"POT-Creation-Date: 2020-03-19 01:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -784,13 +784,17 @@ msgstr "Lixeira desabilitada para o container"
 msgid "Trash enabled for container"
 msgstr "Lixeira habilitada para o container"
 
+#: storage/views/main.py:1383 storage/views/main.py:1422
+msgid "Object Storage"
+msgstr "Object Storage"
+
+#: storage/views/main.py:1388 storage/views/main.py:1445
+msgid "Containers"
+msgstr "Containers"
+
 #: storage/views/main.py:1421
 msgid "Swift"
 msgstr "Swift"
-
-#: storage/views/main.py:1422
-msgid "Object Storage"
-msgstr "Objeto Storage"
 
 #: storage/views/main.py:1428
 msgid "containers"
@@ -804,11 +808,7 @@ msgstr "objetos"
 msgid "used space"
 msgstr "espaço utilizado"
 
-#: storage/views/main.py:1445
-msgid "Containers"
-msgstr "Containers"
-
-#: vault/apps.py:9 vault/templates/500.html:16
+#: vault/apps.py:9
 msgid "Vault"
 msgstr "Vault"
 
@@ -828,7 +828,11 @@ msgstr "Inglês"
 msgid "Portuguese"
 msgstr "Português"
 
-#: vault/templates/500.html:6 vault/templates/500.html:18
+#: vault/templates/500.html:4 vault/templates/vault/project_error.html:12
+msgid "Error"
+msgstr "Erro"
+
+#: vault/templates/500.html:13
 msgid "500, Something went wrong..."
 msgstr "500, Algo deu errado..."
 
@@ -902,32 +906,26 @@ msgid "next"
 msgstr "próxima"
 
 #: vault/templates/vault/project_error.html:4
-msgid "Error"
-msgstr "Erro"
+msgid "Project Error"
+msgstr "Erro de Projeto"
 
-#: vault/templates/vault/project_error.html:21
+#: vault/templates/vault/project_error.html:15
 #, python-format
-msgid "Vault Error - Project \"%(inexistent_project)s\" doesn't exist"
-msgstr "Erro do Vault - Projeto \"%(inexistent_project)s\" não existe'"
+msgid "Project \"%(inexistent_project)s\" doesn't exist"
+msgstr "Projeto \"%(inexistent_project)s\" não existe"
 
-#: vault/templates/vault/project_error.html:38
+#: vault/templates/vault/project_error.html:17
+msgid "Vault Error"
+msgstr "Erro do Vault"
+
+#: vault/templates/vault/project_error.html:23
 #, python-format
-msgid "Return to project \"%(project_name)s\":"
-msgstr "Retornar ao projeto \"%(project_name)s\":"
+msgid "Return to project \"%(project_name)s\" Home"
+msgstr "Retornar à Home do projeto \"%(project_name)s\""
 
-#: vault/templates/vault/project_error.html:40
-#: vault/templates/vault/sidebar.html:32 vault/templates/vault/sidebar.html:33
-msgid "Home"
-msgstr "Home"
-
-#: vault/templates/vault/project_error.html:48
-msgid "Select a different project:"
-msgstr "Selecionar um projeto diferente:"
-
-#: vault/templates/vault/project_error.html:50
-#: vault/templates/vault/sidebar.html:16
-msgid "Change Project"
-msgstr "Mudar de Projeto"
+#: vault/templates/vault/project_error.html:28
+msgid "Select a different project"
+msgstr "Selecionar um projeto diferente"
 
 #: vault/templates/vault/remove_user_modal.html:9
 msgid "Remove user from team"
@@ -954,9 +952,17 @@ msgstr "Clique aqui para selecionar um projeto"
 msgid "Select"
 msgstr "Selecionar"
 
+#: vault/templates/vault/sidebar.html:16
+msgid "Change Project"
+msgstr "Mudar de Projeto"
+
 #: vault/templates/vault/sidebar.html:27
 msgid "Main"
 msgstr "Principal"
+
+#: vault/templates/vault/sidebar.html:32 vault/templates/vault/sidebar.html:33
+msgid "Home"
+msgstr "Home"
 
 #: vault/templates/vault/sidebar.html:39 vault/templates/vault/sidebar.html:56
 msgid "Settings"
