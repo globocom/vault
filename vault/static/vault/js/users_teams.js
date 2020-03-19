@@ -6,7 +6,7 @@ Team.Users = {};
     'use strict';
 
     var options,
-        $main, $addBtn, $users, $groups, $usersList, $loader,
+        $main, $addBtn, $users, $groups, $usersList, $loader, $originalMsg,
         usrTmpl = ['<tr>',
                      '<td class="usr"></td>',
                      '<td class="grp"></td>',
@@ -31,6 +31,8 @@ Team.Users = {};
         $groups = $main.find('.groups');
         $usersList = $main.find('.related-users');
         $loader = $main.find('.loader-gif');
+        $originalMsg = $('#removeModal > .modal-dialog > .modal-content > .modal-body > p')
+                        .text();
 
         if (!Team.Users.wasCalled) {
             bindEvents();
@@ -63,9 +65,10 @@ Team.Users = {};
             let $usr = $row.children('.usr').text();
             let $grp = $row.children('.grp').text();
             let $message = $('#removeModal > .modal-dialog > .modal-content > .modal-body > p');
-            $message.text("User \"" + $usr +
-                "\" will lose access to all projects owned by \"" + $grp +
-                "\"! Continue?");
+            let $newMsg = $originalMsg.slice();
+            $newMsg = $newMsg.replace('{usr}', $usr).replace('{grp}', $grp);
+
+            $message.text($newMsg);
             let $confirmBtn = $('#removeModalConfirm');
             $confirmBtn.on('click', function(e) {
                 removeUserTeam($row);
