@@ -175,7 +175,7 @@ msgstr "Projeto Criado"
 
 #: identity/templates/identity/project_create_success.html:12
 msgid "Save the information below to access the services"
-msgstr "Salve a informação abaixo para acessar os serviços"
+msgstr "Salve as informações abaixo para acessar os serviços"
 
 #: identity/templates/identity/project_create_success.html:23
 msgid "Credentials"
