@@ -3,7 +3,7 @@
 from unittest.mock import Mock, patch
 from unittest import TestCase
 
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 from keystoneclient import exceptions
 

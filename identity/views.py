@@ -639,12 +639,12 @@ class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             return self.render_to_response(context)
 
         except exceptions.Conflict as e:
-            context['msg'] = _('User already registered with this role')
+            context['msg'] = str(_('User already registered with this role'))
             log.exception('{}{}'.format(_('Conflict:'), e))
             return self.render_to_response(context, status=500)
 
         except Exception as e:
-            context['msg'] = _('Error adding user')
+            context['msg'] = str(_('Error adding user'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
@@ -669,7 +669,7 @@ class DeleteUserRoleView(SuperUserMixin, WithKeystoneMixin, View,
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error removing user')
+            context['msg'] = str(_('Error removing user'))
             log.exception('Exception: {}'.format(e))
             return self.render_to_response(context, status=500)
 
@@ -690,7 +690,7 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin,
             actionlog.log(request.user.username, 'update', user)
 
         except Exception as e:
-            context = {'msg': _('Error updating password')}
+            context = {'msg': str(_('Error updating password'))}
             log.exception('Exception: {}'.format(e))
             status = 500
 

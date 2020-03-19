@@ -8,7 +8,7 @@ from vault.tests.fakes import fake_request
 from identity.tests.fakes import FakeResource, FakeToken
 from identity.views import (ListUserView, CreateUserView, UpdateUserView,
                             DeleteUserView, UpdateProjectUserPasswordView)
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 
 class ListUserTest(TestCase):
@@ -484,4 +484,4 @@ class UpdateProjectUserPasswordTest(TestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 500)
-        self.assertIn(b'Error updating password', response.content)
+        self.assertIn(_('Error updating password'), response.content.decode())

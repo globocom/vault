@@ -275,7 +275,7 @@ class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             groupsofuser = user.groups.all()
             for groupuser in groupsofuser:
                 if groupuser.name == group.name:
-                    context['msg'] = _('User already registered with this team')
+                    context['msg'] = str(_('User already registered with this team'))
                     log.exception('{}{}'.format(_('Conflict:'), context['msg']))
                     return self.render_to_response(context, status=500)
 
@@ -288,7 +288,7 @@ class AddUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error adding user, check user team')
+            context['msg'] = str(_('Error adding user, check user team'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 
@@ -314,7 +314,7 @@ class DeleteUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             return self.render_to_response(context)
 
         except Exception as e:
-            context['msg'] = _('Error removing user, check user and team')
+            context['msg'] = str(_('Error removing user, check user and team'))
             log.exception('{}{}'.format(_('Exception:').encode('UTF-8'), e))
             return self.render_to_response(context, status=500)
 

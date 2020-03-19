@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-19 02:39+0000\n"
+"POT-Creation-Date: 2020-03-19 04:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -306,7 +306,7 @@ msgstr "Este campo é obrigatório"
 
 #: identity/tests/test_user_views.py:171
 msgid "Enter a valid email address"
-msgstr "Insira um endereço de email válido"
+msgstr "Informe um endereço de email válido."
 
 #: identity/tests/test_user_views.py:203 identity/views.py:163
 msgid "Error when creating user"
@@ -323,6 +323,10 @@ msgstr "Usuário excluído com sucesso"
 #: identity/tests/test_user_views.py:419 identity/views.py:220
 msgid "Error when deleting user"
 msgstr "Erro ao excluir usuário"
+
+#: identity/tests/test_user_views.py:487 identity/views.py:693
+msgid "Error updating password"
+msgstr "Erro ao atualizar senha"
 
 #: identity/views.py:46
 msgid "Authorization error"
@@ -384,10 +388,6 @@ msgstr "Erro ao adicionar usuário"
 #: identity/views.py:672
 msgid "Error removing user"
 msgstr "Erro ao remover usuário"
-
-#: identity/views.py:693
-msgid "Error updating password"
-msgstr "Erro ao atualizar senha"
 
 #: identity/views.py:755
 msgid "projects"
@@ -616,6 +616,14 @@ msgstr "Este campo é obrigatório."
 msgid "Object created"
 msgstr "Objeto criado"
 
+#: storage/tests/test_storage.py:389 storage/views/main.py:171
+msgid "Container deleted"
+msgstr "Container excluído"
+
+#: storage/tests/test_storage.py:400 storage/views/main.py:176
+msgid "Container delete error"
+msgstr "Erro ao excluir container"
+
 #: storage/tests/test_storage.py:503 storage/tests/test_storage.py:542
 #: storage/views/main.py:524
 msgid "Pseudofolder created"
@@ -691,14 +699,6 @@ msgstr "Não foi possível encontrar container para fazer backup"
 #: storage/views/main.py:167
 msgid "Bad parameters"
 msgstr "Parâmetros errados"
-
-#: storage/views/main.py:171
-msgid "Container deleted"
-msgstr "Container excluído"
-
-#: storage/views/main.py:176
-msgid "Container delete error"
-msgstr "Erro ao excluír container"
 
 #: storage/views/main.py:473
 msgid "Could not delete all objects"
@@ -936,8 +936,8 @@ msgstr "Remover usuário do time"
 msgid ""
 "User \"{usr}\" will lose access to all projects owned by \"{grp}\"! Continue?"
 msgstr ""
-"Usuário \"{usr}\" perderá acesso a todos os projetos pertencentes a \"{grp}\"! "
-"Continuar?"
+"Usuário \"{usr}\" perderá acesso a todos os projetos pertencentes a "
+"\"{grp}\"! Continuar?"
 
 #: vault/templates/vault/remove_user_modal.html:16
 #: vault/templates/vault/team_manager/add_user_modal.html:25
