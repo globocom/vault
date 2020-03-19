@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-18 22:44+0000\n"
+"POT-Creation-Date: 2020-03-19 00:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Actionlogger"
 msgstr "Actionlogger"
 
-#: identity/apps.py:9
+#: identity/apps.py:9 identity/views.py:709 identity/views.py:749
 msgid "Identity"
 msgstr "Identity"
 
@@ -81,6 +81,7 @@ msgstr "Descrição do projeto não pode estar vazia."
 #: identity/forms.py:138 identity/templates/identity/users.html:22
 #: vault/templates/vault/user_edit_teams.html:17
 #: vault/templates/vault/user_edit_teams.html:41
+#: vault/templates/vault/users_teams.html:26
 #: vault/templates/vault/users_teams.html:36
 msgid "User"
 msgstr "Usuário"
@@ -144,7 +145,8 @@ msgstr "Time dono atual"
 #: identity/templates/identity/project_change.html:4
 #: identity/templates/identity/project_change.html:10
 #: identity/templates/identity/projects.html:12
-#: identity/templates/identity/projects_and_users.html:10
+#: identity/templates/identity/projects_and_users.html:10 identity/views.py:714
+#: identity/views.py:767
 msgid "Projects"
 msgstr "Projetos"
 
@@ -259,13 +261,14 @@ msgstr "Dono"
 msgid "Edit"
 msgstr "Editar"
 
-#: identity/templates/identity/projects_and_users.html:6
+#: identity/templates/identity/projects_and_users.html:6 identity/views.py:748
 msgid "Keystone"
 msgstr "Keystone"
 
 #: identity/templates/identity/projects_and_users.html:18
 #: identity/templates/identity/users.html:5
-#: identity/templates/identity/users.html:9
+#: identity/templates/identity/users.html:9 identity/views.py:719
+#: identity/views.py:771
 msgid "Users"
 msgstr "Usuários"
 
@@ -385,6 +388,14 @@ msgstr "Erro ao remover usuário"
 #: identity/views.py:693
 msgid "Error updating password"
 msgstr "Erro ao atualizar senha"
+
+#: identity/views.py:755
+msgid "projects"
+msgstr "projetos"
+
+#: identity/views.py:760
+msgid "users"
+msgstr "usuários"
 
 #: storage/apps.py:9
 msgid "Swift Browser"
@@ -773,9 +784,29 @@ msgstr "Lixeira desabilitada para o container"
 msgid "Trash enabled for container"
 msgstr "Lixeira habilitada para o container"
 
-#: storage/widgets.py:38
-msgid "Unable to show Swift info"
-msgstr "Não foi possível mostrar informação do Swift"
+#: storage/views/main.py:1421
+msgid "Swift"
+msgstr "Swift"
+
+#: storage/views/main.py:1422
+msgid "Object Storage"
+msgstr "Objeto Storage"
+
+#: storage/views/main.py:1428
+msgid "containers"
+msgstr "containers"
+
+#: storage/views/main.py:1433
+msgid "objects"
+msgstr "objetos"
+
+#: storage/views/main.py:1438
+msgid "used space"
+msgstr "espaço utilizado"
+
+#: storage/views/main.py:1445
+msgid "Containers"
+msgstr "Containers"
 
 #: vault/apps.py:9 vault/templates/500.html:16
 msgid "Vault"
@@ -1019,3 +1050,6 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 #: vault/views.py:317
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
+
+#~ msgid "Unable to show Swift info"
+#~ msgstr "Não foi possível mostrar informação do Swift"

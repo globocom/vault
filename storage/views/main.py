@@ -1380,12 +1380,12 @@ class SwiftJsonInfo(JsonInfo):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         return {
-            "name": "Object Storage",
+            "name": str(_("Object Storage")),
             "icon": "fas fa-cube",
             "url": reverse("containerview", kwargs={'project': project_name}),
             "subitems": [
                 {
-                    "name": "Containers",
+                    "name": str(_("Containers")),
                     "icon": "",
                     "url": reverse("containerview", kwargs={'project': project_name})
                 }
@@ -1418,31 +1418,31 @@ class SwiftJsonInfo(JsonInfo):
             {
                 "type": "default",
                 "name": "storage",
-                "title": "Swift",
-                "subtitle": "Object Storage",
+                "title": str(_("Swift")),
+                "subtitle": str(_("Object Storage")),
                 "color": "red",
                 "icon": "fas fa-cube",
                 "url": reverse("containerview", kwargs={'project': project_name}),
                 "properties": [
                     {
-                        "name": "containers",
+                        "name": str(_("containers")),
                         "description": "",
                         "value": head_acc.get('x-account-container-count')
                     },
                     {
-                        "name": "objects",
+                        "name": str(_("objects")),
                         "description": "",
                         "value": head_acc.get('x-account-object-count')
                     },
                     {
-                        "name": "used space",
+                        "name": str(_("used space")),
                         "description": "",
                         "value": filesizeformat(head_acc.get('x-account-bytes-used'))
                     }
                 ],
                 "buttons": [
                     {
-                        "name": "Containers",
+                        "name": str(_("Containers")),
                         "url": reverse("containerview", kwargs={'project': project_name})
                     }
                 ]

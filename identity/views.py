@@ -706,17 +706,17 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
         return {
-            "name": "Identity",
+            "name": str(_("Identity")),
             "icon": "fas fa-key",
             "url": reverse("projects", kwargs={'project': project_name}),
             "subitems": [
                 {
-                    "name": "Projects",
+                    "name": str(_("Projects")),
                     "icon": "",
                     "url": reverse("projects", kwargs={'project': project_name})
                 },
                 {
-                    "name": "Users",
+                    "name": str(_("Users")),
                     "icon": "",
                     "url": reverse("admin_list_users", kwargs={'project': project_name})
                 }
@@ -745,30 +745,30 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
             {
                 "type": "default",
                 "name": "keystone",
-                "title": "Keystone",
-                "subtitle": "Identity",
+                "title": str(_("Keystone")),
+                "subtitle": str(_("Identity")),
                 "color": "green",
                 "icon": "fas fa-key",
                 "url": reverse("projects", kwargs={'project': project_name}),
                 "properties": [
                     {
-                        "name": "projects",
+                        "name": str(_("projects")),
                         "description": "",
                         "value": len(projects)
                     },
                     {
-                        "name": "users",
+                        "name": str(_("users")),
                         "description": "",
                         "value": len(users)
                     }
                 ],
                 "buttons": [
                     {
-                        "name": "Projects",
+                        "name": str(_("Projects")),
                         "url": reverse("projects", kwargs={'project': project_name})
                     },
                     {
-                        "name": "Users",
+                        "name": str(_("Users")),
                         "url": reverse("admin_list_users", kwargs={'project': project_name})
                     }
                 ]
