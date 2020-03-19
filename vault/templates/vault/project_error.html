@@ -1,56 +1,34 @@
 {% extends "vault/base_bare.html" %}
 {% load i18n static %}
 
-{% block title %}{% trans 'Error' %}{% endblock %}
+{% block title %}{% trans 'Project Error' %}{% endblock %}
 
-{% block css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
-{% endblock %}
-
-{% block some_top_info %}
-<div class="logo">
-  <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
-</div>
-{% endblock %}
-
-{% block content %}
-<div class="container content">
+{% block main_content %}
+<div class="container-fluid project-error">
   <div class="row">
     <div class="col-md-12">
-      <div class="content-title">
-        <h2>{% if inexistent_project %}Vault Error - Project "{{inexistent_project}}" doesn't exist{% else %}Vault Error{% endif %}</h2>
-        <div class="vault-user-info">
-          <a href="#" class="user">
-            <i class="fas fa-user-circle"></i>
-          </a>
-          <!-- <a href="#" class="notification">
-            <i class="fas fa-bell"></i>
-          </a> -->
-        </div>
-      </div> <!-- .content-title -->
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      {% if project_name %}
-      <div class="card">
-        <div class="card-body">
-          <p>Return to project "{{project_name}}":</p>
-          <a href="{% url "dashboard" project_name %}" class="create-project btn btn-primary">
-            <i class="icon fa fa-home"></i> {% trans "Home" %}</a>
-          </a>
-        </div>
+      
+      <div class="vault-error">
+        <h1>Error</h1>
+        <h2>
+          {% if inexistent_project %}
+            Project "{{ inexistent_project }}" doesn't exist
+          {% else %}
+            Vault Error
+          {% endif %}
+        </h2>
+
+        {% if project_name %}
+        <a href="{% url 'dashboard' project_name %}">
+          {% trans "Return to project" %} "{{ project_name }}" {% trans "Home" %}</a>
+        </a>
+        {% endif %}
+      
+        <a href="{% url 'change_project' %}">
+          {% trans "Select a different project" %}</a>
+        </a>
       </div>
-      <br>
-      {% endif %}
-      <div class="card">
-        <div class="card-body">
-          <p>Select a different project:</p>
-          <a href="{% url "change_project" %}" class="create-project btn btn-primary">
-            <i class="icon fa fa-exchange-alt"></i> {% trans "Change Project" %}</a>
-          </a>
-        </div>
-      </div>
+    
     </div>
   </div>
 </div>
