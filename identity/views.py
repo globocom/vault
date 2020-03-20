@@ -427,7 +427,12 @@ class ChangeProjectView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
     template_name = "identity/project_change.html"
 
     def get(self, request, *args, **kwargs):
+
+        if self.request.user.groups.count() == 0:
+            self.template_name = "identity/project_change_noteam.html"
+
         context = self.get_context_data(request=request, **kwargs)
+
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):

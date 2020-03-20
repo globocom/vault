@@ -51,3 +51,4 @@ class GroupAdmin(admin.ModelAdmin):
 admin.site.register(GroupProjects, GroupProjectsAdmin)
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)
+admin.site.site_header = "Vault Admin"

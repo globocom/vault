@@ -1,0 +1,45 @@
+{% extends "vault/base_bare.html" %}
+{% load i18n static pagination %}
+
+{% block title %}{% trans 'Projects' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block title_left %}{% endblock %}
+
+{% block title_right %}{% endblock %}
+
+{% block content %}
+
+<div class="box">
+  <div class="no-team">
+    <h2 class="no-team-title">{% trans 'You are not associated with any Team' %}</h2>
+
+    <p class="no-team-msg">
+      {% trans 'To create or select a project, you need to be on a Team.' %}
+    </p>
+
+    {% if user.is_staff %}
+
+      <a href="/admin/" class="btn btn-primary">
+        {% trans 'Click here to access Vault Admin' %}
+      </a>
+
+    {% else %}
+
+    <strong>{% trans 'There are two options:' %}</strong>
+
+    <ul class="no-team-options">
+      <li>{% trans 'Ask someone on your team to add you' %}</li>
+      <li>{% trans 'Contact an administrator' %}</li>
+    </ul>
+
+    {% endif %}
+
+    <i class="icon-warning fas fa-exclamation-triangle"></i>
+  </div>
+</div>
+
+{% endblock %}

@@ -194,3 +194,29 @@
   display: inline-block;
   margin-right: 10px;
 }
+
+.no-team .no-team-title {
+  font-weight: lighter;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.no-team .no-team-msg {
+  margin-bottom: 30px;
+}
+
+.no-team .no-team-options {
+  margin: 20px 0 0;
+}
+
+.no-team .no-team-options li {
+  margin: 10px 0 0;
+}
+
+.no-team .icon-warning {
+  position: absolute;
+  font-size: 130px;
+  bottom: 30px;
+  right: 30px;
+  color: rgba(0, 0, 0, 0.1);
+}
