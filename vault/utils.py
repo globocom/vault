@@ -13,9 +13,10 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from keystoneclient import exceptions
+
 from vault.models import GroupProjects, CurrentProject
 from identity.keystone import Keystone, KeystoneNoRequest
-
 
 log = logging.getLogger(__name__)
 
@@ -86,7 +87,14 @@ def maybe_update_token(request):
     if token_time is None or token_time < datetime.utcnow():
         log.info('Updating token for user [{}]'.format(request.user))
 
-        keystone = Keystone(request)
+        try:
+            keystone = Keystone(request)
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(request, messages.ERROR, msg)
+            log.error(f'{request.user}: {msg}')
+
+            return False
 
         if keystone.conn is None:
             return False
@@ -149,7 +157,14 @@ def project_check(request, current_project):
     user = request.user
 
     if current_project:
-        keystone = Keystone(request)
+        try:
+            keystone = Keystone(request)
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(request, messages.ERROR, msg)
+            log.error(f'{request.user}: {msg}')
+
+            return False
 
         if not keystone.conn:
             return False

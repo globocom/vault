@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from django import forms
 from django.forms.widgets import Select
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import gettext_lazy as _
+
+from keystoneclient import exceptions
 
 from vault.models import GroupProjects
 from identity.keystone import KeystoneNoRequest
+
+
+log = logging.getLogger(__name__)
 
 
 class VaultLoginForm(AuthenticationForm):
@@ -47,7 +54,15 @@ class GroupAdminForm(forms.ModelForm):
 
 
 def get_project_choices():
-    keystone = KeystoneNoRequest()
+    try:
+        keystone = KeystoneNoRequest()
+    except exceptions.AuthorizationFailure:
+        msg = _('Unable to retrieve Keystone data')
+        # messages.add_message(request, messages.ERROR, msg)
+        log.error(f'In get_project_choices(): {msg}')
+
+        return tuple([(u'', u'---------')])
+
     project_list = []
 
     if keystone.conn is not None:

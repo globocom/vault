@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+from django.utils.translation import gettext_lazy as _
+
+from keystoneclient import exceptions
+
 from vault.models import GroupProjects
 from vault.forms import GroupAdminForm, GroupProjectsForm
 from identity.keystone import KeystoneNoRequest
+
+
+log = logging.getLogger(__name__)
 
 
 def get_project_list():
@@ -15,6 +24,10 @@ def get_project_list():
         if keystone.conn is not None:
             for project in keystone.project_list():
                 project_list[project.id] = project.name
+    except exceptions.AuthorizationFailure:
+        msg = _('Unable to retrieve Keystone data')
+        # messages.add_message(request, messages.ERROR, msg)
+        log.error(f'In get_project_list(): {msg}')
     except Exception as e:
         pass
 

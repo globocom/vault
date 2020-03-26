@@ -8,9 +8,12 @@ import requests
 import time
 
 from django.conf import settings
+from django.contrib import messages
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
+
+from keystoneclient import exceptions
 
 from storage.models import BackupContainer
 from storage.utils import get_token_id, get_storage_endpoint
@@ -24,7 +27,15 @@ actionlog = ActionLogger()
 
 
 def _check_backup_user(request, project_id):
-    keystone = Keystone(request)
+    try:
+        keystone = Keystone(request)
+    except exceptions.AuthorizationFailure:
+        msg = _('Unable to retrieve Keystone data')
+        messages.add_message(request, messages.ERROR, msg)
+        log.error(f'{request.user}: {msg}')
+
+        return False
+
     if keystone.conn is None:
         log.error('check_backup_user: Keystone connection error')
         return False

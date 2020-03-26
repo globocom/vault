@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-20 01:14+0000\n"
+"POT-Creation-Date: 2020-03-26 17:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Actionlogger"
 msgstr "Actionlogger"
 
-#: identity/apps.py:9 identity/views.py:714 identity/views.py:754
+#: identity/apps.py:9 identity/views.py:743 identity/views.py:783
 msgid "Identity"
 msgstr "Identity"
 
@@ -146,8 +146,8 @@ msgstr "Time dono atual"
 #: identity/templates/identity/project_change.html:10
 #: identity/templates/identity/project_change_noteam.html:4
 #: identity/templates/identity/projects.html:12
-#: identity/templates/identity/projects_and_users.html:10 identity/views.py:719
-#: identity/views.py:772
+#: identity/templates/identity/projects_and_users.html:10 identity/views.py:748
+#: identity/views.py:801
 msgid "Projects"
 msgstr "Projetos"
 
@@ -286,14 +286,14 @@ msgstr "Dono"
 msgid "Edit"
 msgstr "Editar"
 
-#: identity/templates/identity/projects_and_users.html:6 identity/views.py:753
+#: identity/templates/identity/projects_and_users.html:6 identity/views.py:782
 msgid "Keystone"
 msgstr "Keystone"
 
 #: identity/templates/identity/projects_and_users.html:18
 #: identity/templates/identity/users.html:5
-#: identity/templates/identity/users.html:9 identity/views.py:724
-#: identity/views.py:776
+#: identity/templates/identity/users.html:9 identity/views.py:753
+#: identity/views.py:805
 msgid "Users"
 msgstr "Usuários"
 
@@ -317,11 +317,11 @@ msgstr "Excluir Usuário"
 msgid "Save User"
 msgstr "Salvar Usuário"
 
-#: identity/tests/test_project_views.py:65 identity/views.py:345
+#: identity/tests/test_project_views.py:65 identity/views.py:353
 msgid "Unable to list projects"
 msgstr "Não foi possível listar projetos"
 
-#: identity/tests/test_user_views.py:56 identity/views.py:67
+#: identity/tests/test_user_views.py:56 identity/views.py:75
 msgid "Unable to list users"
 msgstr "Não foi possível listar usuários"
 
@@ -333,92 +333,98 @@ msgstr "Este campo é obrigatório"
 msgid "Enter a valid email address"
 msgstr "Informe um endereço de email válido."
 
-#: identity/tests/test_user_views.py:203 identity/views.py:163
+#: identity/tests/test_user_views.py:203 identity/views.py:171
 msgid "Error when creating user"
 msgstr "Erro ao criar usuário"
 
-#: identity/tests/test_user_views.py:320 identity/views.py:201
+#: identity/tests/test_user_views.py:320 identity/views.py:209
 msgid "Error when updating user"
 msgstr "Erro ao atualizar usuário"
 
-#: identity/tests/test_user_views.py:406 identity/views.py:213
+#: identity/tests/test_user_views.py:406 identity/views.py:221
 msgid "Successfully deleted user"
 msgstr "Usuário excluído com sucesso"
 
-#: identity/tests/test_user_views.py:419 identity/views.py:220
+#: identity/tests/test_user_views.py:419 identity/views.py:228
 msgid "Error when deleting user"
 msgstr "Erro ao excluir usuário"
 
-#: identity/tests/test_user_views.py:487 identity/views.py:698
+#: identity/tests/test_user_views.py:487 identity/views.py:727
 msgid "Error updating password"
 msgstr "Erro ao atualizar senha"
 
-#: identity/views.py:46
+#: identity/views.py:46 identity/views.py:384 identity/views.py:466
+#: identity/views.py:575 storage/views/backup.py:32 vault/admin.py:22
+#: vault/forms.py:55 vault/utils.py:94 vault/utils.py:164 vault/views.py:66
+msgid "Unable to retrieve Keystone data"
+msgstr "Não foi possível recuperar dados do Keystone"
+
+#: identity/views.py:54
 msgid "Authorization error"
 msgstr "Erro de autorização"
 
-#: identity/views.py:65 identity/views.py:161 identity/views.py:199
-#: identity/views.py:218 identity/views.py:308 identity/views.py:343
-#: identity/views.py:511 identity/views.py:573 identity/views.py:619
-#: identity/views.py:653 identity/views.py:737 identity/views.py:744
-#: vault/views.py:66 vault/views.py:139 vault/views.py:230 vault/views.py:257
-#: vault/views.py:292 vault/views.py:318
+#: identity/views.py:73 identity/views.py:169 identity/views.py:207
+#: identity/views.py:226 identity/views.py:316 identity/views.py:351
+#: identity/views.py:532 identity/views.py:602 identity/views.py:648
+#: identity/views.py:682 identity/views.py:766 identity/views.py:773
+#: vault/views.py:76 vault/views.py:149 vault/views.py:240 vault/views.py:267
+#: vault/views.py:302 vault/views.py:328
 msgid "Exception:"
 msgstr "Exceção:"
 
-#: identity/views.py:156
+#: identity/views.py:164
 msgid "Successfully created user"
 msgstr "Usuário criado com sucesso"
 
-#: identity/views.py:194
+#: identity/views.py:202
 msgid "Successfully updated user"
 msgstr "Usuário atualizado com sucesso"
 
-#: identity/views.py:503
+#: identity/views.py:524
 msgid "Successfully updated project"
 msgstr "Projeto atualizado com sucesso"
 
-#: identity/views.py:513
+#: identity/views.py:534
 msgid "Error when updating project"
 msgstr "Erro ao atualizar projeto"
 
-#: identity/views.py:548
+#: identity/views.py:569
 msgid "Invalid credentials."
 msgstr "Credenciais inválidas."
 
-#: identity/views.py:562
+#: identity/views.py:591
 msgid "Error when deleting swift account"
 msgstr "Erro ao excluir account do swift"
 
-#: identity/views.py:570
+#: identity/views.py:599
 msgid "Successfully deleted project."
 msgstr "Projeto excluído com sucesso"
 
-#: identity/views.py:575
+#: identity/views.py:604
 msgid "Error when deleting project"
 msgstr "Erro ao excluir projeto"
 
-#: identity/views.py:647
+#: identity/views.py:676
 msgid "User already registered with this role"
 msgstr "Usuário já registrado com este papel"
 
-#: identity/views.py:648 vault/views.py:279
+#: identity/views.py:677 vault/views.py:289
 msgid "Conflict:"
 msgstr "Conflito:"
 
-#: identity/views.py:652
+#: identity/views.py:681
 msgid "Error adding user"
 msgstr "Erro ao adicionar usuário"
 
-#: identity/views.py:677
+#: identity/views.py:706
 msgid "Error removing user"
 msgstr "Erro ao remover usuário"
 
-#: identity/views.py:760
+#: identity/views.py:789
 msgid "projects"
 msgstr "projetos"
 
-#: identity/views.py:765
+#: identity/views.py:794
 msgid "users"
 msgstr "usuários"
 
@@ -681,7 +687,7 @@ msgstr "Atualização de ACL falhou"
 msgid "No project selected"
 msgstr "Nenhum projeto selecionado"
 
-#: storage/views/backup.py:195
+#: storage/views/backup.py:205
 msgid ""
 "Error when activating container backup. Container cannot contain more than "
 "{} objects"
@@ -689,35 +695,35 @@ msgstr ""
 "Erro ao ativar backup de container. Container não pode conter mais do que {} "
 "objetos"
 
-#: storage/views/backup.py:198
+#: storage/views/backup.py:208
 msgid ""
 "Error when activating container backup. Container cannot contain more than {}"
 msgstr ""
 "Erro ao ativar backup de container. Container não pode conter mais do que {}"
 
-#: storage/views/backup.py:209
+#: storage/views/backup.py:219
 msgid "Wrong \"status\" parameter"
 msgstr "Parâmetro \"status\" errado"
 
-#: storage/views/backup.py:225
+#: storage/views/backup.py:235
 msgid "Backup enabled for container"
 msgstr "Backup habilitado para o container"
 
-#: storage/views/backup.py:229
+#: storage/views/backup.py:239
 msgid "Backup disabled for container"
 msgstr "Backup desabilitado para o container"
 
-#: storage/views/backup.py:236
+#: storage/views/backup.py:246
 msgid "Backup status error: can't set backup user permission"
 msgstr ""
 "Erro de status do backup: não foi possível definir permissão do usuário de "
 "backup"
 
-#: storage/views/backup.py:242
+#: storage/views/backup.py:252
 msgid "Error when updating container backup status"
 msgstr "Erro ao atualizar status de backup do container"
 
-#: storage/views/backup.py:293
+#: storage/views/backup.py:303
 msgid "Can't find any container to backup"
 msgstr "Não foi possível encontrar container para fazer backup"
 
@@ -1054,7 +1060,7 @@ msgstr "Listar Times e Usuários"
 msgid "All"
 msgstr "Todos"
 
-#: vault/tests/test_views.py:91 vault/views.py:141
+#: vault/tests/test_views.py:91 vault/views.py:151
 msgid "Unable to change your project."
 msgstr "Não foi possível mudar seu projeto."
 
@@ -1062,31 +1068,31 @@ msgstr "Não foi possível mudar seu projeto."
 msgid "Admin Dashboard"
 msgstr "Dashboard de Admin"
 
-#: vault/views.py:57
+#: vault/views.py:59
 msgid "Missing 'project_id'"
 msgstr "Não há 'project_id'"
 
-#: vault/views.py:65
+#: vault/views.py:75
 msgid "Can't find this project"
 msgstr "Não foi possível encontrar este projeto"
 
-#: vault/views.py:75
+#: vault/views.py:85
 msgid "Project selected: {}"
 msgstr "Projeto selecionado: {}"
 
-#: vault/views.py:188
+#: vault/views.py:198
 msgid "User logged out:"
 msgstr "Usuário saiu:"
 
-#: vault/views.py:278
+#: vault/views.py:288
 msgid "User already registered with this team"
 msgstr "Usuário já registrado com este time"
 
-#: vault/views.py:291
+#: vault/views.py:301
 msgid "Error adding user, check user team"
 msgstr "Erro ao adicionar usuário, cheque time do usuário"
 
-#: vault/views.py:317
+#: vault/views.py:327
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
 
