@@ -105,11 +105,15 @@
 
     {% if messages %}
     <script>
+      let messages = [];
     {% for message in messages %}
-      Base.Messages.setMessage({
-        description: '{{ message|safe|capfirst }}',
-        type: '{% if message.tags %}{{ message.tags }}{% endif %}'
-      });
+      if (!messages.includes('{{message}}')) {
+        messages.push('{{message}}');
+        Base.Messages.setMessage({
+          description: '{{ message|safe|capfirst }}',
+          type: '{% if message.tags %}{{ message.tags }}{% endif %}'
+        });
+      }
     {% endfor %}
     </script>
     {% endif %}
