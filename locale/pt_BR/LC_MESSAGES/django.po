@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 17:57+0000\n"
+"POT-Creation-Date: 2020-03-30 17:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Actionlogger"
 msgstr "Actionlogger"
 
-#: identity/apps.py:9 identity/views.py:743 identity/views.py:783
+#: identity/apps.py:9 identity/views.py:742 identity/views.py:782
 msgid "Identity"
 msgstr "Identity"
 
@@ -146,8 +146,8 @@ msgstr "Time dono atual"
 #: identity/templates/identity/project_change.html:10
 #: identity/templates/identity/project_change_noteam.html:4
 #: identity/templates/identity/projects.html:12
-#: identity/templates/identity/projects_and_users.html:10 identity/views.py:748
-#: identity/views.py:801
+#: identity/templates/identity/projects_and_users.html:10 identity/views.py:747
+#: identity/views.py:800
 msgid "Projects"
 msgstr "Projetos"
 
@@ -286,14 +286,14 @@ msgstr "Dono"
 msgid "Edit"
 msgstr "Editar"
 
-#: identity/templates/identity/projects_and_users.html:6 identity/views.py:782
+#: identity/templates/identity/projects_and_users.html:6 identity/views.py:781
 msgid "Keystone"
 msgstr "Keystone"
 
 #: identity/templates/identity/projects_and_users.html:18
 #: identity/templates/identity/users.html:5
-#: identity/templates/identity/users.html:9 identity/views.py:753
-#: identity/views.py:805
+#: identity/templates/identity/users.html:9 identity/views.py:752
+#: identity/views.py:804
 msgid "Users"
 msgstr "Usuários"
 
@@ -349,13 +349,13 @@ msgstr "Usuário excluído com sucesso"
 msgid "Error when deleting user"
 msgstr "Erro ao excluir usuário"
 
-#: identity/tests/test_user_views.py:487 identity/views.py:727
+#: identity/tests/test_user_views.py:487 identity/views.py:726
 msgid "Error updating password"
 msgstr "Erro ao atualizar senha"
 
-#: identity/views.py:46 identity/views.py:384 identity/views.py:466
-#: identity/views.py:575 storage/views/backup.py:32 vault/admin.py:22
-#: vault/forms.py:55 vault/utils.py:94 vault/utils.py:164 vault/views.py:66
+#: identity/views.py:46 identity/views.py:384 identity/views.py:465
+#: identity/views.py:574 storage/views/backup.py:33 vault/admin.py:28
+#: vault/forms.py:60 vault/utils.py:93 vault/utils.py:163 vault/views.py:66
 msgid "Unable to retrieve Keystone data"
 msgstr "Não foi possível recuperar dados do Keystone"
 
@@ -365,8 +365,8 @@ msgstr "Erro de autorização"
 
 #: identity/views.py:73 identity/views.py:169 identity/views.py:207
 #: identity/views.py:226 identity/views.py:316 identity/views.py:351
-#: identity/views.py:532 identity/views.py:602 identity/views.py:648
-#: identity/views.py:682 identity/views.py:766 identity/views.py:773
+#: identity/views.py:531 identity/views.py:601 identity/views.py:647
+#: identity/views.py:681 identity/views.py:765 identity/views.py:772
 #: vault/views.py:76 vault/views.py:149 vault/views.py:240 vault/views.py:267
 #: vault/views.py:302 vault/views.py:328
 msgid "Exception:"
@@ -380,51 +380,51 @@ msgstr "Usuário criado com sucesso"
 msgid "Successfully updated user"
 msgstr "Usuário atualizado com sucesso"
 
-#: identity/views.py:524
+#: identity/views.py:523
 msgid "Successfully updated project"
 msgstr "Projeto atualizado com sucesso"
 
-#: identity/views.py:534
+#: identity/views.py:533
 msgid "Error when updating project"
 msgstr "Erro ao atualizar projeto"
 
-#: identity/views.py:569
+#: identity/views.py:568
 msgid "Invalid credentials."
 msgstr "Credenciais inválidas."
 
-#: identity/views.py:591
+#: identity/views.py:590
 msgid "Error when deleting swift account"
 msgstr "Erro ao excluir account do swift"
 
-#: identity/views.py:599
+#: identity/views.py:598
 msgid "Successfully deleted project."
 msgstr "Projeto excluído com sucesso"
 
-#: identity/views.py:604
+#: identity/views.py:603
 msgid "Error when deleting project"
 msgstr "Erro ao excluir projeto"
 
-#: identity/views.py:676
+#: identity/views.py:675
 msgid "User already registered with this role"
 msgstr "Usuário já registrado com este papel"
 
-#: identity/views.py:677 vault/views.py:289
+#: identity/views.py:676 vault/views.py:289
 msgid "Conflict:"
 msgstr "Conflito:"
 
-#: identity/views.py:681
+#: identity/views.py:680
 msgid "Error adding user"
 msgstr "Erro ao adicionar usuário"
 
-#: identity/views.py:706
+#: identity/views.py:705
 msgid "Error removing user"
 msgstr "Erro ao remover usuário"
 
-#: identity/views.py:789
+#: identity/views.py:788
 msgid "projects"
 msgstr "projetos"
 
-#: identity/views.py:794
+#: identity/views.py:793
 msgid "users"
 msgstr "usuários"
 
@@ -687,7 +687,7 @@ msgstr "Atualização de ACL falhou"
 msgid "No project selected"
 msgstr "Nenhum projeto selecionado"
 
-#: storage/views/backup.py:205
+#: storage/views/backup.py:206
 msgid ""
 "Error when activating container backup. Container cannot contain more than "
 "{} objects"
@@ -695,35 +695,35 @@ msgstr ""
 "Erro ao ativar backup de container. Container não pode conter mais do que {} "
 "objetos"
 
-#: storage/views/backup.py:208
+#: storage/views/backup.py:209
 msgid ""
 "Error when activating container backup. Container cannot contain more than {}"
 msgstr ""
 "Erro ao ativar backup de container. Container não pode conter mais do que {}"
 
-#: storage/views/backup.py:219
+#: storage/views/backup.py:220
 msgid "Wrong \"status\" parameter"
 msgstr "Parâmetro \"status\" errado"
 
-#: storage/views/backup.py:235
+#: storage/views/backup.py:236
 msgid "Backup enabled for container"
 msgstr "Backup habilitado para o container"
 
-#: storage/views/backup.py:239
+#: storage/views/backup.py:240
 msgid "Backup disabled for container"
 msgstr "Backup desabilitado para o container"
 
-#: storage/views/backup.py:246
+#: storage/views/backup.py:247
 msgid "Backup status error: can't set backup user permission"
 msgstr ""
 "Erro de status do backup: não foi possível definir permissão do usuário de "
 "backup"
 
-#: storage/views/backup.py:252
+#: storage/views/backup.py:253
 msgid "Error when updating container backup status"
 msgstr "Erro ao atualizar status de backup do container"
 
-#: storage/views/backup.py:303
+#: storage/views/backup.py:304
 msgid "Can't find any container to backup"
 msgstr "Não foi possível encontrar container para fazer backup"
 

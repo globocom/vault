@@ -385,7 +385,6 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
             messages.add_message(request, messages.ERROR, msg)
             log.error(f'{request.user}: {msg}')
 
-
         return context
 
 
