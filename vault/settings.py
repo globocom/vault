@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('VAULT_SECRET_KEY', binascii.hexlify(os.urandom(24)))
+SECRET_KEY = os.environ.get('VAULT_SECRET_KEY', 'Th1s-I5-4-S3cR37-K3y')
 
 PROJECT = 'vault'
 
