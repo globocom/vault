@@ -182,7 +182,7 @@ for app in INSTALLED_APPS:
         module_apps = importlib.import_module(app + ".apps")
         app_config = getattr(module_apps,
                              module.default_app_config.split('.')[-1])
-        if app_config.vault_app == True:
+        if app_config.vault_app is True:
             app_settings = importlib.import_module(app + ".settings")
             names = [x for x in app_settings.__dict__ if not x.startswith("_")]
             globals().update({k: getattr(app_settings, k) for k in names})
