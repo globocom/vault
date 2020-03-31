@@ -5,13 +5,14 @@ Django settings for vault project.
 """
 
 import os
+import binascii
 import importlib
 from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('VAULT_SECRET_KEY')
+SECRET_KEY = os.environ.get('VAULT_SECRET_KEY', binascii.hexlify(os.urandom(24)))
 
 PROJECT = 'vault'
 
