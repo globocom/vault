@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
+SECRET_KEY = os.environ.get('VAULT_SECRET_KEY')
 
 PROJECT = 'vault'
 

@@ -64,6 +64,7 @@ services:
         ports:
             - 8000:8000
         environment:
+            VAULT_SECRET_KEY: 5efe2ba469d482eba372e88baef7c1ac
             VAULT_MYSQL_HOST: vault_db
             VAULT_KEYSTONE_URL: http://vault_keystone:5000/v3
             VAULT_KEYSTONE_PROJECT: Vault
