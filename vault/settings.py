@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vault',
     'actionlogger',
-    'identity',
     'storage',
+    'identity',
 ]
 
 AUTHENTICATION_BACKENDS = (
