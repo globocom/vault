@@ -92,24 +92,17 @@
 {% if has_team %}
 <script type="text/javascript">
   {% autoescape off %}
-  var urls = [{% info_endpoints %}];
+  let endpoints = [{% info_endpoints %}];
   {% endautoescape %}
 
-  Promise.all(urls.map(u=>fetch(u + "?opt=widgets")))
-  .then(responses => {
-    return Promise.all(responses.map(res => res.text()));
-  })
-  .then(datas => {
-    var widgets = document.getElementById("dashboard-widgets");
-    widgets.innerHTML = '';
+  let widget_list = document.getElementById("dashboard-widgets");
 
-    datas.forEach(data => {
-      try {
-        data = JSON.parse(data);
-      } catch (err) {
-        return;
-      }
+  let widgets = []
 
+  endpoints.forEach(async (endpoint) => {
+    let response = await fetch(endpoint + "?opt=widgets");
+    try {
+      let data = await response.json();
       data.forEach(d => {
         var wid = document.createElement("li");
         if (d.type == "default") {
@@ -126,10 +119,22 @@
           }, d));
         }
 
-        widgets.appendChild(wid);
-      });
-    });
+        wid.json_endpoint = endpoint;
 
+        widgets.push(wid);
+        widgets.sort((a,b) => {
+          return endpoints.indexOf(a.json_endpoint) - endpoints.indexOf(b.json_endpoint);
+        });
+
+        widget_list.innerHTML = '';
+        widgets.forEach(w => {
+          widget_list.appendChild(w);
+        });
+
+      });
+    } catch (err) {
+      return;
+    }
   });
 </script>
 {% endif %}

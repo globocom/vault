@@ -76,12 +76,23 @@ bootbox.setDefaults({
 
 {% if messages %}
 <script>
+  let messages = {};
 {% for message in messages %}
-  Base.Messages.setMessage({
-    description: '{{ message|safe|capfirst }}',
-    type: '{% if message.tags %}{{ message.tags }}{% endif %}'
-  });
+  if (!messages['{{message|safe|capfirst}}']) {
+    messages['{{message|safe|capfirst}}'] = {
+      'type': '{% if message.tags %}{{ message.tags }}{% endif %}',
+      'count': 1
+    };
+  } else {
+    messages['{{message|safe|capfirst}}'].count += 1;
+  }
 {% endfor %}
+  Object.keys(messages).forEach(m => {
+    Base.Messages.setMessage({
+      description: messages[m].count == 1 ? m : m + " (" + messages[m].count + ")",
+      type: messages[m].type
+    });
+  });
 </script>
 {% endif %}
 

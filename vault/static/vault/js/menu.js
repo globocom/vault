@@ -4,23 +4,6 @@ var VaultMenu = (function(window) {
   var urls, options;
 
   function init(opts) {
-    const execute = (url) => {
-      return new Promise((resolve, reject) => {
-        fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        }).then((response) => {
-          if(response.ok) {
-            resolve(response.json());
-          }
-        }).catch(function(error) {
-          resolve({});
-        });
-      })
-    }
-    const promises = []
     const query = "?opt=menu";
 
     var currentDate = new Date();
@@ -32,51 +15,36 @@ var VaultMenu = (function(window) {
         'endpoints': null
     }, opts);
 
-    urls = options.endpoints.sort();
+    urls = options.endpoints;
 
-    for (var i = 0; i < urls.length; i++) {
-      var url = urls[i] + query;
+    urls.forEach(async (url) => {
       var cache = localStorage.getItem(url);
 
       if (cache && currentDateString <= JSON.parse(cache).expires) {
-        cachedUrls.push(url);
-        contents.push(JSON.parse(cache).content);
-      }
-    }
+        let data = JSON.parse(cache).content;
+        data.json_endpoint = url;
+        renderMenuItem(data);
+      } else {
+        let response = await fetch(url + query);
 
-    let urlsNoCached = urls.filter(function(url) {
-      return !cachedUrls.includes(url + query);
-    }).sort();
+        try {
+          let data = await response.json();
 
-    if (urlsNoCached.length === 0) {
-      for (var i = 0; i < contents.length; i++) {
-        renderMenuItem(contents[i]);
-      }
-      return;
-    }
-
-    for (var i = urls.length - 1; i >= 0; i--) {
-      promises.push(execute(urls[i] + query));
-    }
-
-    Promise.all(promises).then((response) => {
-      var responses = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
-
-      return responses.map(function(data, index) {
-        var url = urls[index].replace(location.origin, '') + query;
-        var cache = localStorage.getItem(url);
-
-        if (!cache || JSON.parse(cache).expires <= currentDateString) {
-          var expireDate = new Date(currentDate.getTime() + 5 * 60000);
+          let expireDate = new Date(currentDate.getTime() + 5 * 60000);
           localStorage.setItem(url, JSON.stringify({
             "content": data,
             "expires": dateToString(expireDate)
           }));
-        }
-        renderMenuItem(data);
-      });
 
-    })
+          data.json_endpoint = url;
+          renderMenuItem(data);
+
+        } catch (err) {
+          return;
+        }
+
+      }
+    });
   }
 
   function dateToString(date) {
@@ -94,7 +62,7 @@ var VaultMenu = (function(window) {
   }
 
   function renderMenuItem(obj) {
-    var wid = document.createElement("li");
+    let wid = document.createElement("li");
 
     wid.innerHTML = tmpl("menu_icon_default", Object.assign({
       "name": "default",
@@ -102,14 +70,15 @@ var VaultMenu = (function(window) {
       "url": "#"
     }, obj));
 
-    var sidebar_menu = document.getElementById("sidebar-app-menus");
-    sidebar_menu.appendChild(wid);
+    wid.json_endpoint = obj.json_endpoint;
 
-    var submenu = document.createElement("ul");
+    let sidebar_menu = document.getElementById("sidebar-app-menus");
+
+    let submenu = document.createElement("ul");
     submenu.classList.add('sub-menu');
 
     obj.subitems.forEach(function(item) {
-      var subitems = document.createElement("li");
+      let subitems = document.createElement("li");
       subitems.innerHTML = tmpl("submenu_icon_default", Object.assign({
         "name": "default",
         "icon": "fas fa-caret-right",
@@ -119,6 +88,17 @@ var VaultMenu = (function(window) {
     });
 
     wid.appendChild(submenu);
+
+    let sidebar_menu_items = Array.from(sidebar_menu.children);
+    sidebar_menu_items.push(wid);
+    sidebar_menu_items.sort((a,b) => {
+      return urls.indexOf(a.json_endpoint) - urls.indexOf(b.json_endpoint);
+    });
+
+    sidebar_menu.innerHTML = '';
+    sidebar_menu_items.forEach(i => {
+      sidebar_menu.appendChild(i);
+    });
   }
 
   function renderSubMenuItem(obj) {}

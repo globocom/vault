@@ -5,12 +5,14 @@ Django settings for vault project.
 """
 
 import os
+import binascii
+import importlib
 from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'l^9r^^ksywons-@!(o+02k-)@o$ko3hw7(w6d=*tu=(b_yy%p0'
+SECRET_KEY = os.environ.get('VAULT_SECRET_KEY', 'Th1s-I5-4-S3cR37-K3y')
 
 PROJECT = 'vault'
 
@@ -35,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vault',
     'actionlogger',
-    'identity',
     'storage',
+    'identity',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -172,6 +174,22 @@ KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')  # swiftoperator role ID
 
 # Cache cleanning API
 CACHESWEEP_API = os.getenv('CACHESWEEP_API', 'http://localhost/')
+
+# Load Apps' settings
+for app in INSTALLED_APPS:
+    try:
+        module = importlib.import_module(app)
+        module_apps = importlib.import_module(app + ".apps")
+        app_config = getattr(module_apps,
+                             module.default_app_config.split('.')[-1])
+        if app_config.vault_app is True:
+            app_settings = importlib.import_module(app + ".settings")
+            names = [x for x in app_settings.__dict__ if not x.startswith("_")]
+            globals().update({k: getattr(app_settings, k) for k in names})
+    # Ignores apps that don't have a "vault_app = True" in their apps.py file
+    # or don't have a settings.py file
+    except (AttributeError, ModuleNotFoundError) as e:
+        pass
 
 LOGGING = {
     'version': 1,

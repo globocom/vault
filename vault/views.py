@@ -21,8 +21,10 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib.auth.views import LoginView
-from allaccess.models import Provider
 
+from keystoneclient import exceptions
+
+from allaccess.models import Provider
 from allaccess.views import OAuthCallback, OAuthRedirect
 
 from actionlogger.actionlogger import ActionLogger
@@ -56,8 +58,16 @@ def switch(request, project_id):
     if project_id is None:
         raise ValueError(_("Missing 'project_id'"))
 
-    keystone = Keystone(request)
     next_url = reverse('main')  # _build_next_url(request)
+
+    try:
+        keystone = Keystone(request)
+    except exceptions.AuthorizationFailure:
+        msg = _('Unable to retrieve Keystone data')
+        messages.add_message(request, messages.ERROR, msg)
+        log.error(f'{request.user}: {msg}')
+
+        return HttpResponseRedirect(next_url)
 
     try:
         project = keystone.project_get(project_id)

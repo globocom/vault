@@ -35,7 +35,7 @@ An admin can create users and teams, as well as add and remove users from those 
 
 This section describes how to use Docker Compose to locally setup Vault, running all the necessary services in containers.
 
-```
+``` bash
 $ make docker-start
 ```
 
@@ -56,12 +56,12 @@ For more information on the docker implementation see [Docker](docs/DOCKER.md).
 This section describes how to setup Vault in your own infrastructure, to facilitate administration of your existing Keystone and Swift services. In this case, Vault will run in your own environment, such as in a Virtual Machine.
 
 ### 1. Install dependencies
-```
+``` bash
 $ pip install -r requirements.txt
 ```
 
 ### 2. Set environment variables
-```
+``` bash
 $ export VAULT_MYSQL_DB=vault
 $ export VAULT_MYSQL_USER=mysql_user
 $ export VAULT_MYSQL_PASSWORD=mysql_pass
@@ -76,16 +76,18 @@ $ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v3
 For optional variables and more information on each of the environment variables, see [Environment Variables](docs/ENVIRON.md).
 
 ### 3. Create a MySQL database and the MySQL user
-```
+``` SQL
 mysql> create database vault;
 mysql> CREATE USER 'mysql_user'@'localhost' IDENTIFIED BY 'mysql_pass';
 mysql> GRANT ALL PRIVILEGES ON vault.* TO 'mysql_user'@'localhost';
-
+```
+Then
+``` bash
 $ python manage.py migrate
 ```
 
 ### 4. Create a superuser
-```
+``` bash
 $ python manage.py create_user -s
 ```
 
@@ -96,12 +98,12 @@ Optionally, you can pass the `--username`, `--email`, `--teamname` and `--passwo
 The `-s` (or `--superuser`) option makes the new user a superuser, meaning it has admin privileges. For a normal user, don't use this option.
 
 ### 5. Run
-```
+``` bash
 $ python manage.py runserver
 ```
 
 In a production environment, it is recommended to use a WSGI HTTP server. Here's an example using [Gunicorn](https://gunicorn.org/):
-```
+``` bash
 gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 ```
 
@@ -115,13 +117,13 @@ Only admins can create new users, unless when using OAuth2 authentication.
 
 If you want to upload Vault's static files to your current Swift cluster, simply create a project (named here as `<swift-project>`) and, in that project, a container (named here as `<swift-container>`). Then, using the credentials of a user with permission to write to that container, do the following:
 
-```
+``` bash
 $ python manage.py collectstatic --noinput
 $ swift upload --os-username=<swift-user> --os-password=<swift-pass> --os-project-name=<swift-project> --os-auth-url=<swift-auth-url> --os-storage-url=<swift-admin-url> <swift-container> vault_static/
 ```
 
 ## Running tests
-```
+``` bash
 pip install -r requirements_test.txt
 make tests
 ```
@@ -140,7 +142,7 @@ While Vault already delivers an app for Swift management and another for Keyston
 
 How to edit locale files:
 
-```
+``` bash
 # In the app directory
 django-admin makemessages --all
 django-admin compilemessages --locale=pt_BR

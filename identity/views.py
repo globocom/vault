@@ -40,7 +40,15 @@ class WithKeystoneMixin:
         super(WithKeystoneMixin, self).__init__(*args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
-        self.keystone = Keystone(request)
+        try:
+            self.keystone = Keystone(request)
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(request, messages.ERROR, msg)
+            log.error(f'{request.user}: {msg}')
+
+            # Redirects user back to previous page
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
         if self.keystone.conn is None:
             msg = _('Authorization error')
@@ -368,10 +376,14 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
         user_name = context['project_info']['user_name']
         password = context['project_info']['user_password']
 
-        keystone = Keystone(request, username=user_name, password=password,
-                            project_name=project_name)
-
-        context['project_info']['endpoints'] = keystone.get_endpoints()
+        try:
+            keystone = Keystone(request, username=user_name, password=password,
+                                project_name=project_name)
+            context['project_info']['endpoints'] = keystone.get_endpoints()
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(request, messages.ERROR, msg)
+            log.error(f'{request.user}: {msg}')
 
         return context
 
@@ -447,7 +459,15 @@ class ChangeProjectView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
         """ Retrieve sorted list of projects """
         user = self.request.user
         groups = user.groups.all()
-        keystone = Keystone(self.request)
+        try:
+            keystone = Keystone(self.request)
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(self.request, messages.ERROR, msg)
+            log.error(f'{self.request.user}: {msg}')
+
+            return []
+
         projects = []
 
         for group in groups:
@@ -546,6 +566,14 @@ class DeleteProjectView(BaseProjectView):
             # Fail to authenticate with sent credentials
             messages.add_message(request, messages.ERROR,
                                  _('Invalid credentials.'))
+
+            return self.render_to_response(
+                context=self.get_context_data(form=form, request=request)
+            )
+        except exceptions.AuthorizationFailure:
+            msg = _('Unable to retrieve Keystone data')
+            messages.add_message(request, messages.ERROR, msg)
+            log.error(f'{request.user}: {msg}')
 
             return self.render_to_response(
                 context=self.get_context_data(form=form, request=request)
