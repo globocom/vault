@@ -66,11 +66,11 @@ class JsonInfo:
                         status=status)
 
     def generate_menu_info(self):
-        # Method must be overriden
+        # Method must be overridden
         return {}
 
     def generate_widget_info(self):
-        # Method must be overriden
+        # Method must be overridden
         return []
 
     def translate_color(self, color):
