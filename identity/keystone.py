@@ -188,6 +188,9 @@ class KeystoneBase:
     def role_get(self, role_id):
         return self.conn.roles.get(role_id)
 
+    def role_find(self, name):
+        return self.conn.roles.find(name=name)
+
     def list_user_roles(self, user=None, project=None):
         roleManager = v3.roles.RoleManager(self.conn)
         return roleManager.list(user=user, project=project)
