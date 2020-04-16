@@ -809,7 +809,7 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
         ]
 
 
-class JsonInfoView(SuperUserMixin, LoginRequiredMixin, WithKeystoneMixin, View):
+class JsonInfoView(SuperUserMixin, ProjectCheckMixin, WithKeystoneMixin, View):
 
     def get(self, request, *args, **kwargs):
         ksinfo = KeystoneJsonInfo(keystone=self.keystone, request=request)
