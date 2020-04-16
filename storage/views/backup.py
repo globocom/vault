@@ -145,7 +145,7 @@ def _disable_backup(container, project_id, project_name):
 
 @utils.project_required
 @login_required
-def backup_restore(request):
+def backup_restore(request, project):
     container = request.POST.get("container")
     project_name = request.POST.get("project_name")
     backup_type = request.POST.get("backup_type")

@@ -286,8 +286,9 @@ class TestStorage(BaseTestCase):
 
         prefix = ''
         fakecontainer = 'fakecontainer'
+        project_name = self.request.session.get('project_name')
 
-        response = views.create_object(self.request, fakecontainer)
+        response = views.create_object(self.request, project_name, fakecontainer)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -296,7 +297,6 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_requests_put.called)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix,
                                                  'project': project_name})
@@ -309,8 +309,9 @@ class TestStorage(BaseTestCase):
 
         prefix = 'prefix/'
         fakecontainer = 'fakecontainer'
+        project_name = self.request.session.get('project_name')
 
-        response = views.create_object(self.request, fakecontainer, prefix)
+        response = views.create_object(self.request, project_name, fakecontainer, prefix)
 
         msgs = [msg for msg in self.request._messages]
 
@@ -324,7 +325,6 @@ class TestStorage(BaseTestCase):
         self.assertIn('/fakecontainer/prefix/foo.txt', str_call)
 
         headers = dict([i for i in response.items()])
-        project_name = self.request.session.get('project_name')
         expected = reverse('objectview', kwargs={'container': fakecontainer,
                                                  'prefix': prefix,
                                                  'project': project_name})
@@ -335,8 +335,9 @@ class TestStorage(BaseTestCase):
     def test_create_object_status_401(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(401)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
+        project_name = self.request.session.get('project_name')
 
-        views.create_object(self.request, 'fakecontainer')
+        views.create_object(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -350,8 +351,9 @@ class TestStorage(BaseTestCase):
     def test_create_object_status_403(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(403)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
+        project_name = self.request.session.get('project_name')
 
-        views.create_object(self.request, 'fakecontainer')
+        views.create_object(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -365,8 +367,9 @@ class TestStorage(BaseTestCase):
     def test_create_object_status_other_than_above(self, mock_requests_put, mock_logging):
         mock_requests_put.return_value = fakes.FakeRequestResponse(404)
         self.request.FILES['file1'] = fakes.get_temporary_text_file()
+        project_name = self.request.session.get('project_name')
 
-        views.create_object(self.request, 'fakecontainer')
+        views.create_object(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -1163,8 +1166,9 @@ class TestStorageAcls(BaseTestCase):
             'x-container-read': '.r:*',
             'x-container-write': '',
         }
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Add ACL to container fakecontainer', response.content.decode('UTF-8'))
@@ -1182,8 +1186,9 @@ class TestStorageAcls(BaseTestCase):
             'x-container-read': '',
             'x-container-write': '',
         }
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Make public', response.content.decode('UTF-8'))
@@ -1202,8 +1207,9 @@ class TestStorageAcls(BaseTestCase):
             'x-container-read': 'projectfake:userfake',
             'x-container-write': 'projectfake:userfake',
         }
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Make public', response.content.decode('UTF-8'))
@@ -1220,8 +1226,9 @@ class TestStorageAcls(BaseTestCase):
             'x-container-read': '.r:*,projectfake:userfake',
             'x-container-write': 'projectfake2:userfake2',
         }
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Make private', response.content.decode('UTF-8'))
@@ -1247,8 +1254,9 @@ class TestStorageAcls(BaseTestCase):
         })
 
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         name, args, kargs = mock_post_container.mock_calls[0]
 
@@ -1285,8 +1293,9 @@ class TestStorageAcls(BaseTestCase):
         })
 
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -1312,8 +1321,9 @@ class TestStorageAcls(BaseTestCase):
 
         get.update({'delete': '.r:*,.rlistings'})
         self.request.GET = get
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(mock_post_container.called)
@@ -1342,8 +1352,9 @@ class TestStorageAcls(BaseTestCase):
 
         post.update({'username': '.r:*', 'read': 'On'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(mock_post_container.called)
@@ -1370,8 +1381,9 @@ class TestStorageAcls(BaseTestCase):
 
         get.update({'delete': 'projectfake:userfake'})
         self.request.GET = get
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
 
@@ -1396,8 +1408,9 @@ class TestStorageAcls(BaseTestCase):
 
         get.update({'delete': 'projectfake:userfake'})
         self.request.GET = get
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         self.assertEqual(response.status_code, 200)
 
@@ -1425,8 +1438,9 @@ class TestStorageAcls(BaseTestCase):
 
         get.update({'delete': 'projectfake:userfake'})
         self.request.GET = get
+        project_name = self.request.session.get('project_name')
 
-        response = views.edit_acl(self.request, 'fakecontainer')
+        response = views.edit_acl(self.request, project_name, 'fakecontainer')
 
         msgs = [msg for msg in self.request._messages]
 
@@ -1505,8 +1519,9 @@ class TestStorageCORS(BaseTestCase):
 
         post.update({'urls': 'http://localhost/1\r\nhttp://localhost/2'})
         self.request.POST = post
+        project_name = self.request.session.get('project_name')
 
-        response = views.remove_from_cache(self.request)
+        response = views.remove_from_cache(self.request, project_name)
 
         host, kargs = mock_requests_post.call_args
 

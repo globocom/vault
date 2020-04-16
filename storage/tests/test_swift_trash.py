@@ -37,15 +37,18 @@ class TestSwiftTrash(TestCase):
     @patch("storage.views.client.get_container")
     def test_get_deleted_objects_returns_a_json(self, mock_get_container):
         mock_get_container.return_value = fakes.get_container()
-        response = views.get_deleted_objects(self.request, 'container1')
+        project_name = self.request.session.get('project_name')
+
+        response = views.get_deleted_objects(self.request, project_name, 'container1')
 
         self.assertIn(b'application/json', response.serialize_headers())
 
     @patch("storage.views.client.get_container")
     def test_check_properties_from_get_deleted_objects_content(self, mock_get_container):
         mock_get_container.return_value = fakes.get_container(trash_container=".trash-container1")
+        project_name = self.request.session.get('project_name')
 
-        response = views.get_deleted_objects(self.request, 'container1')
+        response = views.get_deleted_objects(self.request, project_name, 'container1')
         expected_items = ["deleted_objects", "prefix", "storage_url",
                           "trash_container", "original_container"]
 
@@ -57,7 +60,9 @@ class TestSwiftTrash(TestCase):
     def test_get_deleted_objects_client_exception(self, mock_get_container):
         mock_get_container.side_effect = client.ClientException("error message",
                                                                 http_status=500)
-        response = views.get_deleted_objects(self.request, 'container1')
+        project_name = self.request.session.get('project_name')
+
+        response = views.get_deleted_objects(self.request, project_name, 'container1')
 
         self.assertEqual(response.content.decode(), '{"error": "error message"}')
         self.assertEqual(response.status_code, 500)

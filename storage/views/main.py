@@ -329,7 +329,7 @@ def upload(request, project, container, prefix=None):
 
 
 @login_required
-def create_object(request, container, prefix=None):
+def create_object(request, project, container, prefix=None):
     """ Create object on Swift """
 
     obj = request.FILES.get('file1')
@@ -546,7 +546,7 @@ def create_pseudofolder(request, project, container, prefix=None):
 
 
 @login_required
-def edit_acl(request, container):
+def edit_acl(request, project, container):
     """ Edit ACLs on given container. """
 
     storage_url = get_storage_endpoint(request, 'adminURL')
@@ -965,7 +965,7 @@ def edit_cors(request, project, container):
 
 @utils.project_required
 @login_required
-def remove_from_cache(request):
+def remove_from_cache(request, project):
     form = RemoveCacheForm(request.POST or None)
 
     if form.is_valid():
@@ -1079,7 +1079,7 @@ def cache_control(request, project, container, objectname):
 
 @utils.project_required
 @login_required
-def get_deleted_objects(request, container, prefix=None):
+def get_deleted_objects(request, project, container, prefix=None):
     """ Return all deleted objects from a given container. """
 
     storage_url = get_storage_endpoint(request, "adminURL")
@@ -1132,7 +1132,7 @@ def get_deleted_objects(request, container, prefix=None):
 
 @utils.project_required
 @login_required
-def restore_object(request):
+def restore_object(request, project):
     """ Restore a object from trash. """
 
     if request.method != 'POST':
@@ -1211,7 +1211,7 @@ def restore_object(request):
 
 @utils.project_required
 @login_required
-def remove_from_trash(request):
+def remove_from_trash(request, project):
 
     if request.method != 'POST':
         return HttpResponse(status=405)
