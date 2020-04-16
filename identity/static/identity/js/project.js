@@ -8,6 +8,7 @@ Project.Users = {};
 
     var options,
         $main, $addBtn, $users, $roles, $usersList, $loader,
+        timeout = 120000,
         usrTmpl = ['<tr>',
                      '<td class="usr"></td>',
                      '<td class="rle"></td>',
@@ -81,7 +82,8 @@ Project.Users = {};
             url: options.resetPassUrl,
             data: {
                 project: options.projectId
-            }
+            },
+            timeout: timeout
         })
         .done(function (data) {
             $reset_info.addClass('visible')
@@ -115,14 +117,15 @@ Project.Users = {};
             url: options.listUrl,
             data: {
                 project: options.projectId
-            }
+            },
+            timeout: timeout
         })
         .done(function (data) {
             buildUsers(data);
         })
         .fail(function (data) {
             Base.Messages.setMessage({
-                description: data.responseJSON.msg,
+                description: data.statusText,
                 type: 'error'
             });
         });
@@ -162,14 +165,15 @@ Project.Users = {};
                 project: options.projectId,
                 user: $item.data('userId'),
                 role: $item.data('roleId')
-            }
+            },
+            timeout: timeout
         })
         .done(function (data) {
             $usersList.append($item);
         })
         .fail(function (data) {
             Base.Messages.setMessage({
-                description: data.responseJSON.msg,
+                description: data.statusText,
                 type: 'error'
             });
         });
@@ -183,14 +187,15 @@ Project.Users = {};
                 project: options.projectId,
                 user: $item.data('userId'),
                 role: $item.data('roleId')
-            }
+            },
+            timeout: timeout
         })
         .done(function (data) {
             $item.remove();
         })
         .fail(function (data) {
             Base.Messages.setMessage({
-                description: data.responseJSON.msg,
+                description: data.statusText,
                 type: 'error'
             });
         });
