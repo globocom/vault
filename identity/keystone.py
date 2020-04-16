@@ -201,6 +201,10 @@ class KeystoneBase:
     def remove_user_role(self, user=None, project=None, role=None):
         return self.conn.roles.revoke(role, user=user, project=project)
 
+    def role_assignments_list(self, user=None, group=None, project=None, domain=None, role=None):
+        return self.conn.role_assignments.list(
+            user=user, group=group, project=project, domain=domain, role=role)
+
     def vault_project_create(self, project_name, group_id, description=None,
                              **kwargs):
         """
