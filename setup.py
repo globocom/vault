@@ -7,7 +7,7 @@ VERSION = __import__('vault').__version__
 setup(
     name='vault',
     version=VERSION,
-    description='App Django - Interface do Vault',
+    description='Admin webapp for OpenStack Keystone and OpenStack Swift.',
     author='Storm',
     author_email='storm@g.globo',
     url='https://github.com/globocom/vault'
@@ -23,7 +23,6 @@ setup(
         'python-dateutil==2.5.3',
         'python-keystoneclient==3.16.0',
         'python-swiftclient==3.7.1',
-        'py-zabbix==1.1.5',
         'pytz==2015.4',
         'requests==2.19.1'
     ],
