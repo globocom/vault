@@ -10,7 +10,7 @@ setup(
     description='Admin webapp for OpenStack Keystone and OpenStack Swift.',
     author='Storm',
     author_email='storm@g.globo',
-    url='https://github.com/globocom/vault'
+    url='https://github.com/globocom/vault',
     install_requires=[
         'Babel==2.3.4',
         'gunicorn==19.3.0',
