@@ -130,12 +130,12 @@
                 <i class="fa fa-cog icon-white"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
-                <a href="#modal-cache-control" class="dropdown-item btn-cache-control" data-target="#modal-cache-control" data-toggle="modal"
+                 <a href="#modal-cache-control" class="dropdown-item btn-cache-control" data-target="#modal-cache-control" data-toggle="modal"
                    data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=obj.name %}">
                   {% trans 'Edit Cache-Control' %}
                 </a>
                 <a href="{% url 'delete_object' project=project_name container=container objectname=obj.name %}"
-                   class="dropdown-item btn-cache-control"
+                   class="dropdown-item"
                    onclick="return confirm('Delete object {{ obj.name }}?');">
                   {% trans 'Delete object' %}
                 </a>
