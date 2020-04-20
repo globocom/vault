@@ -1,0 +1,3 @@
+recursive-include vault/templates *
+recursive-include vault/templatetags *
+recursive-include vault/tests *
