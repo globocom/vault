@@ -1,3 +1,9 @@
 recursive-include vault/templates *
 recursive-include vault/templatetags *
 recursive-include vault/tests *
+recursive-include storage/templates *
+recursive-include storage/templatetags *
+recursive-include storage/tests *
+recursive-include identity/templates *
+recursive-include identity/templatetags *
+recursive-include identity/tests *
