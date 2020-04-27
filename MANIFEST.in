@@ -10,3 +10,4 @@ recursive-include identity/static *
 recursive-include identity/templates *
 recursive-include identity/templatetags *
 recursive-include identity/tests *
+recursive-include locale *
