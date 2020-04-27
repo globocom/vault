@@ -61,6 +61,7 @@
             <i class="fas fa-cog icon-white"></i>
           </button>
 
+          {% block container_options %}
           <script type="text/html" id="html-container-{{ forloop.counter }}">
             <div id="options-container-{{ forloop.counter }}" class="container-options"
                  data-status-urls='[{ "elementId": "#container-{{ forloop.counter }}-trash", "url": "{% url "container_trash_status" project=project_name container=container.name %}" },
@@ -145,6 +146,7 @@
 
             </div> <!-- .container-options -->
           </script>
+          {% endblock %}
 
         </td>
       </tr>

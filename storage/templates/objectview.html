@@ -48,6 +48,8 @@
 
 {% block content %}
 
+  {% block search %}{% endblock %}
+
   {% storage_tools %}
 
   <div class="box">
@@ -182,4 +184,3 @@ clipboard.on('success', function(e) {
   Base.Paginator.init();
 </script>
 {% endblock %}
-
