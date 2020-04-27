@@ -131,7 +131,7 @@ main {
 }
 
 .content-breadcrumb a,
-.content-breadcrumb span, {
+.content-breadcrumb span {
   margin: 0 5px;
 }
 
@@ -149,8 +149,6 @@ main {
 .content-breadcrumb span:last-child:after {
   content: "";
 }
-
-.content-body {}
 
 /* form */
 .form-box {
@@ -315,7 +313,6 @@ main {
 
 .table.items-list td,
 .table.items-list th {
-  font-size: 13px;
   vertical-align: middle;
 }
 

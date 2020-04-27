@@ -12,7 +12,7 @@ var VaultMenu = (function(window) {
     var contents = []
 
     options = Object.assign({
-        'endpoints': null
+      'endpoints': null
     }, opts);
 
     urls = options.endpoints;
@@ -91,12 +91,12 @@ var VaultMenu = (function(window) {
 
     let sidebar_menu_items = Array.from(sidebar_menu.children);
     sidebar_menu_items.push(wid);
-    sidebar_menu_items.sort((a,b) => {
+    sidebar_menu_items.sort(function(a, b) {
       return urls.indexOf(a.json_endpoint) - urls.indexOf(b.json_endpoint);
     });
 
     sidebar_menu.innerHTML = '';
-    sidebar_menu_items.forEach(i => {
+    sidebar_menu_items.forEach(function(i) {
       sidebar_menu.appendChild(i);
     });
   }
