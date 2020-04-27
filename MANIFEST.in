@@ -1,17 +1,11 @@
 recursive-include vault/static *
 recursive-include vault/templates *
 recursive-include vault/migrations *
-recursive-include vault/templatetags *
-recursive-include vault/tests *
 recursive-include storage/static *
 recursive-include storage/templates *
 recursive-include storage/migrations *
-recursive-include storage/templatetags *
-recursive-include storage/tests *
 recursive-include identity/static *
 recursive-include identity/templates *
 recursive-include identity/migrations *
-recursive-include identity/templatetags *
-recursive-include identity/tests *
 recursive-include actionlogger/migrations *
 recursive-include locale *
