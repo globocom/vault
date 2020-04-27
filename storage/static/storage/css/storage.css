@@ -145,7 +145,6 @@
 
 #box_search .send-btn {
     width: 80px;
-    height: 35px;
 }
 
 #box_search .search-label {
@@ -153,6 +152,7 @@
 }
 
 #box_search .input-query {
+    border: 1px solid #ced4da;
     margin-left: 15px;
     width: 350px;
 }
