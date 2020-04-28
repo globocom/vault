@@ -1,0 +1,315 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-28 07:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: vault/admin.py:28 vault/forms.py:60 vault/utils.py:93 vault/utils.py:163
+#: vault/views.py:66
+msgid "Unable to retrieve Keystone data"
+msgstr "Não foi possível recuperar dados do Keystone"
+
+#: vault/apps.py:9
+msgid "Vault"
+msgstr "Vault"
+
+#: vault/models.py:18
+msgid "Groups and Projects"
+msgstr "Times e Projetos"
+
+#: vault/models.py:31
+msgid "Current Project"
+msgstr "Projeto Atual"
+
+#: vault/settings.py:91
+msgid "English"
+msgstr "Inglês"
+
+#: vault/settings.py:92
+msgid "Portuguese"
+msgstr "Português"
+
+#: vault/templates/500.html:4 vault/templates/vault/project_error.html:12
+msgid "Error"
+msgstr "Erro"
+
+#: vault/templates/500.html:13
+msgid "500, Something went wrong..."
+msgstr "500, Algo deu errado..."
+
+#: vault/templates/admin/index.html:29
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr "Models na aplicação %(name)s"
+
+#: vault/templates/admin/index.html:40
+#: vault/templates/vault/user_edit_teams.html:33
+msgid "Add"
+msgstr "Adicionar"
+
+#: vault/templates/admin/index.html:46
+#: vault/templates/vault/set_project.html:35
+msgid "Change"
+msgstr "Mudar"
+
+#: vault/templates/admin/index.html:59
+msgid "You don't have permission to edit anything."
+msgstr "Você não tem permissão para editar nada."
+
+#: vault/templates/vault/dashboard.html:5
+#: vault/templates/vault/dashboard.html:11
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: vault/templates/vault/dashboard.html:38
+msgid "Last Login"
+msgstr "Último Login"
+
+#: vault/templates/vault/dashboard.html:46
+#: vault/templates/vault/sidebar.html:46
+msgid "Manage my Team"
+msgstr "Gerenciar meu Time"
+
+#: vault/templates/vault/dashboard.html:47
+msgid "Add or remove someone in your team"
+msgstr "Adicionar ou remover alguém do seu time"
+
+#: vault/templates/vault/login.html:8
+msgid "login"
+msgstr "login"
+
+#: vault/templates/vault/login.html:21
+msgid "Please correct the error below."
+msgstr "Por favor corrija o erro abaixo."
+
+#: vault/templates/vault/login.html:23
+msgid "Please correct the errors below."
+msgstr "Por favor corrija os erros abaixo."
+
+#: vault/templates/vault/login.html:42
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"Você está autenticado(a) como %(username)s, mas não é autorizado(a) a "
+"acessar esta página. Gostaria de entrar com uma conta diferente?"
+
+#: vault/templates/vault/login.html:67
+msgid "Forgotten your password or username?"
+msgstr "Esqueceu sua senha ou nome de usuário?"
+
+#: vault/templates/vault/login.html:71
+msgid "Login"
+msgstr "Login"
+
+#: vault/templates/vault/pagination.html:11
+msgid "of"
+msgstr "de"
+
+#: vault/templates/vault/pagination.html:17
+msgid "next"
+msgstr "próxima"
+
+#: vault/templates/vault/project_error.html:4
+msgid "Project Error"
+msgstr "Erro de Projeto"
+
+#: vault/templates/vault/project_error.html:15
+#, python-format
+msgid "Project \"%(inexistent_project)s\" doesn't exist"
+msgstr "Projeto \"%(inexistent_project)s\" não existe"
+
+#: vault/templates/vault/project_error.html:17
+msgid "Vault Error"
+msgstr "Erro do Vault"
+
+#: vault/templates/vault/project_error.html:23
+#, python-format
+msgid "Return to project \"%(project_name)s\" Home"
+msgstr "Retornar à Home do projeto \"%(project_name)s\""
+
+#: vault/templates/vault/project_error.html:28
+msgid "Select a different project"
+msgstr "Selecionar um projeto diferente"
+
+#: vault/templates/vault/remove_user_modal.html:9
+msgid "Remove user from team"
+msgstr "Remover usuário do time"
+
+#: vault/templates/vault/remove_user_modal.html:13
+#, python-brace-format
+msgid ""
+"User \"{usr}\" will lose access to all projects owned by \"{grp}\"! Continue?"
+msgstr ""
+"Usuário \"{usr}\" perderá acesso a todos os projetos pertencentes a "
+"\"{grp}\"! Continuar?"
+
+#: vault/templates/vault/remove_user_modal.html:16
+#: vault/templates/vault/team_manager/add_user_modal.html:25
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: vault/templates/vault/remove_user_modal.html:17
+msgid "Remove"
+msgstr "Remover"
+
+#: vault/templates/vault/set_project.html:30
+msgid "current project"
+msgstr "projeto atual"
+
+#: vault/templates/vault/set_project.html:41
+msgid "No project selected"
+msgstr "Nenhum projeto selecionado"
+
+#: vault/templates/vault/set_project.html:44
+msgid "Click here to select a project"
+msgstr "Clique aqui para selecionar um projeto"
+
+#: vault/templates/vault/set_project.html:60
+msgid "Select"
+msgstr "Selecionar"
+
+#: vault/templates/vault/set_project.html:61
+#: vault/templates/vault/sidebar.html:17
+msgid "Edit Project"
+msgstr "Editar Projeto"
+
+#: vault/templates/vault/set_project.html:64
+msgid "Delete Project"
+msgstr "Excluir Projeto"
+
+#: vault/templates/vault/sidebar.html:16
+msgid "Change Project"
+msgstr "Mudar de Projeto"
+
+#: vault/templates/vault/sidebar.html:27
+msgid "Main"
+msgstr "Principal"
+
+#: vault/templates/vault/sidebar.html:32 vault/templates/vault/sidebar.html:33
+msgid "Home"
+msgstr "Home"
+
+#: vault/templates/vault/sidebar.html:39 vault/templates/vault/sidebar.html:56
+msgid "Settings"
+msgstr "Configurações"
+
+#: vault/templates/vault/sidebar.html:44
+msgid "Manage Team"
+msgstr "Gerenciar Time"
+
+#: vault/templates/vault/sidebar.html:52
+msgid "Teams and Users"
+msgstr "Times e Usuários"
+
+#: vault/templates/vault/sidebar.html:57
+msgid "Vault Admin"
+msgstr "Admin do Vault"
+
+#: vault/templates/vault/team_manager/add_user_modal.html:10
+msgid "Add user to"
+msgstr "Adicionar usuário a"
+
+#: vault/templates/vault/team_manager/add_user_modal.html:18
+msgid "Select a user"
+msgstr "Selecione um usuário"
+
+#: vault/templates/vault/team_manager/add_user_modal.html:24
+msgid "Add User"
+msgstr "Adicionar Usuário"
+
+#: vault/templates/vault/team_manager/index.html:5
+#: vault/templates/vault/team_manager/index.html:6
+#: vault/templates/vault/user_edit_teams.html:5
+msgid "Manage Users and Teams"
+msgstr "Gerenciar Usuários e Times"
+
+#: vault/templates/vault/team_manager/index.html:24
+msgid "Add new user to"
+msgstr "Adicionar novo usuário a"
+
+#: vault/templates/vault/user_edit_teams.html:17
+#: vault/templates/vault/user_edit_teams.html:41
+#: vault/templates/vault/users_teams.html:26
+#: vault/templates/vault/users_teams.html:36
+msgid "User"
+msgstr "Usuário"
+
+#: vault/templates/vault/user_edit_teams.html:25
+#: vault/templates/vault/user_edit_teams.html:42
+#: vault/templates/vault/users_teams.html:17
+#: vault/templates/vault/users_teams.html:35
+msgid "Team"
+msgstr "Time"
+
+#: vault/templates/vault/user_info.html:12
+msgid "Logout"
+msgstr "Sair"
+
+#: vault/templates/vault/users_teams.html:5
+msgid "List Teams and Users"
+msgstr "Listar Times e Usuários"
+
+#: vault/templates/vault/users_teams.html:19
+msgid "All"
+msgstr "Todos"
+
+#: vault/tests/test_views.py:91 vault/views.py:151
+msgid "Unable to change your project."
+msgstr "Não foi possível mudar seu projeto."
+
+#: vault/urls.py:14
+msgid "Admin Dashboard"
+msgstr "Dashboard de Admin"
+
+#: vault/views.py:59
+msgid "Missing 'project_id'"
+msgstr "Não há 'project_id'"
+
+#: vault/views.py:75
+msgid "Can't find this project"
+msgstr "Não foi possível encontrar este projeto"
+
+#: vault/views.py:76 vault/views.py:149 vault/views.py:240 vault/views.py:267
+#: vault/views.py:302 vault/views.py:328
+msgid "Exception:"
+msgstr "Exceção:"
+
+#: vault/views.py:85
+msgid "Project selected: {}"
+msgstr "Projeto selecionado: {}"
+
+#: vault/views.py:198
+msgid "User logged out:"
+msgstr "Usuário saiu:"
+
+#: vault/views.py:288
+msgid "User already registered with this team"
+msgstr "Usuário já registrado com este time"
+
+#: vault/views.py:289
+msgid "Conflict:"
+msgstr "Conflito:"
+
+#: vault/views.py:301
+msgid "Error adding user, check user team"
+msgstr "Erro ao adicionar usuário, cheque time do usuário"
+
+#: vault/views.py:327
+msgid "Error removing user, check user and team"
+msgstr "Erro ao remover usuário, cheque usuário e time"

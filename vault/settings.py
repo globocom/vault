@@ -9,7 +9,6 @@ import binascii
 import importlib
 from django.utils.translation import gettext_lazy as _
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('VAULT_SECRET_KEY', 'Th1s-I5-4-S3cR37-K3y')
@@ -73,10 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'vault.wsgi.application'
-
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
 
 ROOT_URLCONF = 'vault.urls'
 
