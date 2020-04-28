@@ -91,7 +91,7 @@ msgid ""
 "objects. Continue?"
 msgstr ""
 "Ao desabilitar a Lixeira, não será mais possível restaurar objetos "
-"deletados. Continuar?"
+"excluídos. Continuar?"
 
 #: storage/templates/containerview.html:119
 msgid "Checking Trash"
