@@ -479,6 +479,11 @@ main {
 .selector .selector-chosen .filtered {
   height: 260px;
 }
+.password-eye, .password-eye:hover {
+  vertical-align: middle;
+  text-align: center;
+  color: #333;
+}
 /* forms.css */
 
 /* <sub-content> */

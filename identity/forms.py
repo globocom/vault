@@ -7,6 +7,8 @@ from django.forms.fields import ChoiceField
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 
+from vault.widgets import PasswordInputWithEye
+
 
 BOOLEAN_CHOICES = ((True, 'Yes'), (False, 'No'))
 
@@ -29,12 +31,14 @@ class UserForm(forms.Form):
     password = forms.CharField(
         label=_('Password'),
         required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=PasswordInputWithEye(attrs={'class': 'form-control'},
+                                   render_value=True))
 
     password_confirm = forms.CharField(
         label=_('Confirm Password'),
         required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        widget=PasswordInputWithEye(attrs={'class': 'form-control'},
+                                   render_value=True))
 
     project = ChoiceField(
         label=_('Primary Project'),
@@ -148,7 +152,7 @@ class DeleteProjectConfirm(forms.Form):
     password = forms.CharField(
         label=_('Password'),
         required=True,
-        widget=forms.PasswordInput(
+        widget=PasswordInputWithEye(
             attrs={
                 'class': 'form-control',
                 'placeholder': _('Confirm password')

@@ -33,6 +33,20 @@ Base.Forms = {};
             }
             return false;
         });
+        $(".show_hide_password a").on('click', function(event) {
+          event.preventDefault();
+          let $input = $(this).parents(".show_hide_password").find("input");
+          let $icon = $(this).parents(".show_hide_password").find("i");
+          if($input.attr("type") == "text"){
+            $input.attr('type', 'password');
+            $icon.addClass( "fa-eye-slash" );
+            $icon.removeClass( "fa-eye" );
+          }else if($input.attr("type") == "password"){
+            $input.attr('type', 'text');
+            $icon.removeClass( "fa-eye-slash" );
+            $icon.addClass( "fa-eye" );
+          }
+        });
     }
 
     $.extend(Base.Forms, {

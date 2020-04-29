@@ -11,7 +11,7 @@
   <form action="" class="form-box user-form" method="POST">
     <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
     {{ form.id }}
-    
+
     <fieldset class="content">
       <div class="row">
         <div class="col-md-6">
@@ -69,4 +69,10 @@
     </fieldset>
 
   </form>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+Base.Forms.init();
+</script>
 {% endblock %}
