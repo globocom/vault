@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 
 from vault.widgets import PasswordInputWithEye
+from identity.keystone import Keystone
 
 
 BOOLEAN_CHOICES = ((True, 'Yes'), (False, 'No'))
@@ -63,6 +64,14 @@ class CreateUserForm(UserForm):
 
     role = ChoiceField(label=u'Role', required=True,
                        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CreateUserForm, self).__init__(*args, **kwargs)
+
+        _password = Keystone.create_password()
+
+        for field in ('password', 'password_confirm'):
+            self.fields[field].initial = _password
 
 
 class UpdateUserForm(UserForm):
