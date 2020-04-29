@@ -82,7 +82,6 @@ class ListUserView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Templat
 
 class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
     form_class = UserForm
-    success_url = reverse_lazy('change_project')
 
     def _fill_project_choices(self, form):
         if self.keystone and 'project' in form.fields:
@@ -109,8 +108,11 @@ class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
             form.fields['role'].choices = items
 
     @method_decorator(sensitive_post_parameters('password', 'password_confirm'))
-    def dispatch(self, *args, **kwargs):
-        return super(BaseUserView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        project_name = request.session.get('project_name')
+        self.success_url = reverse_lazy('admin_list_users',
+                                   kwargs={'project': project_name})
+        return super(BaseUserView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.get_form(self.form_class)
