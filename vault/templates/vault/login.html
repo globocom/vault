@@ -50,6 +50,7 @@
         <section class="d-flex justify-content-center">
           <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
 
+            {% block contrib_auth_form %}
             <div class="form-group">
               {{ form.username.errors }}
               {{ form.username }}
@@ -69,15 +70,20 @@
             {% endif %}
 
             <input type="submit" class="btn btn-primary btn-block" value="{% trans 'Login' %}">
+            {% endblock %}
 
             {% if providers %}
+            {% block form_separator %}
             <hr class="hr-separator">
+            {% endblock %}
 
+            {% block provider_list %}
             <div class="providers">
               {% for provider in providers %}
                 <a href="{{ provider.url }}" class="btn btn-outline-secondary btn-block">{{ provider.name }}</a>
               {% endfor %}
             </div>
+            {% endblock %}
 
             {% endif %}
           </form>
