@@ -313,7 +313,8 @@ class KeystoneBase:
                 'reason': 'Admin required'
             }
 
-        self.vault_set_project_owner(project_id, group_id)
+        if group_id is not None:
+            self.vault_set_project_owner(project_id, group_id)
 
         return {
             'status': True,
