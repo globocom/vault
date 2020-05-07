@@ -10,9 +10,11 @@
 {% endblock %}
 
 {% block content_top %}
+{% block delete_project_btn %}
   <a href="{% url 'delete_project' project=project_name project_id=identity_project_id %}" class="btn btn-sm btn-danger">
     <i class="fas fa-trash"></i>&nbsp;{% trans 'Delete Project' %}
   </a>
+{% endblock %}
 {% endblock %}
 
 {% block content %}
@@ -37,10 +39,12 @@
               <input type='text' name='user_project' class="form-control" readonly="readonly" value='{{ user_project }}' />
             </div>
 
+            {% block reset_pass_btn %}
             <div class="form-group">
               <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
               <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
             </div>
+            {% endblock %}
           {% endif %}
 
           <div class="form-group">
@@ -86,6 +90,7 @@
 
 {% block js_bottom %}
 
+  {% block show_roles_script %}
   {% if show_roles %}
     <script src="{% static 'identity/js/project.js' %}"></script>
     <script>
@@ -98,5 +103,6 @@
     });
     </script>
   {% endif %}
+  {% endblock %}
 
 {% endblock %}
