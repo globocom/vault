@@ -42,3 +42,10 @@
     </fieldset>
   </form>
 {% endblock %}
+{% block js_bottom %}
+<script>
+Base.Forms.init({
+  'delete_btn_class': '.delete-user'
+});
+</script>
+{% endblock %}
