@@ -82,4 +82,8 @@ def get_logout_url(context):
 def url_replace(get_parameters, **kwargs):
     query = get_parameters
     query.update(kwargs)
-    return urlencode(query)
+    for x in query:
+        if type(query[x]) is not list:
+            query[x] = [query[x]]
+    query_pairs = [(k, v) for k, vlist in query.items() for v in vlist]
+    return urlencode(query_pairs)

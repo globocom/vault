@@ -9,5 +9,5 @@ register = template.Library()
 def pagination(context, paginated_item):
     return {
         'items': paginated_item,
-        'get_parameters': context['request'].GET.dict()
+        'get_parameters': dict(context['request'].GET)
     }
