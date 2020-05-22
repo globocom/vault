@@ -170,6 +170,8 @@ KEYSTONE_ROLE = os.getenv('VAULT_KEYSTONE_ROLE')  # swiftoperator role ID
 # Cache cleanning API
 CACHESWEEP_API = os.getenv('CACHESWEEP_API', 'http://localhost/')
 
+IDENTITY_SECRET_KEY = os.getenv('IDENTITY_SECRET_KEY')
+
 LOGGING = {
     'version': 1,
     'handlers': {

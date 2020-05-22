@@ -3,8 +3,8 @@
 import random
 import string
 import logging
-
 import requests
+
 from keystoneclient import exceptions, v3
 
 from django.conf import settings
@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
 
 from vault.models import GroupProjects
+from identity.models import Project
 
 
 log = logging.getLogger(__name__)
@@ -234,20 +235,63 @@ class KeystoneBase:
                 'reason': 'Superuser required.'
             }
 
-        # Creates user and add swiftoperator role
+        # Creates admin user and add swiftoperator role
         try:
-            user_password = Keystone.create_password()
-            swiftop = self.conn.roles.find(name='swiftoperator').id
-            user = self.user_create(name='u_{}'.format(project_name),
-                                    password=user_password,
-                                    role_id=swiftop,
-                                    project_id=project.id)
+            admin_password = Keystone.create_password()
+            admin_user = self.user_create(
+                name='u_{}'.format(project_name),
+                password=admin_password,
+                role_id=settings.KEYSTONE_ROLE,
+                project_id=project.id
+            )
         except exceptions.Forbidden as err:
             self.project_delete(project.id)
             log.error('Error: {}'.format(err))
             return {
                 'status': False,
-                'reason': 'Admin required'
+                'reason': 'Admin User required'
+            }
+
+        # Creates internal user and add swiftoperator role
+        try:
+            user_name = 'u_vault_{}'.format(project_name)
+            internal_password = Keystone.create_password()
+            internal_user = self.user_create(
+                name=user_name,
+                email=self.request.user.email,
+                password=internal_password,
+                project_id=project.id,
+                enabled=project.enabled,
+                domain=project.domain_id,
+                role_id=settings.KEYSTONE_ROLE
+            )
+        except exceptions.Forbidden as err:
+            self.user_delete(admin_user.id)
+            self.project_delete(project.id)
+            log.error('Error: {}'.format(err))
+            return {
+                'status': False,
+                'reason': 'Internal User required'
+            }
+
+        # Creates project user
+        try:
+            from vault.utils import encrypt_password
+            password = encrypt_password(internal_password)
+            db_project = Project(
+                project=project.id,
+                user=user_name,
+                password=password.decode("utf-8")
+            )
+            db_project.save()
+        except Exception as err:
+            self.user_delete(admin_user.id)
+            self.user_delete(internal_user.id)
+            self.project_delete(project.id)
+            log.error('Error: {}'.format(err))
+            return {
+                'status': False,
+                'reason': 'Project User required'
             }
 
         # Link the project to a team
@@ -256,8 +300,9 @@ class KeystoneBase:
                                             project_id=project.id,
                                             owner=1)
         except Exception as err:
+            self.user_delete(admin_user.id)
+            self.user_delete(internal_user.id)
             self.project_delete(project.id)
-            self.user_delete(user.id)
             log.error('Error: {}'.format(err))
             return {
                 'status': False,
@@ -267,8 +312,8 @@ class KeystoneBase:
         return {
             'status': True,
             'project': project,
-            'user': user,
-            'password': user_password
+            'user': admin_user,
+            'password': admin_password
         }
 
     def vault_set_project_owner(self, project_id, group_id):
@@ -343,7 +388,7 @@ class KeystoneBase:
         #         'reason': err
         #     }
 
-        # user = self.find_user_with_u_prefix(project.id)
+        # user = self.find_user_with_u_prefix(project.id, 'u')
         # if user:
         #     self.user_update_enabled(user.id, False)
 
@@ -361,7 +406,12 @@ class KeystoneBase:
             }
 
         # Delete user named "u_<project_name>"
-        user = self.find_user_with_u_prefix(project.id)
+        user = self.find_user_with_u_prefix(project.id, 'u')
+        if user:
+            self.user_delete(user.id)
+
+        # Delete user named "u_vault_<project_name>"
+        user = self.find_user_with_u_prefix(project.id, 'u_vault')
         if user:
             self.user_delete(user.id)
 
@@ -397,12 +447,12 @@ class KeystoneBase:
 
         return requests.delete(url, headers=headers, verify=verify)
 
-    def find_user_with_u_prefix(self, project_id):
+    def find_user_with_u_prefix(self, project_id, prefix):
         project = self.project_get(project_id)
         users = self.user_list(project.id)
 
         for user in users:
-            if user.name == 'u_{}'.format(project.name):
+            if user.name == '{}_{}'.format(prefix, project.name):
                 return user
 
         return None

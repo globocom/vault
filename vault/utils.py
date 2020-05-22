@@ -2,7 +2,9 @@
 
 import os
 import logging
+
 from datetime import datetime, timedelta
+from cryptography.fernet import Fernet
 
 from swiftclient import client
 
@@ -228,3 +230,15 @@ def human_readable(value):
     if index == -1:
         return '{:d}'.format(value)
     return '{:d}{}i'.format(round(value), suffixes[index])
+
+
+def encrypt_password(password):
+    key = bytes(settings.IDENTITY_SECRET_KEY, encoding='utf8')
+    cipher_suite = Fernet(key)
+    return cipher_suite.encrypt(bytes(password, encoding='utf8'))
+
+
+def decrypt_password(password):
+    key = bytes(settings.IDENTITY_SECRET_KEY, encoding='utf8')
+    cipher_suite = Fernet(key)
+    return cipher_suite.decrypt(bytes(password, encoding='utf8'))
