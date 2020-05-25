@@ -24,7 +24,7 @@ setup(
         'python-keystoneclient==3.16.0',
         'python-swiftclient==3.7.1',
         'pytz==2015.4',
-        'requests==2.19.1'
+        'requests==2.20'
     ],
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
