@@ -12,3 +12,4 @@ class Project(models.Model):
 
     class Meta:
         db_table = 'project'
+        unique_together = (('project'),)

@@ -48,6 +48,10 @@ class KeystoneBase:
 
         return client.Client(**self.config)
 
+    def vault_database_project_delete(self, project_id):
+        project = Project.objects.filter(project=project_id)
+        project.delete()
+
     def vault_group_project_delete(self, project_id):
         group_projects = GroupProjects.objects.filter(project=project_id)
         group_projects.delete()
@@ -414,6 +418,9 @@ class KeystoneBase:
         user = self.find_user_with_u_prefix(project.id, 'u_vault')
         if user:
             self.user_delete(user.id)
+
+        # Delete project from vault database
+        self.vault_database_project_delete(project.id)
 
         # Delete group_project
         self.vault_group_project_delete(project.id)
