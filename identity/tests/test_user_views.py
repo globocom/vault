@@ -450,7 +450,7 @@ class UpdateProjectUserPasswordTest(TestCase):
     def test_find_user_with_u_prefix_was_called(self, mock_find_user):
         self.view(self.request)
 
-        mock_find_user.assert_called_with("AProjectID")
+        mock_find_user.assert_called_with("AProjectID", 'u')
 
     @patch('identity.keystone.Keystone.user_update')
     def test_user_update_was_called(self, mock_user_update):

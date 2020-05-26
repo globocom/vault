@@ -31,6 +31,7 @@ class TestKeystoneV3(TestCase):
             u'id': str(uuid4()),
             u'name': 'project_test',
             u'description': 'project description',
+            u'domain_id': 'default',
             u'enabled': True
         })
 
@@ -134,6 +135,7 @@ class TestKeystoneV3(TestCase):
             email='email@email.com', enabled=True, password='password', project='project_id')
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
+    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'c573d07d11ed4f75a7cae8e7527eb1ed')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.Keystone.vault_group_project_create')
@@ -159,15 +161,14 @@ class TestKeystoneV3(TestCase):
                                                     description=self.project.description,
                                                     enabled=True)
 
-        # swiftoperator role id
-        mock_swiftop_role = self.mock_keystone_conn.return_value. \
-                                roles.find.return_value.id
-
         # User creation
-        mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
+        mock_key_user.assert_called_with(name='u_vault_{}'.format(self.project.name),
+                                         email='',
                                          password='password',
+                                         enabled=True,
+                                         domain='default',
                                          project_id=self.project.id,
-                                         role_id=mock_swiftop_role)
+                                         role_id='c573d07d11ed4f75a7cae8e7527eb1ed')
 
         mock_gp_create.assert_called_with(group_id=self.group.id,
                                           project_id=self.project.id,
@@ -204,7 +205,7 @@ class TestKeystoneV3(TestCase):
 
         keystone = Keystone(self.request, project_name='project_name')
 
-        expected = {'status': False, 'reason': 'Admin required'}
+        expected = {'status': False, 'reason': 'Admin User required'}
         computed = keystone.vault_project_create(self.project.name, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)
@@ -299,7 +300,7 @@ class TestKeystoneDeleteProject(TestCase):
         mock_swift_delete.assert_called_with(self.project.id)
 
         # Find project's user
-        self.mock_find_user_with_u_prefix.assert_called_with(self.project.id)
+        self.mock_find_user_with_u_prefix.assert_called_with(self.project.id, 'u_vault')
 
         # Keystone project delete
         mock_keystone_delete.assert_called_with(self.project.id)
