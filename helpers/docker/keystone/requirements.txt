@@ -75,7 +75,7 @@ pytz==2018.3
 PyYAML==3.12
 repoze.lru==0.7
 repoze.who==2.3
-requests==2.18.4
+requests==2.20.0
 rfc3986==1.1.0
 Routes==2.4.1
 scrypt==0.8.6
