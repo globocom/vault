@@ -135,14 +135,20 @@ class TestKeystoneV3(TestCase):
             email='email@email.com', enabled=True, password='password', project='project_id')
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
-    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'c573d07d11ed4f75a7cae8e7527eb1ed')
+    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'e03a556b664d4a41aaf2c5b4518f33ae')
+    @patch('vault.utils.encrypt_password')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.Keystone.vault_group_project_create')
-    def test_vault_create_project(self, mock_gp_create, mock_key_pass, mock_key_user):
+    def test_vault_create_project(self, mock_gp_create, 
+                                        mock_key_pass, 
+                                        mock_key_user, 
+                                        mock_encrypt_password):
 
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_key_pass.return_value = 'password'
+
+        mock_encrypt_password.return_value = b'123456'
 
         keystone = Keystone(self.request, project_name='project_name')
 
@@ -168,7 +174,7 @@ class TestKeystoneV3(TestCase):
                                          enabled=True,
                                          domain='default',
                                          project_id=self.project.id,
-                                         role_id='c573d07d11ed4f75a7cae8e7527eb1ed')
+                                         role_id='e03a556b664d4a41aaf2c5b4518f33ae')
 
         mock_gp_create.assert_called_with(group_id=self.group.id,
                                           project_id=self.project.id,
@@ -213,6 +219,8 @@ class TestKeystoneV3(TestCase):
         # Se falhou o cadastro de usuario, o project devera ser deletado
         mock_project_delete.assert_called_with(self.project.id)
 
+    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'e03a556b664d4a41aaf2c5b4518f33ae')
+    @patch('vault.utils.encrypt_password')
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
@@ -220,13 +228,16 @@ class TestKeystoneV3(TestCase):
     def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save,
                                                                          mock_user_delete,
                                                                          mock_user_create,
-                                                                         mock_project_delete):
+                                                                         mock_project_delete,
+                                                                         mock_encrypt_password):
 
         fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db
         mock_gp_save.side_effect = Exception
+
+        mock_encrypt_password.return_value = b'123456'
 
         keystone = Keystone(self.request, project_name='project_name')
 
