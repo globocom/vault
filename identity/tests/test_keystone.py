@@ -140,9 +140,9 @@ class TestKeystoneV3(TestCase):
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.Keystone.vault_group_project_create')
-    def test_vault_create_project(self, mock_gp_create, 
-                                        mock_key_pass, 
-                                        mock_key_user, 
+    def test_vault_create_project(self, mock_gp_create,
+                                        mock_key_pass,
+                                        mock_key_user,
                                         mock_encrypt_password):
 
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
