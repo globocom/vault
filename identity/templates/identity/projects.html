@@ -24,7 +24,6 @@
       <tr>
         <th>{% trans 'Project' %}</th>
         <th>{% trans 'Project Id' %}</th>
-        <th>{% trans 'Description' %}</th>
         <th>{% trans 'Created By' %}</th>
         <th>{% trans 'Owner' %}</th>
         <th>{% trans 'Enabled' %}</th>
@@ -36,7 +35,6 @@
       <tr>
         <td>{{ project.name }}</td>
         <td>{{ project.id }}</td>
-        <td>{{ project.description }}</td>
         <td>
           {% if project.created_by %}
           <span class="service-name {{ project.created_by }}">{{ project.created_by }}</span>
