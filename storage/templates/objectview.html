@@ -167,6 +167,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script>
 var clipboard = new Clipboard('.btn-copy-url');
 clipboard.on('success', function(e) {

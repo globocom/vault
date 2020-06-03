@@ -15,7 +15,7 @@
   <section class="team-manager">
   {% for group in groups %}
     <div class="team">
-      
+
       <div class="team-top">
         <span class="team-name">{{ group.name }}</span>
         <a class="btn btn-primary btn-sm btn-add-user"
@@ -24,7 +24,7 @@
           {% trans 'Add new user to' %} {{ group.name }}
         </a>
       </div>
-      
+
       <div class="box">
         <table id="container-list" class="items-list table table-hover">
           <thead>
@@ -61,6 +61,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script src="{% static 'vault/js/team_manager.js' %}"></script>
 <script>
 TeamManager.init({

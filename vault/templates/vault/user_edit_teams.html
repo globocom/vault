@@ -50,6 +50,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script src="{% static 'vault/js/users_teams.js' %}"></script>
 <script>
 Team.Users.init({

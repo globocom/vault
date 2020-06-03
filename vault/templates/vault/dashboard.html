@@ -55,6 +55,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script type="text/html" id="widget_default">
   <style>
   .<%=name%> .head { background-color: <%=color%>; }

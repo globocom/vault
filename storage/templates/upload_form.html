@@ -51,6 +51,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script src="{% static 'vendor/js/fileinput.min.js' %}"></script>
 <script src="{% static 'vendor/js/themes/fas/theme.min.js' %}"></script>
 <script src="{% static 'vendor/js/themes/explorer-fas/theme.min.js' %}"></script>

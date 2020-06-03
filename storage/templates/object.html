@@ -156,6 +156,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script src="{% static 'vault/js/metadata.js' %}"></script>
 <script src="{% static 'storage/js/storage.tools.js' %}"></script>
 <script>

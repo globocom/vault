@@ -95,6 +95,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script type="text/javascript">
   var jsonData = JSON.stringify({
     "project": "{{ project_info.project_name }}",

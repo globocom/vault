@@ -71,6 +71,7 @@ Example:
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script>
   alert("Hello there.");
 </script>

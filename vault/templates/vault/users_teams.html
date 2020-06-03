@@ -56,6 +56,7 @@
 {% endblock %}
 
 {% block js_bottom %}
+{{ block.super }}
 <script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
 <script src="{% static 'vault/js/users_teams_list.js' %}"></script>
 <script>
