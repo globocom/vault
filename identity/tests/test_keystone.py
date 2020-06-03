@@ -31,6 +31,7 @@ class TestKeystoneV3(TestCase):
             u'id': str(uuid4()),
             u'name': 'project_test',
             u'description': 'project description',
+            u'domain_id': 'default',
             u'enabled': True
         })
 
@@ -134,13 +135,20 @@ class TestKeystoneV3(TestCase):
             email='email@email.com', enabled=True, password='password', project='project_id')
         mock_add_user_role.assert_called_with(fake_user, fake_project, fake_role)
 
+    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'e03a556b664d4a41aaf2c5b4518f33ae')
+    @patch('vault.utils.encrypt_password')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.create_password')
     @patch('identity.keystone.Keystone.vault_group_project_create')
-    def test_vault_create_project(self, mock_gp_create, mock_key_pass, mock_key_user):
+    def test_vault_create_project(self, mock_gp_create,
+                                        mock_key_pass,
+                                        mock_key_user,
+                                        mock_encrypt_password):
 
         mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_key_pass.return_value = 'password'
+
+        mock_encrypt_password.return_value = b'123456'
 
         keystone = Keystone(self.request, project_name='project_name')
 
@@ -159,15 +167,14 @@ class TestKeystoneV3(TestCase):
                                                     description=self.project.description,
                                                     enabled=True)
 
-        # swiftoperator role id
-        mock_swiftop_role = self.mock_keystone_conn.return_value. \
-                                roles.find.return_value.id
-
         # User creation
-        mock_key_user.assert_called_with(name='u_{}'.format(self.project.name),
+        mock_key_user.assert_called_with(name='u_vault_{}'.format(self.project.name),
+                                         email='',
                                          password='password',
+                                         enabled=True,
+                                         domain='default',
                                          project_id=self.project.id,
-                                         role_id=mock_swiftop_role)
+                                         role_id='e03a556b664d4a41aaf2c5b4518f33ae')
 
         mock_gp_create.assert_called_with(group_id=self.group.id,
                                           project_id=self.project.id,
@@ -204,7 +211,7 @@ class TestKeystoneV3(TestCase):
 
         keystone = Keystone(self.request, project_name='project_name')
 
-        expected = {'status': False, 'reason': 'Admin required'}
+        expected = {'status': False, 'reason': 'Admin User required'}
         computed = keystone.vault_project_create(self.project.name, 1, description=self.project.description)
 
         self.assertEqual(computed, expected)
@@ -212,6 +219,8 @@ class TestKeystoneV3(TestCase):
         # Se falhou o cadastro de usuario, o project devera ser deletado
         mock_project_delete.assert_called_with(self.project.id)
 
+    @patch('identity.keystone.settings.KEYSTONE_ROLE', 'e03a556b664d4a41aaf2c5b4518f33ae')
+    @patch('vault.utils.encrypt_password')
     @patch('identity.keystone.Keystone.project_delete')
     @patch('identity.keystone.Keystone.user_create')
     @patch('identity.keystone.Keystone.user_delete')
@@ -219,13 +228,16 @@ class TestKeystoneV3(TestCase):
     def test_vault_create_project_fail_to_save_group_project_on_db(self, mock_gp_save,
                                                                          mock_user_delete,
                                                                          mock_user_create,
-                                                                         mock_project_delete):
+                                                                         mock_project_delete,
+                                                                         mock_encrypt_password):
 
         fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
         mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db
         mock_gp_save.side_effect = Exception
+
+        mock_encrypt_password.return_value = b'123456'
 
         keystone = Keystone(self.request, project_name='project_name')
 
@@ -299,7 +311,7 @@ class TestKeystoneDeleteProject(TestCase):
         mock_swift_delete.assert_called_with(self.project.id)
 
         # Find project's user
-        self.mock_find_user_with_u_prefix.assert_called_with(self.project.id)
+        self.mock_find_user_with_u_prefix.assert_called_with(self.project.id, 'u_vault')
 
         # Keystone project delete
         mock_keystone_delete.assert_called_with(self.project.id)

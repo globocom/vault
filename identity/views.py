@@ -300,7 +300,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
                 except Group.DoesNotExist:
                     context['project']['first_team'] = None
 
-            user = self.keystone.find_user_with_u_prefix(project_id)
+            user = self.keystone.find_user_with_u_prefix(project_id, 'u')
             if user:
                 context['user_project'] = user.name
 
@@ -717,7 +717,7 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin,
         context, status = {}, 200
 
         try:
-            user = self.keystone.find_user_with_u_prefix(project_id)
+            user = self.keystone.find_user_with_u_prefix(project_id, 'u')
             new_password = Keystone.create_password()
 
             self.keystone.user_update(user, password=new_password)

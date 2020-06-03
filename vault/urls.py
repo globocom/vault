@@ -16,11 +16,10 @@ admin.site.index_title = _("Admin Dashboard")
 
 urlpatterns = [
 
-    # sobreescrevendo admin:login
+    # overwrite admin:login
     url(r'^admin/login/$', views.VaultLogin.as_view(authentication_form=VaultLoginForm), name='vault_login'),
 
-    # sobreescrevendo admin:logout devido ao redirect loop gerado pelo
-    # backstage_accounts (precisa ficar antes das urls do admin)
+    # overwrite admin:logout (need to be before admin urls)
     url(r'^admin/logout/$', views.VaultLogout.as_view(), name='vault_logout'),
 
     # OAuthCallback
