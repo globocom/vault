@@ -1,3 +1,4 @@
+*.egg-info/
 *.pyc
 *.sublime-project
 *.sublime-workspace
@@ -15,6 +16,8 @@ __pycache__/
 .settings/
 .vscode/
 actions.log
+build/
+dist/
 dump.rdb
 statictemp/
 TODO
