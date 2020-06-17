@@ -40,8 +40,11 @@ class GroupProjectsAdmin(admin.ModelAdmin):
         self.project_list = get_project_list()
         super(GroupProjectsAdmin, self).__init__(*args, **kwargs)
 
-    form = GroupProjectsForm
+    def __call__(self, *args, **kwargs):
+        self.project_list = get_project_list()
+        super(GroupProjectsAdmin, self).__call__(*args, **kwargs)
 
+    form = GroupProjectsForm
     list_display = ('group_name', 'project_name')
 
     def group_name(self, obj):
