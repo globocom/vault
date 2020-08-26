@@ -77,17 +77,31 @@ var VaultMenu = (function(window) {
     let submenu = document.createElement("ul");
     submenu.classList.add('sub-menu');
 
-    obj.subitems.forEach(function(item) {
-      let subitems = document.createElement("li");
-      subitems.innerHTML = tmpl("submenu_icon_default", Object.assign({
-        "name": "default",
-        "icon": "fas fa-caret-right",
-        "url": "#"
-      }, item));
-      submenu.appendChild(subitems)
-    });
+    if ('subitems' in obj && obj.subitems.length > 0) {
+      wid.firstElementChild.classList.add("dropdown-toggle");
+      wid.firstElementChild.href = "#"
 
-    wid.appendChild(submenu);
+      obj.subitems.forEach(function(item) {
+        let subitems = document.createElement("li");
+        subitems.innerHTML = tmpl("submenu_icon_default", Object.assign({
+          "name": "default",
+          "icon": "fas fa-caret-right",
+          "url": "#"
+        }, item));
+        submenu.appendChild(subitems)
+      });
+
+      wid.appendChild(submenu);
+
+      wid.firstElementChild.addEventListener("click", function(e) {
+        this.classList.toggle("sidebar-menu-active");
+        if (submenu.style.maxHeight) {
+          submenu.style.maxHeight = null;
+        } else {
+          submenu.style.maxHeight = submenu.scrollHeight + "px";
+        }
+      });
+    }
 
     let sidebar_menu_items = Array.from(sidebar_menu.children);
     sidebar_menu_items.push(wid);
