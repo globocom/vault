@@ -70,6 +70,15 @@ Example value: `http://keystone.endpoint:5000/v3`
 A secret key for this particular Django installation. This is used to provide cryptographic signing, and should be set to a unique, unpredictable value. For more information, see [Django's documentation on the SECRET_KEY setting](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-SECRET_KEY).
 
 
+### IDENTITY_SECRET_KEY
+
+A secret key used for encrypting and decrypting Keystone passwords. This must be generated using the following command:
+``` bash
+$ python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key())"
+```
+For more information, see [Cryptography's documentation on Fernet (symmetric encryption)](https://cryptography.io/en/latest/fernet/).
+
+
 ### MAX_FILES_UPLOAD
 
 *(Optional)* The maximum number of files that can be uploaded at once to Swift via the [Bulk Operations middleware](https://www.swiftstack.com/docs/admin/middleware/bulk.html).
