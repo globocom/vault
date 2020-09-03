@@ -239,13 +239,15 @@ class KeystoneBase:
                 'reason': 'Superuser required.'
             }
 
+        swiftop = settings.KEYSTONE_ROLE or \
+                  self.conn.roles.find(name='swiftoperator').id
         # Creates admin user and add swiftoperator role
         try:
             admin_password = Keystone.create_password()
             admin_user = self.user_create(
                 name='u_{}'.format(project_name),
                 password=admin_password,
-                role_id=settings.KEYSTONE_ROLE,
+                role_id=swiftop,
                 project_id=project.id
             )
         except exceptions.Forbidden as err:
@@ -267,7 +269,7 @@ class KeystoneBase:
                 project_id=project.id,
                 enabled=project.enabled,
                 domain=project.domain_id,
-                role_id=settings.KEYSTONE_ROLE
+                role_id=swiftop
             )
         except exceptions.Forbidden as err:
             self.user_delete(admin_user.id)
