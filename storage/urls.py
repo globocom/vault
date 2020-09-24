@@ -46,6 +46,9 @@ urlpatterns = [
     url(r'^custom-metadata/(?P<container>.+?)/(?P<objectname>.+?)?$', views.edit_custom_metadata, name="edit_custom_metadata"),
     url(r'^cache-control/(?P<container>.+?)/(?P<objectname>.+?)?$', views.cache_control, name="cache_control"),
     url(r'^versioning/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.object_versioning, name="object_versioning"),
+    
+    #AWS
+    url(r'^generate_credentials/', views.GenerateCredentialsView.as_view(), name="generate_credentials"),
 
     # API
     url(r'^api/info$', views.info_json, name="info_json"),
