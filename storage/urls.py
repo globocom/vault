@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^cache-control/(?P<container>.+?)/(?P<objectname>.+?)?$', views.cache_control, name="cache_control"),
     url(r'^versioning/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.object_versioning, name="object_versioning"),
     
-    #AWS Credentials
+    #AWS
     url(r'^generate_credentials/', views.GenerateCredentialsView.as_view(), name="generate_credentials"),
 
     # API
