@@ -24,15 +24,24 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template.defaultfilters import filesizeformat
+from django.views.generic.base import View, TemplateView
+from django.views.generic.edit import FormView
+
+from django.contrib.auth.models import User, Group
+
+from keystoneclient.contrib.ec2 import utils as ec2_utils
 
 from swiftclient import client
 
 from storage.forms import *
 from storage.utils import *
+from identity.views import WithKeystoneMixin, UpdateProjectUserPasswordView
+from identity.keystone import KeystoneBase
 
 from vault.jsoninfo import JsonInfo
 from vault import utils
 from actionlogger.actionlogger import ActionLogger
+from vault.views import LoginRequiredMixin
 
 
 log = logging.getLogger(__name__)
@@ -390,6 +399,57 @@ def download(request, project, container, objectname):
 
     return HttpResponse(res.content, content_type=res.headers['Content-Type'])
 
+class GenerateCredentialsView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
+
+    template_name = "generate_credentials.html"
+
+
+    def get(self, request, *args, **kwargs):     
+        context = self.get_context_data(**kwargs)
+        
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super(GenerateCredentialsView, self).get_context_data(**kwargs)
+        
+        return context
+
+    def generate_credentials(self, request):
+        """ Generate credentials for AWS """
+
+        project_id = request.session.get('project_id')
+        user = self.keystone.find_user_with_u_prefix(project_id, 'u')
+        user_id = user.id
+
+        password = self.keystone.conn.ec2.create(user_id, project_id)
+        credentials = {'access': password.access, 'secret': password.secret}
+
+        return {
+            'password': credentials
+        }
+
+    
+    def post(self, request, *args, **kwargs):
+        post = request.POST
+        user = {}
+
+        try:
+            user = self.generate_credentials(request)
+            messages.add_message(request, messages.SUCCESS,
+                                _('Successfully create credentials'))
+            actionlog.log(request.user.username, 'create', user)
+
+        except Exception as e:
+            log.exception('{}{}'.format(
+                _('Exception:').encode('UTF-8'), e))
+            messages.add_message(request, messages.ERROR,
+                                _('Error when creating credentials'))
+
+        context = utils.update_default_context(request, {'user_credentials': user})
+
+        return self.render_to_response(context)
+
+        
 
 @login_required
 def delete_object_view(request, project, container, objectname):
@@ -1388,6 +1448,11 @@ class SwiftJsonInfo(JsonInfo):
                     "name": str(_("Containers")),
                     "icon": "",
                     "url": reverse("containerview", kwargs={'project': project_name})
+                },
+                {
+                    "name": str(_("Credentials AWS")),
+                    "icon": "",
+                    "url": reverse("generate_credentials", kwargs={'project': project_name})
                 }
             ]
         }
@@ -1441,6 +1506,10 @@ class SwiftJsonInfo(JsonInfo):
                     }
                 ],
                 "buttons": [
+                    {
+                        "name": str(_("Credentials AWS")),
+                        "url": reverse("generate_credentials", kwargs={'project': project_name})
+                    },
                     {
                         "name": str(_("Containers")),
                         "url": reverse("containerview", kwargs={'project': project_name})
