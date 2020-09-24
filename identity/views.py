@@ -15,10 +15,11 @@ from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 
 from keystoneclient import exceptions
+from keystoneclient.contrib.ec2 import utils as ec2_utils
 
 from storage.utils import delete_swift_account
 from actionlogger.actionlogger import ActionLogger
-from identity.keystone import Keystone
+from identity.keystone import Keystone, KeystoneBase
 from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
                             ProjectForm, DeleteProjectConfirm)
 
@@ -79,7 +80,7 @@ class ListUserView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Templat
 
         return context
 
-
+        
 class BaseUserView(SuperUserMixin, WithKeystoneMixin, FormView):
     form_class = UserForm
 
@@ -357,7 +358,7 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Temp
         return projects
 
 
-class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
+class CreateProjectSuccessView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
     template_name = 'identity/project_create_success.html'
 
     @method_decorator(utils.project_required)
@@ -377,6 +378,15 @@ class CreateProjectSuccessView(LoginRequiredMixin, TemplateView):
         project_name = context['project_info']['project_name']
         user_name = context['project_info']['user_name']
         password = context['project_info']['user_password']
+
+        project_id = request.session.get('project_id')
+        user = self.keystone.find_user_with_u_prefix(project_id, 'u')
+        user_id = user.id
+
+        password_ec2 = self.keystone.conn.ec2.create(user_id, project_id)
+        context['credentials'] = {'access': password_ec2.access, 'secret': password_ec2.secret}
+        access_key = context['credentials']['access']
+        secret_key = context['credentials']['secret']
 
         try:
             keystone = Keystone(request, username=user_name, password=password,
