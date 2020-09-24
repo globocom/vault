@@ -400,6 +400,7 @@ class CreateProjectSuccessView(LoginRequiredMixin, WithKeystoneMixin, TemplateVi
         return context
 
 
+
 class CreateProjectView(BaseProjectView):
     template_name = "identity/project_create.html"
     form_class = ProjectForm
