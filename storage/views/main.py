@@ -450,6 +450,7 @@ class GenerateCredentialsView(LoginRequiredMixin, WithKeystoneMixin, TemplateVie
         return self.render_to_response(context)
 
         
+        
 @login_required
 def delete_object_view(request, project, container, objectname):
     """ Deletes an object """
