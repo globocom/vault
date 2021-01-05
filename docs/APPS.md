@@ -62,7 +62,7 @@ Example:
 <div class="card">
   <div class="card-body">
     <p>This button leads to Vault's home:</p>
-    <a href="{% url "dashboard" %}" class="create-project btn btn-primary">
+    <a href="{% url "dashboard" project_name %}" class="create-project btn btn-primary">
       <i class="fa fa-home"></i>
     </a>
   </div>
