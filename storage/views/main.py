@@ -288,8 +288,6 @@ def upload(request, project, container, prefix=None):
         swift_url += prefix
         redirect_url += prefix
 
-    redirect_url += '?p={}'.format(request.session.get('project_id'))
-
     url_parts = urlparse(swift_url)
     path = url_parts.path
 

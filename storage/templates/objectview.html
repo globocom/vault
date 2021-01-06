@@ -70,7 +70,7 @@
         <tr>
           <td><i class="fas fa-folder-open"></i></td>
           <td>
-            <a href="{% url 'objectview' project=project_name container=container prefix=obj.prefix %}?p={{ project_id }}">
+            <a href="{% url 'objectview' project=project_name container=container prefix=obj.prefix %}">
               <strong>{{obj.prefix|lastpart}}</strong>
             </a>
           </td>
