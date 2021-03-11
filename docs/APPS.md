@@ -78,9 +78,44 @@ Example:
 {% endblock %}
 ```
 
+### Settings
+
+When creating your app, you'll often find yourself needing some variables to exist in the Settings of the Django App itself. Instead of adding them to `vault/settings.py`, you can add them to your app's own `myapp/settings.py`. This way, you can easily add or remove those variables from your Vault environment by installing or uninstalling your app from Vault. Here's an example of a `myapp/settings.py` file:
+
+``` python
+import os
+
+
+# API variables
+MYAPP_API_URL = os.getenv('MYAPP_API_URL', 'https://api.myapp.com/v1/')
+MYAPP_API_USER = os.getenv('MYAPP_API_USER', 'default_user')
+MYAPP_API_PASSWORD = os.getenv('MYAPP_API_PASSWORD')
+
+# Other parameters
+MYAPP_PAGE_SIZE = os.getenv('MYAPP_PAGE_SIZE', 50)
+MYAPP_TIMEOUT = os.getenv('MYAPP_TIMEOUT', 300)
+
+```
+
 ### Installing your app
 
-Install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, your app's URLs will be accessible at /p/&lt;selected_project&gt;/&lt;your_app_name&gt;/. You can access the selected project in your views by accessing the `project` argument.
+Before installing, Vault needs to know that your app is a Vault App. For that, you need to add the property `vault_app = True` to your app's configuration in its `myapp/apps.py` file, as seen in the following example:
+
+``` python
+# -*- coding: utf-8 -*-
+
+from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
+
+
+class MyAppConfig(AppConfig):
+    name = 'myapp'
+    verbose_name = _("My App")
+    vault_app = True
+
+```
+
+Once that's done, install your app as a Python package, then append its name to the end of vault/settings.py's `INSTALLED_APPS` list. Then, since your app is configured as a `vault_app`, its URLs will be accessible at /p/&lt;selected_project&gt;/&lt;your_app_name&gt;/. You can access the selected project in your views by accessing the `project` argument.
 
 ### Creating a widget and/or sidebar menu
 
@@ -132,7 +167,22 @@ Note that your app doesn't need to have subitems. Also, if every page is accessi
 ]
 ```
 
-Then, make a view that, on a get request, instantiates that class and returns its `render()` method. Since all URLs will require the user's current project, you can access it from your instance's `self.request.session` variable. Your view can also be exclusive to specific users, such as superusers or users in a specific team, making other users unable to see the your app's menu item and widgets.
+For the `"color"` property, you can choose one of the following colors:
+
+|Widget Colors||
+|:---:|---|
+|`blue`|![#3e95cc](https://via.placeholder.com/200x20/3e95cc/000000?text=+)
+|`purple`|![#8b40a9](https://via.placeholder.com/200x20/8b40a9/000000?text=+)
+|`red`|![#cc543f](https://via.placeholder.com/200x20/cc543f/000000?text=+)
+|`orange`|![#e6762c](https://via.placeholder.com/200x20/e6762c/000000?text=+)
+|`yellow`|![#f5bc00](https://via.placeholder.com/200x20/f5bc00/000000?text=+)
+|`green`|![#688f10](https://via.placeholder.com/200x20/688f10/000000?text=+)
+|`cyan`|![#29cac1](https://via.placeholder.com/200x20/29cac1/000000?text=+)
+|`pink`|![#df6c98](https://via.placeholder.com/200x20/df6c98/000000?text=+)
+|`brown`|![#8e4b10](https://via.placeholder.com/200x20/8e4b10/000000?text=+)
+|`gray`|![#757575](https://via.placeholder.com/200x20/757575/000000?text=+)
+
+Then, make a view that, on a GET request, instantiates that class and returns its `render()` method. Since all URLs will require the user's current project, you can access it from your instance's `self.request.session` variable. Your view can also be exclusive to specific users, such as superusers or users in a specific team, making other users unable to see the your app's menu item and widgets.
 
 Ex:
 
@@ -182,7 +232,7 @@ def info_json(request, project=None):
     return info.render(request)
 ```
 
-Finally, you must create the URL for your view. It must be added to your `urls.py` file exactly as follows:
+Finally, you must create the URL for your view. It must be added to your `myapp/urls.py` file exactly as follows:
 
 ``` python
 # ...
