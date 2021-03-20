@@ -24,7 +24,7 @@ greenlet==0.4.13
 idna==2.6
 ipaddress==1.0.19
 iso8601==0.1.12
-Jinja2==2.10
+Jinja2==2.11.3
 jsonschema==2.6.0
 keystone==12.0.3
 keystoneauth1==3.4.0
