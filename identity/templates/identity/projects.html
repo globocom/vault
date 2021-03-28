@@ -13,12 +13,12 @@
 
 {% block content_top %}
   <a href="{% url "add_project" %}" class="create-project btn btn-primary btn-sm">
-    <i class="fa fa-sitemap icon-white"></i>&nbsp;{% trans 'Create Project' %}
+    {% trans 'New Project' %}
   </a>
 {% endblock %}
 
 {% block content %}
-<div class="box">
+<div class="box-table">
   <table class="items-list table table-hover">
     <thead>
       <tr>

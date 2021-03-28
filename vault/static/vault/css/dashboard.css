@@ -69,7 +69,7 @@
   padding-bottom: 60px;
   position: relative;
   margin-bottom: 30px;
-  min-height: 400px;
+  min-height: 300px;
 }
 
 .widget .head {
@@ -81,7 +81,7 @@
   padding: 30px;
   color: white;
   background-color: #999;
-  border-radius: 10px 10px 0 0;
+  border-radius: 4px 4px 0 0;
 }
 
 .widget .name {
@@ -153,7 +153,7 @@
   background-color: white;
   color: #333;
   border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
 
 .widget .content .item-box-break {
@@ -164,7 +164,7 @@
 .widget-dummy {
   min-height: 400px;
   background-color: #eee;
-  border-radius: 10px;
+  border-radius: 4px;
 
   animation-name: pulse;
   animation-duration: 1.2s;

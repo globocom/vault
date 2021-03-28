@@ -16,7 +16,16 @@ a:hover, a:active, a:focus {
 }
 
 main {
-  margin-left: auto;
+  display: flex;
+}
+
+main > .main-content {
+  flex-grow: 1;
+  /* padding: 0 15px; */
+}
+
+.flex-break {
+  flex-basis: 100%;
 }
 
 /* content */
@@ -24,6 +33,12 @@ main {
 .content-row {
   position: relative;
   height: 100%;
+}
+
+.content-title,
+.content-top,
+.content-body {
+  padding: 0 15px;
 }
 
 .content-title {
@@ -40,6 +55,7 @@ main {
   color: #285DC1;
   margin: 0;
   height: 52px;
+  border-bottom: 1px solid #ddd;
 }
 
 .content-title h3 {
@@ -50,7 +66,7 @@ main {
 
 .content-title .some-top-info {
   color: #777;
-  font-size: 22px;
+  font-size: 1.3rem;
   font-weight: lighter;
   margin-bottom: 18px;
 }
@@ -61,7 +77,7 @@ main {
   align-items: center;
   position: absolute;
   top: 40px;
-  right: 0;
+  right: 15px;
   height: 42px;
   width: 80px;
   padding: 0;
@@ -87,24 +103,28 @@ main {
 }
 
 .content-top {
+  display: flex;
+  flex-wrap: wrap;
   position: relative;
   height: 100px;
+  align-items: center;
 }
 
-.content-top .top-main,
-.content-top .top-base {
+.content-top .top-left,
+.content-top .top-right {
+  flex-grow: 1;
   display: flex;
+  align-items: center;
   height: 50%;
 }
 
-.content-top .top-main {
-  align-items: flex-end;
+.content-top .top-left {
   color: #333;
-  font-size: 18px;
+  font-size: 1.3rem;
   text-transform: none;
 }
 
-.content-top .top-base {
+.content-top .top-right {
   align-items: center;
   justify-content: flex-end;
 }
@@ -155,8 +175,8 @@ main {
   display: block;
   overflow: hidden;
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
 }
 
@@ -296,6 +316,10 @@ main {
 }
 
 /* tables */
+.table.table-hover tr:hover {
+  background-color:rgba(0, 0, 0, 0.035);
+}
+
 .table caption {
   padding: 8px;
   text-align: left;
@@ -307,18 +331,21 @@ main {
   color: #333;
 }
 
-.table.items-list {
+/* .table.items-list {
   margin: -15px 0;
-}
+} */
 
 .table.items-list td,
 .table.items-list th {
   vertical-align: middle;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e6e6e6;
 }
 
 .table.items-list thead th {
+  font-size: 1.1em;
   border-top: 0;
-  /*font-weight: */
+  border-bottom: 1px solid #ccc;
 }
 
 .table.items-list tbody tr:first-child th,

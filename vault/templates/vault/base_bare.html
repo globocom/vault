@@ -20,68 +20,51 @@
 
   <body class="bare {% block bodyclass %}{% endblock %}">
     {% block main_content %}
-    <div class="container-fluid main-content">
-      <div class="row">
+    <main role="main">
+      <section class="main-content">
 
-        <main role="main" class="col-md-12">
+        <div class="container-fluid">
 
-          <div class="content-top">
-            {% block content_top %}
+          <div class="row justify-content-center">
+            <div class="col-md-8">
 
-              <div class="row justify-content-center">
-                <div class="col-md-8">
+              <div class="content-top">
+                {% block content_top %}
 
-                  <div class="row justify-content-between">
-                    <div class="bare-head-left col-md-4">
-                      <a href="{% url 'main' %}">
-                        <img class="logo" src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
-                      </a>
-                    </div>
-                    <div class="bare-head-right col-md-4">
-
-                      {% include 'vault/user_info.html' %}
-
-                    </div>
+                  <div class="bare-head-left">
+                    <a href="{% url 'main' %}">
+                      <img class="logo" src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+                    </a>
                   </div>
 
-                </div>
-              </div>
-
-              <div class="row justify-content-center">
-                <div class="col-md-8">
-
-                  <div class="row justify-content-between">
-                    <div class="bare-title-left col-md-6">
-
-                      <h2>{% block title_left %}{% endblock %}</h2>
-
-                    </div>
-                    <div class="bare-title-right col-md-6">
-
-                      {% block title_right %}{% endblock %}
-
-                    </div>
+                  <div class="bare-head-right">
+                    {% include 'vault/user_info.html' %}
                   </div>
 
-                </div>
+                  <div class="flex-break"></div>
+
+                  <div class="bare-title-left">
+                    <h2>{% block title_left %}{% endblock %}</h2>
+                  </div>
+
+                  <div class="bare-title-right">
+                    {% block title_right %}{% endblock %}
+                  </div>
+
+                {% endblock %}
               </div>
-            {% endblock %}
-          </div>
 
-          <div class="content-body">
-            <div class="row justify-content-center">
-              <div class="col-md-8">
-
+              <div class="content-body">
                 {% block content %}{% endblock %}
-
               </div>
+
             </div>
           </div>
 
-        </main>
+        </div>
 
-      </div>
-    </div>
+      </section>
+    </main>
     {% endblock %}
 
     <!-- messages -->

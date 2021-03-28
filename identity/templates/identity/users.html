@@ -10,12 +10,12 @@
 
 {% block content_top %}
   <a href="{% url 'admin_add_user' project=project_name %}" class="create-user btn btn-primary btn-sm">
-    <i class="fa fa-user icon-white"></i>&nbsp;&nbsp;{% trans 'Create User' %}
+    {% trans 'New User' %}
   </a>
 {% endblock %}
 
 {% block content %}
-<div class="box">
+<div class="box-table">
   <table class="items-list table table-hover">
     <thead>
       <tr>

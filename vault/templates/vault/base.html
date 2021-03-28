@@ -20,63 +20,65 @@
 
   <body class="{% block bodyclass %}{% endblock %}">
     {% block main_content %}
-    <div class="container-fluid main-content">
-      <div class="row content-row">
 
-        {% block sidebar %}
-          {% include 'vault/sidebar.html' %}
-        {% endblock %}
+    <main role="main">
+      {% block sidebar %}
+        {% include 'vault/sidebar.html' %}
+      {% endblock %}
 
-        <main role="main" class="col-md-10">
+      <section class="main-content">
+        <div class="container-fluid">
 
-          <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
 
-            <div class="row">
-              <div class="col-md-12">
+              <div class="content-title">
+                <span class="some-top-info">
+                  {% block some_top_info %}
+                    project&nbsp;<strong>{{ project_name }}</strong>
+                  {% endblock %}
+                </span>
 
-                <div class="content-title">
-                  <span class="some-top-info">
-                    {% block some_top_info %}{{ project_name }}{% endblock %}
-                  </span>
+                <h2>{% block content_title %}{% endblock %}</h2>
 
-                  <h2>{% block content_title %}{% endblock %}</h2>
+                {% include 'vault/user_info.html' %}
+              </div>
 
-                  {% include 'vault/user_info.html' %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+
+              <div class="content-top">
+                <div class="top-left">
+                  {% block breadcrumb %}
+                    <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
+                  {% endblock %}
                 </div>
 
-              </div>
+                <div class="top-right">
+                  {% block content_top %}{% endblock %}
+                </div>
+              </div> <!-- .content-top -->
+
             </div>
-
-            <div class="row">
-              <div class="col-md-12">
-
-                <div class="content-top">
-
-                  <div class="top-main">
-                    {% block breadcrumb %}
-                      <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
-                    {% endblock %}
-                  </div>
-
-                  <div class="top-base">
-                    {% block content_top %}{% endblock %}
-                  </div>
-
-                </div> <!-- .content-top -->
-
-              </div>
-            </div>
-
           </div>
 
-          <div class="container-fluid content-body">
-            {% block content %}{% endblock %}
+          <div class="row">
+            <div class="col-md-12">
+
+              <div class="content-body">
+                {% block content %}{% endblock %}
+              </div>
+
+            </div>
           </div>
 
-        </main>
+        </div>
+      </section>
 
-      </div>
-    </div>
+    </main>
     {% endblock %}
 
     <!-- messages -->
