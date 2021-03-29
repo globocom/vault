@@ -210,8 +210,6 @@ def project_required(view_func):
         if not check:
             return project_error(request, inexistent_project=kwargs['project'])
 
-        maybe_update_token(request)
-
         return view_func(request, *args, **kwargs)
 
     return _wrapper
