@@ -76,6 +76,9 @@
           <span class="big-number"><%=properties[i].value%></span>
           <%=properties[i].name%>
         </div>
+        <% if (properties.length == 2 && i == 0) { %>
+          <div class="item-box-break"></div>
+        <% } %>
         <% if ((i+1) % 2 == 0) { %>
           <div class="item-box-break"></div>
         <% } %>

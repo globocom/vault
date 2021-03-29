@@ -12,7 +12,7 @@
 
 {% block content_top %}
   <a href="{% url 'create_container' project_name %}" class="btn btn btn-primary btn-sm">
-    <i class="fa fa-inbox icon-white"></i>&nbsp;&nbsp;{% trans 'Create Container'%}
+    {% trans 'New Container'%}
   </a>
 {% endblock %}
 
@@ -20,7 +20,7 @@
 
 {% block content %}
 
-<div class="box">
+<div class="box-table">
   <table id="container-list" class="items-list table table-hover">
     <thead>
       <tr>

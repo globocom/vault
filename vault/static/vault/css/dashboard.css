@@ -69,7 +69,7 @@
   padding-bottom: 60px;
   position: relative;
   margin-bottom: 30px;
-  min-height: 300px;
+  min-height: 400px;
 }
 
 .widget .head {
@@ -177,6 +177,6 @@
 
 @keyframes pulse {
   from { background-color: #eee; }
-  50% { background-color: #ddd; }
+  50% { background-color: #dfdfdf; }
   to { background-color: #eee; }
 }
