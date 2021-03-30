@@ -45,9 +45,9 @@
 
 #add-user-role .box-users {
   position: relative;
-  background-color: #eee;
+  /* background-color: #eee;
   margin-bottom: 15px;
-  border-radius: 5px;
+  border-radius: 5px; */
   min-height: 74px;
   overflow: hidden;
 }
@@ -61,27 +61,6 @@
 
 #add-user-role .related-users {
   display: none;
-  padding: 0;
-  list-style: none;
-  margin: 0;
-  width: 100%;
-  border-radius: 2px;
-}
-
-#add-user-role .related-users th {
-  padding: 8px 10px;
-  text-transform: uppercase;
-  background-color: #ccc;
-  font-size: 11px;
-}
-
-#add-user-role .related-users td {
-  padding: 8px 10px;
-  border-top: 1px solid #ccc;
-}
-
-#add-user-role .related-users tbody tr:hover {
-  background-color: #d2d2d2;
 }
 
 #add-user-role .related-users li:first-child {
@@ -107,10 +86,6 @@
 #add-user-role .add-btn {
   float: right;
   margin-top: 10px;
-}
-
-.lbl-user {
-  margin-bottom:5px;
 }
 
 .reset-info {

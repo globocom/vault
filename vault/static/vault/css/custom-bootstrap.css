@@ -1,3 +1,10 @@
+hr {
+  border: none;
+  border-bottom: 1px solid var(--line-context-color);
+  margin-bottom: 20px;
+}
+
+/* table */
 .table {
   margin: 0;
   border-spacing: 0;
@@ -36,4 +43,52 @@
 .table tbody tr:first-child th,
 .table tbody tr:first-child td {
   border-top: 0;
+}
+
+/* forms */
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  outline: none;
+  color: #333;
+  border: 1px solid #ddd;
+  background-color: #fafafa;
+}
+
+textarea.form-control {
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.form-control:focus {
+  background-color: white;
+  border-color: var(--main-color);
+  cursor: text;
+  box-shadow: none;
+}
+
+.form-control::placeholder {
+  opacity: 0.6;
+}
+
+.form-control:disabled,
+.form-control:read-only,
+.form-control:disabled:focus,
+.form-control:read-only:focus {
+  color: rgba(0, 0, 0, .4);
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
 }
