@@ -2,7 +2,7 @@
  * bootstrap-fileinput v5.0.9
  * http://plugins.krajee.com/file-input
  *
- * Krajee Explorer Font Awesome theme configuration for bootstrap-fileinput. 
+ * Krajee Explorer Font Awesome theme configuration for bootstrap-fileinput.
  * Load this theme file after loading `fileinput.js`. Ensure that
  * font awesome assets and CSS are loaded on the page as well.
  *

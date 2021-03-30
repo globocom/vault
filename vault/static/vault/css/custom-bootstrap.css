@@ -1,0 +1,39 @@
+.table {
+  margin: 0;
+  border-spacing: 0;
+}
+
+.table.table-hover tr:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.table caption {
+  padding: 8px;
+  text-align: left;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+}
+
+.table caption a {
+  color: #333;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  padding: 12px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.table thead th {
+  color: var(--main-color-dark);
+  border-top: 0;
+  background-color: rgba(0, 0, 0, 0.035);
+  border-bottom-width: 1px;
+}
+
+.table tbody tr:first-child th,
+.table tbody tr:first-child td {
+  border-top: 0;
+}

@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vault/css/custom-bootstrap.css' %}">
     {% block css %}{% endblock %}
 
     <title>Vault - {% block title %}{% endblock %}</title>
@@ -23,7 +24,9 @@
 
     <main role="main">
       {% block sidebar %}
-        {% include 'vault/sidebar.html' %}
+        <div class="sidebar-container">
+          {% include 'vault/sidebar.html' %}
+        </div>
       {% endblock %}
 
       <section class="main-content">

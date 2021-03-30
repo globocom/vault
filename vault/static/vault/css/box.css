@@ -10,5 +10,8 @@
 }
 
 .box-table {
+  box-sizing: border-box;
   padding: 0;
+  border: 1px solid var(--line-context-color);
+  box-shadow: none;
 }

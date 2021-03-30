@@ -3,6 +3,12 @@
 @import url('login.css');
 @import url('sidebar.css');
 
+:root {
+  --main-color: #285DC1;
+  --main-color-dark: #1A3E7F;
+  --line-context-color: #dedeef;
+}
+
 body {
   font-size: 14px;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
@@ -313,44 +319,6 @@ main > .main-content {
   background-color: #444;
   color: white;
   text-decoration: none;
-}
-
-/* tables */
-.table.table-hover tr:hover {
-  background-color:rgba(0, 0, 0, 0.035);
-}
-
-.table caption {
-  padding: 8px;
-  text-align: left;
-  font-size: 20px;
-  letter-spacing: -0.5px;
-}
-
-.table caption a {
-  color: #333;
-}
-
-/* .table.items-list {
-  margin: -15px 0;
-} */
-
-.table.items-list td,
-.table.items-list th {
-  vertical-align: middle;
-  padding: 10px 15px;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.table.items-list thead th {
-  font-size: 1.1em;
-  border-top: 0;
-  border-bottom: 1px solid #ccc;
-}
-
-.table.items-list tbody tr:first-child th,
-.table.items-list tbody tr:first-child td {
-  border-top: 0;
 }
 
 .bubble {

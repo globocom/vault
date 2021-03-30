@@ -19,7 +19,7 @@
 
 {% block content %}
 <div class="box-table">
-  <table class="items-list table table-hover">
+  <table class="items-list table">
     <thead>
       <tr>
         <th>{% trans 'Project' %}</th>
@@ -43,7 +43,7 @@
         <td>{{ project.team.name }}</td>
         <td>{{ project.enabled }}</td>
         <td>
-          <a href="{% url 'edit_project' project=project_name project_id=project.id %}" class="edit-item btn btn-light btn-sm ">
+          <a href="{% url 'edit_project' project=project_name project_id=project.id %}" class="edit-item">
             {% trans 'Edit' %}
           </a>
         </td>
