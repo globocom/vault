@@ -162,12 +162,12 @@
     text-align: left;
 }
 
-.btn {
+.btn-primary {
     cursor: auto;
 }
 
-.btn-primary {
-    cursor: auto;
+.btn {
+    cursor: pointer;
 }
 
 /* metadata */

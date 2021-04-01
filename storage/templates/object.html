@@ -20,6 +20,9 @@
 
   <a class="btn btn-primary btn-sm" href="{{ public_url }}" target="_blank">
   <i class="fa fa-link"></i>&nbsp;&nbsp;Public&nbsp;URL</a>
+
+  <a class="btn btn-danger btn-sm" href="{% url 'delete_object' project=project_name container=container objectname=objectname %}" onclick="return confirm('Delete object {{ objectname }}?');">
+  <i class="fa fa-trash-alt"></i>&nbsp;&nbsp;Delete</a>
 {% endblock %}
 
 {% block content_breadcrumb %}
