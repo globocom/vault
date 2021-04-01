@@ -28,7 +28,7 @@ hr {
 .table td,
 .table th {
   vertical-align: middle;
-  padding: 12px;
+  padding: 10px;
   font-size: 0.85rem;
   border-bottom: 1px solid #e6e6e6;
 }
@@ -38,6 +38,7 @@ hr {
   border-top: 0;
   background-color: rgba(0, 0, 0, 0.035);
   border-bottom-width: 1px;
+  vertical-align: middle;
 }
 
 .table tbody tr:first-child th,

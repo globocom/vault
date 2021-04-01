@@ -43,8 +43,9 @@
         <td>{{ project.team.name }}</td>
         <td>{{ project.enabled }}</td>
         <td>
-          <a href="{% url 'edit_project' project=project_name project_id=project.id %}" class="edit-item">
-            {% trans 'Edit' %}
+          <a href="{% url 'edit_project' project=project_name project_id=project.id %}"
+             title="Edit" class="edit-item btn btn-sm btn-light">
+            <i class="fas fa-edit"></i>
           </a>
         </td>
       </tr>
