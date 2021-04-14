@@ -56,7 +56,11 @@
               <div class="content-top">
                 <div class="top-left">
                   {% block breadcrumb %}
-                    <span class="content-breadcrumb">{% block content_breadcrumb %}{% endblock %}</span>
+                      <span class="content-breadcrumb">
+                        {% spaceless %}
+                          {% block content_breadcrumb %}{% endblock %}
+                        {% endspaceless %}
+                      </span>
                   {% endblock %}
                 </div>
 

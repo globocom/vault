@@ -147,7 +147,7 @@ main > .main-content {
 .content-breadcrumb {
   display: block;
   color: #333;
-  font-size: 18px;
+  font-size: 1rem;
   text-transform: none;
 
   /* for long breadcrumbs */
@@ -158,7 +158,7 @@ main > .main-content {
 
 .content-breadcrumb a,
 .content-breadcrumb span {
-  margin: 0 5px;
+  /* margin: 0 5px; */
 }
 
 .content-breadcrumb a:hover {

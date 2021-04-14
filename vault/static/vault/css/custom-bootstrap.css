@@ -48,7 +48,7 @@ hr {
 
 /* forms */
 label {
-  display: block;
+  display: inline-block;
   font-size: 12px;
   font-weight: bold;
   color: #333;
