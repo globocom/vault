@@ -8,6 +8,8 @@ setup(
     name='vault',
     version=VERSION,
     description='Admin webapp for OpenStack Keystone and OpenStack Swift.',
+    long_description=open('README.md', 'r').read(),
+    long_description_content_type='text/markdown',
     author='Storm',
     author_email='storm@g.globo',
     url='https://github.com/globocom/vault',
