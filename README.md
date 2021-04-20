@@ -1,9 +1,9 @@
 <p align="center">
-	<img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/logo.png" alt="Vault Logo" />
+	<img src="https://raw.githubusercontent.com/globocom/vault/master/vault/static/vault/img/logo.png" alt="Vault Logo" />
 </p>
 
 <p align="center">
-    <img src="https://github.com/globocom/vault/blob/master/vault/static/vault/img/screenshot.png" alt="Vault Screenshot" />
+    <img src="https://raw.githubusercontent.com/globocom/vault/master/vault/static/vault/img/screenshot.png" alt="Vault Screenshot" />
 </p>
 
 # Vault
@@ -49,7 +49,7 @@ There will also be a non-admin user available. That user's credentials are:
 - *username*: user
 - *password*: user
 
-For more information on the docker implementation see [Docker](docs/DOCKER.md).
+For more information on the docker implementation see [Docker](https://github.com/globocom/vault/blob/master/docs/DOCKER.md).
 
 ## Basic setup for production environment
 
@@ -73,7 +73,7 @@ $ export VAULT_KEYSTONE_PROJECT=Vault
 $ export VAULT_KEYSTONE_URL=http://keystone.endpoint:5000/v3
 ```
 
-For optional variables and more information on each of the environment variables, see [Environment Variables](docs/ENVIRON.md).
+For optional variables and more information on each of the environment variables, see [Environment Variables](https://github.com/globocom/vault/blob/master/docs/ENVIRON.md).
 
 ### 3. Create a MySQL database and the MySQL user
 ``` SQL
@@ -109,7 +109,7 @@ gunicorn --timeout 60 -b 0.0.0.0:$PORT vault.wsgi
 
 ## Authentication
 
-Vault uses the default Django authentication, but also allows for OAuth2 authentication via [django-all-access](https://django-all-access.readthedocs.io/en/latest/). To add an OAuth2 provider, simply use the Django admin. For more information, see [OAuth2 Authentication](docs/OAUTH2.md).
+Vault uses the default Django authentication, but also allows for OAuth2 authentication via [django-all-access](https://django-all-access.readthedocs.io/en/latest/). To add an OAuth2 provider, simply use the Django admin. For more information, see [OAuth2 Authentication](https://github.com/globocom/vault/blob/master/docs/OAUTH2.md).
 
 Only admins can create new users, unless when using OAuth2 authentication.
 
