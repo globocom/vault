@@ -130,7 +130,7 @@ make tests
 
 ## Creating new apps for Vault
 
-While Vault already delivers an app for Swift management and another for Keystone management, it also allows you to easily implement your own apps. This helps you centralize several services in a single, standardized web interface. For more information, see [How to create a Vault App](docs/APPS.md).
+While Vault already delivers an app for Swift management and another for Keystone management, it also allows you to easily implement your own apps. This helps you centralize several services in a single, standardized web interface. For more information, see [How to create a Vault App](https://github.com/globocom/vault/blob/master/docs/APPS.md).
 
 ## Dependencies
 
