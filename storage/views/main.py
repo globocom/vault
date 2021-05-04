@@ -53,7 +53,7 @@ def containerview(request, project):
                                        insecure=settings.SWIFT_INSECURE)
     try:
         account_stat, containers = client.get_account(storage_url, auth_token,
-                                                      full_listing=True,
+                                                      full_listing=False,
                                                       http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
@@ -202,7 +202,7 @@ def objectview(request, project, container, prefix=None):
     try:
         meta, objects = client.get_container(storage_url, auth_token,
                                              container, delimiter='/',
-                                             prefix=prefix, full_listing=True,
+                                             prefix=prefix, full_listing=False,
                                              http_conn=http_conn)
 
     except client.ClientException as err:
@@ -748,7 +748,7 @@ def object_versioning(request, project, container, prefix=None):
                                                      version_location,
                                                      prefix=prefix,
                                                      delimiter='/',
-                                                     full_listing=True,
+                                                     full_listing=False,
                                                      http_conn=http_conn)
             except client.ClientException:
                 pass
