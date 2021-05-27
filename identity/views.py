@@ -16,7 +16,7 @@ from django.views.generic.edit import FormView
 
 from keystoneclient import exceptions
 
-from storage.utils import delete_swift_account
+from storage.utils import delete_swift_account, update_swift_account
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
 from identity.forms import (UserForm, CreateUserForm, UpdateUserForm,
@@ -416,11 +416,21 @@ class CreateProjectView(BaseProjectView):
         if not response.get('status'):
             log.exception('Exception: {}'.format(response.get('status')))
 
-            messages.add_message(request, messages.ERROR,
-                                 response.get('reason'))
+            messages.add_message(
+                request, messages.ERROR, response.get('reason'))
 
             return self.render_to_response(
                 self.get_context_data(form=form, request=request))
+
+        # Swift-cloud
+        if settings.SWIFT_CLOUD_ENABLED:
+            cloud = request.POST.get('cloud')
+            if cloud != '':
+                endpoints = self.keystone.get_endpoints()
+                storage_url = endpoints.get('object_store').get('adminURL')
+                update_swift_account({'X-Account-Meta-Cloud': cloud},
+                                     storage_url,
+                                     self.keystone.conn.auth_token)
 
         project = response.get('project')
         user = response.get('user')

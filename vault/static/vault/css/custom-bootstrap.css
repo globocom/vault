@@ -60,7 +60,6 @@ label {
   box-sizing: border-box;
   font-size: 0.9rem;
   margin-bottom: 10px;
-  padding: 10px;
   border: 1px solid transparent;
   border-radius: 4px;
   outline: none;
@@ -86,9 +85,7 @@ textarea.form-control {
 }
 
 .form-control:disabled,
-.form-control:read-only,
-.form-control:disabled:focus,
-.form-control:read-only:focus {
+.form-control:disabled:focus {
   color: rgba(0, 0, 0, .4);
   background-color: #f2f2f2;
   border: 1px solid #ddd;

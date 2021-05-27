@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.conf import settings
 from django.core.validators import RegexValidator
 from django.forms.fields import ChoiceField
 
@@ -10,8 +11,14 @@ from django.contrib.auth.models import Group
 from vault.widgets import PasswordInputWithEye
 from identity.keystone import Keystone
 
-
-BOOLEAN_CHOICES = ((True, 'Yes'), (False, 'No'))
+BOOLEAN_CHOICES = (
+    (True, 'Yes'),
+    (False, 'No')
+)
+CLOUD_CHOICES = (
+    (None, 'No Cloud'),
+    ('gcp', 'Google Cloud')
+)
 
 
 class UserForm(forms.Form):
@@ -127,13 +134,22 @@ class ProjectForm(forms.Form):
         required=False,
         widget=forms.Select(
             attrs={'class': 'form-control'},
-            choices=BOOLEAN_CHOICES), initial=True)
+            choices=BOOLEAN_CHOICES),
+        initial=True)
 
     group = forms.ModelChoiceField(
         label=_('Group'),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Group.objects.all())
+
+    if settings.SWIFT_CLOUD_ENABLED:
+        cloud = forms.ChoiceField(
+            label=_('Cloud Provider'),
+            required=False,
+            choices=CLOUD_CHOICES,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+            initial=True)
 
     def clean_description(self):
         if 'description' in self.data:

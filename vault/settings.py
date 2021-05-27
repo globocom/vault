@@ -173,6 +173,11 @@ CACHESWEEP_API = os.getenv('CACHESWEEP_API', 'http://localhost/')
 IDENTITY_SECRET_KEY = os.getenv('IDENTITY_SECRET_KEY',
                                 'sN_nhqpWOpmGBla8vNJ1L2EQyy0Gi4JYGslQD7uqhSk=')
 
+# Swift-Cloud
+SWIFT_CLOUD_ENABLED = False
+if os.getenv('VAULT_SWIFT_CLOUD_ENABLED') == 'True':
+    SWIFT_CLOUD_ENABLED = True
+
 LOGGING = {
     'version': 1,
     'handlers': {

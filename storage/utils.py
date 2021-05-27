@@ -216,6 +216,24 @@ def get_container_objects(container, storage_url, auth_token):
     return object_list
 
 
+def update_swift_account(headers, storage_url, auth_token):
+    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
+
+    try:
+        current_headers = client.head_account(
+            storage_url, auth_token, http_conn=http_conn)
+
+        headers.update(current_headers)
+
+        _, body = client.post_account(
+            storage_url, auth_token, headers, http_conn=http_conn)
+    except client.ClientException as err:
+        log.exception('Exception: {}'.format(err))
+        return False
+
+    return True
+
+
 def delete_swift_account(storage_url, auth_token):
 
     insecure = settings.SWIFT_INSECURE
