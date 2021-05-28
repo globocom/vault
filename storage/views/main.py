@@ -1395,57 +1395,60 @@ class SwiftJsonInfo(JsonInfo):
         project_name = self.request.session.get('project_name')
 
         if storage_url is None:
-            return {
-                "error": "Storage URL not found."
-            }
+            return {"error": "Storage URL not found."}
 
         auth_token = self.request.session.get('auth_token')
         http_conn = client.http_connection(storage_url,
-                                             insecure=settings.SWIFT_INSECURE)
+                                           insecure=settings.SWIFT_INSECURE)
         try:
-            head_acc = client.head_account(storage_url,
-                                             auth_token,
-                                             http_conn=http_conn)
+            head_acc = client.head_account(
+                storage_url, auth_token, http_conn=http_conn)
         except Exception as err:
             log.exception('Exception: {0}'.format(err))
             return {
                 "error": "Unable to show Swift info."
             }
 
-        return [
-            {
-                "type": "default",
-                "name": "storage",
-                "title": str(_("Swift")),
-                "subtitle": str(_("Object Storage")),
-                "color": "red",
-                "icon": "fas fa-cube",
-                "url": reverse("containerview", kwargs={'project': project_name}),
-                "properties": [
-                    {
-                        "name": str(_("containers")),
-                        "description": "",
-                        "value": head_acc.get('x-account-container-count')
-                    },
-                    {
-                        "name": str(_("objects")),
-                        "description": "",
-                        "value": head_acc.get('x-account-object-count')
-                    },
-                    {
-                        "name": str(_("used space")),
-                        "description": "",
-                        "value": filesizeformat(head_acc.get('x-account-bytes-used'))
-                    }
-                ],
-                "buttons": [
-                    {
-                        "name": str(_("Containers")),
-                        "url": reverse("containerview", kwargs={'project': project_name})
-                    }
-                ]
+        widget_info = [{
+            "type": "default",
+            "name": "storage",
+            "title": str(_("Swift")),
+            "subtitle": str(_("Object Storage")),
+            "color": "red",
+            "icon": "fas fa-cube",
+            "url": reverse("containerview", kwargs={'project': project_name}),
+            "properties": [
+                {
+                    "name": str(_("containers")),
+                    "description": "",
+                    "value": head_acc.get('x-account-container-count')
+                },
+                {
+                    "name": str(_("objects")),
+                    "description": "",
+                    "value": head_acc.get('x-account-object-count')
+                },
+                {
+                    "name": str(_("used space")),
+                    "description": "",
+                    "value": filesizeformat(head_acc.get('x-account-bytes-used'))
+                }
+            ],
+            "buttons": [
+                {
+                    "name": str(_("Containers")),
+                    "url": reverse("containerview", kwargs={'project': project_name})
+                }
+            ]
+        }]
+
+        if 'x-account-meta-cloud' in head_acc:
+            widget_info[0]['extra'] = {
+                "icon": "fas fa-cloud",
+                "title": str(_("This project saves its objects in a public cloud"))
             }
-        ]
+
+        return widget_info
 
 
 @utils.project_required

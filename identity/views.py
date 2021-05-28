@@ -422,7 +422,7 @@ class CreateProjectView(BaseProjectView):
             return self.render_to_response(
                 self.get_context_data(form=form, request=request))
 
-        # Swift-cloud
+        # swift-cloud middleware
         if settings.SWIFT_CLOUD_ENABLED:
             cloud = request.POST.get('cloud')
             if cloud != '':

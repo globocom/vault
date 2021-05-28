@@ -84,6 +84,19 @@
   border-radius: 4px 4px 0 0;
 }
 
+.extra-info {
+  position: absolute;
+  top: 30px;
+  right:  30px;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.extra-info:hover {
+  color: white;
+  opacity: 0.8;
+}
+
 .widget .name {
   font-size: 16px;
   font-weight: 300;

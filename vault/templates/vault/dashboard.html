@@ -67,6 +67,12 @@
         <%=title%>
         <span class="info"><%=subtitle%></span>
       </span>
+      <% if (extra) { %>
+      <a href="#" class="extra-info" title="<%=extra.title%>"
+         data-toggle="tooltip" data-placement="top">
+        <i class="<%=extra.icon%>"></i>
+      </a>
+      <% } %>
     </div>
 
     <div class="content">
@@ -119,7 +125,8 @@
             "url": "#",
             "subtitle": "",
             "properties": [],
-            "buttons": []
+            "buttons": [],
+            "extra": null
           }, d));
         }
 
@@ -135,6 +142,7 @@
           widget_list.appendChild(w);
         });
 
+        $('[data-toggle="tooltip"]').tooltip();
       });
     } catch (err) {
       return;
@@ -148,5 +156,4 @@
   $('.last-login > span').text(last_login_date.toISOString().split('T')[0] + ' ' +
                                last_login_date.toTimeString().split(' ')[0]);
 </script>
-
 {% endblock %}
