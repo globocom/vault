@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 07:37+0000\n"
+"POT-Creation-Date: 2021-05-27 22:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,8 +23,8 @@ msgid "Swift Browser"
 msgstr "Swift Browser"
 
 #: storage/templates/containerview.html:15
-msgid "Create Container"
-msgstr "Criar Container"
+msgid "New Container"
+msgstr "Novo Container"
 
 #: storage/templates/containerview.html:28
 #: storage/templates/storage/storage_tools.html:38
@@ -150,7 +150,7 @@ msgstr "Editar Cache-Control"
 msgid "Delete object"
 msgstr "Excluir objeto"
 
-#: storage/templates/objectview.html:174
+#: storage/templates/objectview.html:175
 msgid "URL copied!"
 msgstr "URL copiada!"
 
@@ -216,11 +216,11 @@ msgstr "Não foi possível listar containers"
 #: storage/tests/test_storage.py:578 storage/tests/test_storage.py:662
 #: storage/tests/test_storage.py:1018 storage/tests/test_storage.py:1045
 #: storage/views/main.py:114 storage/views/main.py:210
-#: storage/views/main.py:302 storage/views/main.py:362
-#: storage/views/main.py:403 storage/views/main.py:527
-#: storage/views/main.py:811 storage/views/main.py:822
-#: storage/views/main.py:845 storage/views/main.py:861
-#: storage/views/main.py:1298 storage/views/main.py:1370
+#: storage/views/main.py:300 storage/views/main.py:360
+#: storage/views/main.py:401 storage/views/main.py:525
+#: storage/views/main.py:809 storage/views/main.py:820
+#: storage/views/main.py:843 storage/views/main.py:859
+#: storage/views/main.py:1296 storage/views/main.py:1368
 msgid "Access denied"
 msgstr "Acesso negado"
 
@@ -233,7 +233,7 @@ msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
 #: storage/tests/test_storage.py:296 storage/tests/test_storage.py:319
-#: storage/views/main.py:359
+#: storage/views/main.py:357
 msgid "Object created"
 msgstr "Objeto criado"
 
@@ -246,30 +246,30 @@ msgid "Container delete error"
 msgstr "Erro ao excluir container"
 
 #: storage/tests/test_storage.py:506 storage/tests/test_storage.py:545
-#: storage/views/main.py:524
+#: storage/views/main.py:522
 msgid "Pseudofolder created"
 msgstr "Pseudofolder criada"
 
 #: storage/tests/test_storage.py:615 storage/tests/test_storage.py:638
-#: storage/views/main.py:401
+#: storage/views/main.py:399
 msgid "Object deleted"
 msgstr "Objeto excluído"
 
 #: storage/tests/test_storage.py:711 storage/tests/test_storage.py:778
-#: storage/views/main.py:465
+#: storage/views/main.py:463
 msgid "Pseudofolder deleted"
 msgstr "Pseudofolder excluída"
 
-#: storage/tests/test_storage.py:806 storage/views/main.py:476
+#: storage/tests/test_storage.py:806 storage/views/main.py:474
 msgid "Fail to delete pseudofolder"
 msgstr "Falha ao excluir pseudofolder"
 
-#: storage/tests/test_storage.py:1273 storage/views/main.py:581
+#: storage/tests/test_storage.py:1273 storage/views/main.py:579
 msgid "ACLs updated"
 msgstr "ACLs atualizadas"
 
 #: storage/tests/test_storage.py:1305 storage/tests/test_storage.py:1449
-#: storage/views/main.py:589 storage/views/main.py:626
+#: storage/views/main.py:587 storage/views/main.py:624
 msgid "ACL update failed"
 msgstr "Atualização de ACL falhou"
 
@@ -325,47 +325,47 @@ msgstr "Não foi possível encontrar container para fazer backup"
 msgid "Bad parameters"
 msgstr "Parâmetros errados"
 
-#: storage/views/main.py:473
+#: storage/views/main.py:471
 msgid "Could not delete all objects"
 msgstr "Não foi possível excluir todos os objetos"
 
-#: storage/views/main.py:618
+#: storage/views/main.py:616
 msgid "ACL removed"
 msgstr "ACL removida"
 
-#: storage/views/main.py:678 storage/views/main.py:1322
+#: storage/views/main.py:676 storage/views/main.py:1320
 msgid "Container is now public"
 msgstr "Container agora está público"
 
-#: storage/views/main.py:681 storage/views/main.py:1326
+#: storage/views/main.py:679 storage/views/main.py:1324
 msgid "Container is now private"
 msgstr "Container agora está privado"
 
-#: storage/views/main.py:691
+#: storage/views/main.py:689
 msgid "Container ACL update failed"
 msgstr "Atualização de ACL do container falhou"
 
-#: storage/views/main.py:825
+#: storage/views/main.py:823
 msgid "Versioning enabled"
 msgstr "Versionamento habilitado"
 
-#: storage/views/main.py:868
+#: storage/views/main.py:866
 msgid "Versioning disabled"
 msgstr "Versionamento desabilitado"
 
-#: storage/views/main.py:905
+#: storage/views/main.py:903
 msgid "CORS updated"
 msgstr "CORS atualizado"
 
-#: storage/views/main.py:913 storage/views/main.py:948
+#: storage/views/main.py:911 storage/views/main.py:946
 msgid "CORS update failed"
 msgstr "Atualização de CORS falhou"
 
-#: storage/views/main.py:940
+#: storage/views/main.py:938
 msgid "CORS removed"
 msgstr "CORS removido"
 
-#: storage/views/main.py:984
+#: storage/views/main.py:982
 msgid ""
 "URLs scheduled to be removed. Grab some coffee, it takes 2 to 3 minutes to "
 "remove."
@@ -373,62 +373,69 @@ msgstr ""
 "URLs agendadas para serem removidas. Pegue um café, leva de 2 a 3 minutos "
 "para remover."
 
-#: storage/views/main.py:990
+#: storage/views/main.py:988
 msgid "Fail to schedule URLs to be removed."
 msgstr "Falha ao agendar URLs para serem removidas"
 
-#: storage/views/main.py:1024
+#: storage/views/main.py:1022
 msgid "Custom Metadata updated"
 msgstr "Metadados Personalizados atualizados"
 
-#: storage/views/main.py:1029
+#: storage/views/main.py:1027
 msgid "Custom Metadata update failed"
 msgstr "Atualização de Metadados Personalizados falhou"
 
-#: storage/views/main.py:1049
+#: storage/views/main.py:1047
 msgid "Days must be greater than 0"
 msgstr "Dias deve ser maior que 0"
 
-#: storage/views/main.py:1067
+#: storage/views/main.py:1065
 msgid "Cache-Control updated"
 msgstr "Cache-Control atualizado"
 
-#: storage/views/main.py:1072
+#: storage/views/main.py:1070
 msgid "Cache-Control update failed"
 msgstr "Atualização de Cache-Control falhou"
 
-#: storage/views/main.py:1202
+#: storage/views/main.py:1200
 msgid "Object restored"
 msgstr "Objeto restaurado"
 
-#: storage/views/main.py:1251
+#: storage/views/main.py:1249
 msgid "Trash disabled for container"
 msgstr "Lixeira desabilitada para o container"
 
-#: storage/views/main.py:1258
+#: storage/views/main.py:1256
 msgid "Trash enabled for container"
 msgstr "Lixeira habilitada para o container"
 
-#: storage/views/main.py:1383 storage/views/main.py:1422
+#: storage/views/main.py:1381 storage/views/main.py:1416
 msgid "Object Storage"
 msgstr "Object Storage"
 
-#: storage/views/main.py:1388 storage/views/main.py:1445
+#: storage/views/main.py:1386 storage/views/main.py:1439
 msgid "Containers"
 msgstr "Containers"
 
-#: storage/views/main.py:1421
+#: storage/views/main.py:1415
 msgid "Swift"
 msgstr "Swift"
 
-#: storage/views/main.py:1428
+#: storage/views/main.py:1422
 msgid "containers"
 msgstr "containers"
 
-#: storage/views/main.py:1433
+#: storage/views/main.py:1427
 msgid "objects"
 msgstr "objetos"
 
-#: storage/views/main.py:1438
+#: storage/views/main.py:1432
 msgid "used space"
 msgstr "espaço utilizado"
+
+#: storage/views/main.py:1448
+msgid "This project saves its objects in a public cloud"
+msgstr "Este projeto armazena seus objetos em uma cloud pública"
+
+#~ msgid "Create Container"
+#~ msgstr "Criar Container"

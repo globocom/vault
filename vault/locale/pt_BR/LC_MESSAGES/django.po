@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 07:37+0000\n"
+"POT-Creation-Date: 2021-05-27 22:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: vault/admin.py:28 vault/forms.py:60 vault/utils.py:93 vault/utils.py:163
+#: vault/admin.py:28 vault/forms.py:60 vault/utils.py:95 vault/utils.py:165
 #: vault/views.py:66
 msgid "Unable to retrieve Keystone data"
 msgstr "Não foi possível recuperar dados do Keystone"
@@ -109,11 +109,11 @@ msgstr ""
 "Você está autenticado(a) como %(username)s, mas não é autorizado(a) a "
 "acessar esta página. Gostaria de entrar com uma conta diferente?"
 
-#: vault/templates/vault/login.html:67
+#: vault/templates/vault/login.html:68
 msgid "Forgotten your password or username?"
 msgstr "Esqueceu sua senha ou nome de usuário?"
 
-#: vault/templates/vault/login.html:71
+#: vault/templates/vault/login.html:72
 msgid "Login"
 msgstr "Login"
 
@@ -139,9 +139,8 @@ msgid "Vault Error"
 msgstr "Erro do Vault"
 
 #: vault/templates/vault/project_error.html:23
-#, python-format
-msgid "Return to project \"%(project_name)s\" Home"
-msgstr "Retornar à Home do projeto \"%(project_name)s\""
+msgid "Return to Home"
+msgstr ""
 
 #: vault/templates/vault/project_error.html:28
 msgid "Select a different project"
@@ -313,3 +312,7 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 #: vault/views.py:327
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
+
+#, python-format
+#~ msgid "Return to project \"%(project_name)s\" Home"
+#~ msgstr "Retornar à Home do projeto \"%(project_name)s\""
