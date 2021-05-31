@@ -7,7 +7,6 @@
   padding: 30px;
 }
 
-.dashboard-info .last-login,
 .dashboard-info .useful-links {
   margin-bottom: 30px;
 }
@@ -29,6 +28,12 @@
   padding: 5px;
   border-radius: 10px;
   color: #777;
+  margin-bottom: 20px;
+}
+
+.useful-links .item.highlighted {
+  color: #664d03;
+  background-color: #fff3cd;
 }
 
 .useful-links .item:hover {
@@ -44,7 +49,7 @@
 .useful-links .item .icon {
   font-size: 32px;
   width: 40px;
-  margin-right: 10px;
+  margin: 0 15px 0 5px;
 }
 
 .useful-links .item .text {

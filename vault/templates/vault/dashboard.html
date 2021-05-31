@@ -34,13 +34,11 @@
     <div class="col-md-4">
 
       <div class="box dashboard-info">
-        <div class="last-login">
-          <h4>{% trans 'Last Login' %}</h4>
-          <span>{{ last_login }}</span>
-        </div>
 
         <div class="useful-links">
-          <a href="{% url 'update_teams_users' project_name %}" class="item">
+          {% block extra_links %}{% endblock %}
+
+          <a class="item" href="{% url 'update_teams_users' project_name %}">
             <i class="icon fas fa-users-cog"></i>
             <span class="text">
               <strong class="item-title">{% trans 'Manage my Team' %}</strong>
@@ -48,6 +46,12 @@
             </span>
           </a>
         </div>
+
+        <div class="last-login">
+          <h4>{% trans 'Last Login' %}</h4>
+          <span>{{ last_login }}</span>
+        </div>
+
       </div>
 
     </div>
