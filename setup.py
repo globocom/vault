@@ -16,7 +16,7 @@ setup(
     install_requires=[
         'Babel==2.3.4',
         'gunicorn==19.3.0',
-        'Django==3.1.6',
+        'Django==3.1.12',
         'django3-all-access==0.10.0',
         'iso8601==0.1.11',
         'mysqlclient==1.4.6',
