@@ -253,6 +253,8 @@ def object(request, project, container, objectname):
     for item in metadata:
         if 'x-object-meta-' in item.lower():
             custom_headers[re.sub('x-object-meta-', '', item.lower())] = metadata[item]
+        elif 'x-delete-at' in item.lower():
+            custom_headers[re.sub('x-delete-at-', '', item.lower())] = metadata[item]
         else:
             system_headers[item] = metadata[item]
 
@@ -1004,13 +1006,14 @@ def edit_custom_metadata(request, project, container, objectname):
 
     content, status = {}, 200
     custom_headers = request.POST.dict()
+    log.error(custom_headers)
     system_headers = {}
 
     headers = client.head_object(storage_url, auth_token, container,
                                  objectname, http_conn=http_conn)
 
     for item in headers:
-        if 'x-object-meta-' not in item.lower():
+        if 'x-object-meta-' not in item.lower() or 'x-delete-at' not in item.lower():
             system_headers[item] = headers[item]
 
     system_headers.update(custom_headers)
@@ -1018,13 +1021,12 @@ def edit_custom_metadata(request, project, container, objectname):
     try:
         client.post_object(storage_url, auth_token, container, objectname,
                            headers=system_headers, http_conn=http_conn)
-
-        content = {"message": _("Custom Metadata updated")}
+        content = {"message": str(_("Custom Metadata updated"))}
         msg = "Custom Metadata header on object {}/{}".format(container,
                                                             objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": _("Custom Metadata update failed")}, 500
+        content, status = {"message": str(_("Custom Metadata update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),

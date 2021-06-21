@@ -485,8 +485,11 @@ Storage.Object = {};
         row = ['<tr>',
                     '<td>',
                         '<div style="display: flex; align-items: center; justify-content: space-around;">',
-                            '<span style="width: 80%;">x-object-meta-</span>',
-                            '<input type="text" class="form-control" value="" />',
+                            `<select style="width: 80%; name="prefix" id="prefix">
+                              '<option value="x-object-meta-">x-object-meta-</option>
+                              '<option value="x-delete-at">x-delete-at</option>
+                            '</select>`,
+                            '<input id="complement" type="text" class="form-control" value=""/>',
                         '</div>',
                     '</td>',
                     '<td>',
@@ -506,6 +509,23 @@ Storage.Object = {};
             e.preventDefault();
             _add_new_header()
         });
+
+        $( "select" )
+            .change(function (){
+                $( "select option:selected" ).each(function (){
+                    console.log($( this ).text());
+                    var value = $( this ).text();
+                    if ( value == 'x-delete-at') {
+                      console.log('in if')
+                      $( "#complement" ).prop( "disabled" , true);
+                    }
+                    else{
+                      $( "#complement" ).prop( "disabled" , false);
+                    }
+                })
+
+            })
+            .change();
 
         $btnSave.on('click', function(e) {
             e.preventDefault();
@@ -527,13 +547,16 @@ Storage.Object = {};
         var url = $tableCustomMetadata.data('custom-meta-url');
         var $tbody = $tableCustomMetadata.find('tbody');
 
+        console.log('SAVE')
         $tbody.find('tr').each(function(index, tr) {
             var $td = $(tr).find('td');
             var key = $($td[0]).find('input').val();
+            var prefix = $($td[0]).find('select').val();
             var value = $($td[1]).find('input').val();
             if ($.trim(key) !== '') {
                 var slug = _convert_to_slug(key);
-                customMetadata['x-object-meta-' + slug] = value;
+                customMetadata[prefix + slug] = value;
+                console.log(slug)
                 $($td[0]).find('input').val(slug);
             }
         });

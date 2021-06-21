@@ -134,8 +134,12 @@
         <tr>
           <td>
             <div style="display: flex; align-items: center; justify-content: space-around;">
-              <span>x-object-meta-</span>
-              <input type="text" class="form-control" value="{{ key }}" />
+              <select name="prefix">
+                <option value="x-object-meta-">x-object-meta</option>
+                <option value="x-delete-at">x-delete-at</option>
+              </select>
+              <!-- <span>x-object-meta-</span> -->
+              <input type="text" class="form-control" value="{{ key }}"/>
             </div>
           </td>
           <td>
