@@ -1024,7 +1024,7 @@ def edit_custom_metadata(request, project, container, objectname):
                                                             objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": _("Custom Metadata update failed")}, 500
+        content, status = {"message": str(_("Custom Metadata update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
