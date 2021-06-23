@@ -10,6 +10,7 @@ import hmac
 import logging
 import requests
 import re
+import ast
 
 from datetime import datetime
 
@@ -1062,18 +1063,47 @@ def cache_control(request, project, container, objectname):
         client.post_object(storage_url, auth_token, container, objectname,
                            headers=headers, http_conn=http_conn)
 
-        content = {"message": _("Cache-Control updated"), "cache_control": headers["cache-control"]}
+        content = {"message": str(_("Cache-Control updated")), "cache_control": headers["cache-control"]}
         msg = "Cache-Control header on object {}/{}".format(container,
                                                             objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": _("Cache-Control update failed")}, 500
+        content, status = {"message": str(_("Cache-Control update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
                         status=status)
 
+@login_required
+def optional_headers(request, project, container, objectname):
+    storage_url = get_storage_endpoint(request, 'adminURL')
+    auth_token = get_token_id(request)
+    http_conn = client.http_connection(storage_url,
+                                       insecure=settings.SWIFT_INSECURE)
+
+    content, status = {}, 200
+
+    headers = client.head_object(storage_url, auth_token, container,
+                                 objectname, http_conn=http_conn)
+
+    body_dict = ast.literal_eval(request.body.decode())
+    headers['x-delete-at'] = body_dict.get('x-delete-at')
+    log.error(headers['x-delete-at'])
+    if (headers['x-delete-at'] == ''):
+        headers.pop ('x-delete-at', None)
+
+    content = {"message": str(_("Optional headers updated")), "x-delete-at": headers.get("x-delete-at")}
+    try:
+        client.post_object(storage_url, auth_token, container, objectname,
+                           headers=headers, http_conn=http_conn)
+    except Exception as e:
+        log.error(e)
+        content, status = {"message": str(_("Optional headers update failed: {}".format(e)))}, 500
+
+    return HttpResponse(json.dumps(content),
+                        content_type='application/json',
+                        status=status)
 
 @utils.project_required
 @login_required
