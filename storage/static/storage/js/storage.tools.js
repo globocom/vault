@@ -523,7 +523,7 @@ Storage.Object = {};
   function _save() {
     var url = $tableCustomMetadata.data('custom-meta-url');
     var $tbody = $tableCustomMetadata.find('tbody');
-
+    console.log(url)
     $tbody.find('tr').each(function(index, tr) {
       var $td = $(tr).find('td');
       var key = $($td[0]).find('input').val();
