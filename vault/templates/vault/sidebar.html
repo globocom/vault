@@ -9,7 +9,8 @@
   <div class="current-project btn-group">
   {% if project_name and project_id %}
     <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">{{ project_name }}</button>
-    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
     <div class="dropdown-menu dropdown-menu-right">
@@ -29,7 +30,7 @@
 
   <ul class="app-menus" id="sidebar-app-menus">
     <li>
-      <a href="{% url 'main' %}" title="{% trans 'Home' %}" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'main' %}" title="{% trans 'Home' %}">
         <i class="icon fa fa-home"></i> {% trans 'Home' %}
       </a>
     </li>
@@ -41,19 +42,18 @@
 
   <ul class="admin-menus" id="sidebar-admin-menus">
     <li>
-      <a href="{% url 'update_teams_users' project_name %}" title="{% trans 'Manage Team' %}"
-         data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'update_teams_users' project_name %}" title="{% trans 'Manage Team' %}">
         <i class="icon fas fa-users-cog"></i> {% trans 'Manage my Team' %}
       </a>
     </li>
     {% if user.is_staff %}
     <li>
-      <a href="{% url 'team_users' project_name %}" title="Teams and Users" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'team_users' project_name %}" title="Teams and Users">
         <i class="icon fa fa-building"></i> {% trans 'Teams and Users' %}
       </a>
     </li>
     <li>
-      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}" data-toggle="tooltip" data-placement="right">
+      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}">
         <i class="icon fa fa-cog"></i> {% trans 'Vault Admin' %}
       </a>
     </li>

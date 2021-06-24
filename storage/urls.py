@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^trash/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.get_deleted_objects, name="deleted_objects"),
 
     # Storage urls
+    url(r'^account/?$', views.accountview, name="accountview"),
     url(r'^objects/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.objectview, name="objectview"),
     url(r'^object/(?P<container>.+?)/(?P<objectname>.+?)$', views.object, name="object"),
     url(r'^upload/(?P<container>.+?)/(?P<prefix>.+)?$', views.upload, name="upload"),

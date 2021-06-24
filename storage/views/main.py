@@ -1383,6 +1383,11 @@ class SwiftJsonInfo(JsonInfo):
             "url": reverse("containerview", kwargs={'project': project_name}),
             "subitems": [
                 {
+                    "name": str(_("Account")),
+                    "icon": "",
+                    "url": reverse("accountview", kwargs={'project': project_name})
+                },
+                {
                     "name": str(_("Containers")),
                     "icon": "",
                     "url": reverse("containerview", kwargs={'project': project_name})

@@ -2,13 +2,13 @@
 
 {% load i18n static pagination %}
 
-{% block title %}Object Storage - {{ project_name }}{% endblock %}
+{% block title %}Object Storage &rsaquo; {% trans "Containers" %}{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
 {% endblock %}
 
-{% block content_title %}Object Storage{% endblock %}
+{% block content_title %}Object Storage &rsaquo; {% trans "Containers" %}{% endblock %}
 
 {% block content_top %}
   <a href="{% url 'create_container' project_name %}" class="btn btn btn-primary btn-sm">
@@ -16,7 +16,7 @@
   </a>
 {% endblock %}
 
-{% block content_breadcrumb %}<span>Containers</span>{% endblock %}
+{% block content_breadcrumb %}<span>{% trans "Containers" %}</span>{% endblock %}
 
 {% block content %}
 
