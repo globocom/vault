@@ -1,5 +1,8 @@
 .PHONY: help clean deps setup pycodestyle delete-db migrations-test tests tests-ci run docker-up docker-down docker-clean
 
+# Version package
+VERSION=$(shell python -c 'import vault; print(vault.__version__)')
+
 CWD="`pwd`"
 PROJECT_NAME = vault
 PROJECT_HOME = $(CWD)
@@ -9,7 +12,10 @@ help:
 
 clean: ## Project cleaning up for any extra files created during execution
 	@echo "Cleaning up"
+	@rm -rf build dist *.egg-info
 	@find . -name "*.pyc" -delete
+	@find . -name "__pycache__" -delete
+	@find . -name "**/*.pyc" -delete
 	@find . -name "*.~" -delete
 
 deps: ## Install project dependencies
@@ -51,3 +57,12 @@ docker-start: docker-build ## Build and start Docker containers
 
 docker-clean: ## Remove any container, network, volume and image created by docker
 	@docker-compose down -v --rmi all --remove-orphans
+
+dist: clean ## Make dist
+	@python setup.py sdist
+
+publish: clean dist ## Make publish
+	@echo 'Ready to release version ${VERSION}? (ctrl+c to abort)' && read
+	twine upload dist/*
+	@git tag ${VERSION}
+	@git push --tags
