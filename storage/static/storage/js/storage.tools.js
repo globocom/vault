@@ -421,17 +421,23 @@ Storage.Container = {};
             $elem.data('current-status', status);
 
             Base.Loading.hide();
-            var msg = data.responseJSON.message;
+            var msg = data.message;
             if (msg !== '') {
-                Base.Messages.setMessage({ description: msg, type: 'success' });
+                Base.Messages.setMessage({
+                    description: msg,
+                    type: 'success'
+                });
                 return;
             }
 
             window.location.reload();
         })
         .fail(function (data) {
-            var msg = data.responseJSON.message;
-            Base.Messages.setMessage({ description: msg, type: 'error' });
+            var msg = data.message;
+            Base.Messages.setMessage({
+                description: msg,
+                type: 'error'
+            });
             console.log(msg);
             Base.Loading.hide();
         });
