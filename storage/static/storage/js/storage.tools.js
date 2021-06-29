@@ -421,7 +421,7 @@ Storage.Container = {};
             $elem.data('current-status', status);
 
             Base.Loading.hide();
-            var msg = data.message;
+            var msg = data.responseJSON.message;
             if (msg !== '') {
                 Base.Messages.setMessage({
                     description: msg,
@@ -433,7 +433,7 @@ Storage.Container = {};
             window.location.reload();
         })
         .fail(function (data) {
-            var msg = data.message;
+            var msg = data.responseJSON.message;
             Base.Messages.setMessage({
                 description: msg,
                 type: 'error'
