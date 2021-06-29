@@ -429,20 +429,29 @@ Storage.Container = {};
         url: item.url,
       })
         .done(function (data) {
-          if (data.status == "enabled") {
-            $conf
-              .data("current-status", "enabled")
-              .removeClass("disabled")
-              .addClass("enabled");
-          } else {
-            $conf
-              .data("current-status", "disabled")
-              .removeClass("enabled")
-              .addClass("disabled");
+          $elem.removeClass("enabled disabled").addClass(status);
+          $elem.data("current-status", status);
+
+          Base.Loading.hide();
+          var msg = data.responseJSON.message;
+          if (msg !== "") {
+            Base.Messages.setMessage({
+              description: msg,
+              type: "success",
+            });
+            return;
           }
+
+          window.location.reload();
         })
         .fail(function (data) {
-          console.log(data);
+          var msg = data.responseJSON.message;
+          Base.Messages.setMessage({
+            description: msg,
+            type: "error",
+          });
+          console.log(msg);
+          Base.Loading.hide();
         });
     });
   }
