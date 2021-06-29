@@ -46,7 +46,7 @@
 
 {% block content %}
 
-<h3>System Headers</h3>
+<h3>Headers</h3>
 <br>
 
 <div class="box-table table-metadata">
@@ -110,7 +110,13 @@
   </table>
 </div>
 
-<h3>Custom Metadata</h3>
+
+<h3>{% trans 'Optionals' %}</h3>
+<br>
+<div id="x-delete-at"></div>
+
+
+<h3>{% trans 'Custom Metadata' %}</h3>
 <br>
 
 <div style="margin-bottom: 15px;">
@@ -175,4 +181,7 @@
     }
   });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="{% static 'storage/js/x-delete-at.js' %}"></script>
 {% endblock %}
