@@ -1,3 +1,11 @@
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 hr {
   border: none;
   border-bottom: 1px solid var(--line-context-color);
@@ -33,12 +41,16 @@ hr {
   border-bottom: 1px solid #e6e6e6;
 }
 
-.table thead th {
+body .table thead th {
   color: var(--main-color-dark);
   border-top: 0;
   background-color: rgba(0, 0, 0, 0.035);
-  border-bottom-width: 1px;
+  border-bottom: 1px solid #e6e6e6;
   vertical-align: middle;
+}
+
+.table > :not(:last-child) > :last-child > * {
+  border-bottom-color: #e6e6e6;
 }
 
 .table tbody tr:first-child th,
@@ -86,7 +98,7 @@ textarea.form-control {
 
 .form-control:disabled,
 .form-control:disabled:focus {
-  color: rgba(0, 0, 0, .4);
+  color: rgba(0, 0, 0, 0.4);
   background-color: #f2f2f2;
   border: 1px solid #ddd;
 }
