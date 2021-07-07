@@ -4,9 +4,12 @@
 
 {% block title %}Object Storage &rsaquo; {% trans "Account" %}{% endblock %}
 
-{% block content_title %}Object Storage &rsaquo; {% trans "Account" %}{% endblock %}
+{% block content_title %}{% trans "Account" %}{% endblock %}
 
-{% block content_breadcrumb %}<span>{% trans "Account" %}</span>{% endblock %}
+{% block content_breadcrumb %}
+<a href="#">Object Storage</a>
+<span>{% trans "Account" %}</span>
+{% endblock %}
 
 {% block content %}
   <div class="card">
@@ -19,16 +22,12 @@
       <div>Containers: {{ total_containers }}</div>
       <div>Objects: {{ total_objects }}</div>
       <br>
-      <div>
-        Cloud: {% firstof cloud "No" %}<br>
-        <button class="btn btn-primary btn-sm">{% trans "Cloud Migration" %}</button>
-      </div>
+      <div>Cloud: {% firstof cloud "No" %}</div>
     </div>
   </div>
 {% endblock %}
 
 {% block js_bottom %}
-<script src="{% static 'vault/js/metadata.js' %}"></script>
-<script src="https://unpkg.com/vue@next"></script>
-<script></script>
+<script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
+<script src="{% static 'vault/js/account.js' %}"></script>
 {% endblock %}

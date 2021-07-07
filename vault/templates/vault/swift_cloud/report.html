@@ -1,0 +1,24 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}Object Storage &rsaquo; {% trans "Migration Report" %}{% endblock %}
+
+{% block some_top_info %}Swift Cloud{% endblock %}
+
+{% block content_title %}{% trans "Migration Report" %}{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Swift Cloud</a>
+<span>{% trans "Migration Report" %}</span>
+{% endblock %}
+
+{% block content %}
+<div id="report-app"></div>
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
+<script>const PROJECTS = JSON.parse('{{ projects|escapejs }}');</script>
+<script src="{% static 'vault/js/swift_cloud/report.js' %}"></script>
+{% endblock %}

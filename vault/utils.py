@@ -37,7 +37,10 @@ def update_default_context(request, context={}):
     return context
 
 
-def generic_pagination(items, page=1, per_page=settings.PAGINATION_SIZE, query=None):
+def generic_pagination(items,
+                       page=1,
+                       per_page=settings.PAGINATION_SIZE,
+                       query=None):
     paginator = Paginator(items, per_page)
 
     try:
@@ -101,9 +104,8 @@ def maybe_update_token(request):
         if keystone.conn is None:
             return False
 
-        request.session['token_time'] = (
-            timedelta(minutes=15) + datetime.utcnow()
-        )
+        request.session['token_time'] = (timedelta(minutes=15) +
+                                         datetime.utcnow())
         request.session['auth_token'] = keystone.conn.auth_token
         request.session['service_catalog'] = keystone.get_endpoints()
 
@@ -179,7 +181,8 @@ def project_check(request, current_project):
 
         if not project_id or project.id != project_id:
             groups = user.groups.all()
-            group_projects = GroupProjects.objects.filter(group_id__in=[group.id for group in groups])
+            group_projects = GroupProjects.objects.filter(
+                group_id__in=[group.id for group in groups])
 
             if group_projects.filter(project=project.id).count() == 0:
                 # messages.add_message(request, messages.WARNING, u"Unauthorized")

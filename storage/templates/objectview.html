@@ -90,7 +90,7 @@
               <a href="#" class="btn-config btn btn-sm btn-light dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-cog icon-white"></i>
               </a>
-              <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-menu dropdown-menu-end">
                 <a href="{% url 'delete_pseudofolder' project=project_name container=container pseudofolder=obj.name %}"
                    class="dropdown-item"
                    onclick="return confirm('Delete pseudofolder {{obj.name}}?');">
@@ -131,7 +131,7 @@
               <a href="#" class="btn-config btn btn-sm btn-light dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-cog icon-white"></i>
               </a>
-              <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-menu dropdown-menu-end">
                  <a href="#modal-cache-control" class="dropdown-item btn-cache-control" data-target="#modal-cache-control" data-toggle="modal"
                    data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=obj.name %}">
                   {% trans 'Edit Cache-Control' %}

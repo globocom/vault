@@ -6,14 +6,16 @@
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
 
-  <div class="current-project btn-group">
+  <div class="dropdown current-project btn-group">
   {% if project_name and project_id %}
-    <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">{{ project_name }}</button>
-    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">
+      {{ project_name }}
+    </button>
+    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split" id="dropdownMenuProjects"
+            type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
-    <div class="dropdown-menu dropdown-menu-right">
+    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuProjects">
       <a class="dropdown-item" href="{% url 'change_project' %}">{% trans "Change Project" %}</a>
       <a class="dropdown-item" href="{% url 'edit_project' project_name project_id %}">{% trans "Edit Project" %}</a>
     </div>
@@ -60,6 +62,19 @@
     {% endif %}
   </ul>
 
+  {% if user.is_staff and SWIFT_CLOUD_ENABLED %}
+  <div class="separator">
+    <span>Swift Cloud</span>
+  </div>
+  <ul>
+    <li>
+      <a href="{% url 'swift_cloud_report' %}" title="{% trans 'Cloud Migration' %}">
+        <i class="icon fa fa-cloud"></i> {% trans 'Migration Report' %}
+      </a>
+    </li>
+  </ul>
+  {% endif %}
+
   <script type="text/html" id="menu_icon_default">
     <a class="app-main-menu-item" href="<%=url%>" title="<%=name%>">
       <i class="icon <%=icon%>"></i> <%=name%>
@@ -67,18 +82,22 @@
   </script>
 
   <script type="text/html" id="submenu_icon_default">
-    <a href="<%=url%>" title="<%=name%>">
-      <i class="icon fas fa-caret-right"></i> <%=name%>
-    </a>
+    <a href="<%=url%>" title="<%=name%>"><%=name%></a>
   </script>
 
   <script src="{% static 'vault/js/menu.js' %}"></script>
   <script>
     $(document).ready(function() {
       VaultMenu.init({
-        'endpoints': [{% autoescape off %}{% info_endpoints %}{% endautoescape %}]
+        'endpoints': JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}')
       });
     });
   </script>
+
+  {% if HELP_URL %}
+  <a class="help-link" href="{{ HELP_URL }}">
+    <i class="icon fas fa-question-circle"></i> {% trans 'Vault Help' %}
+  </a>
+  {% endif %}
 
 </nav>

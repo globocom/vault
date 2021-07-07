@@ -182,7 +182,12 @@
   });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+{% if debug %}
+  <script src="{% static 'vendor/js/vue.js' %}"></script>
+{% else %}
+  <script src="{% static 'vendor/js/vue.min.js' %}"></script>
+{% endif %}
+
 <script>
   const OPTIONAL_HEADERS_URL = "{% url 'optional_headers' project=project_name container=container objectname=objectname %}";
   const METADATA_URL = "{% url 'metadata' project=project_name container=container objectname=objectname %}";

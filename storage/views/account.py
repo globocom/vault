@@ -15,7 +15,9 @@ log = logging.getLogger(__name__)
 @login_required
 def accountview(request, project):
     storage_url = get_storage_endpoint(request, 'adminURL')
-    project_name = request.session.get('project_name')
+
+    if not storage_url:
+        return
 
     auth_token = request.session.get('auth_token')
     http_conn = client.http_connection(
@@ -37,4 +39,4 @@ def accountview(request, project):
     }
 
     return render(request, 'storage/accountview.html',
-        update_default_context(request, context))
+                  update_default_context(request, context))

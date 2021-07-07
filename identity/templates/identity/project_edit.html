@@ -1,20 +1,24 @@
 {% extends "vault/base.html" %}
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
 
 {% block title %}{% trans 'Edit Project' %}{% endblock %}
 {% block content_title %}{% trans 'Edit Project' %}{% endblock %}
 
-{% block css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% block content_breadcrumb %}
+<a href="#">Identity</a>
+<span>{% trans 'Edit Project' %}</span>
 {% endblock %}
 
 {% block content_top %}
-{% block delete_project_btn %}
-  <a href="{% url 'delete_project' project=project_name project_id=identity_project_id %}" class="btn btn-sm btn-danger">
-    <i class="fas fa-trash"></i>&nbsp;{% trans 'Delete Project' %}
-  </a>
-{% endblock %}
+  {% block delete_project_btn %}
+    <a href="{% url 'delete_project' project=project_name project_id=identity_project_id %}" class="btn btn-sm btn-danger">
+      <i class="fas fa-trash"></i>&nbsp;{% trans 'Delete Project' %}
+    </a>
+  {% endblock %}
 {% endblock %}
 
 {% block content %}

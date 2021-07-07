@@ -17,7 +17,7 @@
 
 {% block content %}
 
-<div class="box change-project-list">
+<div class="box-table change-project-list">
   <table class="items-list table">
 
     <thead>
@@ -34,7 +34,7 @@
         <td>{{ project.name }}</td>
         <td>{{ project.description }}</td>
         <td style="text-align: right">
-          <a href="{% url 'set_project' project.id %}" class="btn btn-primary btn-sm">
+          <a href="{% url 'set_project' project.id %}" class="btn btn-light btn-sm">
             {% trans 'Select this Project' %}
           </a>
         </td>

@@ -248,12 +248,14 @@ def object(request, project, container, objectname):
     if 'Cache-Control' not in metadata.keys():
         metadata["Cache-Control"] = ''
 
-    public_url = '{}/{}/{}'.format(get_storage_endpoint(request, 'publicURL'), container, objectname)
+    public_url = '{}/{}/{}'.format(get_storage_endpoint(request,
+                                   'publicURL'), container, objectname)
     prefixes = prefix_list(objectname)
 
     for item in metadata:
         if 'x-object-meta-' in item.lower():
-            custom_headers[re.sub('x-object-meta-', '', item.lower())] = metadata[item]
+            custom_headers[re.sub('x-object-meta-', '',
+                                  item.lower())] = metadata[item]
         else:
             system_headers[item] = metadata[item]
 
@@ -282,7 +284,8 @@ def upload(request, project, container, prefix=None):
 
     project_name = request.session.get('project_name')
     redirect_url = 'http://{}'.format(request.get_host())
-    redirect_url += reverse('objectview', kwargs={'container': container, 'project': project_name})
+    redirect_url += reverse('objectview',
+                            kwargs={'container': container, 'project': project_name})
 
     swift_url = storage_url + '/' + container + '/'
     if prefix:
@@ -307,8 +310,8 @@ def upload(request, project, container, prefix=None):
     hmac_body = '{}\n{}\n{}\n{}\n{}'.format(path, redirect_url, max_file_size,
                                             max_file_count, expires)
     signature = hmac.new(bytes(key, 'utf-8'),
-                        bytes(hmac_body, 'utf-8'),
-                        sha1).hexdigest()
+                         bytes(hmac_body, 'utf-8'),
+                         sha1).hexdigest()
 
     prefixes = prefix_list(prefix)
 
@@ -687,7 +690,8 @@ def make_public(request, container):
         msg = "X-Container-Read header on container {}".format(container)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": str(_("Container ACL update failed"))}, 500
+        content, status = {"message": str(
+            _("Container ACL update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
@@ -1022,10 +1026,11 @@ def edit_custom_metadata(request, project, container, objectname):
 
         content = {"message": _("Custom Metadata updated")}
         msg = "Custom Metadata header on object {}/{}".format(container,
-                                                            objectname)
+                                                              objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": str(_("Custom Metadata update failed"))}, 500
+        content, status = {"message": str(
+            _("Custom Metadata update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
@@ -1063,17 +1068,20 @@ def cache_control(request, project, container, objectname):
         client.post_object(storage_url, auth_token, container, objectname,
                            headers=headers, http_conn=http_conn)
 
-        content = {"message": str(_("Cache-Control updated")), "cache_control": headers["cache-control"]}
+        content = {"message": str(
+            _("Cache-Control updated")), "cache_control": headers["cache-control"]}
         msg = "Cache-Control header on object {}/{}".format(container,
                                                             objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
-        content, status = {"message": str(_("Cache-Control update failed"))}, 500
+        content, status = {"message": str(
+            _("Cache-Control update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
                         status=status)
+
 
 @login_required
 def optional_headers(request, project, container, objectname):
@@ -1091,19 +1099,22 @@ def optional_headers(request, project, container, objectname):
     headers['x-delete-at'] = body_dict.get('x-delete-at')
     log.error(headers['x-delete-at'])
     if (headers['x-delete-at'] == ''):
-        headers.pop ('x-delete-at', None)
+        headers.pop('x-delete-at', None)
 
-    content = {"message": str(_("Optional headers updated")), "x-delete-at": headers.get("x-delete-at")}
+    content = {"message": str(_("Optional headers updated")),
+               "x-delete-at": headers.get("x-delete-at")}
     try:
         client.post_object(storage_url, auth_token, container, objectname,
                            headers=headers, http_conn=http_conn)
     except Exception as e:
         log.error(e)
-        content, status = {"message": str(_("Optional headers update failed: {}".format(e)))}, 500
+        content, status = {"message": str(
+            _("Optional headers update failed: {}".format(e)))}, 500
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
                         status=status)
+
 
 @utils.project_required
 @login_required
@@ -1412,11 +1423,11 @@ class SwiftJsonInfo(JsonInfo):
             "icon": "fas fa-cube",
             "url": reverse("containerview", kwargs={'project': project_name}),
             "subitems": [
-                {
-                    "name": str(_("Account")),
-                    "icon": "",
-                    "url": reverse("accountview", kwargs={'project': project_name})
-                },
+                # {
+                #     "name": str(_("Account")),
+                #     "icon": "",
+                #     "url": reverse("accountview", kwargs={'project': project_name})
+                # },
                 {
                     "name": str(_("Containers")),
                     "icon": "",

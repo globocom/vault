@@ -87,3 +87,8 @@ def url_replace(get_parameters, **kwargs):
             query[x] = [query[x]]
     query_pairs = [(k, v) for k, vlist in query.items() for v in vlist]
     return urlencode(query_pairs)
+
+
+@register.simple_tag()
+def vue():
+    return 'vue.js' if settings.DEBUG else 'vue.min.js'

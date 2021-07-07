@@ -9,7 +9,10 @@
 
 {% block content_title %}Identity{% endblock %}
 
-{% block breadcrumb %}{% trans 'Projects' %}{% endblock %}
+{% block content_breadcrumb %}
+<a href="#">Identity</a>
+<span>{% trans 'Projects' %}</span>
+{% endblock %}
 
 {% block content_top %}
   <a href="{% url "add_project" %}" class="create-project btn btn-primary btn-sm">
@@ -42,10 +45,10 @@
         </td>
         <td>{{ project.team.name }}</td>
         <td>{{ project.enabled }}</td>
-        <td>
+        <td class="text-end">
           <a href="{% url 'edit_project' project=project_name project_id=project.id %}"
              title="Edit" class="edit-item btn btn-sm btn-light">
-            <i class="fas fa-edit"></i>
+             <i class="fas fa-edit"></i> {% trans 'edit' %}
           </a>
         </td>
       </tr>
