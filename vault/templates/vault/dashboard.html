@@ -105,12 +105,8 @@
 
 {% if has_team %}
 <script type="text/javascript">
-  {% autoescape off %}
-  let endpoints = [{% info_endpoints %}];
-  {% endautoescape %}
-
+  let endpoints = JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}');
   let widget_list = document.getElementById("dashboard-widgets");
-
   let widgets = []
 
   endpoints.forEach(async (endpoint) => {

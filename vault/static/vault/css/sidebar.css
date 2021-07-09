@@ -28,20 +28,41 @@
   width: 55%;
 }
 
-#sidebar .help-link {
+#sidebar .sidebar-base {
   position: fixed;
-  bottom: 20px;
-  left: 15px;
-  width: 225px;
+  display: flex;
+  justify-content: center;
+  bottom: 0;
+  left: 0;
+  width: 256px;
+  padding: 15px;
+}
+
+#sidebar .help-link {
+  position: relative;
+  width: auto;
   background-color: rgba(26, 62, 127, 0.35);
   color: white;
-  font-size: 1.2em;
-  padding: 10px 12px;
-  border-radius: 4px;
+  font-size: 1.1em;
+  text-align: center;
+  padding: 8px 15px 8px 43px;
+  border-radius: 25px;
+}
+
+#sidebar .help-link .icon {
+  position: absolute;
+  font-size: 1.8em;
+  top: 6px;
+  left: 6px;
+  opacity: 0.35;
 }
 
 #sidebar .help-link:hover {
   background-color: rgba(26, 62, 127, 0.75);
+}
+
+#sidebar .help-link:hover .icon {
+  opacity: 0.75;
 }
 
 #sidebar .current-project {

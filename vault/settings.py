@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get("VAULT_SECRET_KEY", "Th1s-I5-4-S3cR37-K3y")
+SECRET_KEY = os.environ.get("VAULT_SECRET_KEY", "vaultsecretkey")
 
 PROJECT = "vault"
 
@@ -188,14 +188,19 @@ KEYSTONE_ROLE = os.getenv("VAULT_KEYSTONE_ROLE")  # swiftoperator role ID
 # Cache cleanning API
 CACHESWEEP_API = os.getenv("CACHESWEEP_API", "http://localhost/")
 
-IDENTITY_SECRET_KEY = os.getenv(
-    "IDENTITY_SECRET_KEY", "sN_nhqpWOpmGBla8vNJ1L2EQyy0Gi4JYGslQD7uqhSk=")
+IDENTITY_SECRET_KEY = os.getenv("IDENTITY_SECRET_KEY", "identitysecretkey")
 
 # Swift-Cloud
 SWIFT_CLOUD_ENABLED = False
 if os.getenv("VAULT_SWIFT_CLOUD_ENABLED") == "True":
     SWIFT_CLOUD_ENABLED = True
 
+SWIFT_CLOUD_TOOLS_URL = os.getenv(
+    "VAULT_SWIFT_CLOUD_TOOLS_URL", "http://localhost:8888/v1")
+SWIFT_CLOUD_TOOLS_API_KEY = os.getenv(
+    "VAULT_SWIFT_CLOUD_TOOLS_API_KEY", "toolsapikey")
+
+# Logging conf
 LOGGING = {
     "version": 1,
     "handlers": {
@@ -229,8 +234,9 @@ LOGGING = {
 }
 
 
-# Load Apps' settings
 def load_apps_settings():
+    """Load Apps' settings"""
+
     new_settings = {}
     for app in INSTALLED_APPS:
         try:

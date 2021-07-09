@@ -98,3 +98,8 @@ textarea.form-control {
   background-color: #f2f2f2;
   border: 1px solid #ddd;
 }
+
+.form-group textarea {
+  width: 100%;
+  padding: 5px;
+}

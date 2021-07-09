@@ -61,7 +61,6 @@
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
-
 }
 
 .useful-links .item-text {
@@ -92,7 +91,7 @@
 .extra-info {
   position: absolute;
   top: 30px;
-  right:  30px;
+  right: 30px;
   font-size: 1.2rem;
   color: white;
 }
@@ -110,7 +109,7 @@
 
 .widget .info {
   font-size: 30px;
-  font-size: 2.05vw;
+  font-size: 1.8em;
   display: block;
 }
 
@@ -194,7 +193,13 @@
 }
 
 @keyframes pulse {
-  from { background-color: #eee; }
-  50% { background-color: #dfdfdf; }
-  to { background-color: #eee; }
+  from {
+    background-color: #eee;
+  }
+  50% {
+    background-color: #dfdfdf;
+  }
+  to {
+    background-color: #eee;
+  }
 }

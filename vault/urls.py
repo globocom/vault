@@ -52,15 +52,18 @@ urlpatterns = [
     url(r"^p/(?P<project>.+?)/team/manage/outsideusers/?$", views.list_users_outside_a_group, name="outside_users"),
 ]
 
+
 # Swift Cloud
 if settings.SWIFT_CLOUD_ENABLED:
-    urlpatterns.append(
-        url(r"^swift-cloud/report/?$", views.swift_cloud_report, name="swift_cloud_report"),
-    )
+    urlpatterns.append(url(r"^swift-cloud/report/?$", views.swift_cloud_report, name="swift_cloud_report"))
+    urlpatterns.append(url(r"^swift-cloud/status/?$", views.swift_cloud_status, name="swift_cloud_status"))
+    urlpatterns.append(url(r"^swift-cloud/migrate/?$", views.swift_cloud_migrate, name="swift_cloud_migrate"))
+
 
 for app in apps.app_configs:
     if "vault_app" in dir(apps.app_configs[app]):
         urlpatterns.append(url(rf"^p/(?P<project>.+?)/{app}/", include(f"{app}.urls")))
+
 
 urlpatterns.append(url(r"^p/(?P<project>.+?)/", views.DashboardView.as_view(), name="dashboard"))
 urlpatterns.append(url(r"^", views.main_page, name="main"))

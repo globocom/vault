@@ -1,33 +1,37 @@
 {% extends "vault/base.html" %}
 
+{% load i18n %}
+
 {% block title %}Storage - {{ project_name }}{% endblock %}
 
-{% block content_title %}Storage{% endblock %}
+{% block content_title %}Object Storage{% endblock %}
 
 {% block content_breadcrumb %}
-  <span>Remove from cache</span>
+<a href="#">Object Storage</a>
+<span>{% trans "Remove from cache" %}</span>
 {% endblock %}
 
 {% block content %}
   <form method="POST" action="{% url "remove_from_cache" project_name %}" class="form-box project-form">
     {% csrf_token %}
     <fieldset class="content">
-      <div class="col-md-6">
+      <div class="col-xl-12">
         <div class="form-group">
-            {{ form.urls.label }}
-            {{ form.urls }}
-            {{ form.urls.errors }}
+          {{ form.urls.label }}<br />
+          {{ form.urls }}
+          {{ form.urls.errors }}
         </div>
         <span class="help-block">
-            Enter all the URLs you need to remove from cache.
-            One URL per line.
+          {% trans "Enter all the URLs you need to remove from cache. One URL per line." %}
         </span>
-      <div class="col-md-6">&nbsp;</div>
+      </div>
     </fieldset>
 
     <fieldset class="base">
       <div class="col-md-12">
-        <button class="btn btn-primary" type="submit">Remove from cache</button>
+        <button class="btn btn-primary" type="submit">
+          {% trans "Remove from cache" %}
+        </button>
       </div>
     </fieldset>
   </form>

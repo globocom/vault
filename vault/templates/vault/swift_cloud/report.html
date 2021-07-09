@@ -19,6 +19,10 @@
 
 {% block js_bottom %}
 <script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
-<script>const PROJECTS = JSON.parse('{{ projects|escapejs }}');</script>
+<script>
+const PROJECTS = JSON.parse('{{ projects|escapejs }}');
+const STATUS_URL = "{% url 'swift_cloud_status' %}";
+const MIGRATE_URL = "{% url 'swift_cloud_migrate' %}";
+</script>
 <script src="{% static 'vault/js/swift_cloud/report.js' %}"></script>
 {% endblock %}

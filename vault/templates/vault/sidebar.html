@@ -95,9 +95,11 @@
   </script>
 
   {% if HELP_URL %}
-  <a class="help-link" href="{{ HELP_URL }}">
-    <i class="icon fas fa-question-circle"></i> {% trans 'Vault Help' %}
-  </a>
+  <div class="sidebar-base">
+    <a class="help-link" href="{{ HELP_URL }}">
+      <i class="icon fas fa-question-circle"></i> {% trans 'Vault Help' %}
+    </a>
+  </div>
   {% endif %}
 
 </nav>
