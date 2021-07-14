@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 id="addcors_modalLabel">Add host for container {{ container }}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
 
       <form method="POST" action="{% url 'edit_cors' project=project_name container=container %}" class="form-inl">
@@ -14,7 +14,7 @@
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Add Host</button>
-          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+          <button class="btn" data-bs-dismiss="modal" aria-hidden="true">Cancel</button>
         </div>
       </form>
     </div>

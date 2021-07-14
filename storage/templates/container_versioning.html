@@ -23,7 +23,7 @@
   {% if prefix %}
     <a class="u" href="{% url 'object_versioning' project=project_name container=container %}">Object versions from {{ container }}</a>
   {% else %}
-    Object versions from {{ container }}
+    Object versions from <strong>{{ container }}</strong>
   {% endif %}
 
   {% for prefix in prefixes %}
@@ -38,7 +38,7 @@
 
 {% block content %}
   {% if version_location %}
-  <div class="box">
+  <div class="box-table">
   <table class="items-list table">
     <thead>
       <tr>
