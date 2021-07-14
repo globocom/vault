@@ -23,7 +23,7 @@
           <th></th>
           <th>
             <div class="dropdown pull-right">
-              <a class="dropdown-toggle btn btn-sm btn-danger" data-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
+              <a class="dropdown-toggle btn btn-sm btn-danger" data-bs-toggle="dropdown"><i class="fa fa-cog icon-white"></i></a>
               <ul class="dropdown-menu">
                 <li>
                   {% if not public %}
@@ -38,7 +38,7 @@
                   {% endif %}
                 </li>
                 <li class="divider" />
-                <li><a href="#addacl_modal" data-target="#addacl_modal" data-toggle="modal"><i class="fa fa-user"></i> Add ACL</a></li>
+                <li><a href="#addacl_modal" data-bs-target="#addacl_modal" data-bs-toggle="modal"><i class="fa fa-user"></i> Add ACL</a></li>
               </ul>
             </div>
           </th>
@@ -51,9 +51,9 @@
         <td><i class="fa fa-user"></i></td>
         <td>
           {% if user == ".rlistings" %}
-            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the listing of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+            {{user}} <a href="#" data-bs-toggle="tooltip" title="This entry allows the listing of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
           {% elif user == ".r:*" %}
-            {{user}} <a href="#" data-toggle="tooltip" title="This entry allows the download of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
+            {{user}} <a href="#" data-bs-toggle="tooltip" title="This entry allows the download of objects and is required for public readable containers."><i class="fa fa-question"></i></a>
           {% else %}
             {{user}}
           {% endif %}

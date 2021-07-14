@@ -5,13 +5,13 @@
   <strong class="container-name">{{ container }}</strong>
 
   {% if trash_enabled %}
-  <button class="btn-trash" data-toggle="modal" data-target="#trash-modal">
+  <button class="btn-trash" data-bs-toggle="modal" data-bs-target="#trash-modal">
     <i class="icon fa fa-trash"></i>{% trans 'Trash' %}
   </button>
   {% endif %}
 
   {% if backup_obj %}
-  <button class="btn-backup" data-toggle="modal" data-target="#backup-modal">
+  <button class="btn-backup" data-bs-toggle="modal" data-bs-target="#backup-modal">
     <i class="icon fa fa-box"></i>{% trans 'Backup' %}
   </button>
   {% endif %}

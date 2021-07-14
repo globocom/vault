@@ -65,8 +65,8 @@
           {% if key == 'Cache-Control' %}
             <a href="#modal-cache-control"
                class="btn-cache-control"
-               data-target="#modal-cache-control"
-               data-toggle="modal"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
                data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
               {{ key }}
             </a>
@@ -87,8 +87,8 @@
             <a href="#modal-cache-control"
                class="btn-cache-control add btn btn-sm btn-primary"
                title="Add Cache-Control"
-               data-target="#modal-cache-control"
-               data-toggle="modal"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
                data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
               <i class="fas fa-plus-square"></i> Add Cache-Control
             </a>
@@ -96,8 +96,8 @@
             <a href="#modal-cache-control"
                class="btn-cache-control add btn btn-sm btn-primary"
                title="Edit Cache-Control"
-               data-target="#modal-cache-control"
-               data-toggle="modal"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
                data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
               <i class="fas fa-edit"></i>
             </a>

@@ -19,7 +19,7 @@ Storage.Tools = {};
       "<td><%=size%></td>",
       "<td>",
       '<a class="btn btn-sm btn-default btn-restore" title="Restore object"',
-      'data-toggle="tooltip" data-placement="left" data-object-name="<%=name%>" data-object-new-name="">',
+      'data-bs-toggle="tooltip" data-placement="left" data-object-name="<%=name%>" data-object-new-name="">',
       '<i class="fa fa-download"></i>',
       "</a>",
       "</td>",
@@ -178,7 +178,7 @@ Storage.Tools = {};
           );
         }
 
-        $('[data-toggle="tooltip"]').tooltip({ animation: false });
+        $('[data-bs-toggle="tooltip"]').tooltip({ animation: false });
       })
       .fail(function (data) {
         _reset_modal();

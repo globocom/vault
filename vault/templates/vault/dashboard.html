@@ -73,7 +73,7 @@
       </span>
       <% if (extra) { %>
       <a href="#" class="extra-info" title="<%=extra.title%>"
-         data-toggle="tooltip" data-placement="top">
+         data-bs-toggle="tooltip" data-placement="top">
         <i class="<%=extra.icon%>"></i>
       </a>
       <% } %>
@@ -142,7 +142,7 @@
           widget_list.appendChild(w);
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-bs-toggle="tooltip"]').tooltip();
       });
     } catch (err) {
       return;
