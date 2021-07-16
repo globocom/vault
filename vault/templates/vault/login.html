@@ -3,6 +3,7 @@
 
 {% block css %}
   {{ form.media }}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/login.css' %}">
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} {% trans 'login' %}{% endblock %}
@@ -48,43 +49,43 @@
         <h3>Login</h3>
 
         <section class="d-flex justify-content-center">
-          <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+          <form action="{{ app_path }}" method="post" id="login-form" class="d-flex flex-column">
+            {% csrf_token %}
 
             {% block contrib_auth_form %}
-            <div class="form-group">
-              {{ form.username.errors }}
-              {{ form.username }}
-            </div>
+              <div class="form-group">
+                {{ form.username.errors }}
+                {{ form.username }}
+              </div>
 
-            <div class="form-group">
-              {{ form.password.errors }}
-              {{ form.password }}
-              <input type="hidden" name="next" value="{{ next }}">
-            </div>
+              <div class="form-group">
+                {{ form.password.errors }}
+                {{ form.password }}
+                <input type="hidden" name="next" value="{{ next }}">
+              </div>
 
-            {% url 'admin_password_reset' as password_reset_url %}
-            {% if password_reset_url %}
-            <div class="password-reset-link">
-              <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
-            </div>
-            {% endif %}
+              {% url 'admin_password_reset' as password_reset_url %}
+              {% if password_reset_url %}
+                <div class="password-reset-link">
+                  <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+                </div>
+              {% endif %}
 
-            <input type="submit" class="btn btn-primary btn-block" value="{% trans 'Login' %}">
+              <input type="submit" class="btn btn-primary btn-block" value="{% trans 'Login' %}">
             {% endblock %}
 
             {% if providers %}
-            {% block form_separator %}
-            <hr class="hr-separator">
-            {% endblock %}
+              {% block form_separator %}
+                <hr class="hr-separator">
+              {% endblock %}
 
-            {% block provider_list %}
-            <div class="providers">
-              {% for provider in providers %}
-                <a href="{{ provider.url }}" class="btn btn-outline-secondary btn-block">{{ provider.name }}</a>
-              {% endfor %}
-            </div>
-            {% endblock %}
-
+              {% block provider_list %}
+                <div class="providers d-flex flex-column">
+                  {% for provider in providers %}
+                    <a href="{{ provider.url }}" class="btn btn-outline-secondary btn-block mb-3">{{ provider.name }}</a>
+                  {% endfor %}
+                </div>
+              {% endblock %}
             {% endif %}
           </form>
         </section>

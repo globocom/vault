@@ -178,16 +178,21 @@ class VaultLogin(LoginView):
         providers = []
 
         for provider in Provider.objects.all():
-            providers.append(
-                {"name": provider.name, "url": reverse("allaccess-login", kwargs={"provider": provider.name})}
-            )
+            providers.append({
+                "name": provider.name,
+                "url": reverse("allaccess-login", kwargs={"provider": provider.name})
+            })
 
-        context.update({"providers": providers, "username": user.get_username()})
+        context.update({
+            "providers": providers,
+            "username": user.get_username()
+        })
 
         return context
 
 
 class VaultLogout(View):
+
     def get(self, request):
         user = request.user
         logout(request)
@@ -240,15 +245,13 @@ class ListUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
             for group in groups:
                 team = Group.objects.get(id=group.id)
                 for user in team.user_set.all():
-                    context.append(
-                        {
-                            "team": {
-                                "id": int(team.id),
-                                "name": team.name,
-                                "users": {"id": int(user.id), "name": user.username},
-                            }
+                    context.append({
+                        "team": {
+                            "id": int(team.id),
+                            "name": team.name,
+                            "users": {"id": int(user.id), "name": user.username},
                         }
-                    )
+                    })
         except Exception as e:
             log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
             return self.render_to_response(context, status=500)
@@ -343,6 +346,7 @@ class OAuthBearerCallback(OAuthCallback):
 
     def get_user_id(self, provider, info):
         identifier = None
+
         if hasattr(info, "get"):
             identifier = info.get("email")
 
@@ -383,15 +387,19 @@ class OAuthVaultCallback(OAuthBearerCallback):
 
 
 class OAuthVaultRedirect(OAuthRedirect):
+
     def get_additional_parameters(self, provider):
+
         if provider.name == "facebook":
             # Request permission to see user's email
             return {"scope": "email"}
+
         if provider.name == "google":
             # Request permission to see user's profile and email
             perms = ["userinfo.email", "userinfo.profile"]
             scope = " ".join(["https://www.googleapis.com/auth/" + p for p in perms])
             return {"scope": scope}
+
         return super(OAuthVaultRedirect, self).get_additional_parameters(provider)
 
 
@@ -401,7 +409,11 @@ def team_manager_view(request, project=None):
     groups = []
 
     for group in request.user.groups.all():
-        groups.append({"id": group.id, "name": group.name, "users": User.objects.filter(groups__in=[group.id])})
+        groups.append({
+            "id": group.id,
+            "name": group.name,
+            "users": User.objects.filter(groups__in=[group.id])
+        })
 
     context["groups"] = groups
 
@@ -430,6 +442,5 @@ def main_page(request):
 
     if project:
         return HttpResponseRedirect(reverse("dashboard", kwargs={"project": project}))
-
     else:
         return HttpResponseRedirect(reverse("change_project"))

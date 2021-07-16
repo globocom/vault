@@ -62,7 +62,7 @@ dist: clean ## Make dist
 	@python setup.py sdist
 
 publish: clean dist ## Make publish
-	@echo 'Ready to release version ${VERSION}? (ctrl+c to abort)' && read
+	@echo 'Releasing version ${VERSION}'
 	twine upload dist/*
 	@git tag ${VERSION}
 	@git push --tags
