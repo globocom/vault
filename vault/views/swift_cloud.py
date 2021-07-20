@@ -46,26 +46,21 @@ def swift_cloud_status(request):
     url = f"{settings.SWIFT_CLOUD_TOOLS_URL}/transfer/{project_id}"
     headers = {"X-Auth-Token": settings.SWIFT_CLOUD_TOOLS_API_KEY}
     content = {"status": None}
-    log.error('##############')
-    log.error(url)
-    log.error(headers)
+
     try:
-        res = requests.get(url, headers=headers, timeout=6)
+        res = requests.get(url, headers=headers)
         data = res.json()
-        log.error('============')
-        log.error(project_id)
-        log.error(res.status_code)
+
         if res.status_code == 404:
             content["status"] = "Not initialized"
         else:
             content["status"] = "Waiting"
-        log.error(content["status"])
+
         if data.get("initial_date") and not data.get("final_date"):
             content["status"] = "Migrating"
 
         if data.get("final_date"):
             content["status"] = "Done"
-        log.error(content["status"])
     except Exception as err:
         log.error(err)
 
