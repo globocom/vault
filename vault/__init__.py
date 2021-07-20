@@ -2,4 +2,4 @@
 
 default_app_config = 'vault.apps.VaultConfig'
 
-__version__ = '1.2.4a'
+__version__ = '1.2.4b'
