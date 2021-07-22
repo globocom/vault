@@ -26,9 +26,10 @@
   display: flex;
   align-items: center;
   padding: 5px;
-  border-radius: 10px;
+  border-radius: 4px;
   color: #777;
   margin-bottom: 20px;
+  background-color: #f8f8f8;
 }
 
 .useful-links .item.highlighted {
@@ -142,7 +143,7 @@
 
 .widget .big-number {
   display: block;
-  font-size: 32px;
+  font-size: 26px;
   font-weight: lighter;
   line-height: 32px;
 }

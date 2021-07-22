@@ -172,6 +172,9 @@ SWIFT_INSECURE = False
 if os.environ.get("VAULT_SWIFT_INSECURE") == "True":
     SWIFT_INSECURE = True
 
+# Timeout for requests made with swiftclient
+SWIFT_REQUESTS_TIMEOUT = os.getenv("VAULT_SWIFT_REQUESTS_TIMEOUT", 30)
+
 # Keystone
 KEYSTONE_USERNAME = os.getenv("VAULT_KEYSTONE_USERNAME", "u_vault")
 KEYSTONE_PASSWORD = os.getenv("VAULT_KEYSTONE_PASSWORD", "u_vault")

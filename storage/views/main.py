@@ -40,22 +40,28 @@ log = logging.getLogger(__name__)
 actionlog = ActionLogger()
 
 
+def connection(request):
+    storage_url = get_storage_endpoint(request, 'adminURL')
+    conn = client.http_connection(storage_url,
+                                  insecure=settings.SWIFT_INSECURE,
+                                  timeout=settings.SWIFT_REQUESTS_TIMEOUT)
+    return storage_url, conn
+
+
 @utils.project_required
 @login_required
 def containerview(request, project):
-    """ Returns a list of all containers in current account. """
+    """Returns a list of all containers in current account."""
 
     if not project:
         return redirect('change_project')
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
+
     try:
-        account_stat, containers = client.get_account(storage_url, auth_token,
-                                                      full_listing=False,
-                                                      http_conn=http_conn)
+        account_stat, containers = client.get_account(
+            storage_url, auth_token, full_listing=False, http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR,
@@ -75,7 +81,7 @@ def containerview(request, project):
 
 
 def _hide_containers_with_prefixes(containers):
-    """ Hide containers that starts with prefixes listed in SWIFT_HIDE_PREFIXES """
+    """Hide containers that starts with prefixes listed in SWIFT_HIDE_PREFIXES."""
 
     hide_prefixes = settings.SWIFT_HIDE_PREFIXES
     if hide_prefixes:
@@ -89,12 +95,10 @@ def _hide_containers_with_prefixes(containers):
 @utils.project_required
 @login_required
 def create_container(request, project):
-    """ Creates a container (empty object of type application/directory) """
+    """Creates a container (empty object of type application/directory)."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     form = CreateContainerForm(request.POST or None)
     if form.is_valid():
@@ -102,10 +106,8 @@ def create_container(request, project):
         project_name = request.session.get('project_name')
 
         try:
-            client.put_container(storage_url,
-                                 auth_token,
-                                 container,
-                                 http_conn=http_conn)
+            client.put_container(
+                storage_url, auth_token, container, http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
                                  _("Container created"))
 
@@ -124,22 +126,15 @@ def create_container(request, project):
 
 
 def delete_container(request, container, force=True):
-    """
-    Deletes a container. If force is True, it will deletes all objects first.
-    """
+    """Deletes a container. If force is True, it will deletes all objects first."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     if force:
         try:
-            meta, objects = client.get_container(storage_url,
-                                                 auth_token,
-                                                 container,
-                                                 http_conn=http_conn)
-
+            meta, objects = client.get_container(
+                storage_url, auth_token, container, http_conn=http_conn)
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             return False
@@ -148,7 +143,6 @@ def delete_container(request, container, force=True):
             delete_object(request=request,
                           container=container,
                           objectname=obj['name'])
-
     try:
         client.delete_container(storage_url, auth_token,
                                 container, http_conn=http_conn)
@@ -162,7 +156,7 @@ def delete_container(request, container, force=True):
 
 @login_required
 def delete_container_view(request, project, container):
-    """ Deletes a container """
+    """Deletes a container."""
 
     if request.method != 'DELETE':
         return HttpResponse(json.dumps({'message': _('Bad parameters')}),
@@ -186,17 +180,15 @@ def delete_container_view(request, project, container):
 @utils.project_required
 @login_required
 def objectview(request, project, container, prefix=None):
-    """ Returns list of all objects in current container. """
+    """Returns list of all objects in current container."""
 
     for hide_prefix in settings.SWIFT_HIDE_PREFIXES:
         if container.startswith(hide_prefix):
             raise Http404("Container does not exist")
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     public_url = get_storage_endpoint(request, 'publicURL') + '/' + container
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     page = request.GET.get('page', 1)
 
@@ -205,7 +197,6 @@ def objectview(request, project, container, prefix=None):
                                              container, delimiter='/',
                                              prefix=prefix, full_listing=False,
                                              http_conn=http_conn)
-
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -229,7 +220,7 @@ def objectview(request, project, container, prefix=None):
 @utils.project_required
 @login_required
 def object(request, project, container, objectname):
-    """ Returns selected object in current container. """
+    """Returns selected object in current container."""
 
     storage_url = get_storage_endpoint(request, 'adminURL')
     headers = {'X-Storage-Token': get_token_id(request)}
@@ -275,17 +266,15 @@ def object(request, project, container, objectname):
 
 @login_required
 def upload(request, project, container, prefix=None):
-    """ Display upload form using swift formpost """
+    """Display upload form using swift formpost."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     project_name = request.session.get('project_name')
     redirect_url = 'http://{}'.format(request.get_host())
     redirect_url += reverse('objectview',
-                            kwargs={'container': container, 'project': project_name})
+        kwargs={'container': container, 'project': project_name})
 
     swift_url = storage_url + '/' + container + '/'
     if prefix:
@@ -307,11 +296,10 @@ def upload(request, project, container, prefix=None):
         else:
             return redirect(objectview, container=container, project=project_name)
 
-    hmac_body = '{}\n{}\n{}\n{}\n{}'.format(path, redirect_url, max_file_size,
-                                            max_file_count, expires)
-    signature = hmac.new(bytes(key, 'utf-8'),
-                         bytes(hmac_body, 'utf-8'),
-                         sha1).hexdigest()
+    hmac_body = '{}\n{}\n{}\n{}\n{}'.format(
+        path, redirect_url, max_file_size, max_file_count, expires)
+    signature = hmac.new(
+        bytes(key, 'utf-8'), bytes(hmac_body, 'utf-8'), sha1).hexdigest()
 
     prefixes = prefix_list(prefix)
 
@@ -332,7 +320,7 @@ def upload(request, project, container, prefix=None):
 
 @login_required
 def create_object(request, project, container, prefix=None):
-    """ Create object on Swift """
+    """Create object on Swift."""
 
     obj = request.FILES.get('file1')
     project_name = request.session.get('project_name')
@@ -352,9 +340,8 @@ def create_object(request, project, container, prefix=None):
         storage_url += obj.name
 
         req = requests.put(storage_url, data=content,
-                           headers={'X-Storage-Token': auth_token,
-                                    'content-type': content_type},
-                           verify=not settings.SWIFT_INSECURE)
+            headers={'X-Storage-Token': auth_token, 'content-type': content_type},
+            verify=not settings.SWIFT_INSECURE)
 
         if req.status_code == 201:
             messages.add_message(
@@ -374,19 +361,17 @@ def create_object(request, project, container, prefix=None):
 
 
 def download(request, project, container, objectname):
-    """ Download an object from Swift """
+    """Download an object from Swift."""
 
     storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
 
-    headers = {
-        'X-Storage-Token': auth_token
-    }
+    headers = {'X-Storage-Token': auth_token}
 
     url = '{0}/{1}/{2}'.format(storage_url, container, str(objectname))
 
-    res = requests.get(url, headers=headers,
-                       verify=not settings.SWIFT_INSECURE)
+    res = requests.get(
+        url, headers=headers, verify=not settings.SWIFT_INSECURE)
 
     actionlog.log(request.user.username, "download", str(objectname))
 
@@ -395,7 +380,7 @@ def download(request, project, container, objectname):
 
 @login_required
 def delete_object_view(request, project, container, objectname):
-    """ Deletes an object """
+    """Deletes an object."""
 
     response = delete_object(request, container, objectname)
 
@@ -415,21 +400,14 @@ def delete_object_view(request, project, container, objectname):
 
 
 def delete_object(request, container, objectname):
-    """
-    Deletes an object from swift.
-    """
-    storage_url = get_storage_endpoint(request, 'adminURL')
+    """Deletes an object from swift."""
+
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     try:
-        client.delete_object(storage_url,
-                             token=auth_token,
-                             container=container,
-                             name=objectname,
-                             http_conn=http_conn)
-
+        client.delete_object(storage_url, token=auth_token,
+            container=container, name=objectname, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", objectname)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
@@ -440,31 +418,27 @@ def delete_object(request, container, objectname):
 
 @login_required
 def delete_pseudofolder(request, project, container, pseudofolder):
-    """ Deletes an empty object, used as a pseudofolder """
+    """Deletes an empty object, used as a pseudofolder."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     objects = client.get_container(storage_url, auth_token,
-                                   container, prefix=pseudofolder,
-                                   http_conn=http_conn)[1]
+        container, prefix=pseudofolder, http_conn=http_conn)[1]
 
     count_deletes = 0
+
     for obj in objects:
         try:
             client.delete_object(storage_url, token=auth_token,
-                                 container=container, name=obj['name'],
-                                 http_conn=http_conn)
+                container=container, name=obj['name'], http_conn=http_conn)
             count_deletes += 1
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
 
     # Empty pseudofolder
     if count_deletes == 1 and count_deletes == len(objects):
-        messages.add_message(request, messages.SUCCESS,
-                             _('Pseudofolder deleted'))
+        messages.add_message(request, messages.SUCCESS, _('Pseudofolder deleted'))
 
     # Non empty pseudofolder
     elif count_deletes > 1 and count_deletes == len(objects):
@@ -496,12 +470,10 @@ def delete_pseudofolder(request, project, container, pseudofolder):
 
 @login_required
 def create_pseudofolder(request, project, container, prefix=None):
-    """ Creates a pseudofolder (empty object of type application/directory) """
+    """Creates a pseudofolder (empty object of type application/directory)."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     form = PseudoFolderForm(request.POST or None)
 
@@ -518,10 +490,8 @@ def create_pseudofolder(request, project, container, prefix=None):
         project_name = request.session.get('project_name')
 
         try:
-            client.put_object(storage_url, auth_token,
-                              container, foldername, obj,
-                              content_type=content_type,
-                              http_conn=http_conn)
+            client.put_object(storage_url, auth_token, container,
+                foldername, obj, content_type=content_type, http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
                                  _('Pseudofolder created'))
         except client.ClientException as err:
@@ -549,20 +519,18 @@ def create_pseudofolder(request, project, container, prefix=None):
 
 @login_required
 def edit_acl(request, project, container):
-    """ Edit ACLs on given container. """
+    """Edit ACLs on given container."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     if request.method == 'POST':
         form = AddACLForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
 
-            (readers, writers) = get_acls(storage_url, auth_token, container,
-                                          http_conn)
+            readers, writers = get_acls(
+                storage_url, auth_token, container, http_conn)
 
             readers = remove_duplicates_from_acl(readers)
             writers = remove_duplicates_from_acl(writers)
@@ -577,10 +545,9 @@ def edit_acl(request, project, container):
                        'X-Container-Write': writers}
             try:
                 client.post_container(storage_url,
-                                      auth_token, container, headers=headers, http_conn=http_conn)
+                    auth_token, container, headers=headers, http_conn=http_conn)
 
-                messages.add_message(request, messages.SUCCESS,
-                                     _('ACLs updated'))
+                messages.add_message(request, messages.SUCCESS, _('ACLs updated'))
 
                 actionlog.log(request.user.username, "update",
                               'headers: {}, container: {}'.format(headers, container))
@@ -627,7 +594,8 @@ def edit_acl(request, project, container):
                 messages.add_message(request, messages.ERROR,
                                      _('ACL update failed'))
 
-    (readers, writers) = get_acls(storage_url, auth_token, container, http_conn)
+    readers, writers = get_acls(
+        storage_url, auth_token, container, http_conn)
 
     acls = {}
 
@@ -662,17 +630,13 @@ def edit_acl(request, project, container):
 
 @login_required
 def make_public(request, container):
-    """ Enable/Disable public access to a container. """
+    """Enable/Disable public access to a container."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
-    headers = client.head_container(storage_url,
-                                    auth_token,
-                                    container,
-                                    http_conn=http_conn)
+    headers = client.head_container(
+        storage_url, auth_token, container, http_conn=http_conn)
 
     current = headers.get('X-Container-Read')
     if current is None:
@@ -683,8 +647,8 @@ def make_public(request, container):
         message = _('Container is now private')
 
     try:
-        client.post_container(storage_url, auth_token, container,
-                              headers=headers, http_conn=http_conn)
+        client.post_container(storage_url,
+            auth_token, container, headers=headers, http_conn=http_conn)
 
         content = {"message": str(message)}
         msg = "X-Container-Read header on container {}".format(container)
@@ -694,14 +658,13 @@ def make_public(request, container):
             _("Container ACL update failed"))}, 500
         log.exception("Exception: {}".format(err))
 
-    return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+    return HttpResponse(
+        json.dumps(content), content_type='application/json', status=status)
 
 
 @login_required
 def metadataview(request, project, container, objectname=None):
-    """ Return object/container/pseudofolder metadata. """
+    """Return object/container/pseudofolder metadata."""
 
     storage_url = get_storage_endpoint(request, 'adminURL')
     headers = {'X-Storage-Token': get_token_id(request)}
@@ -710,8 +673,8 @@ def metadataview(request, project, container, objectname=None):
     if objectname:
         url = '{0}/{1}'.format(url, str(objectname))
 
-    response = requests.head(url, headers=headers,
-                             verify=not settings.SWIFT_INSECURE)
+    response = requests.head(
+        url, headers=headers, verify=not settings.SWIFT_INSECURE)
 
     content = json.dumps(dict(response.headers))
 
@@ -721,40 +684,31 @@ def metadataview(request, project, container, objectname=None):
     else:
         status = 404
 
-    return HttpResponse(content,
-                        content_type='application/json',
-                        status=status)
+    return HttpResponse(
+        content, content_type='application/json', status=status)
 
 
 @login_required
 def object_versioning(request, project, container, prefix=None):
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
+    storage_url, http_conn = connection(request)
     public_url = get_storage_endpoint(request, 'publicURL') + '/' + container
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
 
     objects = []
 
     page = request.GET.get('page', 1)
 
     if request.method == 'GET':
-        headers = client.head_container(storage_url,
-                                        auth_token,
-                                        container,
-                                        http_conn=http_conn)
+        headers = client.head_container(
+            storage_url, auth_token, container, http_conn=http_conn)
 
         version_location = headers.get('x-versions-location', None)
 
         if version_location:
             try:
-                meta, objects = client.get_container(storage_url,
-                                                     auth_token,
-                                                     version_location,
-                                                     prefix=prefix,
-                                                     delimiter='/',
-                                                     full_listing=False,
-                                                     http_conn=http_conn)
+                meta, objects = client.get_container(
+                    storage_url, auth_token, version_location, prefix=prefix,
+                    delimiter='/', full_listing=False, http_conn=http_conn)
             except client.ClientException:
                 pass
 
@@ -791,24 +745,18 @@ def object_versioning(request, project, container, prefix=None):
 
 
 def enable_versioning(request, container):
-    """ Enable/Disable versioning in container. """
+    """Enable/Disable versioning in container."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     version_location = '{0}{1}'.format(
         settings.SWIFT_VERSION_PREFIX, container)
 
     try:
-        client.put_container(storage_url,
-                             auth_token,
-                             version_location,
-                             http_conn=http_conn)
-
+        client.put_container(
+            storage_url, auth_token, version_location, http_conn=http_conn)
         actionlog.log(request.user.username, "create", version_location)
-
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -816,10 +764,9 @@ def enable_versioning(request, container):
 
     try:
         header = {'x-versions-location': version_location}
-        client.post_container(storage_url, auth_token, container,
-                              headers=header, http_conn=http_conn)
+        client.post_container(storage_url,
+            auth_token, container, headers=header, http_conn=http_conn)
         actionlog.log(request.user.username, "update", version_location)
-
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -831,18 +778,14 @@ def enable_versioning(request, container):
 
 
 def disable_versioning(request, container):
-    """ Enable/Disable versioning in container. """
+    """Enable/Disable versioning in container."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     try:
-        headers = client.head_container(storage_url,
-                                        auth_token,
-                                        container,
-                                        http_conn=http_conn)
+        headers = client.head_container(
+            storage_url, auth_token, container, http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -852,13 +795,9 @@ def disable_versioning(request, container):
 
     if version_location:
         try:
-            client.post_container(storage_url,
-                                  auth_token,
-                                  container,
-                                  headers={'x-versions-location': ''},
-                                  http_conn=http_conn)
+            client.post_container(storage_url, auth_token, container,
+                headers={'x-versions-location': ''}, http_conn=http_conn)
             actionlog.log(request.user.username, "update", container)
-
         except client.ClientException as err:
             log.exception('Exception: {0}'.format(err))
             messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -875,20 +814,16 @@ def disable_versioning(request, container):
 
 @login_required
 def edit_cors(request, project, container):
-    """ Edit CORS on given container. """
+    """Edit CORS on given container."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     if request.method == 'POST':
         form = AddCORSForm(request.POST)
         if form.is_valid():
-            cors = get_cors(storage_url,
-                            auth_token,
-                            container,
-                            http_conn)
+            cors = get_cors(
+                storage_url, auth_token, container, http_conn)
 
             cors = remove_duplicates_from_cors(cors)
 
@@ -902,28 +837,22 @@ def edit_cors(request, project, container):
 
             try:
                 client.post_container(storage_url,
-                                      auth_token, container, headers=headers, http_conn=http_conn)
+                    auth_token, container, headers=headers, http_conn=http_conn)
 
-                messages.add_message(request, messages.SUCCESS,
-                                     _('CORS updated'))
+                messages.add_message(request, messages.SUCCESS, _('CORS updated'))
 
                 actionlog.log(request.user.username, "update",
                               'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
-                messages.add_message(request, messages.ERROR,
-                                     _('CORS update failed'))
+                messages.add_message(request, messages.ERROR, _('CORS update failed'))
 
     if request.method == 'GET':
         delete = request.GET.get('delete', None)
         if delete:
             host = delete.split(' ')
-
-            cors = get_cors(storage_url,
-                            auth_token,
-                            container,
-                            http_conn)
+            cors = get_cors(storage_url, auth_token, container, http_conn)
 
             new_cors = ''
             for element in cors.split(' '):
@@ -936,19 +865,17 @@ def edit_cors(request, project, container):
             }
 
             try:
-                client.post_container(storage_url, auth_token,
-                                      container, headers=headers, http_conn=http_conn)
+                client.post_container(storage_url,
+                    auth_token, container, headers=headers, http_conn=http_conn)
 
-                messages.add_message(request, messages.SUCCESS,
-                                     _('CORS removed'))
+                messages.add_message(request, messages.SUCCESS, _('CORS removed'))
 
                 actionlog.log(request.user.username, "delete",
                               'headers: {}, container: {}'.format(headers, container))
 
             except client.ClientException as err:
                 log.exception('Exception: {0}'.format(err))
-                messages.add_message(request, messages.ERROR,
-                                     _('CORS update failed'))
+                messages.add_message(request, messages.ERROR, _('CORS update failed'))
 
     cors = get_cors(storage_url, auth_token, container, http_conn)
 
@@ -984,17 +911,15 @@ def remove_from_cache(request, project):
 
         if req.status_code == 201:
             messages.add_message(request, messages.SUCCESS,
-                                 _('URLs scheduled to be removed. Grab some coffee, it takes 2 to 3 minutes to remove.'))
+                _('URLs scheduled to be removed. Grab some coffee, it takes 2 to 3 minutes to remove.'))
 
             form = RemoveCacheForm(None)
             actionlog.log(request.user.username, "remove_cache", repr(urls))
         else:
             messages.add_message(request, messages.ERROR,
-                                 _('Fail to schedule URLs to be removed.'))
+                _('Fail to schedule URLs to be removed.'))
 
-    context = utils.update_default_context(request, {
-        'form': form,
-    })
+    context = utils.update_default_context(request, {'form': form})
 
     return render(request, 'remove_from_cache.html', context)
 
@@ -1002,17 +927,15 @@ def remove_from_cache(request, project):
 @utils.project_required
 @login_required
 def edit_custom_metadata(request, project, container, objectname):
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     content, status = {}, 200
     custom_headers = request.POST.dict()
     system_headers = {}
 
-    headers = client.head_object(storage_url, auth_token, container,
-                                 objectname, http_conn=http_conn)
+    headers = client.head_object(storage_url,
+        auth_token, container, objectname, http_conn=http_conn)
 
     for item in headers:
         if 'x-object-meta-' not in item.lower():
@@ -1021,12 +944,11 @@ def edit_custom_metadata(request, project, container, objectname):
     system_headers.update(custom_headers)
 
     try:
-        client.post_object(storage_url, auth_token, container, objectname,
-                           headers=system_headers, http_conn=http_conn)
+        client.post_object(storage_url, auth_token, container,
+            objectname, headers=system_headers, http_conn=http_conn)
 
         content = {"message": _("Custom Metadata updated")}
-        msg = "Custom Metadata header on object {}/{}".format(container,
-                                                              objectname)
+        msg = "Custom Metadata header on object {}/{}".format(container, objectname)
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
         content, status = {"message": str(
@@ -1034,16 +956,13 @@ def edit_custom_metadata(request, project, container, objectname):
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @login_required
 def cache_control(request, project, container, objectname):
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     content, status = {}, 200
     unit = request.POST.get("unit", "minutes")
@@ -1051,23 +970,21 @@ def cache_control(request, project, container, objectname):
 
     if maxage <= 0:
         content, status = {"message": _("Days must be greater than 0")}, 400
-        return HttpResponse(json.dumps(content),
-                            content_type='application/json',
-                            status=status)
+        return HttpResponse(
+            json.dumps(content), content_type='application/json', status=status)
 
     if unit == "hours":
         maxage = maxage * 3600
     elif unit == "days":
         maxage = maxage * 86400
 
-    headers = client.head_object(storage_url, auth_token, container,
-                                 objectname, http_conn=http_conn)
+    headers = client.head_object(storage_url,
+        auth_token, container, objectname, http_conn=http_conn)
     headers["cache-control"] = "public, max-age={}".format(maxage)
 
     try:
-        client.post_object(storage_url, auth_token, container, objectname,
-                           headers=headers, http_conn=http_conn)
-
+        client.post_object(storage_url, auth_token,
+            container, objectname, headers=headers, http_conn=http_conn)
         content = {"message": str(
             _("Cache-Control updated")), "cache_control": headers["cache-control"]}
         msg = "Cache-Control header on object {}/{}".format(container,
@@ -1079,21 +996,18 @@ def cache_control(request, project, container, objectname):
         log.exception("Exception: {}".format(err))
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @login_required
 def optional_headers(request, project, container, objectname):
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     content, status = {}, 200
 
-    headers = client.head_object(storage_url, auth_token, container,
-                                 objectname, http_conn=http_conn)
+    headers = client.head_object(storage_url,
+        auth_token, container, objectname, http_conn=http_conn)
 
     body_dict = ast.literal_eval(request.body.decode())
     headers['x-delete-at'] = body_dict.get('x-delete-at')
@@ -1119,21 +1033,17 @@ def optional_headers(request, project, container, objectname):
 @utils.project_required
 @login_required
 def get_deleted_objects(request, project, container, prefix=None):
-    """ Return all deleted objects from a given container. """
+    """Return all deleted objects from a given container."""
 
-    storage_url = get_storage_endpoint(request, "adminURL")
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
-
+    storage_url, http_conn = connection(request)
     public_url = get_storage_endpoint(request, 'publicURL')
     trash_container = "{}-{}".format(settings.SWIFT_TRASH_PREFIX, container)
     objects = None
 
     try:
-        meta, objects = client.get_container(storage_url, auth_token,
-                                             trash_container, delimiter='',
-                                             http_conn=http_conn)
+        meta, objects = client.get_container(storage_url,
+            auth_token, trash_container, delimiter='', http_conn=http_conn)
     except client.ClientException as err:
         if err.http_status == 404:
             log.info("Not found: {}".format(trash_container))
@@ -1165,22 +1075,19 @@ def get_deleted_objects(request, project, container, prefix=None):
         }
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @utils.project_required
 @login_required
 def restore_object(request, project):
-    """ Restore a object from trash. """
+    """Restore a object from trash."""
 
     if request.method != 'POST':
         return HttpResponse(status=405)
 
-    storage_url = get_storage_endpoint(request, "adminURL")
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     container = request.POST.get("container")
     trash_container = request.POST.get("trash_container")
@@ -1193,11 +1100,11 @@ def restore_object(request, project):
     # valida se objeto a ser restaurado da lixeira já existe no container.
     try:
         if object_new_name != '':
-            client.head_object(storage_url, auth_token, container,
-                               object_new_name, http_conn=http_conn)
+            client.head_object(storage_url,
+                auth_token, container, object_new_name, http_conn=http_conn)
         else:
-            client.head_object(storage_url, auth_token, container,
-                               object_name, http_conn=http_conn)
+            client.head_object(storage_url,
+                auth_token, container, object_name, http_conn=http_conn)
 
         status = 409
 
@@ -1214,14 +1121,13 @@ def restore_object(request, project):
         }
 
     except client.ClientException as err:
-
         # Segue o fluxo normal se objeto a ser restaurado não foi localizado no container
-        obj_headers = client.head_object(storage_url, auth_token, trash_container,
-                                         object_name, http_conn=http_conn)
-
-        custom_headers = {"X-Fresh-Metadata": "True",
-                          "X-Copy-From": "/{}/{}".format(trash_container,
-                                                         object_name)}
+        obj_headers = client.head_object(storage_url,
+            auth_token, trash_container, object_name, http_conn=http_conn)
+        custom_headers = {
+            "X-Fresh-Metadata": "True",
+            "X-Copy-From": "/{}/{}".format(trash_container, object_name)
+        }
         for key, value in obj_headers.items():
             if "x-object-meta" in key:
                 custom_headers[key] = value
@@ -1230,13 +1136,10 @@ def restore_object(request, project):
         try:
             if object_new_name != '':
                 client.put_object(storage_url, auth_token, container, object_new_name,
-                                  content_length=0, headers=custom_headers,
-                                  http_conn=http_conn)
+                    content_length=0, headers=custom_headers, http_conn=http_conn)
             else:
                 client.put_object(storage_url, auth_token, container, object_name,
-                                  content_length=0, headers=custom_headers,
-                                  http_conn=http_conn)
-
+                    content_length=0, headers=custom_headers, http_conn=http_conn)
             messages.add_message(request, messages.SUCCESS,
                                  _('Object restored'))
             actionlog.log(request.user.username, "restore", object_name)
@@ -1245,7 +1148,8 @@ def restore_object(request, project):
             status = err.http_status
             content = {"error": err.msg}
 
-    return HttpResponse(json.dumps(content), content_type='application/json', status=status)
+    return HttpResponse(json.dumps(content),
+        content_type='application/json', status=status)
 
 
 @utils.project_required
@@ -1266,23 +1170,20 @@ def remove_from_trash(request, project):
     if not result:
         status = 500
         content = {
-            "error": "Object '{}' was not removed from trash".format(object_name)}
+            "error": "Object '{}' was not removed from trash".format(object_name)
+        }
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @utils.project_required
 @login_required
 def config_trash_container(request, project, container):
-    """ Enable or disable container trash with the metadata
-        X-Undelete-Enabled configured to True or False """
+    """Enable or disable container trash with the metadata X-Undelete-Enabled configured to True or False."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     status, content = 200, {'message': ''}
     enable = False
@@ -1298,35 +1199,30 @@ def config_trash_container(request, project, container):
             )
 
         client.put_container(storage_url, auth_token, container,
-                             headers={'X-Storage-Token': auth_token,
-                                      'X-Undelete-Enabled': str(enable)},
-                             http_conn=http_conn)
+            headers={'X-Storage-Token': auth_token, 'X-Undelete-Enabled': str(enable)},
+            http_conn=http_conn)
 
         # messages.add_message(request, messages.SUCCESS, msg)
         actionlog.log(request.user.username, 'update_trash', container)
     except Exception as err:
         log.exception('Exception: {0}'.format(err))
-        # messages.add_message(request, messages.ERROR,
-        #                      _('Update container trash error'))
+        # messages.add_message(request, messages.ERROR, _('Update container trash error'))
         status, content = 500, {'message': 'Update container trash error'}
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @utils.project_required
 @login_required
 def container_trash_status(request, project, container):
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     status, content = 200, {'status': 'enabled'}
     try:
-        headers = client.head_container(storage_url, auth_token, container,
-                                        http_conn=http_conn)
+        headers = client.head_container(storage_url,
+            auth_token, container, http_conn=http_conn)
 
         undelete_enabled = headers.get('x-undelete-enabled')
         if undelete_enabled is None or undelete_enabled == 'False':
@@ -1338,21 +1234,18 @@ def container_trash_status(request, project, container):
         status, content = 500, {'message': 'Access denied'}
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @login_required
 def container_acl_update(request, project, container):
-    """Make a container public or private"""
+    """Sets a container to public or private."""
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
-    headers = client.head_container(storage_url, auth_token, container,
-                                    http_conn=http_conn)
+    headers = client.head_container(storage_url,
+        auth_token, container, http_conn=http_conn)
 
     msg = ''
     public = False
@@ -1367,8 +1260,8 @@ def container_acl_update(request, project, container):
     status, content = 200, {'message': str(msg)}
 
     try:
-        client.post_container(storage_url, auth_token, container,
-                              headers=headers, http_conn=http_conn)
+        client.post_container(storage_url,
+            auth_token, container, headers=headers, http_conn=http_conn)
         if public:
             actionlog.log(request.user.username, "set_public", container)
         else:
@@ -1378,8 +1271,7 @@ def container_acl_update(request, project, container):
         status, content = 500, {'message': 'Failed on update container ACL'}
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 @utils.project_required
@@ -1390,15 +1282,13 @@ def container_acl_status(request, project, container):
     status = enabled if it's public, status = disabled for private
     """
 
-    storage_url = get_storage_endpoint(request, 'adminURL')
     auth_token = get_token_id(request)
-    http_conn = client.http_connection(storage_url,
-                                       insecure=settings.SWIFT_INSECURE)
+    storage_url, http_conn = connection(request)
 
     status, content = 200, {'status': 'disabled'}
     try:
-        headers = client.head_container(storage_url, auth_token, container,
-                                        http_conn=http_conn)
+        headers = client.head_container(storage_url,
+            auth_token, container, http_conn=http_conn)
 
         acl_header = headers.get('x-container-read', '')
         if '.r:*' in acl_header:
@@ -1410,8 +1300,7 @@ def container_acl_status(request, project, container):
         status, content = 500, {'message': 'Access denied'}
 
     return HttpResponse(json.dumps(content),
-                        content_type='application/json',
-                        status=status)
+        content_type='application/json', status=status)
 
 
 class SwiftJsonInfo(JsonInfo):
@@ -1437,23 +1326,19 @@ class SwiftJsonInfo(JsonInfo):
         }
 
     def generate_widget_info(self):
-        storage_url = get_storage_endpoint(self.request, 'adminURL')
+        storage_url, http_conn = connection(self.request)
+        auth_token = self.request.session.get('auth_token')
         project_name = self.request.session.get('project_name')
 
         if storage_url is None:
             return {"error": "Storage URL not found."}
 
-        auth_token = self.request.session.get('auth_token')
-        http_conn = client.http_connection(storage_url,
-                                           insecure=settings.SWIFT_INSECURE)
         try:
             head_acc = client.head_account(
                 storage_url, auth_token, http_conn=http_conn)
         except Exception as err:
             log.exception('Exception: {0}'.format(err))
-            return {
-                "error": "Unable to show Swift info."
-            }
+            return {"error": "Unable to show Swift info."}
 
         widget_info = [{
             "type": "default",
@@ -1501,5 +1386,4 @@ class SwiftJsonInfo(JsonInfo):
 @login_required
 def info_json(request, project=None):
     sjinfo = SwiftJsonInfo(request=request)
-
     return sjinfo.render(request)
