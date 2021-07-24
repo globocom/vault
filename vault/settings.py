@@ -20,7 +20,6 @@ ALLOWED_HOSTS = ["*"]
 # Disable HTTPS verification warnings in debug mode
 if DEBUG:
     from requests.packages import urllib3
-
     urllib3.disable_warnings()
 
 ENVIRON = os.getenv("VAULT_ENVIRON", None)
@@ -191,7 +190,10 @@ KEYSTONE_ROLE = os.getenv("VAULT_KEYSTONE_ROLE")  # swiftoperator role ID
 # Cache cleanning API
 CACHESWEEP_API = os.getenv("CACHESWEEP_API", "http://localhost/")
 
-IDENTITY_SECRET_KEY = os.getenv("IDENTITY_SECRET_KEY", "identitysecretkey")
+IDENTITY_SECRET_KEY = os.getenv("IDENTITY_SECRET_KEY")
+
+if not IDENTITY_SECRET_KEY and DEBUG:
+    IDENTITY_SECRET_KEY = "SRTAYZDUnNSW9xhBStvylCgmCY5jo3zedqDNbdRN3Ek="
 
 # Swift-Cloud
 SWIFT_CLOUD_ENABLED = False
