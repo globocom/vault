@@ -36,7 +36,8 @@
   width: 256px;
   padding: 15px;
   padding-right: 0;
-  background-color: #2251a9;
+  background-color: #2251a9a3;
+  backdrop-filter: blur(5px);
 }
 
 #sidebar .help-link {
