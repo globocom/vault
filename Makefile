@@ -61,7 +61,7 @@ docker-clean: ## Remove any container, network, volume and image created by dock
 dist: clean ## Make dist
 	@python setup.py sdist
 
-publish: clean dist ## Make publish
+release: clean dist ## Publish a new release
 	@echo 'Releasing version ${VERSION}'
 	twine upload dist/*
 	@git tag ${VERSION}
