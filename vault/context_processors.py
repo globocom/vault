@@ -15,5 +15,6 @@ def vault_session(request):
         'logged_user': request.user,
         'project_id': request.session.get('project_id'),
         'project_name': request.session.get('project_name'),
+        'auth_token': request.session.get('auth_token'),
         'is_superuser': request.user.is_superuser,
     }
