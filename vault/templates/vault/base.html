@@ -88,6 +88,11 @@
     </main>
     {% endblock %}
 
+    <!-- debug -->
+    {% if DEBUG %}
+      {% include "vault/debug.html" %}
+    {% endif %}
+
     <!-- messages -->
     <ul class="messages"></ul>
 

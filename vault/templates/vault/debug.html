@@ -1,0 +1,61 @@
+{% load vault_tags %}
+
+<style>
+#vault-debug {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  width: 40vw;
+}
+
+#vault-debug button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 12px;
+  border: 0;
+  border-bottom-left-radius: 4px;
+  background-color: #d8d8d8;
+}
+
+#vault-debug .pane {
+  display: none;
+  padding: 15px;
+  flex-flow: column;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #e2e2e2;
+}
+
+#vault-debug .pane.open {
+  display: flex;
+}
+
+#vault-debug .pane code {
+  margin: 5px 0 10px;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #d8d8d8;
+}
+</style>
+
+<div id="vault-debug">
+  <button onclick="Debug.toggle()">debug</button>
+  <div class="pane">
+    environment <code>{% get_vault_env %}</code>
+    project id <code>{{ project_id }}</code>
+    project name <code>{{ project_name }}</code>
+    auth token <code>{{ auth_token }}</code>
+    user <code>{{ logged_user }}</code>
+    is superuser <code>{{ is_superuser }}</code>
+  </div>
+</div>
+
+<script>
+const Debug = {
+  toggle() {
+    document.querySelector('#vault-debug .pane').classList.toggle("open");
+  }
+};
+</script>
