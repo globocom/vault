@@ -4,7 +4,7 @@
 <div class="table-pagination">
   {% if items.has_previous %}
     <a href="?{% url_replace get_parameters page=items.previous_page_number %}">
-      <i class="fa fa-angle-left"></i> anterior
+      <i class="fa fa-angle-left"></i> {% trans 'previous' %}
     </a>
   {% endif %}
 
