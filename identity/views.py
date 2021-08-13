@@ -463,7 +463,8 @@ class ChangeProjectView(LoginRequiredMixin, WithKeystoneMixin, TemplateView):
             for gp in gps:
                 for gp_ks in gps_ks:
                     if gp.project == gp_ks.id and gp_ks not in projects:
-                        projects.append(gp_ks)
+                        if self.request.GET.get('project_name', '') in gp_ks.name:
+                            projects.append(gp_ks)
                         break
 
             projects.sort(key=lambda x: x.name.lower())
