@@ -1,7 +1,7 @@
 {% extends "vault/base.html" %}
 
 {% load i18n static %}
-{% load pagination storage_tags %}
+{% load storage_tags %}
 
 {% block title %}Object Storage - {{ project_name }}{% endblock %}
 
@@ -71,7 +71,7 @@
           <td><i class="fas fa-folder-open"></i></td>
           <td>
             <a href="{% url 'objectview' project=project_name container=container prefix=obj.prefix %}">
-              <strong>{{obj.prefix|lastpart}}</strong>
+              <strong>{{obj.prefix}}</strong>
             </a>
           </td>
           <td></td>
@@ -160,7 +160,21 @@
     </table>
   </div>
 
-{% pagination objects %}
+  <nav>
+    <ul class="pagination">
+      <!-- <li class="page-item disabled">
+        <a class="page-link" href="#" aria-disabled="true">
+          &lsaquo; {% trans 'previous page' %}
+        </a>
+      </li> -->
+      <li class="page-item {% if not marker %}disabled{% endif %}">
+        <a class="page-link" href="?marker={{ marker }}"
+          {% if not marker %}aria-disabled="true"{% endif %}>
+          {% trans 'next page' %} &rsaquo;
+        </a>
+      </li>
+    </ul>
+  </nav>
 
 {% include "modal_cache_control.html" %}
 

@@ -190,13 +190,14 @@ def objectview(request, project, container, prefix=None):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
 
-    page = request.GET.get('page', 1)
+    limit = settings.PAGINATION_SIZE
+    marker = request.GET.get('marker')
 
     try:
         meta, objects = client.get_container(storage_url, auth_token,
-                                             container, delimiter='/',
-                                             prefix=prefix, full_listing=False,
-                                             http_conn=http_conn)
+            container, delimiter='/', prefix=prefix, full_listing=False,
+            http_conn=http_conn, limit=limit, marker=marker)
+
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))
@@ -206,13 +207,17 @@ def objectview(request, project, container, prefix=None):
     prefixes = prefix_list(prefix)
     object_list = pseudofolder_object_list(objects, prefix, public_url)
 
-    context = utils.update_default_context(request, {
+    context = {
         'container_meta': meta,
         'container': container,
-        'objects': utils.generic_pagination(object_list, page),
+        'objects': object_list,
         'prefix': prefix,
         'prefixes': prefixes,
-    })
+        'marker': None
+    }
+
+    if len(objects) == limit:
+        context['marker'] = f'{container}/{objects[-1].get("name")}'
 
     return render(request, "objectview.html", context)
 
