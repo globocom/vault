@@ -421,16 +421,24 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
+    @patch('storage.views.main.client.head_container')
     @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
     @patch('storage.views.main.client.delete_container')
     def test_delete_container_deleting_objects(self, mock_delete_container,
                                                mock_action_log,
                                                mock_delete_object,
-                                               mock_get_container):
+                                               mock_prepare_data_name,
+                                               mock_get_info,
+                                               mock_get_container,
+                                               mock_head_container):
         fakecontainer = 'fakecontainer'
+        mock_head_container.return_value = ({'x-container-object-count': 1})
         mock_get_container.return_value = (None, [{'name': 'object1'}])
+        mock_prepare_data_name.return_value = None
 
         resp = views.delete_container(self.request, fakecontainer, force=True)
         self.assertTrue(resp)
@@ -443,14 +451,20 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
+    @patch('storage.views.main.client.head_container')
     @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
     @patch('storage.views.main.client.delete_container')
     def test_delete_container_fail_to_get_objects(self, mock_delete_container,
                                                   mock_action_log,
                                                   mock_delete_object,
-                                                  mock_get_container):
+                                                  mock_prepare_data_name,
+                                                  mock_get_info,
+                                                  mock_get_container,
+                                                  mock_head_container):
         fakecontainer = 'fakecontainer'
         mock_get_container.side_effect = client.ClientException('')
 
@@ -463,6 +477,9 @@ class TestStorage(BaseTestCase):
         self.assertFalse(mock_action_log.called)
 
     @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.head_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.get_container')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
@@ -471,19 +488,22 @@ class TestStorage(BaseTestCase):
                                                        mock_delete_container,
                                                        mock_action_log,
                                                        mock_delete_object,
+                                                       mock_prepare_data_name,
+                                                       mock_get_info,
                                                        mock_get_container,
+                                                       mock_head_container,
                                                        mock_log_exception):
         fakecontainer = 'fakecontainer'
         mock_delete_container.side_effect = client.ClientException('')
-        mock_get_container.return_value = (None, [{'name': 'object1'}])
+        mock_head_container.return_value = ({'x-container-object-count': 0})
+        mock_get_container.return_value = (None, None)
+        mock_prepare_data_name.return_value = None
 
         expected = False
         computed = views.delete_container(self.request, fakecontainer, True)
         self.assertEqual(computed, expected)
 
         self.assertTrue(mock_log_exception.called)
-
-        self.assertTrue(mock_delete_object.called)
         self.assertTrue(mock_delete_container.called)
 
     @patch('storage.views.main.client.put_object')
