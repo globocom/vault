@@ -1333,6 +1333,7 @@ class SwiftJsonInfo(JsonInfo):
     def generate_widget_info(self):
         storage_url, http_conn = connection(self.request)
         auth_token = self.request.session.get('auth_token')
+        project_id = self.request.session.get('project_id')
         project_name = self.request.session.get('project_name')
 
         if storage_url is None:
@@ -1379,9 +1380,19 @@ class SwiftJsonInfo(JsonInfo):
         }]
 
         if 'x-account-meta-cloud' in head_acc:
+            url = f"{settings.SWIFT_CLOUD_TOOLS_URL}/transfer/status/{project_id}"
+            headers = {"X-Auth-Token": settings.SWIFT_CLOUD_TOOLS_API_KEY}
+            res = requests.get(url, headers=headers)
+            status = ''
+            if res.status_code == 200:
+                data = res.json()
+                status = data.get('status')
+                if data.get('progress'):
+                    status = '{} {}%'.format(status, data.get('progress'))
             widget_info[0]['extra'] = {
                 "icon": "fas fa-cloud",
-                "title": str(_("This project saves its objects in a public cloud"))
+                "title": str(_("This project saves its objects in a public cloud")),
+                "status": status
             }
 
         return widget_info
