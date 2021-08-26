@@ -1,0 +1,30 @@
+{% extends "vault/base.html" %}
+
+{% load i18n %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Object Storage{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Object Storage</a>
+<span>Cache</span>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">{% trans 'Remover objetos do cache' %}</h5>
+    <p class="card-text">{% trans 'Remova um ou mais objetos do cache para deixar disponível a versão mais atual do objeto.' %}</p>
+    <a href="{% url 'remove_from_cache' project_name %}">{% trans 'Remover do Cache' %}</a>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">{% trans 'Pré-cachear objetos' %}</h5>
+    <p class="card-text">{% trans 'Adicione objetos para "esquentar" o cache e diminuir o tempo inicial de acesso.' %}</p>
+    <a href="{% url 'add_to_cache' project_name %}">{% trans 'Adicionar ao Cache' %}</a>
+  </div>
+</div>
+{% endblock %}

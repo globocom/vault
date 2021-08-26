@@ -20,8 +20,10 @@ urlpatterns = [
     url(r'^acl-container-update/(?P<container>.+?)$', views.container_acl_update, name="container_acl_update"),
     url(r'^acl-container-status/(?P<container>.+?)$', views.container_acl_status, name="container_acl_status"),
 
-    # Clear cache
-    url(r'^cache/remove/', views.remove_from_cache, name="remove_from_cache"),
+    # Cache
+    url(r'^cache/?$', views.storage_cache, name="storage_cache"),
+    url(r'^cache/remove/?$', views.remove_from_cache, name="remove_from_cache"),
+    url(r'^cache/add/?$', views.add_to_cache, name="add_to_cache"),
 
     # Trash
     url(r'^trash/restore/', views.restore_object, name="restore_object"),

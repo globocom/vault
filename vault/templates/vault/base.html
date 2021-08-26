@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block metatags %}{% endblock %}
 
+    <title>Vault &rsaquo; {% block title %}{% endblock %}</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'vault/css/custom-bootstrap.css' %}">
     {% block css %}{% endblock %}
-
-    <title>Vault &rsaquo; {% block title %}{% endblock %}</title>
 
     <script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'vault/js/base.js' %}"></script>
@@ -98,7 +98,7 @@
 
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
-    <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
+    <script src="{% static 'vendor/js/bootbox.min.js' %}"></script>
 
     <script>
       Base.init();

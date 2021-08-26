@@ -900,37 +900,6 @@ def edit_cors(request, project, container):
 
 @utils.project_required
 @login_required
-def remove_from_cache(request, project):
-    form = RemoveCacheForm(request.POST or None)
-
-    if form.is_valid():
-        urls = form.cleaned_data['urls'].splitlines()
-
-        data = {
-            'url': urls,
-            'user': request.user.username
-        }
-
-        api_url = '{host}/url/add'.format(host=settings.CACHESWEEP_API)
-        req = requests.post(api_url, json=data)
-
-        if req.status_code == 201:
-            messages.add_message(request, messages.SUCCESS,
-                _('URLs scheduled to be removed. Grab some coffee, it takes 2 to 3 minutes to remove.'))
-
-            form = RemoveCacheForm(None)
-            actionlog.log(request.user.username, "remove_cache", repr(urls))
-        else:
-            messages.add_message(request, messages.ERROR,
-                _('Fail to schedule URLs to be removed.'))
-
-    context = utils.update_default_context(request, {'form': form})
-
-    return render(request, 'remove_from_cache.html', context)
-
-
-@utils.project_required
-@login_required
 def edit_custom_metadata(request, project, container, objectname):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
@@ -1312,7 +1281,7 @@ class SwiftJsonInfo(JsonInfo):
 
     def generate_menu_info(self):
         project_name = self.request.session.get('project_name')
-        return {
+        menu = {
             "name": str(_("Object Storage")),
             "icon": "fas fa-cube",
             "url": reverse("containerview", kwargs={'project': project_name}),
@@ -1329,6 +1298,15 @@ class SwiftJsonInfo(JsonInfo):
                 }
             ]
         }
+
+        if settings.CACHE_APIS_ENABLED:
+            menu["subitems"].append({
+                "name": str(_("Cache")),
+                "icon": "",
+                "url": reverse("storage_cache", kwargs={'project': project_name})
+            })
+
+        return menu
 
     def generate_widget_info(self):
         storage_url, http_conn = connection(self.request)
@@ -1377,6 +1355,12 @@ class SwiftJsonInfo(JsonInfo):
                 }
             ]
         }]
+
+        if settings.CACHE_APIS_ENABLED:
+            widget_info[0]['buttons'].append({
+                "name": "Cache",
+                "url": reverse("storage_cache", kwargs={'project': project_name})
+            })
 
         if 'x-account-meta-cloud' in head_acc:
             widget_info[0]['extra'] = {

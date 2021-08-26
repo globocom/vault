@@ -1,0 +1,133 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block css %}
+<style>
+.pre-cache-result {
+  padding: 15px;
+  background-color: #e2e2e2;
+  border-radius: 4px;
+  margin-bottom: 30px;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 20%);
+}
+.pre-cache-result h5,
+.pre-cache-result-item {
+  display: block;
+  margin-bottom: 15px;
+}
+.pre-cache-result-item code {
+  display: block;
+  margin: 5px 0 10px;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: #d8d8d8;
+}
+</style>
+{% endblock %}
+
+{% block content_title %}Object Storage{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Object Storage</a>
+<a href="{% url 'storage_cache' project_name %}">Cache</a>
+<span>{% trans "Adicionar ao Cache" %}</span>
+{% endblock %}
+
+{% block content %}
+<div id="app">
+  <div class="form-box">
+    <fieldset class="content">
+      <div class="col-xl-12">
+        <p class="help-block mb-2">
+          {% trans 'Insira uma ou mais URLs para armazená-las em cache. Uma por linha.' %}
+          <strong>{% trans 'O acesso ao container precisa ser público.' %}</strong>
+        </p>
+        <div class="form-group mb-2">
+          <textarea type="text" rows="10" v-model="urls"></textarea>
+        </div>
+        <input type="checkbox" id="encoding" v-model="encoding" checked />
+        <label for="encoding">{% trans 'Incluir Encoding Headers (recomendado)' %}</label>
+      </div>
+    </fieldset>
+    <fieldset class="base">
+      <button @click="preCache" class="btn btn-primary" :disabled="loading">
+        {% trans 'Adicionar ao Cache' %}
+      </button>
+    </fieldset>
+  </div>
+
+  <div class="pre-cache-result" v-show="result.length" ref="preCacheResult">
+    <h5>Resultado</h5>
+    <span v-for="item in result" class="pre-cache-result-item">
+      {? item.url ?}
+      <code>
+        <div v-for="host in item.hosts">
+          [{? host.status ?}] {? host.host ?} {? host.message ?}
+        </div>
+      </code>
+    </span>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
+<script>
+new Vue({
+  el: "#app",
+  delimiters: ["{?", "?}"],
+  data: {
+    loading: false,
+    encoding: true,
+    urls: "",
+    result: [],
+    preCacheApiUrl: "{{ pre_cache_api_url }}",
+  },
+  methods: {
+    preCache() {
+      this.loading = true;
+      this.result = [];
+
+      if (!this.preCacheApiUrl || this.preCacheApiUrl === "") {
+        Base.Messages.setMessage({
+          description: 'URL da API de Pre-Cache não encontrada.',
+          type: 'error'
+        }, () => this.loading = false);
+      }
+
+      if (this.urls.trim() === "") {
+        Base.Messages.setMessage({
+          description: 'Insira pelo menos uma URL.',
+          type: 'warning'
+        }, () => this.loading = false);
+      }
+
+      fetch(`${this.preCacheApiUrl}/api/pre-cache`, {
+        headers: { "Content-Type": "application/json" },
+        method: "post",
+        body: JSON.stringify({
+          urls: this.urls.trim().split("\n"),
+          encoding: this.encoding,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          this.result = json;
+          this.loading = false;
+          setTimeout(() => {
+            this.$refs.preCacheResult.scrollIntoView();
+          }, 100);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  },
+});
+</script>
+{% endblock %}
