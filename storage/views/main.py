@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint:disable=E1101
 
 """ Standalone webinterface for Openstack Swift. """
