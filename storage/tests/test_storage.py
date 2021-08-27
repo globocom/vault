@@ -1195,35 +1195,35 @@ class TestStorage(BaseTestCase):
     @patch('storage.views.main.get_info')
     @patch('storage.views.main.prepare_data_name')
     @patch('requests.post')
-    @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
     @patch('storage.views.main.client.delete_container')
     def test_delete_container_bulk_delete(self, mock_delete_container,
-                                            mock_action_log,
-                                            mock_delete_object,
-                                            mock_post,
-                                            mock_prepare_data_name,
-                                            mock_get_info,
-                                            mock_get_container,
-                                            mock_head_container):
+                                          mock_action_log,
+                                          mock_post,
+                                          mock_prepare_data_name,
+                                          mock_get_info,
+                                          mock_get_container,
+                                          mock_head_container):
         fakecontainer = 'fakecontainer'
         fake_obj_name = 'fakename'
-        headers = {"X-Auth-Token": 'auth_token'}
-
+        headers = {"X-Auth-Token": None}
+        expected_data = fakecontainer.encode() + b"/" + fake_obj_name.encode()
         mock_head_container.return_value = ({'x-container-object-count': 1})
-        mock_head_container.assert_called()
         mock_get_container.return_value = (None, [{'name': 'object1'}])
-        mock_get_container.assert_called()
-        mock_get_info.return_valeu = {'bulk_delete': {'max_deletes_per_request': 1}}
-        mock_get_info.assert_called()
-        mock_prepare_data_name.return_value = fakecontainer.encode() + b"/" + fake_obj_name.encode()
-        mock_post.assert_called_with('https://fake.api.globoi.com/info?bulk-delete=true')
+        mock_get_info.return_value = {'bulk_delete': {'max_deletes_per_request': 1}}
+        mock_prepare_data_name.return_value = expected_data
 
         resp = views.delete_container(self.request, fakecontainer, force=True)
         self.assertTrue(resp)
-
+        mock_head_container.assert_called()
+        mock_get_container.assert_called()
+        mock_get_info.assert_called()
+        mock_prepare_data_name.assert_called()
+        mock_post.assert_called_with('https://fake.api.globoi.com/v1/AUTH_1?bulk-delete=true', headers=headers,
+                                     data=expected_data)
         mock_delete_container.assert_called()
         mock_action_log.assert_called()
+
 
 class TestStorageAcls(BaseTestCase):
 
@@ -1610,4 +1610,3 @@ class TestStorageCORS(BaseTestCase):
 
         # Verifica se a chamada para a API estava com os argumentos corretos
         self.assertEqual(expected_json, kargs)
-    
