@@ -207,6 +207,10 @@ def objectview(request, project, container, prefix=None):
     prefixes = prefix_list(prefix)
     object_list = pseudofolder_object_list(objects, prefix, public_url)
 
+    for obj in object_list:
+        if obj.get('prefix') and len(obj.get('prefix').split('/')) >= 2:
+            obj['label'] = obj.get('prefix').split('/')[-2]
+
     context = {
         'container_meta': meta,
         'container': container,
