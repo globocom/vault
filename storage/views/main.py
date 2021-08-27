@@ -202,14 +202,11 @@ def objectview(request, project, container, prefix=None):
         messages.add_message(request, messages.ERROR, _('Access denied'))
         project_name = request.session.get('project_name')
         return redirect(containerview, project=project_name)
-
+    log.exception('objectview: {0}'.format(objects))
     prefixes = prefix_list(prefix)
     object_list = pseudofolder_object_list(objects, prefix, public_url)
-
-    for obj in object_list:
-        if obj.get('prefix') and len(obj.get('prefix').split('/')) >= 2:
-            obj['label'] = obj.get('prefix').split('/')[-2]
-
+    log.exception('objectview: {0}'.format(prefixes))
+    log.exception('objectview: {0}'.format(object_list))
     context = {
         'container_meta': meta,
         'container': container,
@@ -221,7 +218,7 @@ def objectview(request, project, container, prefix=None):
 
     if len(objects) == limit:
         context['marker'] = f'{container}/{objects[-1].get("name")}'
-
+    log.exception('objectview: {0}'.format(context))
     return render(request, "objectview.html", context)
 
 
