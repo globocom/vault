@@ -102,6 +102,13 @@
   opacity: 0.8;
 }
 
+.extra-info .status {
+  font-size: 16px;
+  font-weight: 300;
+  display: inline-block;
+  letter-spacing: -0.02em;
+}
+
 .widget .name {
   font-size: 16px;
   font-weight: 300;
