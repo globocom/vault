@@ -187,8 +187,12 @@ KEYSTONE_TIMEOUT = os.getenv("VAULT_KEYSTONE_TIMEOUT", 3)
 # KEYSTONE_INSECURE = False
 KEYSTONE_ROLE = os.getenv("VAULT_KEYSTONE_ROLE")  # swiftoperator role ID
 
-# Cache cleanning API
-CACHESWEEP_API = os.getenv("CACHESWEEP_API", "http://localhost/")
+# Cache
+CACHE_APIS_ENABLED = False
+if os.getenv("CACHE_APIS_ENABLED") == "True":
+    CACHE_APIS_ENABLED = True
+CACHESWEEP_API = os.getenv("CACHESWEEP_API", "")
+PRE_CACHE_API = os.getenv("PRE_CACHE_API", "")
 
 IDENTITY_SECRET_KEY = os.getenv("IDENTITY_SECRET_KEY")
 

@@ -182,11 +182,7 @@
   });
 </script>
 
-{% if debug %}
-  <script src="{% static 'vendor/js/vue.js' %}"></script>
-{% else %}
-  <script src="{% static 'vendor/js/vue.min.js' %}"></script>
-{% endif %}
+<script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
 
 <script>
   const OPTIONAL_HEADERS_URL = "{% url 'optional_headers' project=project_name container=container objectname=objectname %}";
