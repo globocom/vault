@@ -122,7 +122,7 @@ STATIC_URL = "{}/{}/{}".format(os.getenv("SWIFT_INTERNAL_URL", ""),
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
 
-PAGINATION_SIZE = os.getenv("VAULT_PAGINATION_SIZE", 50)
+PAGINATION_SIZE = int(os.getenv("VAULT_PAGINATION_SIZE", 50))
 
 DATABASES = {
     "default": {

@@ -42,7 +42,11 @@
           <i class="fas fa-inbox"></i>
         </td>
         <td>
-          <strong><a href="{% url 'objectview' project=project_name container=container.name %}" class="block">{{container.name}}</a></strong>
+          <strong>
+            <a href="{% url 'objectview' project=project_name container=container.name %}" class="block">
+              {{container.name}}
+            </a>
+          </strong>
         </td>
         <td>
           {{container.count}}

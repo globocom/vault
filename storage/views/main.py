@@ -227,7 +227,6 @@ def objectview(request, project, container, prefix=None):
         meta, objects = client.get_container(storage_url, auth_token,
             container, delimiter='/', prefix=prefix, full_listing=False,
             http_conn=http_conn, limit=limit, marker=marker)
-
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR, _('Access denied'))

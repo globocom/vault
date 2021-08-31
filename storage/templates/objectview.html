@@ -162,11 +162,6 @@
 
   <nav class="mb-5">
     <ul class="pagination">
-      <!-- <li class="page-item disabled">
-        <a class="page-link" href="#" aria-disabled="true">
-          &lsaquo; {% trans 'previous page' %}
-        </a>
-      </li> -->
       <li class="page-item {% if not marker %}disabled{% endif %}">
         <a class="page-link" href="?marker={{ marker }}"
           {% if not marker %}aria-disabled="true"{% endif %}>
