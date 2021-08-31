@@ -17,6 +17,9 @@ from storage import views
 from vault.tests.fakes import fake_request
 from vault import utils
 
+class MockRequest:
+    def __init__(self):
+        self.text = '{}'
 
 class BaseTestCase(TestCase):
 
@@ -421,16 +424,24 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
+    @patch('storage.views.main.client.head_container')
     @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
     @patch('storage.views.main.client.delete_container')
     def test_delete_container_deleting_objects(self, mock_delete_container,
                                                mock_action_log,
                                                mock_delete_object,
-                                               mock_get_container):
+                                               mock_prepare_data_name,
+                                               mock_get_info,
+                                               mock_get_container,
+                                               mock_head_container):
         fakecontainer = 'fakecontainer'
+        mock_head_container.return_value = ({'x-container-object-count': 1})
         mock_get_container.return_value = (None, [{'name': 'object1'}])
+        mock_prepare_data_name.return_value = None
 
         resp = views.delete_container(self.request, fakecontainer, force=True)
         self.assertTrue(resp)
@@ -443,14 +454,20 @@ class TestStorage(BaseTestCase):
         self.assertTrue(mock_delete_container.called)
         self.assertTrue(mock_action_log.called)
 
+    @patch('storage.views.main.client.head_container')
     @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
     @patch('storage.views.main.client.delete_container')
     def test_delete_container_fail_to_get_objects(self, mock_delete_container,
                                                   mock_action_log,
                                                   mock_delete_object,
-                                                  mock_get_container):
+                                                  mock_prepare_data_name,
+                                                  mock_get_info,
+                                                  mock_get_container,
+                                                  mock_head_container):
         fakecontainer = 'fakecontainer'
         mock_get_container.side_effect = client.ClientException('')
 
@@ -463,6 +480,9 @@ class TestStorage(BaseTestCase):
         self.assertFalse(mock_action_log.called)
 
     @patch('storage.views.main.log.exception')
+    @patch('storage.views.main.client.head_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
     @patch('storage.views.main.client.get_container')
     @patch('storage.views.main.client.delete_object')
     @patch("storage.views.main.actionlog.log")
@@ -471,19 +491,22 @@ class TestStorage(BaseTestCase):
                                                        mock_delete_container,
                                                        mock_action_log,
                                                        mock_delete_object,
+                                                       mock_prepare_data_name,
+                                                       mock_get_info,
                                                        mock_get_container,
+                                                       mock_head_container,
                                                        mock_log_exception):
         fakecontainer = 'fakecontainer'
         mock_delete_container.side_effect = client.ClientException('')
-        mock_get_container.return_value = (None, [{'name': 'object1'}])
+        mock_head_container.return_value = ({'x-container-object-count': 0})
+        mock_get_container.return_value = (None, None)
+        mock_prepare_data_name.return_value = None
 
         expected = False
         computed = views.delete_container(self.request, fakecontainer, True)
         self.assertEqual(computed, expected)
 
         self.assertTrue(mock_log_exception.called)
-
-        self.assertTrue(mock_delete_object.called)
         self.assertTrue(mock_delete_container.called)
 
     @patch('storage.views.main.client.put_object')
@@ -1147,6 +1170,59 @@ class TestStorage(BaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('/storage/objects/.container4/', response.content.decode('UTF-8'))
+
+    @patch('json.loads')
+    @patch('requests.get')
+    def test_get_info(self, mock_get, mock_json_loads):
+        expect_url = 'https://fake.api.globoi.com/info'
+        url = "https://fake.api.globoi.com/v1/AUTH_12314"
+
+        views.main.get_info(url)
+        mock_json_loads.assert_called()
+        mock_get.assert_called_with(expect_url)
+
+    def test_prepare_data_name(self):
+        fakecontainer = 'fakecontainer'
+        fake_obj_name = 'fakename'
+
+        expectd_data_name = fakecontainer.encode() + b"/" + fake_obj_name.encode()
+        data_name = views.main.prepare_data_name(fakecontainer, fake_obj_name)
+
+        self.assertEqual(data_name, expectd_data_name)
+
+    @patch('storage.views.main.client.head_container')
+    @patch('storage.views.main.client.get_container')
+    @patch('storage.views.main.get_info')
+    @patch('storage.views.main.prepare_data_name')
+    @patch('requests.post')
+    @patch("storage.views.main.actionlog.log")
+    @patch('storage.views.main.client.delete_container')
+    def test_delete_container_bulk_delete(self, mock_delete_container,
+                                          mock_action_log,
+                                          mock_post,
+                                          mock_prepare_data_name,
+                                          mock_get_info,
+                                          mock_get_container,
+                                          mock_head_container):
+        fakecontainer = 'fakecontainer'
+        fake_obj_name = 'fakename'
+        headers = {"X-Auth-Token": None}
+        expected_data = fakecontainer.encode() + b"/" + fake_obj_name.encode()
+        mock_head_container.return_value = ({'x-container-object-count': 1})
+        mock_get_container.return_value = (None, [{'name': 'object1'}])
+        mock_get_info.return_value = {'bulk_delete': {'max_deletes_per_request': 1}}
+        mock_prepare_data_name.return_value = expected_data
+
+        resp = views.delete_container(self.request, fakecontainer, force=True)
+        self.assertTrue(resp)
+        mock_head_container.assert_called()
+        mock_get_container.assert_called()
+        mock_get_info.assert_called()
+        mock_prepare_data_name.assert_called()
+        mock_post.assert_called_with('https://fake.api.globoi.com/v1/AUTH_1?bulk-delete=true', headers=headers,
+                                     data=expected_data)
+        mock_delete_container.assert_called()
+        mock_action_log.assert_called()
 
 
 class TestStorageAcls(BaseTestCase):

@@ -1,7 +1,7 @@
 # pylint:disable=E1101
 
 """ Standalone webinterface for Openstack Swift. """
-
+import math
 import os
 import time
 import json
@@ -130,19 +130,41 @@ def delete_container(request, container, force=True):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
 
-    if force:
-        try:
-            meta, objects = client.get_container(
-                storage_url, auth_token, container, http_conn=http_conn)
-        except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
-            return False
-
-        for obj in objects:
-            delete_object(request=request,
-                          container=container,
-                          objectname=obj['name'])
     try:
+        if force:
+            head = client.head_container(storage_url, auth_token, container, http_conn=http_conn)
+            container_objects = []
+            objects_count = int(head.get('x-container-object-count'))
+
+            while len(container_objects) < objects_count:
+                meta, objects = client.get_container(
+                    storage_url, auth_token, container, marker=container_objects[-1].get("name") if
+                    len(container_objects) > 0 else None, http_conn=http_conn)
+                container_objects.extend(objects)
+
+            info = get_info(storage_url)
+
+            if 'bulk_delete' in info:
+                max_deletes_per_request = info.get('bulk_delete').get('max_deletes_per_request')
+                for i in range(math.ceil(len(container_objects)/max_deletes_per_request)):
+
+                    names = b""
+                    start_index = i*max_deletes_per_request
+                    end_index = (i+1)*max_deletes_per_request if len(container_objects) > (i+1)*max_deletes_per_request\
+                        else len(container_objects)
+                    for obj in container_objects[start_index:end_index]:
+                        names += prepare_data_name(container, obj['name']) + b"\n"
+
+                    names = names[:-1]
+                    headers = {"X-Auth-Token": auth_token}
+                    r = requests.post(storage_url+"?bulk-delete=true",
+                                      headers=headers, data=names)
+            else:
+                for obj in container_objects:
+                    delete_object(request=request,
+                                  container=container,
+                                  objectname=obj['name'])
+
         client.delete_container(storage_url, auth_token,
                                 container, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", container)
@@ -151,6 +173,15 @@ def delete_container(request, container, force=True):
         return False
 
     return True
+
+
+def get_info(storage_url):
+    info_url = storage_url.split("v1")[0] + "info"
+    return json.loads(requests.get(info_url).text)
+
+
+def prepare_data_name(container, obj_name):
+    return container.encode() + b"/" + obj_name.encode()
 
 
 @login_required
