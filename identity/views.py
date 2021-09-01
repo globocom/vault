@@ -378,7 +378,8 @@ class CreateProjectView(BaseProjectView):
         form = ProjectForm(initial={"user": request.user}, data=request.POST)
 
         if not form.is_valid():
-            return self.render_to_response(self.get_context_data(form=form, request=request))
+            return self.render_to_response(
+                self.get_context_data(form=form, request=request))
 
         group_id = request.POST.get("group")
         response = self.keystone.vault_project_create(
@@ -393,21 +394,21 @@ class CreateProjectView(BaseProjectView):
         # Houve falha no cadastro
         if not response.get("status"):
             log.exception("Exception: {}".format(response.get("status")))
-
             messages.add_message(request, messages.ERROR, response.get("reason"))
 
-            return self.render_to_response(self.get_context_data(form=form, request=request))
+            return self.render_to_response(
+                self.get_context_data(form=form, request=request))
+
+        project = response.get("project")
+        user = response.get("user")
+        password = response.get("password")
 
         # swift-cloud middleware
         if settings.SWIFT_CLOUD_ENABLED:
             cloud = request.POST.get("cloud")
             if cloud != "":
-                endpoints = self.keystone.get_endpoints()
-                storage_url = endpoints.get("object_store").get("adminURL")
-                update_swift_account({"X-Account-Meta-Cloud": cloud}, storage_url, self.keystone.conn.auth_token)
-
-        project = response.get("project")
-        user = response.get("user")
+                update_swift_account(user.name, password,
+                    project.name, {"x-account-meta-cloud": cloud})
 
         actionlog.log(request.user.username, "create", project)
         actionlog.log(request.user.username, "create", user)
@@ -415,7 +416,7 @@ class CreateProjectView(BaseProjectView):
         request.session["project_info"] = {
             "user_name": user.name,
             "project_name": project.name,
-            "user_password": response.get("password"),
+            "user_password": password,
         }
 
         return redirect("create_project_success", project=project.name)

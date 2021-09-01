@@ -7,7 +7,6 @@ import re
 import string
 import random
 import logging
-import dateutil.parser
 
 from urllib.parse import urlparse
 
@@ -16,7 +15,7 @@ from django.contrib import messages
 from django.utils.translation import gettext
 
 from swiftclient import client
-
+from identity.keystone import KeystoneNoRequest
 
 log = logging.getLogger(__name__)
 
@@ -216,17 +215,16 @@ def get_container_objects(container, storage_url, auth_token):
     return object_list
 
 
-def update_swift_account(headers, storage_url, auth_token):
-    http_conn = client.http_connection(storage_url, insecure=settings.SWIFT_INSECURE)
+def update_swift_account(user, password, project_name, headers):
+    keystone = KeystoneNoRequest(user, password, project_name)
+    endpoints = keystone.get_endpoints()
+    storage_url = endpoints.get("object_store").get("adminURL")
+    http_conn = client.http_connection(
+        storage_url, insecure=settings.SWIFT_INSECURE)
 
     try:
-        current_headers = client.head_account(
-            storage_url, auth_token, http_conn=http_conn)
-
-        headers.update(current_headers)
-
-        _, body = client.post_account(
-            storage_url, auth_token, headers, http_conn=http_conn)
+        client.post_account(storage_url,
+            keystone.conn.auth_token, headers, http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Exception: {}'.format(err))
         return False
@@ -235,7 +233,6 @@ def update_swift_account(headers, storage_url, auth_token):
 
 
 def delete_swift_account(storage_url, auth_token):
-
     insecure = settings.SWIFT_INSECURE
 
     try:
@@ -243,7 +240,9 @@ def delete_swift_account(storage_url, auth_token):
         http_conn = client.http_connection(storage_url, insecure=insecure)
 
         client.put_container(storage_url, auth_token, 'dummy_container',
-                             http_conn=http_conn)
+            http_conn=http_conn)
+        client.delete_container(storage_url, auth_token, 'dummy_container',
+            http_conn=http_conn)
     except client.ClientException as err:
         log.exception('Fail to create container "dummy_container": {0}'.format(err))
         return False

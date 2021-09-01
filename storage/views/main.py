@@ -253,7 +253,7 @@ def objectview(request, project, container, prefix=None):
 
 @utils.project_required
 @login_required
-def object(request, project, container, objectname):
+def object_item(request, project, container, objectname):
     """Returns selected object in current container."""
 
     storage_url = get_storage_endpoint(request, 'adminURL')

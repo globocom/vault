@@ -491,8 +491,8 @@ class KeystoneNoRequest(KeystoneBase):
 
     def __init__(self, username=None, password=None, project_name=None,
                  auth_url=None):
-        return super(KeystoneNoRequest, self).__init__(username, password,
-                                                       project_name, auth_url)
+        return super(KeystoneNoRequest, self).__init__(
+            username, password, project_name, auth_url)
 
 
 class Keystone(KeystoneBase):

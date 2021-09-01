@@ -33,7 +33,7 @@ urlpatterns = [
     # Storage urls
     re_path(r'^account/?$', views.accountview, name="accountview"),
     re_path(r'^objects/(?P<container>.+?)/(?P<prefix>(.+)+)?$', views.objectview, name="objectview"),
-    re_path(r'^object/(?P<container>.+?)/(?P<objectname>.+?)$', views.object, name="object"),
+    re_path(r'^object/(?P<container>.+?)/(?P<objectname>.+?)$', views.object_item, name="object"),
     re_path(r'^upload/(?P<container>.+?)/(?P<prefix>.+)?$', views.upload, name="upload"),
     re_path(r'^create_object/(?P<container>.+?)/(?P<prefix>.+)?$', views.create_object, name="create_object"),
     re_path(r'^create_pseudofolder/(?P<container>.+?)/(?P<prefix>.+)?$', views.create_pseudofolder, name="create_pseudofolder"),

@@ -7,13 +7,14 @@ import os
 import importlib
 from django.utils.translation import gettext_lazy as _
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get("VAULT_SECRET_KEY", "vaultsecretkey")
+SECRET_KEY = os.getenv("VAULT_SECRET_KEY", "vaultsecretkey")
 
 PROJECT = "vault"
 
-DEBUG = False if os.environ.get("VAULT_DEBUG") == "False" else True
+DEBUG = os.getenv("VAULT_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -154,9 +155,7 @@ SWIFT_TRASH_PREFIX = ".trash"
 SWIFT_HIDE_PREFIXES = [SWIFT_VERSION_PREFIX, SWIFT_TRASH_PREFIX]
 
 # Backup
-BACKUP_ENABLED = False
-if os.getenv("VAULT_BACKUP_ENABLED") == "True":
-    BACKUP_ENABLED = True
+BACKUP_ENABLED = os.getenv("VAULT_BACKUP_ENABLED", "False") == "True"
 BACKUP_USER = os.getenv("VAULT_BACKUP_USER")
 BACKUP_USER_ROLE = os.getenv("VAULT_BACKUP_USER_ROLE")
 BACKUP_API_URL = os.getenv("VAULT_BACKUP_API_URL")
@@ -167,9 +166,7 @@ BACKUP_OBJECT_BYTES_VALUE = os.getenv("BACKUP_OBJECT_BYTES_VALUE",
                                       "1000000000")
 
 # True if you are using invalid SSL certs
-SWIFT_INSECURE = False
-if os.environ.get("VAULT_SWIFT_INSECURE") == "True":
-    SWIFT_INSECURE = True
+SWIFT_INSECURE = os.getenv("VAULT_SWIFT_INSECURE", "False") == "True"
 
 # Timeout for requests made with swiftclient
 SWIFT_REQUESTS_TIMEOUT = os.getenv("VAULT_SWIFT_REQUESTS_TIMEOUT", 60)
@@ -188,9 +185,7 @@ KEYSTONE_TIMEOUT = os.getenv("VAULT_KEYSTONE_TIMEOUT", 3)
 KEYSTONE_ROLE = os.getenv("VAULT_KEYSTONE_ROLE")  # swiftoperator role ID
 
 # Cache
-CACHE_APIS_ENABLED = False
-if os.getenv("CACHE_APIS_ENABLED") == "True":
-    CACHE_APIS_ENABLED = True
+CACHE_APIS_ENABLED = os.getenv("CACHE_APIS_ENABLED", "False") == "True"
 CACHESWEEP_API = os.getenv("CACHESWEEP_API", "")
 PRE_CACHE_API = os.getenv("PRE_CACHE_API", "")
 
@@ -200,9 +195,7 @@ if not IDENTITY_SECRET_KEY and DEBUG:
     IDENTITY_SECRET_KEY = "SRTAYZDUnNSW9xhBStvylCgmCY5jo3zedqDNbdRN3Ek="
 
 # Swift-Cloud
-SWIFT_CLOUD_ENABLED = False
-if os.getenv("VAULT_SWIFT_CLOUD_ENABLED") == "True":
-    SWIFT_CLOUD_ENABLED = True
+SWIFT_CLOUD_ENABLED = os.getenv("VAULT_SWIFT_CLOUD_ENABLED", "False") == "True"
 
 SWIFT_CLOUD_TOOLS_URL = os.getenv(
     "VAULT_SWIFT_CLOUD_TOOLS_URL", "http://localhost:8888/v1")
