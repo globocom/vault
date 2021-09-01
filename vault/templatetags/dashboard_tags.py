@@ -3,7 +3,6 @@
 import json
 from django import template
 from django.apps import apps
-from django.conf import settings
 
 register = template.Library()
 
