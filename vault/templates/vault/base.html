@@ -99,9 +99,15 @@
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
     <script src="{% static 'vendor/js/bootbox.min.js' %}"></script>
+    <script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
 
     <script>
       Base.init();
+    </script>
+
+    <script src="{% static 'vault/js/vault-menu.js' %}"></script>
+    <script>
+      VaultMenu(JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}'));
     </script>
 
     <script>
@@ -115,7 +121,7 @@
     {% if messages %}
     <script>
       let messages = {};
-    {% for message in messages %}
+      {% for message in messages %}
       if (!messages['{{message|safe|capfirst}}']) {
         messages['{{message|safe|capfirst}}'] = {
           'type': '{% if message.tags %}{{ message.tags }}{% endif %}',
@@ -124,7 +130,7 @@
       } else {
         messages['{{message|safe|capfirst}}'].count += 1;
       }
-    {% endfor %}
+      {% endfor %}
       Object.keys(messages).forEach(m => {
         Base.Messages.setMessage({
           description: messages[m].count == 1 ? m : m + " (" + messages[m].count + ")",

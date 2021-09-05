@@ -165,7 +165,6 @@
 {% endblock %}
 
 {% block js_bottom %}
-{{ block.super }}
 <script src="{% static 'vault/js/metadata.js' %}"></script>
 <script src="{% static 'storage/js/storage.tools.js' %}"></script>
 <script>
@@ -181,8 +180,6 @@
     }
   });
 </script>
-
-<script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
 
 <script>
   const OPTIONAL_HEADERS_URL = "{% url 'optional_headers' project=project_name container=container objectname=objectname %}";

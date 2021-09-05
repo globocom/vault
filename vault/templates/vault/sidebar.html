@@ -1,7 +1,6 @@
-{% load i18n static dashboard_tags vault_tags %}
+{% load i18n static vault_tags %}
 
 <nav id="sidebar">
-
   <a href="{% url 'main' %}" class="vault-logo">
     <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
   </a>
@@ -30,13 +29,15 @@
     <span>{% trans 'Main' %}</span>
   </div>
 
-  <ul class="app-menus" id="sidebar-app-menus">
+  <ul class="app-menus mb-0">
     <li>
       <a href="{% url 'main' %}" title="{% trans 'Home' %}">
         <i class="icon fa fa-home"></i> {% trans 'Home' %}
       </a>
     </li>
   </ul>
+
+  <div id="sidebar-app-menus"></div>
 
   <div class="separator">
     <span>{% trans 'Settings' %}</span>
@@ -75,25 +76,6 @@
   </ul>
   {% endif %}
 
-  <script type="text/html" id="menu_icon_default">
-    <a class="app-main-menu-item" href="<%=url%>" title="<%=name%>">
-      <i class="icon <%=icon%>"></i> <%=name%>
-    </a>
-  </script>
-
-  <script type="text/html" id="submenu_icon_default">
-    <a href="<%=url%>" title="<%=name%>"><%=name%></a>
-  </script>
-
-  <script src="{% static 'vault/js/menu.js' %}"></script>
-  <script>
-    $(document).ready(function() {
-      VaultMenu.init({
-        'endpoints': JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}')
-      });
-    });
-  </script>
-
   {% if HELP_URL %}
   <div class="sidebar-base">
     <a class="help-link" href="{{ HELP_URL }}">
@@ -101,5 +83,4 @@
     </a>
   </div>
   {% endif %}
-
 </nav>

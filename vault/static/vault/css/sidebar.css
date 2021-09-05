@@ -147,7 +147,12 @@
   margin-left: 20px;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.2s ease-out;
+  transition: max-height 0.1s ease-out;
+}
+
+#sidebar .submenu-active ul.sub-menu {
+  max-height: 50vh;
+  transition: max-height 0.3s ease-in;
 }
 
 #sidebar ul.sub-menu .icon {

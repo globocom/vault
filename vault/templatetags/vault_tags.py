@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
+import json
 
 from urllib.parse import urlencode
 from django import template
 from django.conf import settings
+from django.apps import apps
 
 from vault.models import GroupProjects
 from identity.keystone import KeystoneNoRequest
-
-import requests
-import json
-
 
 register = template.Library()
 
@@ -89,6 +86,17 @@ def url_replace(get_parameters, **kwargs):
     return urlencode(query_pairs)
 
 
-@register.simple_tag()
-def vue():
-    return 'vue.js' if settings.DEBUG else 'vue.min.js'
+@register.simple_tag(takes_context=True)
+def info_endpoints(context, **kwargs):
+    """Templatetag to render a list of info endpoints"""
+
+    endpoints = []
+    request = context.get('request')
+    project_name = request.session.get('project_name')
+
+    for conf in apps.get_app_configs():
+        if hasattr(conf, 'vault_app'):
+            endpoints.append(
+                "/p/{}/{}/api/info".format(project_name, conf.name))
+
+    return json.dumps(endpoints)
