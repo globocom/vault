@@ -1,6 +1,6 @@
 {% extends "vault/base.html" %}
 
-{% load i18n static vault_tags %}
+{% load i18n static %}
 
 {% block title %}{% trans 'Dashboard' %}{% endblock %}
 
@@ -20,24 +20,13 @@
 {% block content %}
   <div class="row">
     <div class="col-xl-8">
-
-      <ul class="row dashboard-widgets" id="dashboard-widgets">
-        <li class="col-md-6">
-          <div class="widget-dummy"></div>
-        </li>
-        <li class="col-md-6">
-          <div class="widget-dummy two"></div>
-        </li>
-      </ul>
-
+      <div id="dashboard-widgets"></div>
     </div>
+
     <div class="col-xl-4">
-
       <div class="box dashboard-info">
-
         <div class="useful-links">
           {% block extra_links %}{% endblock %}
-
           <a class="item" href="{% url 'update_teams_users' project_name %}">
             <i class="icon fas fa-users-cog"></i>
             <span class="text">
@@ -51,110 +40,24 @@
           <h4>{% trans 'Last Login' %}</h4>
           <span>{{ last_login }}</span>
         </div>
-
       </div>
-
     </div>
   </div>
 {% endblock %}
 
 {% block js_bottom %}
-{{ block.super }}
-<script type="text/html" id="widget_default">
-  <style>
-  .<%=name%> .head { background-color: <%=color%>; }
-  </style>
-
-  <div class="box widget <%=name%>">
-    <div class="head">
-      <span class="name">
-        <%=title%>
-        <span class="info"><%=subtitle%></span>
-      </span>
-      <% if (extra) { %>
-      <a href="#" class="extra-info" title="<%=extra.title%>"
-         data-bs-toggle="tooltip" data-placement="top">
-        <span class="status"><%=extra.status%></span>
-        <i class="<%=extra.icon%>"></i>
-      </a>
-      <% } %>
-    </div>
-
-    <div class="content">
-      <% for (var i = 0; i < properties.length; i++) { %>
-        <div class="item-box">
-          <%=properties[i].description%>
-          <span class="big-number"><%=properties[i].value%></span>
-          <%=properties[i].name%>
-        </div>
-        <% if (properties.length == 2 && i == 0) { %>
-          <div class="item-box-break"></div>
-        <% } %>
-        <% if ((i+1) % 2 == 0) { %>
-          <div class="item-box-break"></div>
-        <% } %>
-      <% } %>
-    </div>
-
-    <div class="base">
-      <% for ( var i = 0; i < buttons.length; i++ ) { %>
-      <a class="btn btn-sm btn-light" href="<%=buttons[i].url%>"><%=buttons[i].name%></a>
-      <% } %>
-    </div>
-  </div>
-</script>
+{% get_current_language as LANGUAGE_CODE %}
 
 {% if has_team %}
-<script type="text/javascript">
-  let endpoints = JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}');
-  let widget_list = document.getElementById("dashboard-widgets");
-  let widgets = []
-
-  endpoints.forEach(async (endpoint) => {
-    let response = await fetch(endpoint + "?opt=widgets");
-    try {
-      let data = await response.json();
-      data.forEach(d => {
-        var wid = document.createElement("li");
-        if (d.type == "default") {
-          wid.className = "col-md-6";
-          wid.innerHTML = tmpl("widget_default", Object.assign({
-            "name": "default",
-            "color": "#aaaaaa",
-            "icon": "fas fa-question-circle",
-            "title": "",
-            "url": "#",
-            "subtitle": "",
-            "properties": [],
-            "buttons": [],
-            "extra": null
-          }, d));
-        }
-
-        wid.json_endpoint = endpoint;
-
-        widgets.push(wid);
-        widgets.sort((a,b) => {
-          return endpoints.indexOf(a.json_endpoint) - endpoints.indexOf(b.json_endpoint);
-        });
-
-        widget_list.innerHTML = '';
-        widgets.forEach(w => {
-          widget_list.appendChild(w);
-        });
-
-        $('[data-bs-toggle="tooltip"]').tooltip();
-      });
-    } catch (err) {
-      return;
-    }
-  });
-</script>
+<script src="{% static 'vault/js/vault-dashboard.js' %}"></script>
+<script>VaultDashboard('{% url "apps_info" %}');</script>
 {% endif %}
+
 <script>
-  let $last_login = $('.last-login > span');
-  let last_login_date = new Date('{{ last_login }}');
-  $('.last-login > span').text(last_login_date.toISOString().split('T')[0] + ' ' +
-                               last_login_date.toTimeString().split(' ')[0]);
+const lastLogin = document.querySelector('.last-login > span');
+lastLogin.innerText = new Intl.DateTimeFormat('{{ LANGUAGE_CODE }}', {
+  dateStyle: "long",
+  timeStyle: "short",
+}).format(new Date('{{ last_login }}'))
 </script>
 {% endblock %}

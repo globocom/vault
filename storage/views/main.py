@@ -246,7 +246,10 @@ def objectview(request, project, container, prefix=None):
     }
 
     if len(objects) == limit:
-        context['marker'] = f'{container}/{objects[-1].get("name")}'
+        obj_name = objects[-1].get("name")
+        if not obj_name:
+            obj_name = objects[-1].get("subdir")
+        context['marker'] = f'{container}/{obj_name}'
 
     return render(request, "objectview.html", context)
 

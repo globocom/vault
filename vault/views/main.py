@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """
 Vault Generic Views
 """
 
 import json
 import logging
-from hashlib import md5
 
 from django.contrib import messages
 from django.views.generic.base import View, TemplateView
@@ -19,8 +16,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
-from django.template import RequestContext
 from django.contrib.auth.views import LoginView
+from django.apps import apps
 
 from keystoneclient import exceptions
 
@@ -29,16 +26,8 @@ from allaccess.views import OAuthCallback, OAuthRedirect
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
-from vault.models import GroupProjects
-from vault.utils import (
-    update_default_context,
-    save_current_project,
-    set_current_project,
-    get_current_project,
-    maybe_update_token,
-    project_required,
-)
-
+from vault.utils import (update_default_context, save_current_project,
+    set_current_project, maybe_update_token, project_required)
 from vault.client import OAuth2BearerClient
 
 log = logging.getLogger(__name__)
@@ -427,13 +416,19 @@ def list_users_outside_a_group(request):
     if group_id is None:
         return HttpResponse(status=400)
 
-    users = User.objects.exclude(groups__in=[group_id]).order_by("username")
+    users = User.objects.exclude(
+        groups__in=[group_id]).order_by("username")
     content = []
 
     for user in users:
-        content.append({"id": user.id, "name": user.username, "email": user.email})
+        content.append({
+            "id": user.id,
+            "name": user.username,
+            "email": user.email
+        })
 
-    return HttpResponse(json.dumps(content), content_type="application/json")
+    return HttpResponse(
+        json.dumps(content), content_type="application/json")
 
 
 @login_required
@@ -441,6 +436,21 @@ def main_page(request):
     project = request.session.get("project_name")
 
     if project:
-        return HttpResponseRedirect(reverse("dashboard", kwargs={"project": project}))
+        return HttpResponseRedirect(
+            reverse("dashboard", kwargs={"project": project}))
     else:
         return HttpResponseRedirect(reverse("change_project"))
+
+
+@login_required
+def apps_info(request):
+    endpoints = []
+    project_name = request.session.get('project_name')
+
+    for conf in apps.get_app_configs():
+        if hasattr(conf, 'vault_app'):
+            endpoints.append(
+                "/p/{}/{}/api/info".format(project_name, conf.name))
+
+    return HttpResponse(
+        json.dumps(endpoints), content_type="application/json")

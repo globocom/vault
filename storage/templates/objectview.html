@@ -160,6 +160,7 @@
     </table>
   </div>
 
+  {% block pagination %}
   <nav class="mb-5">
     <ul class="pagination">
       <li class="page-item {% if not marker %}disabled{% endif %}">
@@ -170,6 +171,7 @@
       </li>
     </ul>
   </nav>
+  {% endblock %}
 
 {% include "modal_cache_control.html" %}
 

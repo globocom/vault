@@ -184,3 +184,21 @@
   text-transform: uppercase;
   color: white;
 }
+
+.dummy-menu-item span {
+  animation-name: menu-pulse;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes menu-pulse {
+  from {
+    background-color: rgba(26, 62, 127, 0.15);
+  }
+  50% {
+    background-color: rgba(26, 62, 127, 0.55);
+  }
+  to {
+    background-color: rgba(26, 62, 127, 0.15);
+  }
+}

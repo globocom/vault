@@ -84,19 +84,3 @@ def url_replace(get_parameters, **kwargs):
             query[x] = [query[x]]
     query_pairs = [(k, v) for k, vlist in query.items() for v in vlist]
     return urlencode(query_pairs)
-
-
-@register.simple_tag(takes_context=True)
-def info_endpoints(context, **kwargs):
-    """Templatetag to render a list of info endpoints"""
-
-    endpoints = []
-    request = context.get('request')
-    project_name = request.session.get('project_name')
-
-    for conf in apps.get_app_configs():
-        if hasattr(conf, 'vault_app'):
-            endpoints.append(
-                "/p/{}/{}/api/info".format(project_name, conf.name))
-
-    return json.dumps(endpoints)

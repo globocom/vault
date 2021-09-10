@@ -99,16 +99,12 @@
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
     <script src="{% static 'vendor/js/bootbox.min.js' %}"></script>
-    <script src="{% static 'vendor/js/vue.js' if debug else 'vendor/js/vue.min.js' %}"></script>
+    <script src="{% static 'vendor/js/vue.js' if DEBUG else 'vendor/js/vue.min.js' %}"></script>
 
-    <script>
-      Base.init();
-    </script>
+    <script>Base.init();</script>
 
     <script src="{% static 'vault/js/vault-menu.js' %}"></script>
-    <script>
-      VaultMenu(JSON.parse('{% autoescape off %}{% info_endpoints %}{% endautoescape %}'));
-    </script>
+    <script>VaultMenu('{% url "apps_info" %}');</script>
 
     <script>
       bootbox.setDefaults({

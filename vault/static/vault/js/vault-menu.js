@@ -1,4 +1,4 @@
-const VaultMenu = (ENDPOINTS = []) => {
+const VaultMenu = (endpointsUrl = "/apps/info") => {
   const SubMenuItem = {
     props: ["subitem"],
     template: `
@@ -44,25 +44,37 @@ const VaultMenu = (ENDPOINTS = []) => {
     `,
   };
 
+  const DummyMenuItem = {
+    template: `
+    <li class="dummy-menu-item">
+      <span>&nbsp;</span>
+    </li>
+    `,
+  };
+
   return new Vue({
     el: "#sidebar-app-menus",
     components: {
       "menu-item": MenuItem,
+      "dummy-menu-item": DummyMenuItem,
     },
     data: {
-      endpoints: ENDPOINTS,
+      loading: false,
       items: [],
-      updated: [],
     },
     async created() {
       const cached = localStorage.getItem("vaultMenuApps");
       const updated = [];
+      this.loading = true;
 
       if (cached) {
         this.items = JSON.parse(cached);
+        this.loading = false;
       }
 
-      for (const url of this.endpoints) {
+      const endpoints = await this.fetchEndpoints();
+
+      for (const url of endpoints) {
         const item = await this.fetchInfo(url);
         item.opened = false;
         updated.push(item);
@@ -72,8 +84,13 @@ const VaultMenu = (ENDPOINTS = []) => {
       }
 
       localStorage.setItem("vaultMenuApps", JSON.stringify(updated));
+      this.loading = false;
     },
     methods: {
+      async fetchEndpoints() {
+        const res = await fetch(endpointsUrl);
+        return res.json();
+      },
       async fetchInfo(url) {
         const res = await fetch(`${url}?opt=menu`);
         return res.json();
@@ -85,6 +102,7 @@ const VaultMenu = (ENDPOINTS = []) => {
                    :item="item"
                    :key="'i'+index">
         </menu-item>
+        <dummy-menu-item v-show="loading"></dummy-menu-item>
       </ul>
     `,
   });

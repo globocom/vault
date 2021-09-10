@@ -48,6 +48,9 @@ urlpatterns = [
     # Team Manage
     re_path(r"^p/(?P<project>.+?)/team/manage/?$", views.team_manager_view, name="team_manage"),
     re_path(r"^p/(?P<project>.+?)/team/manage/outsideusers/?$", views.list_users_outside_a_group, name="outside_users"),
+
+    # Apps Info
+    re_path(r"^apps/info", views.apps_info, name="apps_info"),
 ]
 
 

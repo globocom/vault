@@ -188,19 +188,14 @@
 
 .widget-dummy {
   min-height: 400px;
-  background-color: #eee;
   border-radius: 4px;
-
-  animation-name: pulse;
+  opacity: 0.75;
+  animation-name: widget-pulse;
   animation-duration: 1.2s;
   animation-iteration-count: infinite;
 }
 
-.widget-dummy.two {
-  animation-duration: 1s;
-}
-
-@keyframes pulse {
+@keyframes widget-pulse {
   from {
     background-color: #eee;
   }
