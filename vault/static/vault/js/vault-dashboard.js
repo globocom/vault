@@ -65,10 +65,11 @@ const VaultDashboard = (endpointsUrl = "/apps/info") => {
     data: {
       loading: false,
       widgets: [],
+      updated: [],
     },
     async created() {
       const cached = localStorage.getItem("vaultWidgets");
-      const updated = [];
+      this.updated = [];
       this.loading = true;
 
       if (cached) {
@@ -80,13 +81,17 @@ const VaultDashboard = (endpointsUrl = "/apps/info") => {
 
       for (const url of endpoints) {
         const [widget] = await this.fetchInfo(url);
-        widget && updated.push(widget);
-        if (!cached) {
-          widget && this.widgets.push(widget);
+
+        if (widget) {
+          this.updated.push(widget);
+        }
+
+        if (!cached && widget) {
+          this.widgets.push(widget);
         }
       }
 
-      localStorage.setItem("vaultWidgets", JSON.stringify(updated));
+      localStorage.setItem("vaultWidgets", JSON.stringify(this.updated));
       this.loading = false;
     },
     methods: {
