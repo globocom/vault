@@ -17,7 +17,6 @@ clean: ## Project cleaning up for any extra files created during execution
 	@find . -name "__pycache__" -delete
 	@find . -name "**/*.pyc" -delete
 	@find . -name "*.~" -delete
-	@rm -f vault_test.db
 	@rm -rf .pytest_cache
 
 deps: ## Install project dependencies
