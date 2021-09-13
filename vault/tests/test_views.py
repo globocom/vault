@@ -318,17 +318,13 @@ class UpdateTeamsUsersTest(BaseTestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('vault.templatetags.vault_tags.requests.get')
-    def test_manage_users_teams_flow_ensure_user_list_was_filled_up(self, mock_response):
-        mock_response.return_value = MagicMock(status_code=200, content=json.dumps(self.roles))
+    def test_manage_users_teams_flow_ensure_user_list_was_filled_up(self):
         response = self.view(self.request)
         response.render()
 
         self.assertIn('<option value="2">usertest-2</option>', response.content.decode('utf-8'))
 
-    @patch('vault.templatetags.vault_tags.requests.get')
-    def test_manage_users_teams_flow_ensure_group_list_was_filled_up(self, mock_response):
-        mock_response.return_value = MagicMock(status_code=200, content=json.dumps(self.roles))
+    def test_manage_users_teams_flow_ensure_group_list_was_filled_up(self):
         response = self.view(self.request)
         response.render()
         group = self.request.user.groups.first()
