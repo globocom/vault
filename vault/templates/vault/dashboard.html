@@ -50,7 +50,7 @@
 
 {% if has_team %}
 <script src="{% static 'vault/js/vault-dashboard.js' %}"></script>
-<script>VaultDashboard('{% url "apps_info" %}');</script>
+<script>VaultDashboard('{% url "apps_info" %}', '{{ project_id }}');</script>
 {% endif %}
 
 <script>

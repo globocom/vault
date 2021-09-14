@@ -1,4 +1,6 @@
-const VaultDashboard = (endpointsUrl = "/apps/info") => {
+const VaultDashboard = (endpointsUrl = "/apps/info", projectId = "001") => {
+  const CACHEKEY = `vDash_${projectId}`;
+
   const DashboardWidget = {
     props: ["widget"],
     methods: {
@@ -68,7 +70,7 @@ const VaultDashboard = (endpointsUrl = "/apps/info") => {
       updated: [],
     },
     async created() {
-      const cached = localStorage.getItem("vaultWidgets");
+      const cached = localStorage.getItem(CACHEKEY);
       this.updated = [];
       this.loading = true;
 
@@ -77,22 +79,36 @@ const VaultDashboard = (endpointsUrl = "/apps/info") => {
         this.loading = false;
       }
 
-      const endpoints = await this.fetchEndpoints();
+      let endpoints = [];
+
+      try {
+        endpoints = await this.fetchEndpoints();
+      } catch (err) {
+        console.log(err);
+      }
 
       for (const url of endpoints) {
-        const [widget] = await this.fetchInfo(url);
+        try {
+          const [widget] = await this.fetchInfo(url);
 
-        if (widget) {
-          this.updated.push(widget);
-        }
+          if (widget) {
+            this.updated.push(widget);
+          }
 
-        if (!cached && widget) {
-          this.widgets.push(widget);
+          if (!cached && widget) {
+            this.widgets.push(widget);
+          }
+        } catch (err) {
+          console.log(url);
+
+          console.log(err);
+          continue;
         }
       }
 
-      localStorage.setItem("vaultWidgets", JSON.stringify(this.updated));
+      localStorage.setItem(CACHEKEY, JSON.stringify(this.updated));
       this.loading = false;
+      this.update();
     },
     methods: {
       async fetchEndpoints() {
@@ -102,6 +118,10 @@ const VaultDashboard = (endpointsUrl = "/apps/info") => {
       async fetchInfo(url) {
         const res = await fetch(`${url}?opt=widgets`);
         return res.json();
+      },
+      update() {
+        this.widgets = this.updated;
+        console.log("dashboard updated");
       },
     },
     template: `

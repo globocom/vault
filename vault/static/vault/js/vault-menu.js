@@ -1,4 +1,6 @@
-const VaultMenu = (endpointsUrl = "/apps/info") => {
+const VaultMenu = (endpointsUrl = "/apps/info", projectId = "001") => {
+  const CACHEKEY = `vMenuApp_${projectId}`;
+
   const SubMenuItem = {
     props: ["subitem"],
     template: `
@@ -61,10 +63,11 @@ const VaultMenu = (endpointsUrl = "/apps/info") => {
     data: {
       loading: false,
       items: [],
+      updated: [],
     },
     async created() {
-      const cached = localStorage.getItem("vaultMenuApps");
-      const updated = [];
+      const cached = localStorage.getItem(CACHEKEY);
+      this.updated = [];
       this.loading = true;
 
       if (cached) {
@@ -72,18 +75,29 @@ const VaultMenu = (endpointsUrl = "/apps/info") => {
         this.loading = false;
       }
 
-      const endpoints = await this.fetchEndpoints();
+      let endpoints = [];
+
+      try {
+        endpoints = await this.fetchEndpoints();
+      } catch (err) {
+        console.log(err);
+      }
 
       for (const url of endpoints) {
-        const item = await this.fetchInfo(url);
-        item.opened = false;
-        updated.push(item);
-        if (!cached) {
-          this.items.push(item);
+        try {
+          const item = await this.fetchInfo(url);
+          item.opened = false;
+          this.updated.push(item);
+          if (!cached) {
+            this.items.push(item);
+          }
+        } catch (err) {
+          console.log(err);
+          continue;
         }
       }
 
-      localStorage.setItem("vaultMenuApps", JSON.stringify(updated));
+      localStorage.setItem(CACHEKEY, JSON.stringify(this.updated));
       this.loading = false;
     },
     methods: {

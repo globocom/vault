@@ -104,7 +104,7 @@
     <script>Base.init();</script>
 
     <script src="{% static 'vault/js/vault-menu.js' %}"></script>
-    <script>VaultMenu('{% url "apps_info" %}');</script>
+    <script>VaultMenu('{% url "apps_info" %}', '{{ project_id }}');</script>
 
     <script>
       bootbox.setDefaults({
