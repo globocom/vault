@@ -7,11 +7,6 @@ const ReportApp = {
     statusUrl: STATUS_URL,
     migrateUrl: MIGRATE_URL,
   },
-  created() {
-    for (const project of this.projects) {
-      this.getProjectStatus(project);
-    }
-  },
   methods: {
     async getProjectStatus(project) {
       const data = await fetch(`${this.statusUrl}?project_id=${project.id}`);
@@ -70,7 +65,7 @@ const ReportApp = {
           <td>{{ project.status }}</td>
           <td class="text-end">
             <button class="btn btn-sm btn-light" @click="getProjectStatus(project)">
-              Update
+              Update Status
             </button>
           </td>
           <td class="text-end">
