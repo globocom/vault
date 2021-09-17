@@ -88,22 +88,29 @@
   margin-top: 10px;
 }
 
-.reset-info {
+.reset-info,
+.reset-loading {
   display: none;
   padding: 6px 12px;
   font-size: 14px;
   vertical-align: middle;
-  margin-left: 10px;
   background-color: #FCF8E3;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 .reset-info.visible {
-  display: inline-block;
+  display: block;
 }
 
 .reset-info .new-pass {
   font-weight: bold;
+}
+
+.reset-loading {
+  text-align: center;
+  font-size: 1.6em;
+  color: #555;
 }
 
 #project-metadata {

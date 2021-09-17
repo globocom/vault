@@ -65,9 +65,9 @@ Project.Users = {};
 
         var $form = $('.project-form');
 
-        $form.on('click', '.reset-pass', function(e) {
+        $form.on('click', '.reset-pass', function() {
             if(window.confirm(options.resetMsg)) {
-                e.preventDefault();
+                $('.reset-pass').attr('disabled', true);
                 resetPassword();
             }
             return false;
@@ -76,7 +76,9 @@ Project.Users = {};
     }
 
     function resetPassword() {
-        var $reset_info = $(".reset-info")
+        var $reset_info = $(".reset-info");
+        var $resetLoading = $('.reset-loading');
+        $resetLoading.show();
         $.ajax({
             type: "POST",
             url: options.resetPassUrl,
@@ -86,6 +88,7 @@ Project.Users = {};
             timeout: timeout
         })
         .done(function (data) {
+            $resetLoading.hide();
             $reset_info.addClass('visible')
                        .find('.new-pass')
                        .text(data.new_password);
