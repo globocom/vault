@@ -38,15 +38,20 @@
           </div>
 
           {% if user_project %}
-            <div class="form-group">
+            <div class="form-group mb-3">
               <label>{% trans 'Project User:' %}</label>
               <input type='text' name='user_project' class="form-control" readonly="readonly" value='{{ user_project }}' />
             </div>
 
             {% block reset_pass_btn %}
             <div class="form-group">
-              <a href="#" class="reset-pass btn btn-primary">{% trans 'Reset Password' %}</a>
-              <span class="reset-info">{% trans 'New password:' %} <span class="new-pass"></span></span>
+              <button class="reset-pass btn btn-primary mb-3">{% trans 'Reset Password' %}</button>
+              <div class="reset-loading">
+                <i class="fas fa-cog fa-spin"></i>
+              </div>
+              <div class="reset-info">
+                {% trans 'New password:' %} <span class="new-pass"></span>
+              </div>
             </div>
             {% endblock %}
             <hr>
