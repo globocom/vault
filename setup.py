@@ -19,7 +19,7 @@ setup(
         'Django==3.1.6',
         'django3-all-access==0.10.0',
         'iso8601==0.1.11',
-        'mysqlclient==1.4.6',
+        'mysqlclient==2.0.3',
         'netaddr==0.7.18',
         'oslo.config==5.2.0',
         'python-dateutil==2.5.3',
@@ -27,7 +27,8 @@ setup(
         'python-swiftclient==3.7.1',
         'pytz==2015.4',
         'requests==2.19.1',
-        'cryptography==2.9.2'
+        'cryptography==2.9.2',
+        'python-swift-cloud-tools==0.1.3'
     ],
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,

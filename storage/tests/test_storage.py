@@ -17,9 +17,11 @@ from storage import views
 from vault.tests.fakes import fake_request
 from vault import utils
 
+
 class MockRequest:
     def __init__(self):
         self.text = '{}'
+
 
 class BaseTestCase(TestCase):
 

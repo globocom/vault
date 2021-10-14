@@ -70,14 +70,14 @@ class SetProjectTest(BaseTestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    @patch('vault.views.switch')
+    @patch('vault.views.main.switch')
     def test_set_new_project_id_to_session(self, mock_switch):
         self.assertEqual(self.request.session.get('project_id'), '1')
 
         response = self.view(self.request, project_id=2)
         self.assertEqual(self.request.session.get('project_id'), 2)
 
-    @patch('vault.views.switch')
+    @patch('vault.views.main.switch')
     def test_set_new_project_id_to_session_exception(self, mock_switch):
         mock_switch.side_effect = ValueError()
 

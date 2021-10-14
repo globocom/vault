@@ -26,6 +26,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template.defaultfilters import filesizeformat
 
 from swiftclient import client
+from swift_cloud_tools.client import SCTClient
 
 from storage.forms import *
 from storage.utils import *
@@ -146,18 +147,18 @@ def delete_container(request, container, force=True):
 
             if 'bulk_delete' in info:
                 max_deletes_per_request = info.get('bulk_delete').get('max_deletes_per_request')
-                for i in range(math.ceil(len(container_objects)/max_deletes_per_request)):
+                for i in range(math.ceil(len(container_objects) / max_deletes_per_request)):
 
                     names = b""
-                    start_index = i*max_deletes_per_request
-                    end_index = (i+1)*max_deletes_per_request if len(container_objects) > (i+1)*max_deletes_per_request\
+                    start_index = i * max_deletes_per_request
+                    end_index = (i + 1) * max_deletes_per_request if len(container_objects) > (i + 1) * max_deletes_per_request\
                         else len(container_objects)
                     for obj in container_objects[start_index:end_index]:
                         names += prepare_data_name(container, obj['name']) + b"\n"
 
                     names = names[:-1]
                     headers = {"X-Auth-Token": auth_token}
-                    r = requests.post(storage_url+"?bulk-delete=true",
+                    r = requests.post(storage_url + "?bulk-delete=true",
                                       headers=headers, data=names)
             else:
                 for obj in container_objects:
@@ -1341,22 +1342,23 @@ class SwiftJsonInfo(JsonInfo):
         return menu
 
     def _get_cloud_status(self):
-        if not settings.SWIFT_CLOUD_TOOLS_URL:
+        if not settings.SWIFT_CLOUD_TOOLS_URL or not settings.SWIFT_CLOUD_TOOLS_API_KEY:
             return ""
 
-        project_id = self.request.session.get('project_id')
+        sct_client = SCTClient(
+            settings.SWIFT_CLOUD_TOOLS_URL,
+            settings.SWIFT_CLOUD_TOOLS_API_KEY
+        )
         status = ""
-        try:
-            url = f"{settings.SWIFT_CLOUD_TOOLS_URL}/transfer/status/{project_id}"
-            headers = {"X-Auth-Token": settings.SWIFT_CLOUD_TOOLS_API_KEY}
-            res = requests.get(url, headers=headers)
-            if res.status_code == 200:
-                data = res.json()
-                status = data.get('status')
-                if data.get('progress'):
-                    status = f"{status} {data.get('progress')}%"
-        except Exception as err:
-            log.exception(err)
+        project_id = self.request.session.get('project_id')
+
+        response = sct_client.transfer_status(project_id)
+
+        if response.status_code == 200:
+            data = response.json()
+            status = data.get('status')
+            if data.get('progress'):
+                status = f"{status} {data.get('progress')}%"
 
         return status
 

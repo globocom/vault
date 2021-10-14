@@ -104,8 +104,7 @@ def maybe_update_token(request):
         if keystone.conn is None:
             return False
 
-        request.session['token_time'] = (timedelta(minutes=15) +
-                                         datetime.utcnow())
+        request.session['token_time'] = (timedelta(minutes=15) + datetime.utcnow())
         request.session['auth_token'] = keystone.conn.auth_token
         request.session['service_catalog'] = keystone.get_endpoints()
 
