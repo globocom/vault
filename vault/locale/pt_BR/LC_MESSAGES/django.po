@@ -140,7 +140,7 @@ msgstr "Erro do Vault"
 
 #: vault/templates/vault/project_error.html:23
 msgid "Return to Home"
-msgstr ""
+msgstr "Voltar para Home"
 
 #: vault/templates/vault/project_error.html:28
 msgid "Select a different project"
