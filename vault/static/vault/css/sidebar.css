@@ -83,10 +83,12 @@
   text-overflow: ellipsis;
   overflow-x: hidden;
   border-radius: 4px 0 0 4px;
+  box-shadow: none;
 }
 
 #sidebar .current-project button.p-options {
   border-radius: 0 4px 4px 0;
+  box-shadow: none;
 }
 
 #sidebar .separator {
