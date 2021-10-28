@@ -18,13 +18,18 @@
 #add-user-role .lock {
   display: none;
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 9;
 }
 
 #add-user-role .lock .msg-lock {
   position: absolute;
-  bottom: 26px; left: 0; right: 0;
+  bottom: 26px;
+  left: 0;
+  right: 0;
   text-align: center;
   font-size: 20px;
   color: #333;
@@ -67,12 +72,6 @@
   border-top: none;
 }
 
-#add-user-role .users,
-#add-user-role .roles {
-  width: 28%;
-  display: inline-block;
-}
-
 #add-user-role .remove-usr {
   float: right;
   font-size: 12px;
@@ -83,9 +82,13 @@
   overflow-y: auto;
 }
 
-#add-user-role .add-btn {
-  float: right;
-  margin-top: 10px;
+#add-user-role .users-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.2);
+  font-size: 2em;
+  height: 70px;
 }
 
 .reset-info,
@@ -94,7 +97,7 @@
   padding: 6px 12px;
   font-size: 14px;
   vertical-align: middle;
-  background-color: #FCF8E3;
+  background-color: #fcf8e3;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
@@ -161,7 +164,7 @@
   text-align: center;
   background-color: white;
   color: #333;
-  opacity: .85;
+  opacity: 0.85;
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
