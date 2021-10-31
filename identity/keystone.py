@@ -227,13 +227,13 @@ class KeystoneBase:
                                           enabled=True,
                                           **kwargs)
         except exceptions.Conflict as err:
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Duplicated project name.'
             }
         except exceptions.Forbidden as err:
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Superuser required.'
@@ -245,14 +245,14 @@ class KeystoneBase:
         try:
             admin_password = Keystone.create_password()
             admin_user = self.user_create(
-                name='u_{}'.format(project_name),
+                name=f'u_{project_name}',
                 password=admin_password,
                 role_id=swiftop,
                 project_id=project.id
             )
         except exceptions.Forbidden as err:
             self.project_delete(project.id)
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Admin User required'
@@ -260,7 +260,7 @@ class KeystoneBase:
 
         # Creates internal user and add swiftoperator role
         try:
-            user_name = 'u_vault_{}'.format(project_name)
+            user_name = f'u_vault_{project_name}'
             internal_password = Keystone.create_password()
             internal_user = self.user_create(
                 name=user_name,
@@ -274,7 +274,7 @@ class KeystoneBase:
         except exceptions.Forbidden as err:
             self.user_delete(admin_user.id)
             self.project_delete(project.id)
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Internal User required'
@@ -294,7 +294,7 @@ class KeystoneBase:
             self.user_delete(admin_user.id)
             self.user_delete(internal_user.id)
             self.project_delete(project.id)
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Project User required'
@@ -309,7 +309,7 @@ class KeystoneBase:
             self.user_delete(admin_user.id)
             self.user_delete(internal_user.id)
             self.project_delete(project.id)
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': 'Unable to assign project to group'
@@ -403,8 +403,7 @@ class KeystoneBase:
 
         # Swift returns 404 if the project had never been used
         if del_swift.status_code not in (204, 404):
-            reason = 'Unable to delete project from Swift (HTTP {})'.format(
-                del_swift.status_code)
+            reason = f'Unable to delete project from Swift (HTTP {del_swift.status_code})'
 
             return {
                 'status': False,
@@ -431,7 +430,7 @@ class KeystoneBase:
         try:
             self.project_delete(project.id)
         except Exception as err:
-            log.error('Error: {}'.format(err))
+            log.error(f'Error: {err}')
             return {
                 'status': False,
                 'reason': err
@@ -461,7 +460,7 @@ class KeystoneBase:
         users = self.user_list(project.id)
 
         for user in users:
-            if user.name == '{}_{}'.format(prefix, project.name):
+            if user.name == f'{prefix}_{project.name}':
                 return user
 
         return None

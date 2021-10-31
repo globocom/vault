@@ -145,7 +145,7 @@ class TestKeystoneV3(TestCase):
                                         mock_key_user,
                                         mock_encrypt_password):
 
-        mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
+        mock_key_user.return_value = FakeResource(n=self.project.id, name=f'u_{self.project.name}')
         mock_key_pass.return_value = 'password'
 
         mock_encrypt_password.return_value = b'123456'
@@ -168,7 +168,7 @@ class TestKeystoneV3(TestCase):
                                                     enabled=True)
 
         # User creation
-        mock_key_user.assert_called_with(name='u_vault_{}'.format(self.project.name),
+        mock_key_user.assert_called_with(name=f'u_vault_{self.project.name}',
                                          email='',
                                          password='password',
                                          enabled=True,
@@ -186,7 +186,7 @@ class TestKeystoneV3(TestCase):
     def test_vault_create_project_forbidden_on_project_create(self, mock_key_user):
 
         self.mock_project_create.side_effect = exceptions.Forbidden
-        mock_key_user.return_value = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
+        mock_key_user.return_value = FakeResource(n=self.project.id, name=f'u_{self.project.name}')
 
         keystone = Keystone(self.request, project_name='project_name')
 
@@ -231,7 +231,7 @@ class TestKeystoneV3(TestCase):
                                                                          mock_project_delete,
                                                                          mock_encrypt_password):
 
-        fake_user = FakeResource(n=self.project.id, name='u_{}'.format(self.project.name))
+        fake_user = FakeResource(n=self.project.id, name=f'u_{self.project.name}')
         mock_user_create.return_value = fake_user
 
         # Excecao ao salvar no db

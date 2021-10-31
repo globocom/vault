@@ -90,7 +90,7 @@ def maybe_update_token(request):
     token_time = request.session.get('token_time')
 
     if token_time is None or token_time < datetime.utcnow():
-        log.info('Updating token for user [{}]'.format(request.user))
+        log.info(f'Updating token for user [{request.user}]')
 
         try:
             keystone = Keystone(request)

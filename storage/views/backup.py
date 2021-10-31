@@ -72,21 +72,17 @@ def _check_backup_user(request, project_id):
                                role=backup_role,
                                user=backup_user)
     except exceptions.Conflict:
-        log.info('backup_user already with role'.format(project_id))
+        log.info('backup_user already with role')
 
     return True
 
 
 def _enable_backup(container, project_id, project_name):
-    create_url = 'http://{}:{}@{}/config/create'.format(
-        settings.BACKUP_API_USER,
-        settings.BACKUP_API_PASSWORD,
-        settings.BACKUP_API_URL
-    )
+    create_url = f'http://{settings.BACKUP_API_USER}:{settings.BACKUP_API_PASSWORD}@{settings.BACKUP_API_URL}/config/create'
 
     try:
         req = requests.post(create_url, json={
-            'name': '{}_{}'.format(project_name, container),
+            'name': f'{project_name}_{container}',
             'type': 'swift',
             'parameters': {
                 'endpoint_type': 'admin',
@@ -95,7 +91,7 @@ def _enable_backup(container, project_id, project_name):
             }
         })
     except Exception as err:
-        log.error('Enable backup error: {}'.format(err))
+        log.error(f'Enable backup error: {err}')
         return False
 
     items = BackupContainer.objects.filter(container=container,
@@ -109,24 +105,20 @@ def _enable_backup(container, project_id, project_name):
                                project_name=project_name)
         item.save()
     except Exception as err:
-        log.error('Enable backup error: {}'.format(err))
+        log.error(f'Enable backup error: {err}')
         return False
 
     return True
 
 
 def _disable_backup(container, project_id, project_name):
-    delete_url = 'http://{}:{}@{}/config/delete'.format(
-        settings.BACKUP_API_USER,
-        settings.BACKUP_API_PASSWORD,
-        settings.BACKUP_API_URL
-    )
+    delete_url = f'http://{settings.BACKUP_API_USER}:{settings.BACKUP_API_PASSWORD}@{settings.BACKUP_API_URL}/config/delete'
     try:
         req = requests.post(delete_url, json={
-            'name': '{}_{}'.format(project_name, container)
+            'name': f'{project_name}_{container}'
         })
     except Exception as err:
-        log.error('Disable backup error: {}'.format(err))
+        log.error(f'Disable backup error: {err}')
         return False
 
     items = BackupContainer.objects.filter(container=container,
@@ -137,7 +129,7 @@ def _disable_backup(container, project_id, project_name):
     try:
         items[0].delete()
     except Exception as err:
-        log.error('Disable backup error: {}'.format(err))
+        log.error(f'Disable backup error: {err}')
         return False
 
     return True
@@ -153,11 +145,7 @@ def backup_restore(request, project):
     content = {'message': ''}
     status = 200
 
-    restore_url = 'http://{}:{}@{}/sync/copy'.format(
-        settings.BACKUP_API_USER,
-        settings.BACKUP_API_PASSWORD,
-        settings.BACKUP_API_URL
-    )
+    restore_url = f'http://{settings.BACKUP_API_USER}:{settings.BACKUP_API_PASSWORD}@{settings.BACKUP_API_URL}/sync/copy'
 
     if backup_type == 'daily':
         s3_bucket = 'swift-backup-daily'
@@ -166,22 +154,22 @@ def backup_restore(request, project):
     else:
         s3_bucket = 'swift-backup-monthly'
 
-    name = '{}_{}'.format(project_name, container)
+    name = f'{project_name}_{container}'
     ts = int(time.time())
-    restore_container = '{}_{}_{}'.format(container, backup_type, ts)
-    content['message'] = 'Backup restaurado no container: {}'.format(restore_container)
+    restore_container = f'{container}_{backup_type}_{ts}'
+    content['message'] = f'Backup restaurado no container: {restore_container}'
 
     try:
         req = requests.post(restore_url, json={
-            "srcFs": "amazon:/{}/{}/{}".format(s3_bucket, project_name, container),
-            "dstFs": "{}:/{}".format(name, restore_container),
+            "srcFs": f"amazon:/{s3_bucket}/{project_name}/{container}",
+            "dstFs": f"{name}:/{restore_container}",
             "_async": True
         })
         result = req.json()
         content['job'] = result['jobid']
     except Exception as err:
-        log.error('Restore backup error: {}'.format(err))
-        content['message'] = 'Restore backup error: {}'.format(err)
+        log.error(f'Restore backup error: {err}')
+        content['message'] = f'Restore backup error: {err}'
         return HttpResponse(json.dumps(content),
                             content_type='application/json',
                             status=500)
@@ -197,16 +185,16 @@ def check_backup_conditions(request, container):
     storage_url = get_storage_endpoint(request, 'adminURL')
     headers = {'X-Storage-Token': get_token_id(request)}
 
-    url = '{0}/{1}'.format(storage_url, container)
+    url = f'{storage_url}/{container}'
 
     response = requests.head(url, headers=headers,
                              verify=not settings.SWIFT_INSECURE)
 
     if int(response.headers['X-Container-Object-Count']) >= backup_object_count_value:
-        return False, _('Error when activating container backup. Container cannot contain more than {} objects').format(backup_object_count_value)
+        return False, _(f'Error when activating container backup. Container cannot contain more than {backup_object_count_value} objects')
 
     if int(response.headers['X-Container-Bytes-Used']) >= backup_object_bytes_value:
-        return False, _('Error when activating container backup. Container cannot contain more than {}').format(backup_object_count_value)
+        return False, _(f'Error when activating container backup. Container cannot contain more than {backup_object_count_value}')
 
     return True, 'Success'
 
@@ -233,11 +221,11 @@ def config_backup_container(request, project, container):
     if conditions:
         if action == 'enabled':
             result = _enable_backup(container, project_id, project_name)
-            msg = '{} "{}"'.format(_('Backup enabled for container'), container)
+            msg = f'{_("Backup enabled for container")} "{container}"'
 
         if action == 'disabled':
             result = _disable_backup(container, project_id, project_name)
-            msg = '{} "{}"'.format(_('Backup disabled for container'), container)
+            msg = f'{_("Backup disabled for container")} "{container}"'
 
         if result:
             check_ok = _check_backup_user(request, project_id)
@@ -245,15 +233,11 @@ def config_backup_container(request, project, container):
                 _disable_backup(container, project_id, project_name)
                 status = 500
                 msg = _("Backup status error: can't set backup user permission")
-                log.error('{}. Project: {}, Container: {}'.format(msg,
-                                                                  project_name,
-                                                                  container))
+                log.error(f'{msg}. Project: {project_name}, Container: {container}')
         else:
             status = 500
             msg = _('Error when updating container backup status')
-            log.error('{}. Project: {}, Container: {}'.format(msg,
-                                                              project_name,
-                                                              container))
+            log.error(f'{msg}. Project: {project_name}, Container: {container}')
     else:
         status = 412
 

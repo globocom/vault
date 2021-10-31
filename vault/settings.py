@@ -116,9 +116,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = "vault_static/"
 
-STATIC_URL = "{}/{}/{}".format(os.getenv("SWIFT_INTERNAL_URL", ""),
-                               os.getenv("SWIFT_CONTAINER", "vault"),
-                               STATIC_ROOT)
+STATIC_URL = f'{os.getenv("SWIFT_INTERNAL_URL", "")}/{os.getenv("SWIFT_CONTAINER")}/{"vault"}'
 
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
 SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
@@ -176,9 +174,8 @@ KEYSTONE_USERNAME = os.getenv("VAULT_KEYSTONE_USERNAME", "u_vault")
 KEYSTONE_PASSWORD = os.getenv("VAULT_KEYSTONE_PASSWORD", "u_vault")
 KEYSTONE_PROJECT = os.getenv("VAULT_KEYSTONE_PROJECT", "Vault")
 KEYSTONE_VERSION = os.getenv("VAULT_KEYSTONE_API_VERSION", 3)
-KEYSTONE_URL = os.getenv(
-    "VAULT_KEYSTONE_URL", "http://localhost:5000/{}".format(
-        "v2.0" if KEYSTONE_VERSION == 2 else "v3"))
+KEYSTONE_VERSION_STR = "v2.0" if KEYSTONE_VERSION == 2 else "v3"
+KEYSTONE_URL = os.getenv("VAULT_KEYSTONE_URL", f"http://localhost:5000/{KEYSTONE_VERSION_STR}")
 
 KEYSTONE_TIMEOUT = os.getenv("VAULT_KEYSTONE_TIMEOUT", 3)
 # KEYSTONE_INSECURE = False

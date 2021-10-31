@@ -22,7 +22,7 @@ def run():
             print('Database server connected!')
         except MySQLdb.MySQLError:
             attempt += 1
-            print('Database server not connected. Trying again in {} seconds...'.format(INTERVAL))
+            print(f'Database server not connected. Trying again in {INTERVAL} seconds...')
             sleep(INTERVAL)
 
     if connected:

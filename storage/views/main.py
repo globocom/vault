@@ -62,7 +62,7 @@ def containerview(request, project):
         account_stat, containers = client.get_account(
             storage_url, auth_token, full_listing=False, http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR,
                              _('Unable to list containers'))
         account_stat, containers = {}, []
@@ -112,7 +112,7 @@ def create_container(request, project):
 
             actionlog.log(request.user.username, "create", container)
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception(f'Exception: {err}')
             messages.add_message(request, messages.ERROR, _('Access denied'))
 
         return redirect(containerview, project=project_name)
@@ -169,7 +169,7 @@ def delete_container(request, container, force=True):
                                 container, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", container)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         return False
 
     return True
@@ -200,7 +200,7 @@ def delete_container_view(request, project, container):
         status = 500
         msg = str(_('Container delete error'))
         content['message'] = msg
-        log.error('{}. Container: {}'.format(msg, container))
+        log.exception(f'Exception: {err}')
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
@@ -228,7 +228,7 @@ def objectview(request, project, container, prefix=None):
             container, delimiter='/', prefix=prefix, full_listing=False,
             http_conn=http_conn, limit=limit, marker=marker)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         project_name = request.session.get('project_name')
         return redirect(containerview, project=project_name)
@@ -264,9 +264,9 @@ def object_item(request, project, container, objectname):
     custom_headers = {}
     system_headers = {}
 
-    url = '{0}/{1}'.format(storage_url, container)
+    url = f'{storage_url}/{container}'
     if objectname:
-        url = '{0}/{1}'.format(url, str(objectname))
+        url = f'{url}/{str(objectname)}'
 
     response = requests.head(url, headers=headers,
                              verify=not settings.SWIFT_INSECURE)
@@ -276,8 +276,7 @@ def object_item(request, project, container, objectname):
     if 'Cache-Control' not in metadata.keys():
         metadata["Cache-Control"] = ''
 
-    public_url = '{}/{}/{}'.format(get_storage_endpoint(request,
-                                   'publicURL'), container, objectname)
+    public_url = f'{get_storage_endpoint(request, "publicURL")}/{container}/{objectname}'
     prefixes = prefix_list(objectname)
 
     for item in metadata:
@@ -309,7 +308,7 @@ def upload(request, project, container, prefix=None):
     storage_url, http_conn = connection(request)
 
     project_name = request.session.get('project_name')
-    redirect_url = 'http://{}'.format(request.get_host())
+    redirect_url = f'http://{request.get_host()}'
     redirect_url += reverse('objectview',
         kwargs={'container': container, 'project': project_name})
 
@@ -333,8 +332,7 @@ def upload(request, project, container, prefix=None):
         else:
             return redirect(objectview, container=container, project=project_name)
 
-    hmac_body = '{}\n{}\n{}\n{}\n{}'.format(
-        path, redirect_url, max_file_size, max_file_count, expires)
+    hmac_body = f'{path}\n{redirect_url}\n{max_file_size}\n{max_file_count}\n{expires}'
     signature = hmac.new(
         bytes(key, 'utf-8'), bytes(hmac_body, 'utf-8'), sha1).hexdigest()
 
@@ -387,7 +385,7 @@ def create_object(request, project, container, prefix=None):
         elif req.status_code == 401 or req.status_code == 403:
             messages.add_message(request, messages.ERROR, _('Access denied'))
         else:
-            msg = 'Fail to create object ({0}).'.format(req.status_code)
+            msg = f'Fail to create object ({req.status_code}).'
             log.error(msg)
             messages.add_message(request, messages.ERROR, msg)
 
@@ -405,7 +403,7 @@ def download(request, project, container, objectname):
 
     headers = {'X-Storage-Token': auth_token}
 
-    url = '{0}/{1}/{2}'.format(storage_url, container, str(objectname))
+    url = f'{storage_url}/{container}/{str(objectname)}'
 
     res = requests.get(
         url, headers=headers, verify=not settings.SWIFT_INSECURE)
@@ -447,7 +445,7 @@ def delete_object(request, container, objectname):
             container=container, name=objectname, http_conn=http_conn)
         actionlog.log(request.user.username, "delete", objectname)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         return False
 
     return True
@@ -471,7 +469,7 @@ def delete_pseudofolder(request, project, container, pseudofolder):
                 container=container, name=obj['name'], http_conn=http_conn)
             count_deletes += 1
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception(f'Exception: {err}')
 
     # Empty pseudofolder
     if count_deletes == 1 and count_deletes == len(objects):
@@ -480,7 +478,7 @@ def delete_pseudofolder(request, project, container, pseudofolder):
     # Non empty pseudofolder
     elif count_deletes > 1 and count_deletes == len(objects):
         messages.add_message(request, messages.SUCCESS,
-                             'Pseudofolder and {0} objects deleted.'.format(count_deletes - 1))
+                             f'Pseudofolder and {count_deletes - 1} objects deleted.')
     elif count_deletes > 0 and count_deletes < len(objects):
         messages.add_message(request, messages.SUCCESS,
                              _('Could not delete all objects'))
@@ -532,7 +530,7 @@ def create_pseudofolder(request, project, container, prefix=None):
             messages.add_message(request, messages.SUCCESS,
                                  _('Pseudofolder created'))
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception(f'Exception: {err}')
             messages.add_message(request, messages.ERROR, _('Access denied'))
 
         if prefix:
@@ -573,10 +571,10 @@ def edit_acl(request, project, container):
             writers = remove_duplicates_from_acl(writers)
 
             if form.cleaned_data['read']:
-                readers += ",{}".format(username)
+                readers += f",{username}"
 
             if form.cleaned_data['write']:
-                writers += ",{}".format(username)
+                writers += f",{username}"
 
             headers = {'X-Container-Read': readers,
                        'X-Container-Write': writers}
@@ -587,10 +585,10 @@ def edit_acl(request, project, container):
                 messages.add_message(request, messages.SUCCESS, _('ACLs updated'))
 
                 actionlog.log(request.user.username, "update",
-                              'headers: {}, container: {}'.format(headers, container))
+                              f'headers: {headers}, container: {container}')
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception(f'Exception: {err}'))
                 messages.add_message(request, messages.ERROR,
                                      _('ACL update failed'))
 
@@ -624,10 +622,10 @@ def edit_acl(request, project, container):
                                      _('ACL removed'))
 
                 actionlog.log(request.user.username, "delete",
-                              'headers: {}, container: {}'.format(headers, container))
+                              f'headers: {headers}, container: {container}')
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception(f'Exception: {err}')
                 messages.add_message(request, messages.ERROR,
                                      _('ACL update failed'))
 
@@ -688,12 +686,12 @@ def make_public(request, container):
             auth_token, container, headers=headers, http_conn=http_conn)
 
         content = {"message": str(message)}
-        msg = "X-Container-Read header on container {}".format(container)
+        msg = f"X-Container-Read header on container {container}"
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
         content, status = {"message": str(
             _("Container ACL update failed"))}, 500
-        log.exception("Exception: {}".format(err))
+        log.exception(f'Exception: {err}')
 
     return HttpResponse(
         json.dumps(content), content_type='application/json', status=status)
@@ -706,10 +704,9 @@ def metadataview(request, project, container, objectname=None):
     storage_url = get_storage_endpoint(request, 'adminURL')
     headers = {'X-Storage-Token': get_token_id(request)}
 
-    url = '{0}/{1}'.format(storage_url, container)
+    url = f'{storage_url}/{container}'
     if objectname:
-        url = '{0}/{1}'.format(url, str(objectname))
-
+        url = f'{url}/{dtr(objectname)}'
     response = requests.head(
         url, headers=headers, verify=not settings.SWIFT_INSECURE)
 
@@ -769,11 +766,11 @@ def object_versioning(request, project, container, prefix=None):
         if action == 'enable':
             enable_versioning(request, container)
             actionlog.log(request.user.username, "enable",
-                          'Versioning. Container: {}'.format(container))
+                          f'Versioning. Container: {container}')
         elif action == 'disable':
             disable_versioning(request, container)
             actionlog.log(request.user.username, "disable",
-                          'Versioning. Container: {}'.format(container))
+                          f'Versioning. Container: {container}')
         else:
             messages.add_message(request, messages.ERROR,
                                  'Action is required.')
@@ -787,15 +784,13 @@ def enable_versioning(request, container):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
 
-    version_location = '{0}{1}'.format(
-        settings.SWIFT_VERSION_PREFIX, container)
-
+    version_location = f'{settings.SWIFT_VERSION_PREFIX}{container}'
     try:
         client.put_container(
             storage_url, auth_token, version_location, http_conn=http_conn)
         actionlog.log(request.user.username, "create", version_location)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         return False
 
@@ -805,7 +800,7 @@ def enable_versioning(request, container):
             auth_token, container, headers=header, http_conn=http_conn)
         actionlog.log(request.user.username, "update", version_location)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         return False
 
@@ -824,7 +819,7 @@ def disable_versioning(request, container):
         headers = client.head_container(
             storage_url, auth_token, container, http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         return False
 
@@ -836,7 +831,7 @@ def disable_versioning(request, container):
                 headers={'x-versions-location': ''}, http_conn=http_conn)
             actionlog.log(request.user.username, "update", container)
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception(f'Exception: {err}')
             messages.add_message(request, messages.ERROR, _('Access denied'))
             return False
 
@@ -866,7 +861,7 @@ def edit_cors(request, project, container):
 
             host = form.cleaned_data['host']
             if host:
-                cors += " {}".format(host)
+                cors += host
 
             headers = {
                 'x-container-meta-access-control-allow-origin': cors.strip()
@@ -879,10 +874,10 @@ def edit_cors(request, project, container):
                 messages.add_message(request, messages.SUCCESS, _('CORS updated'))
 
                 actionlog.log(request.user.username, "update",
-                              'headers: {}, container: {}'.format(headers, container))
+                              f'headers: {headers}, container: {container}')
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception(f'Exception: {err}')
                 messages.add_message(request, messages.ERROR, _('CORS update failed'))
 
     if request.method == 'GET':
@@ -908,10 +903,10 @@ def edit_cors(request, project, container):
                 messages.add_message(request, messages.SUCCESS, _('CORS removed'))
 
                 actionlog.log(request.user.username, "delete",
-                              'headers: {}, container: {}'.format(headers, container))
+                              f'headers: {headers}, container: {container}')
 
             except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
+                log.exception(f'Exception: {err}')
                 messages.add_message(request, messages.ERROR, _('CORS update failed'))
 
     cors = get_cors(storage_url, auth_token, container, http_conn)
@@ -954,12 +949,12 @@ def edit_custom_metadata(request, project, container, objectname):
             objectname, headers=system_headers, http_conn=http_conn)
 
         content = {"message": _("Custom Metadata updated")}
-        msg = "Custom Metadata header on object {}/{}".format(container, objectname)
+        msg = f"Custom Metadata header on object {container}/{objectname}"
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
         content, status = {"message": str(
             _("Custom Metadata update failed"))}, 500
-        log.exception("Exception: {}".format(err))
+        log.exception(f'Exception: {err}')
 
     return HttpResponse(json.dumps(content),
         content_type='application/json', status=status)
@@ -986,20 +981,19 @@ def cache_control(request, project, container, objectname):
 
     headers = client.head_object(storage_url,
         auth_token, container, objectname, http_conn=http_conn)
-    headers["cache-control"] = "public, max-age={}".format(maxage)
+    headers["cache-control"] = f"public, max-age={maxage}"
 
     try:
         client.post_object(storage_url, auth_token,
             container, objectname, headers=headers, http_conn=http_conn)
         content = {"message": str(
             _("Cache-Control updated")), "cache_control": headers["cache-control"]}
-        msg = "Cache-Control header on object {}/{}".format(container,
-                                                            objectname)
+        msg = f"Cache-Control header on object {container}/{objectname}"
         actionlog.log(request.user.username, "update", msg)
     except client.ClientException as err:
         content, status = {"message": str(
             _("Cache-Control update failed"))}, 500
-        log.exception("Exception: {}".format(err))
+        log.exception(f'Exception: {err}')
 
     return HttpResponse(json.dumps(content),
         content_type='application/json', status=status)
@@ -1029,7 +1023,7 @@ def optional_headers(request, project, container, objectname):
     except Exception as e:
         log.error(e)
         content, status = {"message": str(
-            _("Optional headers update failed: {}".format(e)))}, 500
+            _(f"Optional headers update failed: {e}"))}, 500
 
     return HttpResponse(json.dumps(content),
                         content_type='application/json',
@@ -1044,7 +1038,7 @@ def get_deleted_objects(request, project, container, prefix=None):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
     public_url = get_storage_endpoint(request, 'publicURL')
-    trash_container = "{}-{}".format(settings.SWIFT_TRASH_PREFIX, container)
+    trash_container = f"{settings.SWIFT_TRASH_PREFIX}-{container}"
     objects = None
 
     try:
@@ -1052,10 +1046,10 @@ def get_deleted_objects(request, project, container, prefix=None):
             auth_token, trash_container, delimiter='', http_conn=http_conn)
     except client.ClientException as err:
         if err.http_status == 404:
-            log.info("Not found: {}".format(trash_container))
+            log.info(f"Not found: {trash_container}")
             objects = []
         else:
-            log.exception("Exception: {0}".format(err.msg))
+            log.exception(f'Exception: {err.msg}')
             status = err.http_status
             content = {"error": err.msg}
 
@@ -1132,7 +1126,7 @@ def restore_object(request, project):
             auth_token, trash_container, object_name, http_conn=http_conn)
         custom_headers = {
             "X-Fresh-Metadata": "True",
-            "X-Copy-From": "/{}/{}".format(trash_container, object_name)
+            "X-Copy-From": f"/{trash_container}/{object_name}"
         }
         for key, value in obj_headers.items():
             if "x-object-meta" in key:
@@ -1150,7 +1144,7 @@ def restore_object(request, project):
                                  _('Object restored'))
             actionlog.log(request.user.username, "restore", object_name)
         except client.ClientException as err:
-            log.exception('Exception: {0}'.format(err.msg))
+            log.exception(f'Exception: {err.msg}')
             status = err.http_status
             content = {"error": err.msg}
 
@@ -1176,7 +1170,7 @@ def remove_from_trash(request, project):
     if not result:
         status = 500
         content = {
-            "error": "Object '{}' was not removed from trash".format(object_name)
+            "error": f"Object '{object_name}' was not removed from trash"
         }
 
     return HttpResponse(json.dumps(content),
@@ -1194,14 +1188,14 @@ def config_trash_container(request, project, container):
     status, content = 200, {'message': ''}
     enable = False
     content['message'] = (
-        '{} "{}"'.format(_('Trash disabled for container'), container)
+        f'{_("Trash disabled for container")} "{container}"'
     )
 
     try:
         if request.GET.get('status').lower() == 'enabled':
             enable = True
             content['message'] = (
-                '{} "{}"'.format(_('Trash enabled for container'), container)
+                f'{_("Trash disabled for container")} "{container}"'
             )
 
         client.put_container(storage_url, auth_token, container,
@@ -1211,7 +1205,7 @@ def config_trash_container(request, project, container):
         # messages.add_message(request, messages.SUCCESS, msg)
         actionlog.log(request.user.username, 'update_trash', container)
     except Exception as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         # messages.add_message(request, messages.ERROR, _('Update container trash error'))
         status, content = 500, {'message': 'Update container trash error'}
 
@@ -1235,7 +1229,7 @@ def container_trash_status(request, project, container):
             content['status'] = 'disabled'
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         status, content = 500, {'message': 'Access denied'}
 
@@ -1273,7 +1267,7 @@ def container_acl_update(request, project, container):
         else:
             actionlog.log(request.user.username, "set_private", container)
     except Exception as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         status, content = 500, {'message': 'Failed on update container ACL'}
 
     return HttpResponse(json.dumps(content),
@@ -1301,7 +1295,7 @@ def container_acl_status(request, project, container):
             content['status'] = 'enabled'
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         messages.add_message(request, messages.ERROR, _('Access denied'))
         status, content = 500, {'message': 'Access denied'}
 
@@ -1372,7 +1366,7 @@ class SwiftJsonInfo(JsonInfo):
             head_acc = client.head_account(
                 storage_url, auth_token, http_conn=http_conn)
         except Exception as err:
-            log.exception('Exception: {0}'.format(err))
+            log.exception(f'Exception: {err}')
             return {"error": "Unable to show Swift info."}
 
         widget_info = [{
