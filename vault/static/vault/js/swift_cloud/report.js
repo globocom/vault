@@ -9,11 +9,16 @@ const ReportApp = {
   },
   methods: {
     async getProjectStatus(project) {
+      project.status = "loading";
       const data = await fetch(`${this.statusUrl}?project_id=${project.id}`);
       const result = await data.json();
       project.status = result.status;
     },
     async migrateProject(project) {
+      if (!window.confirm("This will start the migration. Do you confirm?")) {
+        return;
+      }
+
       const csrfToken = Base.Cookie.read("csrftoken");
       const res = await fetch(this.migrateUrl, {
         method: "POST",
@@ -51,10 +56,9 @@ const ReportApp = {
     <table class="table">
       <thead>
         <tr>
-          <th width="28%">ID</th>
+          <th>ID</th>
           <th>Project Name</th>
           <th>Status</th>
-          <th width="10%"></th>
           <th width="10%"></th>
         </tr>
       </thead>
@@ -62,15 +66,14 @@ const ReportApp = {
         <tr v-for="project in projects" :key="project.name">
           <td>{{ project.id }}</td>
           <td>{{ project.name }}</td>
-          <td>{{ project.status }}</td>
-          <td class="text-end">
-            <button class="btn btn-sm btn-light" @click="getProjectStatus(project)">
-              Update Status
-            </button>
+          <td>
+            <span v-if="project.status !== 'loading'" class="me-2">{{ project.status }}</span>
+            <i v-else class="fas fa-sync-alt fa-spin fa-fw me-2"></i>
+            <a href="#" @click.prevent="getProjectStatus(project)">(update)</a>
           </td>
           <td class="text-end">
             <button class="btn btn-sm btn-primary" @click="migrateProject(project)">
-              Migrate
+              migrate
             </button>
           </td>
         </tr>
