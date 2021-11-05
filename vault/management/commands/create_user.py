@@ -63,39 +63,35 @@ class Command(BaseCommand):
         try:
             grp = Group.objects.get(name=teamName)
             self.stdout.write(self.style.WARNING(
-                "Group '{}' already exists!".format(teamName)))
+                f"Group '{teamName}' already exists!"))
         except Group.DoesNotExist:
-            self.stdout.write("Creating group '{}'".format(teamName))
+            self.stdout.write(f"Creating group '{teamName}'")
             grp = Group.objects.create(name=teamName)
             grp.save()
             self.stdout.write(self.style.SUCCESS(
-                "Group '{}' successfully created!".format(teamName)))
+                f"Group '{teamName}' successfully created!"))
 
         try:
             usr = User.objects.get(username=username)
             self.stdout.write(self.style.WARNING(
-                "User '{}' already exists!".format(username)))
+                f"User '{username}' already exists!"))
         except User.DoesNotExist:
             if kwargs.get("superuser"):
-                self.stdout.write("Creating superuser '{}'".format(username))
+                self.stdout.write(f"Creating superuser '{username}'")
                 usr = User.objects.create_superuser(username, email, password)
                 self.stdout.write(self.style.SUCCESS(
-                    "Superuser '{}' successfully created!".format(username)))
+                    f"Superuser '{username}' successfully created!"))
             else:
-                self.stdout.write("Creating user '{}'".format(username))
+                self.stdout.write(f"Creating user '{username}'")
                 usr = User.objects.create_user(username, email, password)
                 self.stdout.write(self.style.SUCCESS(
-                    "User '{}' successfully created!".format(username)))
+                    f"User '{username}' successfully created!"))
 
         if usr.groups.filter(name=teamName).count() == 0:
-            self.stdout.write("Adding user '{}' to group '{}'".format(
-                username, teamName))
+            self.stdout.write(f"Adding user '{username}' to group '{teamName}'")
             usr.groups.add(grp)
             usr.save()
             self.stdout.write(self.style.SUCCESS(
-                "User '{}' successfully added to group '{}'!".format(
-                    username, teamName)))
-        else:
+                f"User '{username}' successfully added to group '{teamName}'!"))
             self.stdout.write(self.style.WARNING(
-                "User '{}' already in group '{}'!".format(
-                    username, teamName)))
+                f"User '{username}' already in group '{teamName}'!"))

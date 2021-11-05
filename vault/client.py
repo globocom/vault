@@ -10,7 +10,7 @@ class BearerOAuth2(object):
         self.user_token = user_token
 
     def __call__(self, r):
-        r.headers['Authorization'] = 'Bearer {0}'.format(self.user_token)
+        r.headers['Authorization'] = f'Bearer {self.user_token}'
         return r
 
 

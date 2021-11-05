@@ -52,7 +52,7 @@ class GroupFactory(factory.django.DjangoModelFactory):
         # strategy = factory.BUILD_STRATEGY
 
     # id = factory.Sequence(lambda n: n)
-    name = factory.Sequence(lambda n: "Group #{}".format(n))
+    name = factory.Sequence(lambda n: f"Group #{n}")
 
 
 class UserFactory(factory.django.DjangoModelFactory):

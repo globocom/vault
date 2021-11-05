@@ -33,7 +33,8 @@ def remove_from_cache(request, project):
             'user': request.user.username
         }
 
-        api_url = '{host}/url/add'.format(host=settings.CACHESWEEP_API)
+        host = settings.CACHESWEEP_API
+        api_url = f'{host}/url/add'
         req = requests.post(api_url, json=data)
 
         if req.status_code == 201:

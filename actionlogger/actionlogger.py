@@ -30,7 +30,7 @@ class ActionLogger:
 
     def log(self, user, action, item):
         if action not in self._actions.keys():
-            raise ActionNotFound("Invalid action: '{}'".format(action))
+            raise ActionNotFound(f"Invalid action: '{action}'")
 
         audit = Audit(user=user,
                       action=self._actions[action],
@@ -41,6 +41,4 @@ class ActionLogger:
         syslog.syslog(syslog.LOG_INFO, msg)
 
     def _make_log_message(self, user, action, item):
-        return 'Usuario {} {} {}'.format(user,
-                                         self._actions[action],
-                                         str(item))
+        return f'Usuario {user} {self._actions[action]} {str(item)}'

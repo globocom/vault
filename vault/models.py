@@ -18,7 +18,7 @@ class GroupProjects(models.Model):
         verbose_name_plural = _('Groups and Projects')
 
     def __str__(self):
-        return "Group {} - Project {}".format(self.group, self.project)
+        return f"Group {self.group} - Project {self.project}"
 
 
 class CurrentProject(models.Model):

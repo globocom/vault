@@ -15,4 +15,4 @@ class Audit(models.Model):
         db_table = 'audit'
 
     def __str__(self):
-        return "{} - {} - {} - {}".format(self.user, self.action, self.item, self.created_at)
+        return f"{self.user} - {self.action} - {self.item} - {self.created_at}"

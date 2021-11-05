@@ -15,5 +15,4 @@ class BackupContainer(models.Model):
         unique_together = ('container', 'project_id',)
 
     def __unicode__(self):
-        return "Container: {}, Project: {}".format(self.container,
-                                                   self.project_name)
+        return f"Container: {self.container}, Project: {self.project_name}"

@@ -50,7 +50,7 @@ class WithKeystoneMixin:
         if self.keystone.conn is None:
             msg = _("Authorization error")
             messages.add_message(request, messages.ERROR, msg)
-            log.error("Keystone: {}".format(msg))
+            log.error(f"Keystone: {msn}")
 
         return super(WithKeystoneMixin, self).dispatch(request, *args, **kwargs)
 
@@ -67,7 +67,7 @@ class ListUserView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Templat
         try:
             users = self.keystone.user_list()
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             messages.add_message(self.request, messages.ERROR, _("Unable to list users"))
 
         sorted_users = sorted(users, key=lambda l: l.name.lower())
@@ -164,7 +164,7 @@ class CreateUserView(BaseUserView):
                 actionlog.log(request.user.username, "create", user)
 
             except Exception as e:
-                log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+                log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
                 messages.add_message(request, messages.ERROR, _("Error when creating user"))
 
             return self.form_valid(form)
@@ -205,7 +205,7 @@ class UpdateUserView(BaseUserView):
                 actionlog.log(request.user.username, "update", user)
 
             except Exception as e:
-                log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+                log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
                 messages.add_message(request, messages.ERROR, _("Error when updating user"))
 
         context = self.get_context_data(form=form, request=request)
@@ -217,10 +217,10 @@ class DeleteUserView(BaseUserView):
         try:
             self.keystone.user_delete(kwargs.get("user_id"))
             messages.add_message(request, messages.SUCCESS, _("Successfully deleted user"))
-            actionlog.log(request.user.username, "delete", "user_id: {}".format(kwargs.get("user_id")))
+            actionlog.log(request.user.username, "delete", f"user_id: {kwargs.get(('user_id'))}")
 
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             messages.add_message(request, messages.ERROR, _("Error when deleting user"))
 
         project_name = request.session.get("project_name")
@@ -299,7 +299,7 @@ class BaseProjectView(LoginRequiredMixin, WithKeystoneMixin, FormView):
                     roles = self.keystone.role_list()
                     context["roles"] = sorted(roles, key=lambda l: l.name.lower())
                 except Exception as e:
-                    log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+                    log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
 
         return context
 
@@ -332,7 +332,7 @@ class ListProjectView(SuperUserMixin, WithKeystoneMixin, ProjectCheckMixin, Temp
                 if prj.get("team_owner_id") is not None:
                     prj["team"] = Group.objects.filter(id=prj["team_owner_id"]).first()
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             messages.add_message(self.request, messages.ERROR, _("Unable to list projects"))
 
         return projects
@@ -393,7 +393,7 @@ class CreateProjectView(BaseProjectView):
 
         # Houve falha no cadastro
         if not response.get("status"):
-            log.exception("Exception: {}".format(response.get("status")))
+            log.exception(f'Exception: {response.get("status")}')
             messages.add_message(request, messages.ERROR, response.get("reason"))
 
             return self.render_to_response(
@@ -505,7 +505,7 @@ class UpdateProjectView(BaseProjectView):
 
                 actionlog.log(request.user.username, "update", project)
             except Exception as e:
-                log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+                log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
                 messages.add_message(request, messages.ERROR, _("Error when updating project"))
 
         context = self.get_context_data(form=form, request=request)
@@ -563,7 +563,7 @@ class DeleteProjectView(BaseProjectView):
             messages.add_message(request, messages.SUCCESS, _("Successfully deleted project."))
 
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             messages.add_message(request, messages.ERROR, _("Error when deleting project"))
 
         # Purge project from current projects
@@ -604,7 +604,7 @@ class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View, JSONResponseMixi
 
         except Exception as e:
             context["msg"] = "Error listing users"
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
 
             return self.render_to_response(context, status=500)
 
@@ -623,19 +623,19 @@ class AddUserRoleView(SuperUserMixin, WithKeystoneMixin, View, JSONResponseMixin
         try:
             self.keystone.add_user_role(project=project, role=role, user=user)
 
-            item = "project: {}, role: {}, user: {}".format(project, role, user)
+            item = f"project: {project}, role: {role}, user: {user}"
             actionlog.log(request.user.username, "create", item)
 
             return self.render_to_response(context)
 
         except exceptions.Conflict as e:
             context["msg"] = str(_("User already registered with this role"))
-            log.exception("{}{}".format(_("Conflict:"), e))
+            log.exception(f'{_("Conflict:")}{e}')
             return self.render_to_response(context, status=500)
 
         except Exception as e:
             context["msg"] = str(_("Error adding user"))
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             return self.render_to_response(context, status=500)
 
 
@@ -650,14 +650,14 @@ class DeleteUserRoleView(SuperUserMixin, WithKeystoneMixin, View, JSONResponseMi
         try:
             self.keystone.remove_user_role(project=project, role=role, user=user)
 
-            item = "project: {}, role: {}, user: {}".format(project, role, user)
+            item = f"project: {project}, role: {role}, user: {user}"
             actionlog.log(request.user.username, "delete", item)
 
             return self.render_to_response(context)
 
         except Exception as e:
             context["msg"] = str(_("Error removing user"))
-            log.exception("Exception: {}".format(e))
+            log.exception(f"Exception: {e}")
             return self.render_to_response(context, status=500)
 
 
@@ -676,7 +676,7 @@ class UpdateProjectUserPasswordView(LoginRequiredMixin, WithKeystoneMixin, View,
 
         except Exception as e:
             context = {"msg": str(_("Error updating password"))}
-            log.exception("Exception: {}".format(e))
+            log.exception(f"Exception: {e}")
             status = 500
 
         return self.render_to_response(context, status=status)
@@ -709,12 +709,12 @@ class KeystoneJsonInfo(JsonInfo, WithKeystoneMixin):
         try:
             users = self.keystone.user_list()
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             return {"error": "Unable to list users"}
         try:
             projects = self.keystone.project_list()
         except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
+            log.exception(f'{_("Exception:").encode("UTF-8")}{e}')
             return {"error": "Unable to list projects"}
 
         return [

@@ -226,7 +226,7 @@ def update_swift_account(user, password, project_name, headers):
         client.post_account(storage_url,
             keystone.conn.auth_token, headers, http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Exception: {}'.format(err))
+        log.exception(f'Exception: {err}')
         return False
 
     return True
@@ -244,13 +244,13 @@ def delete_swift_account(storage_url, auth_token):
         client.delete_container(storage_url, auth_token, 'dummy_container',
             http_conn=http_conn)
     except client.ClientException as err:
-        log.exception('Fail to create container "dummy_container": {0}'.format(err))
+        log.exception(f'Fail to create container "dummy_container": {err}')
         return False
 
     try:
         # Deletar o account
         url = urlparse(storage_url)
-        domain = '{}://{}'.format(url.scheme, url.netloc)
+        domain = f'{url.scheme}://{url.netloc}'
         path = url.path
 
         http_conn = client.HTTPConnection(domain, insecure=insecure)
@@ -259,13 +259,11 @@ def delete_swift_account(storage_url, auth_token):
         resp = http_conn.request('DELETE', path, headers=headers)
 
         if resp.status_code != 204:
-            log.exception('Fail to delete account {}: status code {}'.format(
-                storage_url, resp.status_code
-            ))
+            log.exception(f'Fail to delete account {storage_url}: status code {resp.status_code}')
             return False
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
+        log.exception(f'Exception: {err}')
         return False
 
     return True

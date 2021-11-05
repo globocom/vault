@@ -21,9 +21,7 @@ class JsonInfo:
         self._menu = self.generate_menu_info()
         status = 500 if "error" in self._menu else 200
         if status == 500:
-            log.error('Error on {}\'s menu info: {}'.format(
-                    type(self).__name__,
-                    self._menu["error"]))
+            log.error(f'Error on {type(self).__name__}\'s menu info: {self._menu["error"]}')
         content = self._menu
         return HttpResponse(json.dumps(content),
                         content_type='application/json',
@@ -34,9 +32,7 @@ class JsonInfo:
         self.validate_widget_info()
         status = 500 if "error" in self._widgets else 200
         if status == 500:
-            log.error('Error on {}\'s widget info: {}'.format(
-                    type(self).__name__,
-                    self._widgets["error"]))
+            log.error(f'Error on {type(self).__name__}\'s widget info: {self._widgets["error"]}')
         content = self._widgets
         return HttpResponse(json.dumps(content),
                         content_type='application/json',
@@ -49,14 +45,10 @@ class JsonInfo:
         status = 200
         if "error" in self._menu:
             status = 500
-            log.error('Error on {}\'s menu info: {}'.format(
-                    type(self).__name__,
-                    self._menu["error"]))
+            log.error(f'Error on {type(self).__name__}\'s menu info: {self._menu["error"]}')
         if "error" in self._widgets:
             status = 500
-            log.error('Error on {}\'s widget info: {}'.format(
-                    type(self).__name__,
-                    self._widgets["error"]))
+            log.error(f'Error on {type(self).__name__}\'s widget info: {self._widgets["error"]}')
         content = {
             "menu": self._menu,
             "widgets": self._widgets
@@ -121,7 +113,7 @@ class JsonInfo:
         else:
             status = 400
             content = {
-                "error": "Unknown option \"{}\"".format(option)
+                "error": f"Unknown option \"{option}\""
             }
             return HttpResponse(json.dumps(content),
                             content_type='application/json',
