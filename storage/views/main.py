@@ -334,7 +334,7 @@ def upload(request, project, container, prefix=None):
             return redirect(objectview, container=container, project=project_name)
 
     hmac_body = '{}\n{}\n{}\n{}\n{}'.format(
-        path, redirect_url, max_file_size, max_file_count, expires)
+        path, '', max_file_size, max_file_count, expires)
     signature = hmac.new(
         bytes(key, 'utf-8'), bytes(hmac_body, 'utf-8'), sha1).hexdigest()
 
@@ -352,7 +352,8 @@ def upload(request, project, container, prefix=None):
         'prefixes': prefixes,
     })
 
-    return render(request, 'upload_form.html', context)
+    # return render(request, 'upload_form.html', context)
+    return render(request, 'storage/upload.html', context)
 
 
 @login_required

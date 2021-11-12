@@ -1,0 +1,24 @@
+.upload-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 5px 0;
+}
+
+.upload-file-item:last-child {
+  border-bottom: none;
+}
+
+.upload-btn-single {
+  width: 35px;
+  text-align: center;
+}
+
+.upload-finished {
+  padding: 10px;
+  color: #0f5132;
+  background-color: #d1e7dd;
+  text-align: center;
+  border-radius: 4px;
+}

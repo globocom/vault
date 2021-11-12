@@ -23,7 +23,6 @@
 {% block content %}
   <form action="{{ swift_url }}" method="POST" class="form-box project-form" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="hidden" name="redirect" value="{{ redirect_url }}" />
     <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
     <input type="hidden" name="max_file_count" value="{{ max_file_count }}" />
     <input type="hidden" name="expires" value="{{ expires }}" />

@@ -139,7 +139,7 @@ DATABASES = {
     }
 }
 
-MAX_FILES_UPLOAD = os.getenv("MAX_FILES_UPLOAD", 10)
+MAX_FILES_UPLOAD = os.getenv("MAX_FILES_UPLOAD", 15)
 
 # Help url
 HELP_URL = os.getenv("VAULT_HELP_URL")
