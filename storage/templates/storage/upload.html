@@ -1,0 +1,37 @@
+{% extends "vault/base.html" %}
+
+{% load static i18n %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'storage/css/upload.css' %}" />
+{% endblock %}
+
+{% block content_title %}Object Storage{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url 'containerview' project_name %}">Containers</a>
+  <a class="u" href="{% url 'objectview' project=project_name container=container %}">{{ container }}</a>
+  {% for prefix in prefixes %}
+    <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{ prefix.display_name }}</a>
+  {% endfor %}
+  <span>{% trans 'Upload Files' %}</span>
+{% endblock %}
+
+{% block content %}
+<div id="upload-app"></div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+const UPLOAD_PARAMS = {
+  uploadUrl: "{{ swift_url }}",
+  maxFileSize: "{{ max_file_size }}",
+  maxFileCount: "{{ max_file_count }}",
+  expires: "{{ expires }}",
+  signature: "{{ signature }}"
+};
+</script>
+<script src="{% static 'storage/js/upload.js' %}"></script>
+{% endblock %}

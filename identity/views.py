@@ -576,28 +576,29 @@ class DeleteProjectView(BaseProjectView):
 
 
 class ListUserRoleView(SuperUserMixin, WithKeystoneMixin, View, JSONResponseMixin):
-    def post(self, request, *args, **kwargs):
-        project_id = request.POST.get("project")
-        context = {}
+
+    def get(self, request, *args, **kwargs):
+        project_id = request.GET.get("project_id")
+        context = {"users": []}
 
         if not project_id:
             return self.render_to_response(context)
 
         try:
-            project_users = self.keystone.user_list(project_id=project_id)
-
-            context["users"] = []
-            unique_users = set()
+            role_assignments = self.keystone.role_assignments_list(project=project_id)
+            users_ids = list(map(lambda r: r.user.get('id'), role_assignments))
+            project_users = list(filter(lambda u: u.id in users_ids,
+                                        self.keystone.user_list(project_id=project_id)))
 
             for user in project_users:
-                if user.name not in unique_users:
-                    unique_users.add(user.name)
-                    context["users"].append(
-                        {"id": user.id, "username": user.name, "roles": self.get_user_roles(user, project_id)}
-                    )
+                context["users"].append({
+                    "id": user.id,
+                    "username": user.name,
+                    "roles": self.get_user_roles(user, project_id)
+                })
 
             # sorting users by username
-            context["users"] = [x for x in sorted(context["users"], key=lambda x: x.get("username"))]
+            context["users"] = list(sorted(context["users"], key=lambda x: x.get("username")))
 
             return self.render_to_response(context)
 
