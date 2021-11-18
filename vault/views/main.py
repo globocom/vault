@@ -105,7 +105,6 @@ class SuperUserMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_superuser:
-            messages.add_message(self.request, messages.WARNING, "Unauthorized")
             return HttpResponseRedirect(self.request.META.get("HTTP_REFERER"))
 
         return super(SuperUserMixin, self).dispatch(request, *args, **kwargs)

@@ -50,7 +50,6 @@ class TestListUserRole(BaseAjaxTestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(msgs[0].message, 'Unauthorized')
 
     def test_list_user_role_response_content_is_json(self):
         response = self.view(self.request)
@@ -145,7 +144,6 @@ class TestAddUserRole(BaseAjaxTestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(msgs[0].message, 'Unauthorized')
 
     @patch('identity.keystone.Keystone.add_user_role')
     def test_add_user_role_response_content_is_json(self, mock_add_user_role):
@@ -192,7 +190,6 @@ class TestDeleteUserRole(BaseAjaxTestCase):
 
         self.assertGreater(len(msgs), 0)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(msgs[0].message, 'Unauthorized')
 
     @patch('identity.keystone.Keystone.remove_user_role')
     def test_delete_user_role_response_content_is_json(self, mock_remove_user_role):

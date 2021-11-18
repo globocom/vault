@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import logging
 import json
 
@@ -12,7 +10,7 @@ class JsonInfo:
 
     def __init__(self, *args, **kwargs):
 
-        self.request = kwargs["request"]
+        self.request = kwargs.get("request")
         self._menu = {}
         self._widgets = []
 
