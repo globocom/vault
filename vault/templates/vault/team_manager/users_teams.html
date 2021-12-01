@@ -1,0 +1,43 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content_title %}{% trans 'Manage Users and Teams' %}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/user_teams.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div id="user-teams-app"></div>
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script>
+const ALL_TEAMS = {{ groups|safe }};
+const ALL_USERS = {{ users|safe  }};
+const ADD_URL = '{% url "team_add_user" %}';
+const DELETE_URL = '{% url "team_delete_user" %}';
+const LIST_URL = '{% url "team_list_users" %}';
+const TEXT = {
+  selectUser: '{% trans "Select User" %}',
+  filterUsers: '{% trans "Filter Users" %}',
+  clear: '{% trans "Clear" %}',
+  team: '{% trans "Team" %}',
+  teams: '{% trans "Teams" %}',
+  user: '{% trans "User" %}',
+  users:  '{% trans "Users" %}',
+  add: '{% trans "Add" %}',
+  addNewUser: '{% trans "Add new user" %}',
+  removeUser: '{% trans "Remove user" %}',
+  cancel: '{% trans "Cancel" %}',
+  userRemoved: '{% trans "User removed" %}',
+  userAdded: '{% trans "User added" %}',
+  removeUserWarning: '{% trans "The user will lose access to all projects owned by this project! Continue?" %}',
+};
+</script>
+<script src="{% static 'vault/js/users_teams.js' %}"></script>
+{% endblock %}

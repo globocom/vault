@@ -196,7 +196,7 @@ def handler500(request):
 
 
 class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
-    template_name = "vault/user_edit_teams.html"
+    template_name = "vault/team_manager/users_teams.html"
 
     def get(self, request, *args, **kwargs):
         context = {}
@@ -225,21 +225,21 @@ class UpdateTeamsUsersView(LoginRequiredMixin, FormView):
 
 
 class ListUserTeamView(LoginRequiredMixin, View, JSONResponseMixin):
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = []
 
         try:
             groups = request.user.groups.all()
             for group in groups:
                 team = Group.objects.get(id=group.id)
-                for user in team.user_set.all():
-                    context.append({
-                        "team": {
-                            "id": int(team.id),
-                            "name": team.name,
-                            "users": {"id": int(user.id), "name": user.username},
-                        }
-                    })
+                context.append({
+                    "id": int(team.id),
+                    "name": team.name,
+                    "users": [{
+                        "id": int(user.id),
+                        "name": user.username
+                    } for user in team.user_set.all()]
+                })
         except Exception as e:
             log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
             return self.render_to_response(context, status=500)

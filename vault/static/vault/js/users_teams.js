@@ -1,190 +1,197 @@
-var Team = Team || {};
+// globals: ALL_USERS, ALL_TEAMS, ADD_URL, DELETE_URL, LIST_URL, TEXT
 
-Team.Users = {};
+const UsersTeamsMixin = {
+  data() {
+    return {
+      allUsers: ALL_USERS,
+      allTeams: ALL_TEAMS,
+      addUrl: ADD_URL,
+      deleteUrl: DELETE_URL,
+      listUrl: LIST_URL,
+      text: TEXT,
+    };
+  },
+  methods: {
+    showMsg(msg, t = "success") {
+      msg = t === "error" ? `Error: ${msg}` : msg;
+      Base.Messages.setMessage({ description: msg, type: t });
+    },
+  },
+};
 
-(function (window, $) {
-  "use strict";
+const TeamCard = {
+  mixins: [UsersTeamsMixin],
+  props: ["team", "updateFn", "userQuery"],
+  data() {
+    return {
+      selectedUser: "",
+      newUser: false,
+      csrfToken: "",
+    };
+  },
+  created() {
+    this.csrfToken = Base.Cookie.read("csrftoken");
+  },
+  computed: {
+    filteredUsers() {
+      return this.team.users.filter((u) => u.name.search(this.userQuery) >= 0);
+    },
+  },
+  methods: {
+    async addUserTeam() {
+      if (this.selectedUser === "") {
+        this.showMsg(this.text.selectUser, "error");
+        return;
+      }
 
-  var options,
-    $main,
-    $addBtn,
-    $users,
-    $groups,
-    $usersList,
-    $loader,
-    $originalMsg,
-    usrTmpl = [
-      "<tr>",
-      '<td class="usr"></td>',
-      '<td class="grp"></td>',
-      "<td>",
-      '<button class="remove-usr btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#removeModal">',
-      '<i class="fa fa-times"></i>',
-      "</button>",
-      "</td>",
-      "</tr>",
-    ].join("");
-
-  function init(opts) {
-    options = $.extend(
-      {
-        addUrl: "",
-        deleteUrl: "",
-        listUrl: "",
-      },
-      opts
-    );
-
-    $main = $("#add-user-team");
-    $addBtn = $main.find(".add-btn");
-    $users = $main.find(".users");
-    $groups = $main.find(".groups");
-    $usersList = $main.find(".related-users");
-    $loader = $main.find(".loader-gif");
-    $originalMsg = $(
-      "#removeModal > .modal-dialog > .modal-content > .modal-body > p"
-    ).text();
-
-    if (!Team.Users.wasCalled) {
-      bindEvents();
-    }
-
-    Team.Users.wasCalled = true;
-
-    Base.CSRF.fix();
-    fillUsersAndTeams();
-  }
-
-  function bindEvents() {
-    $addBtn.on("click", function (e) {
-      e.preventDefault();
-
-      var $item = $(usrTmpl),
-        $usr = $users.find("option:selected"),
-        $grp = $groups.find("option:selected");
-
-      $item.data({ userId: $usr.val(), groupId: $grp.val() });
-      $item.find(".usr").text($usr.text());
-      $item.find(".grp").text($grp.text());
-
-      addUserTeam($item);
-    });
-
-    $main.on("click", ".remove-usr", function (e) {
-      e.preventDefault();
-      let $row = $(this).closest("tr");
-      let $usr = $row.children(".usr").text();
-      let $grp = $row.children(".grp").text();
-      let $message = $(
-        "#removeModal > .modal-dialog > .modal-content > .modal-body > p"
-      );
-      let $newMsg = $originalMsg.slice();
-      $newMsg = $newMsg.replace("{usr}", $usr).replace("{grp}", $grp);
-
-      $message.text($newMsg);
-      let $confirmBtn = $("#removeModalConfirm");
-      $confirmBtn.on("click", function (e) {
-        removeUserTeam($row);
+      const data = await fetch(this.addUrl, {
+        method: "POST",
+        body: `user=${this.selectedUser}&group=${this.team.id}`,
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": this.csrfToken,
+        },
       });
-    });
-  }
 
-  function fillUsersAndTeams() {
-    $.ajax({
-      type: "POST",
-      url: options.listUrl,
-    })
-      .done(function (data) {
-        buildUsers(data);
-      })
-      .fail(function (data) {
-        Base.Messages.setMessage({
-          description: data.responseJSON.msg,
-          type: "error",
-        });
+      const result = await data.json();
+
+      if (!data.ok) {
+        this.showMsg(result.msg, "error");
+        return;
+      }
+
+      this.showMsg(this.text.userAdded);
+      this.updateFn();
+      this.resetNewUser();
+    },
+    async removeUserTeam(userId) {
+      if (!window.confirm(this.text.removeUserWarning)) {
+        return;
+      }
+
+      const data = await fetch(this.deleteUrl, {
+        method: "POST",
+        body: `user=${userId}&group=${this.team.id}`,
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": this.csrfToken,
+        },
       });
-  }
 
-  function buildUsers(data) {
-    var $content = $("<div></div>"),
-      users_teams = data,
-      $temp;
+      const result = await data.json();
 
-    for (var i = 0, l = users_teams.length; i < l; i++) {
-      var user = users_teams[i].team.users;
-      var team = users_teams[i].team;
+      if (!data.ok) {
+        this.showMsg(result.msg, "error");
+        return;
+      }
 
-      $temp = $(usrTmpl);
-      $temp.data({ userId: user.id, groupId: team.id });
-      $temp.find(".usr").text(user.name);
-      $temp.find(".grp").text(team.name);
+      this.showMsg(this.text.userRemoved);
+      this.updateFn();
+    },
+    toggleNewUser() {
+      this.newUser = !this.newUser;
+    },
+    resetNewUser() {
+      this.newUser = false;
+      this.selectedUser = "";
+    },
+  },
+  template: `
+  <div class="card mb-4">
+    <div class="card-header">
+      <strong>{{ team.name }}</strong>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          v-for="(user, index) in filteredUsers">
+        {{ user.name }}
+        <button class="btn btn-sm btn-default text-danger"
+                @click="removeUserTeam(user.id)">
+          <i class="fas fa-times me-1"></i> {{ text.removeUser }}
+        </button>
+      </li>
+      <li class="list-group-item d-flex justify-content-start align-items-center">
+        <button class="btn btn-sm btn-outline-primary"
+                v-if="!newUser"
+                @click="toggleNewUser">
+          <i class="fas fa-plus me-1"></i> {{ text.addNewUser }}
+        </button>
+        <template v-if="newUser">
+          <select class="form-select form-select-sm w-50 me-1"
+                  :id="'user-select-' + team.id"
+                  v-model="selectedUser">
+            <option disabled value="">{{ text.selectUser }}</option>
+            <option v-for="user in allUsers" :value="user.id">
+              {{ user.name }}
+            </option>
+          </select>
+          <button class="btn btn-sm btn-primary me-1"
+                  @click="addUserTeam">
+            {{ text.add }}
+          </button>
+          <button class="btn btn-sm btn-outline-secondary"
+                  @click="toggleNewUser">
+            {{ text.cancel }}
+          </button>
+        </template>
+      </li>
+    </ul>
+  </div>
+  `,
+};
 
-      $usersList.find("tbody").append($temp);
-    }
-    showTeamsUsersList();
-  }
+const UserTeamsApp = {
+  el: "#user-teams-app",
+  mixins: [UsersTeamsMixin],
+  components: {
+    "team-card": TeamCard,
+  },
+  data: {
+    teams: [],
+    userFilter: "",
+    loading: false,
+  },
+  created() {
+    this.getUsersAndTeams();
+  },
+  methods: {
+    async getUsersAndTeams() {
+      const data = await fetch(this.listUrl);
+      const result = await data.json();
 
-  function showTeamsUsersList() {
-    $loader.fadeOut("fast").remove();
-    $usersList.fadeIn("fast");
-  }
+      if (!data.ok) {
+        this.showMsg(result.msg, "error");
+        return;
+      }
 
-  function addUserTeam($item) {
-    $.ajax({
-      type: "POST",
-      url: options.addUrl,
-      data: {
-        user: $item.data("userId"),
-        group: $item.data("groupId"),
-      },
-    })
-      .done(function (data) {
-        $usersList.append($item);
-      })
-      .fail(function (data) {
-        Base.Messages.setMessage({
-          description: data.responseJSON.msg,
-          type: "error",
-        });
-      });
-  }
+      this.teams = result;
+    },
+  },
+  template: `
+  <div id="add-user-team" class="mb-5">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="form-group d-flex align-items-center">
+          <input type="text" class="form-control me-1 mb-0" :placeholder="text.filterUsers"
+                 v-model="userFilter" />
+          <button class="btn btn-outline-secondary"
+                  @click="() => this.userFilter = ''">
+            {{ text.clear }}
+          </button>
+        </div>
+      </div>
+    </div>
 
-  function removeUserTeam($item) {
-    $.ajax({
-      type: "POST",
-      url: options.deleteUrl,
-      data: {
-        user: $item.data("userId"),
-        group: $item.data("groupId"),
-      },
-    })
-      .done(function (data) {
-        $item.remove();
-        Base.Messages.setMessage({
-          description: "User removed",
-          type: "success",
-        });
-        refreshComponent($groups);
-        reloadWindowsAjax();
-      })
-      .fail(function (data) {
-        Base.Messages.setMessage({
-          description: data.responseJSON.msg,
-          type: "error",
-        });
-      });
-  }
+    <h4 class="mb-3">{{ text.teams }}</h4>
 
-  function refreshComponent(seletor) {
-    $(seletor).trigger("chosen:updated");
-  }
+    <team-card v-for="team in teams"
+               :team="team"
+               :updateFn="getUsersAndTeams"
+               :userQuery="userFilter"
+               :key="team.id">
+    </team-card>
+  </div>
+  `,
+};
 
-  function reloadWindowsAjax() {
-    location.reload();
-  }
-
-  $.extend(Team.Users, {
-    wasCalled: false,
-    init: init,
-  });
-})(window, jQuery);
+new Vue(UserTeamsApp);
