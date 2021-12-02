@@ -30,8 +30,6 @@ const UsersTeamsMixin = {
         return;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 3 * 1000));
-
       state.teams.length = 0;
       state.teams.push(...result);
       this.loading = false;
