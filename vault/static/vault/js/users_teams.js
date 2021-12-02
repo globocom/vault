@@ -15,20 +15,26 @@ const UsersTeamsMixin = {
   data() {
     return {
       text: TEXT,
+      loading: false,
     };
   },
   methods: {
     async getUsersAndTeams() {
+      this.loading = true;
       const data = await fetch(LIST_URL);
       const result = await data.json();
 
       if (!data.ok) {
         this.showMsg(result.msg, "error");
+        this.loading = false;
         return;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 3 * 1000));
+
       state.teams.length = 0;
       state.teams.push(...result);
+      this.loading = false;
     },
     setCurrentTeam(team) {
       state.currentTeam.id = team.id;
@@ -207,7 +213,6 @@ const UserTeamsApp = {
     teams: state.teams,
     currentTeam: state.currentTeam,
     userFilter: "",
-    loading: false,
   },
   created() {
     this.getUsersAndTeams();
@@ -219,6 +224,11 @@ const UserTeamsApp = {
       <input type="text" class="form-control w-50 me-1 mb-0"
              :placeholder="text.filterUsers"
              v-model="userFilter" />
+    </div>
+    <div class="d-flex justify-content-center fs-2"
+         style="opacity: .25"
+         v-if="loading">
+      <i class="fas fa-cog fa-pulse"></i>
     </div>
     <team-card v-for="team in teams"
                :team="team"

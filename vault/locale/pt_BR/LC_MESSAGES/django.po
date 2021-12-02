@@ -242,7 +242,7 @@ msgstr "Adicionar novo usuário a"
 
 #: templates/vault/team_manager/users_teams.html:27
 msgid "Filter users within each team"
-msgstr "Filtrar usuários dentro de cada equipe"
+msgstr "Filtrar usuários dentro dos times"
 
 #: templates/vault/team_manager/users_teams.html:28
 msgid "Clear"
@@ -343,7 +343,7 @@ msgstr "Usuário saiu:"
 
 #: views/main.py:264
 msgid "User already registered with this team"
-msgstr "Usuário já registrado com este time"
+msgstr "Usuário já registrado neste time"
 
 #: views/main.py:265
 msgid "Conflict:"
