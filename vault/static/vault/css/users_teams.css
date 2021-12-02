@@ -10,7 +10,8 @@
   left: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 10vh;
   background-color: rgba(0, 0, 0, 0.35);
 }
 
@@ -18,9 +19,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 52vw;
+  width: 50vw;
   height: auto;
-  max-height: 82vh;
+  max-height: 80vh;
   background-color: white;
   border-radius: 10px;
   min-width: 420px;
