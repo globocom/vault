@@ -1,75 +1,93 @@
-#search-user-team {
-    position: relative;
+#add-user-team .list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
-#search-user-team .controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 10px;
-    background-color: #ddd;
-    border-radius: 2px;
-    line-height: 50px;
-    min-height: 50px;
-    margin-bottom: 25px;
+.users-modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.35);
 }
 
-#search-user-team .controls .field-team {
-    flex-grow: 3;
+.users-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 52vw;
+  height: auto;
+  max-height: 82vh;
+  background-color: white;
+  border-radius: 10px;
+  min-width: 420px;
+  padding-bottom: 72px;
+  overflow: hidden;
 }
 
-#search-user-team .controls .field-og {
-    flex-grow: 4;
+.users-modal .btn-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
-#search-user-team .controls .field-users {
-    flex-grow: 1;
+.users-modal-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
-#search-user-team .box-users-teams {
-    position: relative;
-    background-color: #ddd;
-    margin-bottom: 15px;
-    border-radius: 2px;
-    min-height: 74px;
-    overflow: hidden;
+.users-modal-list li {
+  padding: 8px 20px;
+  border-bottom: 1px solid #eee;
 }
 
-#search-user-team .related-users {
-    display: none;
-    padding: 0;
-    list-style: none;
-    margin: 0;
-    width: 100%;
-    border-radius: 2px;
+.users-modal-list li:last-child {
+  border-bottom: 0;
 }
 
-#search-user-team .related-users th {
-    padding: 8px 10px;
-    text-transform: uppercase;
-    background-color: #ccc;
-    font-size: 11px;
+.users-modal-list li:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
-#search-user-team .related-users td {
-    padding: 8px 10px;
-    border-top: 1px solid #ccc;
+.users-modal-list .active,
+.users-modal-list .active:hover {
+  color: white;
+  background-color: #285dc1;
 }
 
-#search-user-team .related-users tbody tr:hover {
-    background-color: #d2d2d2;
+.users-modal-header {
+  padding: 20px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
-#search-user-team .related-users li:first-child {
-    border-top: none;
+.users-modal-header h5 {
+  padding-right: 40px;
 }
 
-#search-user-team .groups,
-#search-user-team .ogs {
-    display: inline-block;
+.users-modal-base {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 20px;
+  height: 72px;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
 }
 
-#search-user-team .users {
-    height: 25px;
-    width: 300px;
+.remove-user-text {
+  display: none;
+}
+
+.btn-remove-user:hover .remove-user-text {
+  display: inline;
 }

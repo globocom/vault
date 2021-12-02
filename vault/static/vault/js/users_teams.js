@@ -1,17 +1,42 @@
 // globals: ALL_USERS, ALL_TEAMS, ADD_URL, DELETE_URL, LIST_URL, TEXT
 
+const state = Vue.observable({
+  allUsers: ALL_USERS,
+  allTeams: ALL_TEAMS,
+  teams: [],
+  currentTeam: {
+    id: 0,
+    name: "",
+  },
+  csrfToken: Base.Cookie.read("csrftoken"),
+});
+
 const UsersTeamsMixin = {
   data() {
     return {
-      allUsers: ALL_USERS,
-      allTeams: ALL_TEAMS,
-      addUrl: ADD_URL,
-      deleteUrl: DELETE_URL,
-      listUrl: LIST_URL,
       text: TEXT,
     };
   },
   methods: {
+    async getUsersAndTeams() {
+      const data = await fetch(LIST_URL);
+      const result = await data.json();
+
+      if (!data.ok) {
+        this.showMsg(result.msg, "error");
+        return;
+      }
+
+      state.teams.length = 0;
+      state.teams.push(...result);
+    },
+    setCurrentTeam(team) {
+      state.currentTeam.id = team.id;
+      state.currentTeam.name = team.name;
+    },
+    clearCurrentTeam() {
+      state.currentTeam.id = 0;
+    },
     showMsg(msg, t = "success") {
       msg = t === "error" ? `Error: ${msg}` : msg;
       Base.Messages.setMessage({ description: msg, type: t });
@@ -19,37 +44,36 @@ const UsersTeamsMixin = {
   },
 };
 
-const TeamCard = {
+const UsersModal = {
   mixins: [UsersTeamsMixin],
-  props: ["team", "updateFn", "userQuery"],
   data() {
     return {
+      query: "",
       selectedUser: "",
-      newUser: false,
-      csrfToken: "",
+      currentTeam: state.currentTeam,
     };
   },
-  created() {
-    this.csrfToken = Base.Cookie.read("csrftoken");
+  mounted() {
+    this.$nextTick(() => this.$refs.modalSearch.focus());
   },
   computed: {
-    filteredUsers() {
-      return this.team.users.filter((u) => u.name.search(this.userQuery) >= 0);
+    filteredAllUsers() {
+      return ALL_USERS.filter((u) => u.name.search(this.query) >= 0);
     },
   },
   methods: {
     async addUserTeam() {
       if (this.selectedUser === "") {
-        this.showMsg(this.text.selectUser, "error");
+        this.showMsg(this.text.selectUser, "warning");
         return;
       }
 
-      const data = await fetch(this.addUrl, {
+      const data = await fetch(ADD_URL, {
         method: "POST",
-        body: `user=${this.selectedUser}&group=${this.team.id}`,
+        body: `user=${this.selectedUser}&group=${state.currentTeam.id}`,
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          "X-CSRFToken": this.csrfToken,
+          "X-CSRFToken": state.csrfToken,
         },
       });
 
@@ -61,20 +85,79 @@ const TeamCard = {
       }
 
       this.showMsg(this.text.userAdded);
-      this.updateFn();
-      this.resetNewUser();
+      this.getUsersAndTeams();
+
+      state.currentTeam.id = 0;
     },
+    setSelected(userId) {
+      this.selectedUser = userId;
+    },
+    close() {
+      this.clearCurrentTeam();
+    },
+  },
+  template: `
+  <div class="users-modal-overlay" tabindex="0"
+       @click="close"
+       @keyup.esc="close">
+    <div class="users-modal" @click.stop>
+      <div class="users-modal-header">
+        <h5 class="mb-4">{{ text.addNewUser }}</h5>
+        <button class="btn btn-sm btn-default btn-close"
+                @click="close">
+        </button>
+        <input type="text" class="form-control" placeholder="Search"
+               ref="modalSearch"
+               v-model="query" />
+      </div>
+
+      <ul class="users-modal-list">
+        <li v-for="user in filteredAllUsers"
+            :class="{ active: selectedUser === user.id }"
+            @click="setSelected(user.id)">
+          <i class="fas fa-check me-2"
+             v-show="selectedUser === user.id">
+          </i>{{ user.name }}
+        </li>
+      </ul>
+
+      <div class="users-modal-base">
+        <button class="btn btn-sm btn-primary"
+                @click="addUserTeam"
+                :disabled="selectedUser === ''">
+          {{ text.addTo }} {{ currentTeam.name }}
+        </button>
+      </div>
+    </div>
+  </div>
+  `,
+};
+
+const TeamCard = {
+  mixins: [UsersTeamsMixin],
+  props: ["team", "userQuery"],
+  data() {
+    return {
+      selectedUser: "",
+    };
+  },
+  computed: {
+    filteredUsers() {
+      return this.team.users.filter((u) => u.name.search(this.userQuery) >= 0);
+    },
+  },
+  methods: {
     async removeUserTeam(userId) {
       if (!window.confirm(this.text.removeUserWarning)) {
         return;
       }
 
-      const data = await fetch(this.deleteUrl, {
+      const data = await fetch(DELETE_URL, {
         method: "POST",
         body: `user=${userId}&group=${this.team.id}`,
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          "X-CSRFToken": this.csrfToken,
+          "X-CSRFToken": state.csrfToken,
         },
       });
 
@@ -86,54 +169,27 @@ const TeamCard = {
       }
 
       this.showMsg(this.text.userRemoved);
-      this.updateFn();
-    },
-    toggleNewUser() {
-      this.newUser = !this.newUser;
-    },
-    resetNewUser() {
-      this.newUser = false;
-      this.selectedUser = "";
+      this.getUsersAndTeams();
     },
   },
   template: `
   <div class="card mb-4">
-    <div class="card-header">
-      <strong>{{ team.name }}</strong>
+    <div class="card-header d-flex justify-content-between">
+      <strong class="fs-5">{{ team.name }}</strong>
+
+      <button class="btn btn-sm btn-default text-primary"
+              @click="setCurrentTeam(team)">
+        <i class="fas fa-plus me-1"></i> {{ text.addNewUserTeam }}
+      </button>
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item d-flex justify-content-between align-items-center"
           v-for="(user, index) in filteredUsers">
         {{ user.name }}
-        <button class="btn btn-sm btn-default text-danger"
+        <button class="btn btn-sm btn-default text-danger btn-remove-user"
                 @click="removeUserTeam(user.id)">
-          <i class="fas fa-times me-1"></i> {{ text.removeUser }}
+          <span class="remove-user-text me-2">{{ text.removeUser }}</span><i class="fas fa-times"></i>
         </button>
-      </li>
-      <li class="list-group-item d-flex justify-content-start align-items-center">
-        <button class="btn btn-sm btn-outline-primary"
-                v-if="!newUser"
-                @click="toggleNewUser">
-          <i class="fas fa-plus me-1"></i> {{ text.addNewUser }}
-        </button>
-        <template v-if="newUser">
-          <select class="form-select form-select-sm w-50 me-1"
-                  :id="'user-select-' + team.id"
-                  v-model="selectedUser">
-            <option disabled value="">{{ text.selectUser }}</option>
-            <option v-for="user in allUsers" :value="user.id">
-              {{ user.name }}
-            </option>
-          </select>
-          <button class="btn btn-sm btn-primary me-1"
-                  @click="addUserTeam">
-            {{ text.add }}
-          </button>
-          <button class="btn btn-sm btn-outline-secondary"
-                  @click="toggleNewUser">
-            {{ text.cancel }}
-          </button>
-        </template>
       </li>
     </ul>
   </div>
@@ -144,52 +200,32 @@ const UserTeamsApp = {
   el: "#user-teams-app",
   mixins: [UsersTeamsMixin],
   components: {
+    "users-modal": UsersModal,
     "team-card": TeamCard,
   },
   data: {
-    teams: [],
+    teams: state.teams,
+    currentTeam: state.currentTeam,
     userFilter: "",
     loading: false,
   },
   created() {
     this.getUsersAndTeams();
   },
-  methods: {
-    async getUsersAndTeams() {
-      const data = await fetch(this.listUrl);
-      const result = await data.json();
-
-      if (!data.ok) {
-        this.showMsg(result.msg, "error");
-        return;
-      }
-
-      this.teams = result;
-    },
-  },
   template: `
   <div id="add-user-team" class="mb-5">
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="form-group d-flex align-items-center">
-          <input type="text" class="form-control me-1 mb-0" :placeholder="text.filterUsers"
-                 v-model="userFilter" />
-          <button class="btn btn-outline-secondary"
-                  @click="() => this.userFilter = ''">
-            {{ text.clear }}
-          </button>
-        </div>
-      </div>
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+      <h3 class="fw-light mb-0">{{ text.myTeams }}</h3>
+      <input type="text" class="form-control w-50 me-1 mb-0"
+             :placeholder="text.filterUsers"
+             v-model="userFilter" />
     </div>
-
-    <h4 class="mb-3">{{ text.teams }}</h4>
-
     <team-card v-for="team in teams"
                :team="team"
-               :updateFn="getUsersAndTeams"
                :userQuery="userFilter"
                :key="team.id">
     </team-card>
+    <users-modal v-if="currentTeam.id"></users-modal>
   </div>
   `,
 };

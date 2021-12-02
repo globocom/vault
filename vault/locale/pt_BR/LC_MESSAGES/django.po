@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-01 00:12-0300\n"
+"POT-Creation-Date: 2021-12-02 11:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgid "Models in the %(name)s application"
 msgstr "Models na aplicação %(name)s"
 
 #: templates/admin/index.html:40
-#: templates/vault/team_manager/users_teams.html:33
+#: templates/vault/team_manager/users_teams.html:34
 msgid "Add"
 msgstr "Adicionar"
 
@@ -217,6 +217,7 @@ msgid "Add user to"
 msgstr "Adicionar usuário a"
 
 #: templates/vault/team_manager/add_user_modal.html:18
+#: templates/vault/team_manager/users_teams.html:26
 msgid "Select a user"
 msgstr "Selecione um usuário"
 
@@ -225,7 +226,7 @@ msgid "Add User"
 msgstr "Adicionar Usuário"
 
 #: templates/vault/team_manager/add_user_modal.html:25
-#: templates/vault/team_manager/users_teams.html:36
+#: templates/vault/team_manager/users_teams.html:39
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -239,13 +240,9 @@ msgstr "Gerenciar Usuários e Times"
 msgid "Add new user to"
 msgstr "Adicionar novo usuário a"
 
-#: templates/vault/team_manager/users_teams.html:26
-msgid "Select User"
-msgstr "Selecione usuário"
-
 #: templates/vault/team_manager/users_teams.html:27
-msgid "Filter Users"
-msgstr "Filtrar Usuários"
+msgid "Filter users within each team"
+msgstr "Filtrar usuários dentro de cada equipe"
 
 #: templates/vault/team_manager/users_teams.html:28
 msgid "Clear"
@@ -261,33 +258,47 @@ msgid "Teams"
 msgstr "Times"
 
 #: templates/vault/team_manager/users_teams.html:31
+msgid "My Teams"
+msgstr "Meus Times"
+
+#: templates/vault/team_manager/users_teams.html:32
 #: templates/vault/users_teams.html:26 templates/vault/users_teams.html:36
 msgid "User"
 msgstr "Usuário"
 
-#: templates/vault/team_manager/users_teams.html:32
+#: templates/vault/team_manager/users_teams.html:33
 msgid "Users"
 msgstr "Usuários"
 
-#: templates/vault/team_manager/users_teams.html:34
+#: templates/vault/team_manager/users_teams.html:35
+msgid "Add to"
+msgstr "Adicionar em"
+
+#: templates/vault/team_manager/users_teams.html:36
 msgid "Add new user"
 msgstr "Adicionar novo usuário"
 
-#: templates/vault/team_manager/users_teams.html:35
+#: templates/vault/team_manager/users_teams.html:37
+msgid "Add new user to this team"
+msgstr "Adicionar novo usuário a este time"
+
+#: templates/vault/team_manager/users_teams.html:38
 msgid "Remove user"
 msgstr "Remover usuário"
 
-#: templates/vault/team_manager/users_teams.html:37
+#: templates/vault/team_manager/users_teams.html:40
 msgid "User removed"
 msgstr "Usuario removido"
 
-#: templates/vault/team_manager/users_teams.html:38
+#: templates/vault/team_manager/users_teams.html:41
 msgid "User added"
 msgstr "Usuário adicionado"
 
-#: templates/vault/team_manager/users_teams.html:39
+#: templates/vault/team_manager/users_teams.html:42
 msgid "The user will lose access to all projects owned by this team! Continue?"
-msgstr "O Usuário perderá acesso a todos os projetos pertencentes a este time! Continuar?"
+msgstr ""
+"O Usuário perderá acesso a todos os projetos pertencentes a este time! "
+"Continuar?"
 
 #: templates/vault/user_info.html:12
 msgid "Logout"
@@ -345,10 +356,3 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 #: views/main.py:302
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
-
-#~ msgid "Remove user from team"
-#~ msgstr "Remover usuário do time"
-
-#, python-format
-#~ msgid "Return to project \"%(project_name)s\" Home"
-#~ msgstr "Retornar à Home do projeto \"%(project_name)s\""
