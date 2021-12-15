@@ -14,6 +14,7 @@ __pycache__/
 .pydevproject
 .pytest_cache/
 .settings/
+.venv/
 .vscode/
 actions.log
 build/

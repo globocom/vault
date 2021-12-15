@@ -358,7 +358,7 @@ Base.Loading = {};
     var appended = false;
     var loading_html = ['<div class="loading">',
                             '<div class="loading-content">',
-                                '<i class="fas fa-spin fa-lg fa-cog"></i>',
+                                '<i class="fas fa-pulse fa-lg fa-cog"></i>',
                             '</div>',
                         '</div>'].join('');
     var $loading = $(loading_html);

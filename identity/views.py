@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import logging
 
 from django.conf import settings
@@ -25,7 +23,6 @@ from vault.jsoninfo import JsonInfo
 from vault import utils
 from vault.models import GroupProjects
 from vault.views import SuperUserMixin, JSONResponseMixin, LoginRequiredMixin, ProjectCheckMixin
-
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
