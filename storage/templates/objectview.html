@@ -163,12 +163,13 @@
   {% block pagination %}
   <nav class="mb-5">
     <ul class="pagination">
-      <li class="page-item {% if not marker %}disabled{% endif %}">
-        <a class="page-link" href="?marker={{ marker }}"
-          {% if not marker %}aria-disabled="true"{% endif %}>
+      {% if marker %}
+      <li class="page-item">
+        <a class="page-link" href="?marker={{ marker }}">
           {% trans 'next page' %} &rsaquo;
         </a>
       </li>
+      {% endif %}
     </ul>
   </nav>
   {% endblock %}
