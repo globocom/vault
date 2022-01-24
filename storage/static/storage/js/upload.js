@@ -51,6 +51,28 @@ const UploadApp = {
     maxFileCount,
     maxConcurrent: 3,
     fileItems: [],
+    loading: true,
+    hasUploadUrlAccess: false,
+  },
+  async beforeMount() {
+    const url = new URL(this.uploadUrl);
+    const ctrl = new AbortController();
+    const timeoutId = setTimeout(() => ctrl.abort(), 3000);
+
+    try {
+      await fetch(`${url.origin}/info`, {
+        method: "HEAD",
+        mode: "no-cors",
+        signal: ctrl.signal,
+      });
+      this.hasUploadUrlAccess = true;
+    } catch (err) {
+      this.hasUploadUrlAccess = false;
+      console.log(`${err} (Request to upload url timed out)`);
+    }
+
+    clearTimeout(timeoutId);
+    this.loading = false;
   },
   computed: {
     maxFiles() {
@@ -150,34 +172,42 @@ const UploadApp = {
     },
   },
   template: `
-  <div class="form-box">
-    <div class="content">
-      <input class="form-control" type="file" name="files" multiple ref="files"
-              @change="setFiles" />
-      <small class="form-text text-muted">
-        Select up to {{ maxFiles }} files to upload.
-      </small>
-      <hr />
-      <div v-if="finished" class="upload-finished mb-3">
-        All files uploaded!
-      </div>
-      <file-item v-for="(item, i) in fileItems"
-                :item="item"
-                :upload="uploadItem"
-                :queue="queue"
-                :key="'f'+i"></file-item>
+  <div>
+    <div class="alert alert-danger" v-if="!loading && !hasUploadUrlAccess">
+      <strong>Your browser/computer don't have access to this Upload URL:</strong> <br />
+      <a :href="uploadUrl">{{ uploadUrl }}</a> <br />
+      <br />
+      Request access to your network administrator.
     </div>
-    <div class="base d-flex justify-content-between">
-      <button class="btn btn-sm btn-danger"
-              @click="resetFiles"
-              :disabled="!fileItems.length || queue">
-        Clear
-      </button>
-      <button class="btn btn-sm btn-primary"
-              @click="uploadFiles"
-              :disabled="!fileItems.length || queue || finished">
-        Upload All
-      </button>
+    <div class="form-box" v-if="!loading && hasUploadUrlAccess">
+      <div class="content">
+        <input class="form-control" type="file" name="files" multiple ref="files"
+                @change="setFiles" />
+        <small class="form-text text-muted">
+          Select up to {{ maxFiles }} files to upload.
+        </small>
+        <hr />
+        <div v-if="finished" class="upload-finished mb-3">
+          All files uploaded!
+        </div>
+        <file-item v-for="(item, i) in fileItems"
+                  :item="item"
+                  :upload="uploadItem"
+                  :queue="queue"
+                  :key="'f'+i"></file-item>
+      </div>
+      <div class="base d-flex justify-content-between">
+        <button class="btn btn-sm btn-danger"
+                @click="resetFiles"
+                :disabled="!fileItems.length || queue">
+          Clear
+        </button>
+        <button class="btn btn-sm btn-primary"
+                @click="uploadFiles"
+                :disabled="!fileItems.length || queue || finished">
+          Upload All
+        </button>
+      </div>
     </div>
   </div>
   `,
