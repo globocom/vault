@@ -57,7 +57,7 @@ const UploadApp = {
   async beforeMount() {
     const url = new URL(this.uploadUrl);
     const ctrl = new AbortController();
-    const timeoutId = setTimeout(() => ctrl.abort(), 3000);
+    const timeoutId = setTimeout(() => ctrl.abort(), 15000);
 
     try {
       await fetch(`${url.origin}/info`, {
