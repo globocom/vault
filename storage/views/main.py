@@ -221,7 +221,7 @@ def objectview(request, project, container, prefix=None):
     auth_token = get_token_id(request)
     storage_url, http_conn = connection(request)
 
-    limit = settings.PAGINATION_SIZE
+    limit = int(settings.PAGINATION_SIZE)
     marker = request.GET.get('marker')
 
     try:
@@ -246,7 +246,7 @@ def objectview(request, project, container, prefix=None):
         'marker': None
     }
 
-    if len(object_list) == limit:
+    if len(objects) >= limit:
         if prefix:
             context['marker'] = f'{objects[-1].get("name") or objects[-1].get("subdir")}'
         else:
