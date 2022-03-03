@@ -58,6 +58,7 @@ urlpatterns = [
 if settings.SWIFT_CLOUD_ENABLED:
     urlpatterns.append(re_path(r"^swift-cloud/report/?$", views.swift_cloud_report, name="swift_cloud_report"))
     urlpatterns.append(re_path(r"^swift-cloud/status/?$", views.swift_cloud_status, name="swift_cloud_status"))
+    urlpatterns.append(re_path(r"^swift-cloud/project-status/?$", views.swift_cloud_project_status, name="swift_cloud_project_status"))
     urlpatterns.append(re_path(r"^swift-cloud/migrate/?$", views.swift_cloud_migrate, name="swift_cloud_migrate"))
 
 

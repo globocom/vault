@@ -63,14 +63,21 @@
     {% endif %}
   </ul>
 
-  {% if user.is_staff and SWIFT_CLOUD_ENABLED %}
+  {% if SWIFT_CLOUD_ENABLED %}
   <div class="separator">
-    <span>Swift Cloud</span>
+    <span>{% trans 'Cloud Migration' %}</span>
   </div>
   <ul>
+    {% if user.is_staff %}
     <li>
-      <a href="{% url 'swift_cloud_report' %}" title="{% trans 'Cloud Migration' %}">
-        <i class="icon fa fa-cloud"></i> {% trans 'Migration Report' %}
+      <a href="{% url 'swift_cloud_report' %}" title="{% trans 'General Report' %}">
+        <i class="icon fas fa-file-alt"></i> {% trans 'General Report' %}
+      </a>
+    </li>
+    {% endif %}
+    <li>
+      <a href="{% url 'swift_cloud_status' %}" title="{% trans 'Migration Status' %}">
+        <i class="icon fas fa-cloud-upload-alt"></i> {% trans 'Migration Status' %}
       </a>
     </li>
   </ul>

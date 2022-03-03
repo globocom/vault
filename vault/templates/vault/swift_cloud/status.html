@@ -2,19 +2,19 @@
 
 {% load i18n static %}
 
-{% block title %}{% trans 'Cloud Migration' %} &rsaquo; {% trans "General Report" %}{% endblock %}
+{% block title %}Object Storage &rsaquo; {% trans "Migration Status" %}{% endblock %}
 
-{% block some_top_info %}{% trans 'Cloud Migration' %}{% endblock %}
+{% block some_top_info %}{% trans "Cloud Migration" %}{% endblock %}
 
-{% block content_title %}{% trans "General Report" %}{% endblock %}
+{% block content_title %}{% trans "Migration Status" %}{% endblock %}
 
 {% block content_breadcrumb %}
 <a href="#">{% trans 'Cloud Migration' %}</a>
-<span>{% trans "General Report" %}</span>
+<span>{% trans "Migration Status" %}</span>
 {% endblock %}
 
 {% block content %}
-<div id="migration-report-app"></div>
+<div id="migration-status-app"></div>
 {% endblock %}
 
 {% block js_bottom %}
@@ -22,6 +22,7 @@
 const PROJECTS = JSON.parse('{{ projects|escapejs }}');
 const MIGRATION_DATA = JSON.parse('{{ migration_data|escapejs }}');
 const PROJECT_STATUS_URL = "{% url 'swift_cloud_project_status' %}";
+const MIGRATE_URL = "{% url 'swift_cloud_migrate' %}";
 </script>
-<script src="{% static 'vault/js/swift_cloud/report.js' %}"></script>
+<script src="{% static 'vault/js/swift_cloud/status.js' %}"></script>
 {% endblock %}
