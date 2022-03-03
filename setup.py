@@ -28,7 +28,7 @@ setup(
         'pytz==2015.4',
         'requests==2.19.1',
         'cryptography==2.9.2',
-        'python-swift-cloud-tools==0.1.3'
+        'python-swift-cloud-tools==0.1.4'
     ],
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
