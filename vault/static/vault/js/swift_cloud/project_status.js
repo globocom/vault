@@ -19,7 +19,10 @@ const ProjectStatusApp = {
         return;
       }
 
+      Base.Loading.show();
+
       const csrfToken = Base.Cookie.read("csrftoken");
+
       const res = await fetch(this.migrateUrl, {
         method: "POST",
         headers: {
@@ -30,7 +33,7 @@ const ProjectStatusApp = {
         body: JSON.stringify({
           project_id: this.projectId,
           project_name: this.projectName,
-          environment: project.environment,
+          environment: this.environ,
         }),
       });
       const result = await res.json();
@@ -40,6 +43,7 @@ const ProjectStatusApp = {
           type: "error",
           description: result.error,
         });
+        Base.Loading.hide();
         return;
       }
 
@@ -47,6 +51,8 @@ const ProjectStatusApp = {
         type: "success",
         description: result.message,
       });
+
+      Base.Loading.hide();
     },
     async removeProject() {
       if (!window.confirm("The project will be marked for removal. Confirm?")) {

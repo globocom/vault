@@ -14,7 +14,7 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def get_vault_env(context):
     request = context.get("request")
-    envs = ["dev", "qa", "qa1", "qa2", "prod", "beta", "docker"]
+    envs = ["local", "dev", "qa", "qa1", "qa2", "prod", "beta", "docker"]
 
     if settings.ENVIRON in envs:
         return settings.ENVIRON
