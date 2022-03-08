@@ -1119,7 +1119,7 @@ def restore_object(request, project):
         # Novo nome será o nome original + timestamp + extensão
         new_object_name = object_name.rsplit('.', 1)
         orignal_name = new_object_name[0] + '_'
-        time_stamp = datetime.isoformat(datetime.now())
+        time_stamp = datetime.isoformat(datetime.now()).replace(':', '.')
         extension_object = '.' + new_object_name[1]
 
         final_new_object_name = orignal_name + time_stamp + extension_object
