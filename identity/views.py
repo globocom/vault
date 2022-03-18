@@ -546,22 +546,23 @@ class DeleteProjectView(BaseProjectView):
         storage_url = endpoints.get("object_store").get("adminURL")
         auth_token = self.keystone.conn.auth_token
 
-        swift_del_result = delete_swift_account(storage_url, auth_token)
+        result, msg = delete_swift_account(storage_url, auth_token)
 
-        if not swift_del_result:
-            messages.add_message(request, messages.ERROR, _("Error when deleting swift account"))
+        if not result:
+            messages.add_message(request, messages.ERROR,
+                f'{_("Error when deleting swift account")}: {msg}')
 
-            return HttpResponseRedirect(
-                reverse("edit_project", kwargs={"project_id": project_id, "project": project_name})
-            )
+            return HttpResponseRedirect(reverse("edit_project",
+                kwargs={"project_id": project_id, "project": project_name}))
 
         try:
             self.keystone.vault_project_delete(project_name)
-            messages.add_message(request, messages.SUCCESS, _("Successfully deleted project."))
-
-        except Exception as e:
-            log.exception("{}{}".format(_("Exception:").encode("UTF-8"), e))
-            messages.add_message(request, messages.ERROR, _("Error when deleting project"))
+            messages.add_message(request, messages.SUCCESS,
+                _("Successfully deleted project."))
+        except Exception as err:
+            log.exception(f'Exception: {err}')
+            messages.add_message(request, messages.ERROR,
+                _("Error when deleting project"))
 
         # Purge project from current projects
         utils.purge_current_project(request, project_id)

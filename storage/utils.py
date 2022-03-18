@@ -259,16 +259,16 @@ def delete_swift_account(storage_url, auth_token):
         resp = http_conn.request('DELETE', path, headers=headers)
 
         if resp.status_code != 204:
-            log.exception('Fail to delete account {}: status code {}'.format(
-                storage_url, resp.status_code
-            ))
-            return False
+            error_msg = resp.json().get('error')
+            log.exception('Fail to delete account {}: {}, status code {}'.format(
+                storage_url, error_msg, resp.status_code))
+            return False, error_msg
 
     except client.ClientException as err:
-        log.exception('Exception: {0}'.format(err))
-        return False
+        log.exception(f'Exception: {err}')
+        return False, str(err)
 
-    return True
+    return True, 'success'
 
 
 def get_name_from_document(data):
