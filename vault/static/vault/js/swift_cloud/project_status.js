@@ -3,8 +3,10 @@ const ProjectStatusApp = {
   data: {
     projectName: PROJECT_NAME,
     projectId: PROJECT_ID,
+    metadata: METADATA,
     migrationData: MIGRATION_DATA,
     migrateUrl: MIGRATE_URL,
+    removalUrl: REMOVAL_URL,
     projectStatus: PROJECT_STATUS,
     environ: ENVIRON,
   },
@@ -12,8 +14,17 @@ const ProjectStatusApp = {
     hasMigrationData() {
       return this.migrationData.hasOwnProperty("project_id");
     },
+    wasRemoved() {
+      return this.metadata.hasOwnProperty("x-account-meta-cloud-remove");
+    },
   },
   methods: {
+    reset() {
+      window.setTimeout(() => {
+        Base.Loading.hide();
+        window.location.reload();
+      }, 1000);
+    },
     async startMigration() {
       if (!window.confirm("This will start the migration. Confirm?")) {
         return;
@@ -22,7 +33,6 @@ const ProjectStatusApp = {
       Base.Loading.show();
 
       const csrfToken = Base.Cookie.read("csrftoken");
-
       const res = await fetch(this.migrateUrl, {
         method: "POST",
         headers: {
@@ -52,12 +62,82 @@ const ProjectStatusApp = {
         description: result.message,
       });
 
-      Base.Loading.hide();
+      this.reset();
     },
     async removeProject() {
       if (!window.confirm("The project will be marked for removal. Confirm?")) {
         return;
       }
+
+      Base.Loading.show();
+
+      const csrfToken = Base.Cookie.read("csrftoken");
+      const res = await fetch(this.removalUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ project_id: this.projectId }),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        Base.Messages.setMessage({
+          type: "error",
+          description: result.error,
+        });
+        Base.Loading.hide();
+        return;
+      }
+
+      Base.Messages.setMessage({
+        type: "success",
+        description: result.message,
+      });
+
+      this.reset();
+    },
+    async undoRemoveProject() {
+      if (
+        !window.confirm("This will undo the removal of this project. Continue?")
+      ) {
+        return;
+      }
+
+      Base.Loading.show();
+
+      const csrfToken = Base.Cookie.read("csrftoken");
+      const res = await fetch(this.removalUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({
+          project_id: this.projectId,
+          undo_removal: true,
+        }),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        Base.Messages.setMessage({
+          type: "error",
+          description: result.error,
+        });
+        Base.Loading.hide();
+        return;
+      }
+
+      Base.Messages.setMessage({
+        type: "success",
+        description: result.message,
+      });
+
+      this.reset();
     },
   },
   template: `
@@ -83,12 +163,19 @@ const ProjectStatusApp = {
       </div>
     </div>
 
-    <div v-if="!hasMigrationData">
+    <div v-if="!hasMigrationData && !wasRemoved">
       <button class="btn btn-primary me-3" @click="startMigration">
         Migrate this project
       </button>
       <button class="btn btn-danger" @click="removeProject">
-        Don't migrate this project
+        Remove this project
+      </button>
+    </div>
+
+    <div class="alert alert-danger" v-if="!hasMigrationData && wasRemoved">
+      <p>This project has been marked for removal.</p>
+      <button class="btn btn-danger" @click="undoRemoveProject">
+        Undo Project Removal
       </button>
     </div>
 
