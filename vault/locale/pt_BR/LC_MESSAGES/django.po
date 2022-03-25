@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 11:57-0300\n"
+"POT-Creation-Date: 2022-03-25 11:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: admin.py:28 forms.py:60 utils.py:98 utils.py:167 views/main.py:60
+#: admin.py:28 forms.py:60 utils.py:98 utils.py:166 views/main.py:60
 msgid "Unable to retrieve Keystone data"
 msgstr "Não foi possível recuperar dados do Keystone"
 
@@ -198,19 +198,41 @@ msgstr "Times e Usuários"
 msgid "Vault Admin"
 msgstr "Admin do Vault"
 
-#: templates/vault/sidebar.html:72
+#: templates/vault/sidebar.html:68
+#: templates/vault/swift_cloud/project_status.html:6
+#: templates/vault/swift_cloud/project_status.html:11
+#: templates/vault/swift_cloud/project_status.html:16
+#: templates/vault/swift_cloud/report.html:5
+#: templates/vault/swift_cloud/report.html:7
+#: templates/vault/swift_cloud/report.html:12
+#: templates/vault/swift_cloud/status.html:7
+#: templates/vault/swift_cloud/status.html:12
 msgid "Cloud Migration"
 msgstr "Migração para Cloud"
 
-#: templates/vault/sidebar.html:73 templates/vault/swift_cloud/report.html:5
+#: templates/vault/sidebar.html:73 templates/vault/sidebar.html:74
+#: templates/vault/swift_cloud/report.html:5
 #: templates/vault/swift_cloud/report.html:9
 #: templates/vault/swift_cloud/report.html:13
-msgid "Migration Report"
-msgstr "Relatório de Migração"
+msgid "General Report"
+msgstr "Relatório Geral"
 
-#: templates/vault/sidebar.html:82
+#: templates/vault/sidebar.html:79 templates/vault/sidebar.html:80
+#: templates/vault/swift_cloud/status.html:5
+#: templates/vault/swift_cloud/status.html:9
+#: templates/vault/swift_cloud/status.html:13 views/translations.py:16
+msgid "Migration Status"
+msgstr "Status de Migração"
+
+#: templates/vault/sidebar.html:89
 msgid "Vault Help"
 msgstr "Vault Help"
+
+#: templates/vault/swift_cloud/project_status.html:7
+#: templates/vault/swift_cloud/project_status.html:13
+#: templates/vault/swift_cloud/project_status.html:17
+msgid "Project Migration Status"
+msgstr "Status de Migração do Projeto"
 
 #: templates/vault/team_manager/add_user_modal.html:10
 msgid "Add user to"
@@ -250,6 +272,7 @@ msgstr "Limpar"
 
 #: templates/vault/team_manager/users_teams.html:29
 #: templates/vault/users_teams.html:17 templates/vault/users_teams.html:35
+#: views/translations.py:31
 msgid "Team"
 msgstr "Time"
 
@@ -356,3 +379,103 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 #: views/main.py:302
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
+
+#: views/swift_cloud.py:160
+msgid "Error getting migration data"
+msgstr "Erro ao obter dados de migração"
+
+#: views/swift_cloud.py:165
+msgid "Migration not initialized yet"
+msgstr "Migração não inicializada"
+
+#: views/swift_cloud.py:168 views/translations.py:25
+msgid "Waiting in migration queue"
+msgstr "Aguardando na fila de migração"
+
+#: views/swift_cloud.py:171 views/translations.py:26
+msgid "Migrating..."
+msgstr "Migrando..."
+
+#: views/swift_cloud.py:174 views/translations.py:27
+msgid "Done"
+msgstr "Finalizado"
+
+#: views/swift_cloud.py:187
+msgid "Marked for removal"
+msgstr "Marcado para remoção"
+
+#: views/swift_cloud.py:199
+msgid "Method not allowed"
+msgstr "Método não permitido"
+
+#: views/swift_cloud.py:206
+msgid "Migration job created"
+msgstr "Job de migração criado"
+
+#: views/translations.py:10
+msgid "This will start the migration. Confirm?"
+msgstr "Isto irá começar a migração. Confirma?"
+
+#: views/translations.py:11
+msgid "The project will be marked for removal. Confirm?"
+msgstr "Este projeto será marcado para remoção. Confirma?"
+
+#: views/translations.py:12
+msgid "This will undo the removal of this project. Continue?"
+msgstr "Isto irá desfazer a remoção do projeto. Continuar?"
+
+#: views/translations.py:13
+msgid "Project"
+msgstr "Projeto"
+
+#: views/translations.py:14
+msgid "Project ID"
+msgstr "ID do Projeto"
+
+#: views/translations.py:15
+msgid "Project Name"
+msgstr "Nome do Projeto"
+
+#: views/translations.py:17
+msgid "Migrate this project"
+msgstr "Migrar este projeto"
+
+#: views/translations.py:18
+msgid "Remove this project"
+msgstr "Remover este projeto"
+
+#: views/translations.py:19
+msgid "Undo Project Removal"
+msgstr "Desfazer a remoção deste projeto"
+
+#: views/translations.py:20
+msgid "Swift Data"
+msgstr "Dados no Swift"
+
+#: views/translations.py:21
+msgid "Objects"
+msgstr "Objetos"
+
+#: views/translations.py:22
+msgid "Total bytes"
+msgstr "Total em bytes"
+
+#: views/translations.py:23
+msgid "Migrated Data"
+msgstr "Dados migrados"
+
+#: views/translations.py:24
+msgid "Migration Info"
+msgstr "Informações da Migração"
+
+#: views/translations.py:28
+msgid "Details"
+msgstr "Detalhes"
+
+#: views/translations.py:29
+msgid "Total projects"
+msgstr "Total de projetos"
+
+#: views/translations.py:30
+msgid "Migrated projects"
+msgstr "Projetos migrados"
