@@ -1,6 +1,7 @@
 import json
 import logging
 import pdb
+from urllib import response
 from swiftclient import client
 from django.conf import settings
 from django.shortcuts import render
@@ -58,9 +59,14 @@ def swift_cloud_report(request):
         settings.SWIFT_CLOUD_TOOLS_API_KEY
     )
 
-    res = sct_client.transfer_status_by_projects(
-        [p["id"] for p in projects])
-    data = res.json()
+    data = []
+    try:
+        reponse = sct_client.transfer_status_by_projects(
+            [p["id"] for p in projects])
+        if response.ok:
+            data = reponse.json()
+    except Exception as err:
+        log.exception(f"Swift Cloud Tools Error: {err}")
 
     return render(request, "vault/swift_cloud/report.html",
         {"projects": json.dumps(projects),

@@ -1,21 +1,21 @@
 const ProjectStatusApp = {
   el: "#project-migration-status-app",
   data: {
-    projectName: PROJECT_NAME,
-    projectId: PROJECT_ID,
-    metadata: METADATA,
+    project: PROJECT,
     migrationData: MIGRATION_DATA,
     migrateUrl: MIGRATE_URL,
     removalUrl: REMOVAL_URL,
-    projectStatus: PROJECT_STATUS,
     environ: ENVIRON,
+    trans: TRANSLATIONS,
   },
   computed: {
     hasMigrationData() {
       return this.migrationData.hasOwnProperty("project_id");
     },
     wasRemoved() {
-      return this.metadata.hasOwnProperty("x-account-meta-cloud-remove");
+      return this.project.metadata.hasOwnProperty(
+        "x-account-meta-cloud-remove"
+      );
     },
   },
   methods: {
@@ -26,7 +26,7 @@ const ProjectStatusApp = {
       }, 1000);
     },
     async startMigration() {
-      if (!window.confirm("This will start the migration. Confirm?")) {
+      if (!window.confirm(this.trans.startMigrationMsg)) {
         return;
       }
 
@@ -41,8 +41,8 @@ const ProjectStatusApp = {
           "X-CSRFToken": csrfToken,
         },
         body: JSON.stringify({
-          project_id: this.projectId,
-          project_name: this.projectName,
+          project_id: this.project.id,
+          project_name: this.project.name,
           environment: this.environ,
         }),
       });
@@ -65,7 +65,7 @@ const ProjectStatusApp = {
       this.reset();
     },
     async removeProject() {
-      if (!window.confirm("The project will be marked for removal. Confirm?")) {
+      if (!window.confirm(this.trans.projectRemovalMsg)) {
         return;
       }
 
@@ -79,7 +79,7 @@ const ProjectStatusApp = {
           "Content-Type": "application/json",
           "X-CSRFToken": csrfToken,
         },
-        body: JSON.stringify({ project_id: this.projectId }),
+        body: JSON.stringify({ project_id: this.project.id }),
       });
       const result = await res.json();
 
@@ -100,9 +100,7 @@ const ProjectStatusApp = {
       this.reset();
     },
     async undoRemoveProject() {
-      if (
-        !window.confirm("This will undo the removal of this project. Continue?")
-      ) {
+      if (!window.confirm(this.trans.undoRemovalMsg)) {
         return;
       }
 
@@ -117,7 +115,7 @@ const ProjectStatusApp = {
           "X-CSRFToken": csrfToken,
         },
         body: JSON.stringify({
-          project_id: this.projectId,
+          project_id: this.project.id,
           undo_removal: true,
         }),
       });
@@ -144,38 +142,38 @@ const ProjectStatusApp = {
   <div>
     <div class="d-flex justify-content-start">
       <div class="box me-4">
-        Project:<br />
-        <strong class="fs-3">{{ projectName }}</strong>
+        {{ trans.project }}:<br />
+        <strong class="fs-3">{{ project.name }}</strong>
       </div>
 
       <div class="box me-4">
-        Project ID:<br />
+        {{ trans.projectId }}:<br />
         <strong class="fs-6" style="line-height: 2.8rem">
-          {{ projectId }}
+          {{ project.id }}
         </strong>
       </div>
 
       <div class="box flex-fill d-flex">
         <div>
-          Migration Status: <br />
-          <strong class="fs-5 lh-lg">{{ projectStatus }}</strong>
+          {{ trans.migrationStatus }}: <br />
+          <strong class="fs-5 lh-lg">{{ project.status }}</strong>
         </div>
       </div>
     </div>
 
     <div v-if="!hasMigrationData && !wasRemoved">
       <button class="btn btn-primary me-3" @click="startMigration">
-        Migrate this project
+        {{ trans.migrateProject }}
       </button>
       <button class="btn btn-danger" @click="removeProject">
-        Remove this project
+        {{ trans.removeProject }}
       </button>
     </div>
 
     <div class="alert alert-danger" v-if="!hasMigrationData && wasRemoved">
       <p>This project has been marked for removal.</p>
       <button class="btn btn-danger" @click="undoRemoveProject">
-        Undo Project Removal
+        {{ trans.undoRemoveProject }}
       </button>
     </div>
 
@@ -183,7 +181,7 @@ const ProjectStatusApp = {
       <div class="box-table me-4 flex-fill">
         <table class="table">
           <thead>
-            <tr><th colspan="2">Swift Data</th></tr>
+            <tr><th colspan="2">{{ trans.swiftData }}</th></tr>
           </thead>
           <tbody>
             <tr>
@@ -191,11 +189,11 @@ const ProjectStatusApp = {
               <td>{{ migrationData.container_count_swift }}</td>
             </tr>
             <tr>
-              <th>Objects</th>
+              <th>{{ trans.objects }}</th>
               <td>{{ migrationData.object_count_swift }}</td>
             </tr>
             <tr>
-              <th>Total bytes</th>
+              <th>{{ trans.totalBytes }}</th>
               <td>{{ migrationData.bytes_used_swift }}</td>
             </tr>
           </tbody>
@@ -205,7 +203,7 @@ const ProjectStatusApp = {
       <div class="box-table flex-fill">
         <table class="table">
           <thead>
-            <tr><th colspan="2">Migrated Data</th></tr>
+            <tr><th colspan="2">{{ trans.migratedData }}</th></tr>
           </thead>
           <tbody>
             <tr>
@@ -213,11 +211,11 @@ const ProjectStatusApp = {
               <td>{{ migrationData.container_count_gcp }}</td>
             </tr>
             <tr>
-              <th>Objects</th>
+              <th>{{ trans.objects }}</th>
               <td>{{ migrationData.object_count_gcp }}</td>
             </tr>
             <tr>
-              <th>Total bytes</th>
+              <th>{{ trans.totalBytes }}</th>
               <td>{{ migrationData.bytes_used_gcp }}</td>
             </tr>
           </tbody>
@@ -226,7 +224,7 @@ const ProjectStatusApp = {
     </div>
 
     <div v-if="hasMigrationData">
-      <h5 class="mb-3">Migration Info</h5>
+      <h5 class="mb-3">{{ trans.migrationInfo }}</h5>
       <div class="box-table p-2">
         <code>
           started: {{ migrationData.initial_date }}<br />

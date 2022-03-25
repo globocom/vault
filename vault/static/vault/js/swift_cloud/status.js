@@ -4,6 +4,7 @@ const StatusApp = {
     projects: PROJECTS,
     migrationData: MIGRATION_DATA,
     projectStatusUrl: PROJECT_STATUS_URL,
+    trans: TRANSLATIONS,
   },
   computed: {
     migrated() {
@@ -20,14 +21,14 @@ const StatusApp = {
         if (data.length) {
           projectData = data[0];
 
-          project.status = "Waiting in migration queue";
+          project.status = this.trans.waitingMigration;
 
           if (projectData.initial_date && !projectData.final_date) {
-            project.status = "Migrating...";
+            project.status = this.trans.migrating;
           }
 
           if (projectData.final_date) {
-            project.status = "Done";
+            project.status = this.trans.done;
           }
         }
 
@@ -39,12 +40,12 @@ const StatusApp = {
   <div>
     <div class="d-flex justify-content-start">
       <div class="box me-4">
-        Total projects:<br />
+        {{ trans.totalProjects }}:<br />
         <strong class="fs-3">{{ projects.length }}</strong>
       </div>
 
       <div class="box me-4">
-        Migrated projects:<br />
+        {{ trans.migratedProjects }}:<br />
         <strong class="fs-3">{{ migrated }}</strong>
       </div>
     </div>
@@ -53,10 +54,10 @@ const StatusApp = {
       <table class="table">
         <thead>
           <tr>
-            <th width="30%">Project Name</th>
-            <th width="30%">Project ID</th>
-            <th>Team</th>
-            <th>Migration Status</th>
+            <th width="30%">{{ trans.projectName }}</th>
+            <th width="30%">{{ trans.projectId }}</th>
+            <th>{{ trans.team }}</th>
+            <th>{{ trans.migrationStatus }}</th>
             <th width="10%"></th>
           </tr>
         </thead>
@@ -74,7 +75,7 @@ const StatusApp = {
             </td>
             <td class="text-end">
               <a class="btn btn-sm btn-default" :href="projectStatusUrl + '?project_id=' + project.id">
-                Details
+                {{ trans.details }}
               </a>
             </td>
           </tr>

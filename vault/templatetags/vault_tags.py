@@ -1,10 +1,6 @@
-import json
-
 from urllib.parse import urlencode
 from django import template
 from django.conf import settings
-from django.apps import apps
-
 from vault.models import GroupProjects
 from identity.keystone import KeystoneNoRequest
 
@@ -29,7 +25,6 @@ def get_vault_env(context):
 def set_project(context):
     user = context.get('user')
     groups = user.groups.all()
-    request = context.get('request')
     keystone = KeystoneNoRequest()
     group_projects = []
 

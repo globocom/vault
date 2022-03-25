@@ -80,6 +80,7 @@
     <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
     <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
     <script src="{% static 'vendor/js/vue.js' if DEBUG else 'vendor/js/vue.min.js' %}"></script>
+    <script src="{% url 'translations_js' %}"></script>
 
     <script>
       Base.init();

@@ -4,6 +4,7 @@ const ReportApp = {
     projects: PROJECTS,
     migrationData: MIGRATION_DATA,
     projectStatusUrl: PROJECT_STATUS_URL,
+    trans: TRANSLATIONS,
   },
   computed: {
     migrated() {
@@ -20,14 +21,14 @@ const ReportApp = {
         if (data.length) {
           projectData = data[0];
 
-          project.status = "Waiting in migration queue";
+          project.status = this.trans.waitingMigration;
 
           if (projectData.initial_date && !projectData.final_date) {
-            project.status = "Migrating...";
+            project.status = this.trans.migrating;
           }
 
           if (projectData.final_date) {
-            project.status = "Done";
+            project.status = this.trans.done;
           }
         }
 
@@ -40,9 +41,9 @@ const ReportApp = {
     <table class="table">
       <thead>
         <tr>
-          <th width="30%">Project Name</th>
-          <th width="30%">Project ID</th>
-          <th>Migration Status</th>
+          <th width="30%">{{ trans.projectName }}</th>
+          <th width="30%">{{ trans.projectId }}</th>
+          <th>{{ trans.migrationStatus }}</th>
           <th width="10%"></th>
         </tr>
       </thead>
@@ -55,7 +56,7 @@ const ReportApp = {
           </td>
           <td class="text-end">
             <a class="btn btn-sm btn-default" :href="projectStatusUrl + '?project_id=' + project.id">
-              Details
+              {{ trans.details }}
             </a>
           </td>
         </tr>

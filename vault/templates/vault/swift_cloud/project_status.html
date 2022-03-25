@@ -24,13 +24,15 @@
 
 {% block js_bottom %}
 <script>
-const PROJECT_NAME = "{{ project.name }}";
-const PROJECT_ID = "{{ project.id }}";
+const PROJECT = {
+  id: "{{ project.id }}",
+  name: "{{ project.name }}",
+  metadata: JSON.parse('{{ metadata|escapejs }}'),
+  status: "{{ status }}"
+};
 const MIGRATE_URL = "{% url 'swift_cloud_migrate' %}";
 const REMOVAL_URL = "{% url 'swift_cloud_removal' %}";
-const METADATA = JSON.parse('{{ metadata|escapejs }}');
 const MIGRATION_DATA = JSON.parse('{{ migration_data|escapejs }}');
-const PROJECT_STATUS = "{{ status }}";
 const ENVIRON = "{% get_vault_env %}";
 </script>
 <script src="{% static 'vault/js/swift_cloud/project_status.js' %}"></script>
