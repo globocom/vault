@@ -22,12 +22,15 @@ def js(request):
         "totalBytes": _("Total bytes"),
         "migratedData": _("Migrated Data"),
         "migrationInfo": _("Migration Info"),
+        "migrationCompleted": _("Migration Completed"),
         "waitingMigration": _("Waiting in migration queue"),
         "migrating": _("Migrating..."),
         "done": _("Done"),
         "details": _("Details"),
         "totalProjects": _("Total projects"),
         "migratedProjects": _("Migrated projects"),
+        "projectsMarkedForRemoval": _("Projects marked for removal"),
+        "markedForRemoval": _("Marked for removal"),
         "team": _("Team"),
     }
 

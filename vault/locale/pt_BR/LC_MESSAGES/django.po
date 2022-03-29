@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-25 11:54-0300\n"
+"POT-Creation-Date: 2022-03-29 18:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -272,7 +272,7 @@ msgstr "Limpar"
 
 #: templates/vault/team_manager/users_teams.html:29
 #: templates/vault/users_teams.html:17 templates/vault/users_teams.html:35
-#: views/translations.py:31
+#: views/translations.py:34
 msgid "Team"
 msgstr "Time"
 
@@ -380,35 +380,35 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
 
-#: views/swift_cloud.py:160
+#: views/swift_cloud.py:169
 msgid "Error getting migration data"
 msgstr "Erro ao obter dados de migração"
 
-#: views/swift_cloud.py:165
+#: views/swift_cloud.py:174
 msgid "Migration not initialized yet"
 msgstr "Migração não inicializada"
 
-#: views/swift_cloud.py:168 views/translations.py:25
+#: views/swift_cloud.py:177 views/translations.py:26
 msgid "Waiting in migration queue"
 msgstr "Aguardando na fila de migração"
 
-#: views/swift_cloud.py:171 views/translations.py:26
+#: views/swift_cloud.py:180 views/translations.py:27
 msgid "Migrating..."
 msgstr "Migrando..."
 
-#: views/swift_cloud.py:174 views/translations.py:27
-msgid "Done"
-msgstr "Finalizado"
+#: views/swift_cloud.py:183 views/translations.py:25
+msgid "Migration Completed"
+msgstr "Migração concluída"
 
-#: views/swift_cloud.py:187
+#: views/swift_cloud.py:196 views/translations.py:33
 msgid "Marked for removal"
 msgstr "Marcado para remoção"
 
-#: views/swift_cloud.py:199
+#: views/swift_cloud.py:208
 msgid "Method not allowed"
 msgstr "Método não permitido"
 
-#: views/swift_cloud.py:206
+#: views/swift_cloud.py:215
 msgid "Migration job created"
 msgstr "Job de migração criado"
 
@@ -469,13 +469,21 @@ msgid "Migration Info"
 msgstr "Informações da Migração"
 
 #: views/translations.py:28
+msgid "Done"
+msgstr "Finalizado"
+
+#: views/translations.py:29
 msgid "Details"
 msgstr "Detalhes"
 
-#: views/translations.py:29
+#: views/translations.py:30
 msgid "Total projects"
 msgstr "Total de projetos"
 
-#: views/translations.py:30
+#: views/translations.py:31
 msgid "Migrated projects"
 msgstr "Projetos migrados"
+
+#: views/translations.py:32
+msgid "Projects marked for removal"
+msgstr "Projetos marcados para remoção"

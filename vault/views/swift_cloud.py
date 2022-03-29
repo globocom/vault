@@ -109,11 +109,20 @@ def swift_cloud_status(request):
     except Exception as err:
         log.exception(f"Keystone error: {err}")
 
-    sct_client = SCTClient(
-        settings.SWIFT_CLOUD_TOOLS_URL,
-        settings.SWIFT_CLOUD_TOOLS_API_KEY
-    )
+    # Get each project metadata
+    auth_token = request.session.get('auth_token')
+    for project in projects:
+        http_conn, storage_url = get_conn_and_storage_url(request, project["id"])
+        project["metadata"] = {}
+        try:
+            project["metadata"] = client.head_account(storage_url,
+                auth_token, http_conn=http_conn)
+        except Exception as err:
+            log.exception(f'Exception: {err}')
 
+    # Get transfer status for all projects in swift cloud tools api
+    sct_client = SCTClient(settings.SWIFT_CLOUD_TOOLS_URL,
+                           settings.SWIFT_CLOUD_TOOLS_API_KEY)
     data = []
     try:
         response = sct_client.transfer_status_by_projects(
@@ -171,7 +180,7 @@ def swift_cloud_project_status(request):
         status = _("Migrating...")
 
     if data.get("final_date"):
-        status = _("Done")
+        status = _("Migration Completed")
 
     http_conn, storage_url = get_conn_and_storage_url(request, project_id)
     auth_token = request.session.get('auth_token')

@@ -10,6 +10,11 @@ const StatusApp = {
     migrated() {
       return this.migrationData.filter((i) => i.final_date).length;
     },
+    removed() {
+      return this.projects.filter((i) =>
+        i.metadata.hasOwnProperty("x-account-meta-cloud-remove")
+      ).length;
+    },
     updatedProjects() {
       return this.projects.map((project) => {
         const data = this.migrationData.filter(
@@ -20,7 +25,6 @@ const StatusApp = {
 
         if (data.length) {
           projectData = data[0];
-
           project.status = this.trans.waitingMigration;
 
           if (projectData.initial_date && !projectData.final_date) {
@@ -28,8 +32,12 @@ const StatusApp = {
           }
 
           if (projectData.final_date) {
-            project.status = this.trans.done;
+            project.status = this.trans.migrationCompleted;
           }
+        }
+
+        if (project.metadata.hasOwnProperty("x-account-meta-cloud-remove")) {
+          project.status = this.trans.markedForRemoval;
         }
 
         return project;
@@ -47,6 +55,11 @@ const StatusApp = {
       <div class="box me-4">
         {{ trans.migratedProjects }}:<br />
         <strong class="fs-3">{{ migrated }}</strong>
+      </div>
+
+      <div class="box me-4">
+        {{ trans.projectsMarkedForRemoval }}:<br />
+        <strong class="fs-3">{{ removed }}</strong>
       </div>
     </div>
 
