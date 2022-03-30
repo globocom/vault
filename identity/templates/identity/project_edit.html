@@ -100,9 +100,7 @@
 
 {% block js_bottom %}
 {{ block.super }}
-
   {% block show_roles_script %}
-  {% if show_roles %}
     <script src="{% static 'identity/js/project.js' %}"></script>
     <script>
     Project.Users.init({
@@ -113,7 +111,5 @@
       'resetPassUrl': '{% url "update_pass" project_name %}'
     });
     </script>
-  {% endif %}
   {% endblock %}
-
 {% endblock %}

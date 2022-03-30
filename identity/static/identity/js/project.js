@@ -161,7 +161,7 @@ Project.Users = {
     const users = data.users;
     let $temp;
 
-    for (var i = 0, l = users.length; i < l; i++) {
+    for (var i = 0, l = users?.length; i < l; i++) {
       var roles = users[i].roles;
 
       for (var j = 0, k = roles.length; j < k; j++) {
