@@ -166,7 +166,7 @@ def swift_cloud_project_status(request):
         if response.ok:
             data = response.json()
         else:
-            status = _("Error getting migration data")
+            status = _("Couldn't get migration data")
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
 

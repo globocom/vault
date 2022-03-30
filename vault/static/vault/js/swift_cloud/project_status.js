@@ -171,7 +171,7 @@ const ProjectStatusApp = {
     </div>
 
     <div class="alert alert-danger" v-if="!hasMigrationData && wasRemoved">
-      <p>This project has been marked for removal.</p>
+      <p>{{ trans.hasBeenMarkedRemoval }}</p>
       <button class="btn btn-danger" @click="undoRemoveProject">
         {{ trans.undoRemoveProject }}
       </button>

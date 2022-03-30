@@ -31,6 +31,7 @@ def js(request):
         "migratedProjects": _("Migrated projects"),
         "projectsMarkedForRemoval": _("Projects marked for removal"),
         "markedForRemoval": _("Marked for removal"),
+        "hasBeenMarkedRemoval": _("This project has been marked for removal"),
         "team": _("Team"),
     }
 

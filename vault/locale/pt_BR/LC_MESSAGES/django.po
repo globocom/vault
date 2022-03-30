@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-29 18:33-0300\n"
+"POT-Creation-Date: 2022-03-29 18:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -272,7 +272,7 @@ msgstr "Limpar"
 
 #: templates/vault/team_manager/users_teams.html:29
 #: templates/vault/users_teams.html:17 templates/vault/users_teams.html:35
-#: views/translations.py:34
+#: views/translations.py:35
 msgid "Team"
 msgstr "Time"
 
@@ -381,8 +381,8 @@ msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
 
 #: views/swift_cloud.py:169
-msgid "Error getting migration data"
-msgstr "Erro ao obter dados de migração"
+msgid "Couldn't get migration data"
+msgstr "Não foi possível obter dados de migração"
 
 #: views/swift_cloud.py:174
 msgid "Migration not initialized yet"
@@ -487,3 +487,7 @@ msgstr "Projetos migrados"
 #: views/translations.py:32
 msgid "Projects marked for removal"
 msgstr "Projetos marcados para remoção"
+
+#: views/translations.py:34
+msgid "This project has been marked for removal"
+msgstr "Este projeto foi marcado para ser removido"
