@@ -23,6 +23,20 @@ from identity.keystone import Keystone, KeystoneNoRequest
 log = logging.getLogger(__name__)
 
 
+class KeystoneSingleton:
+
+    def __init__(self):
+        self.keystone = None
+
+    def get_keystone(self, request):
+        if not self.keystone:
+            self.keystone = Keystone(request)
+
+        return self.keystone
+
+
+keystone_singleton = KeystoneSingleton()
+
 def update_default_context(request, context={}):
     if not request.session.get('is_superuser'):
         request.session['is_superuser'] = request.user.is_superuser
@@ -93,7 +107,7 @@ def maybe_update_token(request):
         log.info('Updating token for user [{}]'.format(request.user))
 
         try:
-            keystone = Keystone(request)
+            keystone = keystone_singleton.get_keystone(request)
         except exceptions.AuthorizationFailure:
             msg = _('Unable to retrieve Keystone data')
             messages.add_message(request, messages.ERROR, msg)
@@ -161,7 +175,7 @@ def project_check(request, current_project):
 
     if current_project:
         try:
-            keystone = Keystone(request)
+            keystone = keystone_singleton.get_keystone(request)
         except exceptions.AuthorizationFailure:
             msg = _('Unable to retrieve Keystone data')
             messages.add_message(request, messages.ERROR, msg)
