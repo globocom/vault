@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 22:29-0300\n"
+"POT-Creation-Date: 2022-04-06 23:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: identity/apps.py:9 identity/views.py:754 identity/views.py:794
+#: identity/apps.py:9 identity/views.py:691 identity/views.py:723
 msgid "Identity"
 msgstr "Identity"
 
@@ -26,7 +26,7 @@ msgstr "Identity"
 msgid "User Name"
 msgstr "Nome do Usuário"
 
-#: identity/forms.py:35 identity/templates/identity/users.html:23
+#: identity/forms.py:35 identity/templates/identity/users.html:26
 msgid "Email"
 msgstr "Email"
 
@@ -44,8 +44,8 @@ msgid "Primary Project"
 msgstr "Projeto Primário"
 
 #: identity/forms.py:57 identity/forms.py:133
-#: identity/templates/identity/projects.html:29
-#: identity/templates/identity/users.html:24
+#: identity/templates/identity/projects.html:32
+#: identity/templates/identity/users.html:27
 msgid "Enabled"
 msgstr "Habilitado"
 
@@ -77,7 +77,7 @@ msgstr "Provedor de Cloud"
 msgid "Project description cannot be empty."
 msgstr "Descrição do projeto não pode estar vazia."
 
-#: identity/forms.py:167 identity/templates/identity/users.html:22
+#: identity/forms.py:167 identity/templates/identity/users.html:25
 msgid "User"
 msgstr "Usuário"
 
@@ -97,25 +97,31 @@ msgstr "Permissão negada para gerenciar este projeto"
 msgid "Manage Users:"
 msgstr "Gerenciar Usuários:"
 
-#: identity/templates/identity/_project_members.html:13
-msgid "with role:"
-msgstr "com papel:"
+#: identity/templates/identity/_project_members.html:8
+msgid "Select user..."
+msgstr ""
 
-#: identity/templates/identity/_project_members.html:21
+#: identity/templates/identity/_project_members.html:16
+#, fuzzy
+#| msgid "Select this Project"
+msgid "Select role..."
+msgstr "Selecionar este Projeto"
+
+#: identity/templates/identity/_project_members.html:24
 #: identity/templates/identity/projects_and_users.html:13
 #: identity/templates/identity/projects_and_users.html:21
 msgid "Add"
 msgstr "Adicionar"
 
-#: identity/templates/identity/_project_members.html:28
+#: identity/templates/identity/_project_members.html:35
 msgid "user"
 msgstr "usuário"
 
-#: identity/templates/identity/_project_members.html:29
+#: identity/templates/identity/_project_members.html:36
 msgid "role"
 msgstr "papel"
 
-#: identity/templates/identity/_project_members.html:38
+#: identity/templates/identity/_project_members.html:46
 msgid "Create project to manage users"
 msgstr "Crie um projeto para gerenciar usuários"
 
@@ -138,24 +144,29 @@ msgstr "Time dono atual"
 #: identity/templates/identity/project_change.html:4
 #: identity/templates/identity/project_change.html:10
 #: identity/templates/identity/project_change_noteam.html:4
-#: identity/templates/identity/projects.html:12
-#: identity/templates/identity/projects_and_users.html:10 identity/views.py:759
-#: identity/views.py:812
+#: identity/templates/identity/projects.html:14
+#: identity/templates/identity/projects_and_users.html:10 identity/views.py:695
+#: identity/views.py:732
 msgid "Projects"
 msgstr "Projetos"
 
 #: identity/templates/identity/project_change.html:14
-#: identity/templates/identity/projects.html:16
+#: identity/templates/identity/projects.html:19
 msgid "New Project"
 msgstr "Novo Projeto"
 
 #: identity/templates/identity/project_change.html:25
+#: identity/templates/identity/project_change.html:31
 #: identity/templates/identity/project_create_success.html:27
-#: identity/templates/identity/projects.html:25
+#: identity/templates/identity/projects.html:28
 msgid "Project"
 msgstr "Projeto"
 
-#: identity/templates/identity/project_change.html:38
+#: identity/templates/identity/project_change.html:34
+msgid "Search"
+msgstr ""
+
+#: identity/templates/identity/project_change.html:50
 msgid "Select this Project"
 msgstr "Selecionar este Projeto"
 
@@ -211,8 +222,10 @@ msgid "Authentication URL"
 msgstr "URL de Autenticação"
 
 #: identity/templates/identity/project_create_success.html:54
-msgid "Copied!"
-msgstr "Copiado!"
+#, fuzzy
+#| msgid "Copy to Clipboard"
+msgid "Copied to clipboard."
+msgstr "Copiar para Área de Transferência"
 
 #: identity/templates/identity/project_create_success.html:55
 msgid "Copy to Clipboard"
@@ -229,7 +242,7 @@ msgstr "Endpoints de Object Storage"
 #: identity/templates/identity/project_delete_confirm.html:4
 #: identity/templates/identity/project_delete_confirm.html:5
 #: identity/templates/identity/project_delete_confirm.html:40
-#: identity/templates/identity/project_edit.html:15
+#: identity/templates/identity/project_edit.html:19
 msgid "Delete Project"
 msgstr "Excluir Projeto"
 
@@ -241,47 +254,53 @@ msgstr "Aviso!"
 msgid "All objects will be deleted. This action is irreversible!"
 msgstr "Todos os objetos serão excluídos. Esta ação é irreversível!"
 
-#: identity/templates/identity/project_edit.html:5
-#: identity/templates/identity/project_edit.html:6
+#: identity/templates/identity/project_edit.html:8
+#: identity/templates/identity/project_edit.html:9
+#: identity/templates/identity/project_edit.html:13
 msgid "Edit Project"
 msgstr "Editar Projeto"
 
-#: identity/templates/identity/project_edit.html:38
+#: identity/templates/identity/project_edit.html:42
 msgid "Project User:"
 msgstr "Usuário do Projeto:"
 
-#: identity/templates/identity/project_edit.html:44
+#: identity/templates/identity/project_edit.html:48
 msgid "Reset Password"
 msgstr "Resetar Senha"
 
-#: identity/templates/identity/project_edit.html:45
+#: identity/templates/identity/project_edit.html:53
 msgid "New password:"
 msgstr "Nova senha:"
 
-#: identity/templates/identity/project_edit.html:84
+#: identity/templates/identity/project_edit.html:93
 msgid "Save Project"
 msgstr "Salvar Projeto"
 
-#: identity/templates/identity/projects.html:26
+#: identity/templates/identity/projects.html:29
 msgid "Project Id"
 msgstr "Id do Projeto"
 
-#: identity/templates/identity/projects.html:27
+#: identity/templates/identity/projects.html:30
 msgid "Created By"
 msgstr "Criado Por"
 
-#: identity/templates/identity/projects.html:28
+#: identity/templates/identity/projects.html:31
 msgid "Owner"
 msgstr "Dono"
 
-#: identity/templates/identity/projects_and_users.html:6 identity/views.py:793
+#: identity/templates/identity/projects.html:51
+#: identity/templates/identity/users.html:40
+msgid "edit"
+msgstr ""
+
+#: identity/templates/identity/projects_and_users.html:6 identity/views.py:722
 msgid "Keystone"
 msgstr "Keystone"
 
 #: identity/templates/identity/projects_and_users.html:18
 #: identity/templates/identity/users.html:5
-#: identity/templates/identity/users.html:9 identity/views.py:764
-#: identity/views.py:816
+#: identity/templates/identity/users.html:11 identity/views.py:697
+#: identity/views.py:733
 msgid "Users"
 msgstr "Usuários"
 
@@ -304,15 +323,15 @@ msgstr "Excluir Usuário"
 msgid "Save User"
 msgstr "Salvar Usuário"
 
-#: identity/templates/identity/users.html:13
+#: identity/templates/identity/users.html:16
 msgid "New User"
 msgstr "Novo Usuário"
 
-#: identity/tests/test_project_views.py:65 identity/views.py:355
+#: identity/tests/test_project_views.py:65 identity/views.py:333
 msgid "Unable to list projects"
 msgstr "Não foi possível listar projetos"
 
-#: identity/tests/test_user_views.py:56 identity/views.py:75
+#: identity/tests/test_user_views.py:56 identity/views.py:68
 msgid "Unable to list users"
 msgstr "Não foi possível listar usuários"
 
@@ -324,97 +343,102 @@ msgstr "Este campo é obrigatório"
 msgid "Enter a valid email address"
 msgstr "Informe um endereço de email válido."
 
-#: identity/tests/test_user_views.py:203 identity/views.py:173
+#: identity/tests/test_user_views.py:203 identity/views.py:165
 msgid "Error when creating user"
 msgstr "Erro ao criar usuário"
 
-#: identity/tests/test_user_views.py:320 identity/views.py:211
+#: identity/tests/test_user_views.py:320 identity/views.py:206
 msgid "Error when updating user"
 msgstr "Erro ao atualizar usuário"
 
-#: identity/tests/test_user_views.py:406 identity/views.py:223
+#: identity/tests/test_user_views.py:406 identity/views.py:216
 msgid "Successfully deleted user"
 msgstr "Usuário excluído com sucesso"
 
-#: identity/tests/test_user_views.py:419 identity/views.py:230
+#: identity/tests/test_user_views.py:419 identity/views.py:221
 msgid "Error when deleting user"
 msgstr "Erro ao excluir usuário"
 
-#: identity/tests/test_user_views.py:487 identity/views.py:738
+#: identity/tests/test_user_views.py:487 identity/views.py:676
 msgid "Error updating password"
 msgstr "Erro ao atualizar senha"
 
-#: identity/views.py:46 identity/views.py:386 identity/views.py:477
-#: identity/views.py:586
+#: identity/views.py:40 identity/views.py:362 identity/views.py:449
+#: identity/views.py:539
 msgid "Unable to retrieve Keystone data"
 msgstr "Não foi possível recuperar dados do Keystone"
 
-#: identity/views.py:54
+#: identity/views.py:48
 msgid "Authorization error"
 msgstr "Erro de autorização"
 
-#: identity/views.py:73 identity/views.py:171 identity/views.py:209
-#: identity/views.py:228 identity/views.py:318 identity/views.py:353
-#: identity/views.py:543 identity/views.py:613 identity/views.py:659
-#: identity/views.py:693 identity/views.py:777 identity/views.py:784
+#: identity/views.py:67 identity/views.py:164 identity/views.py:205
+#: identity/views.py:220 identity/views.py:299 identity/views.py:332
+#: identity/views.py:505 identity/views.py:605 identity/views.py:636
+#: identity/views.py:710 identity/views.py:715
 msgid "Exception:"
 msgstr "Exceção:"
 
-#: identity/views.py:166
+#: identity/views.py:160
 msgid "Successfully created user"
 msgstr "Usuário criado com sucesso"
 
-#: identity/views.py:204
+#: identity/views.py:201
 msgid "Successfully updated user"
 msgstr "Usuário atualizado com sucesso"
 
-#: identity/views.py:535
+#: identity/views.py:499
 msgid "Successfully updated project"
 msgstr "Projeto atualizado com sucesso"
 
-#: identity/views.py:545
+#: identity/views.py:506
 msgid "Error when updating project"
 msgstr "Erro ao atualizar projeto"
 
-#: identity/views.py:580
+#: identity/views.py:535
 msgid "Invalid credentials."
 msgstr "Credenciais inválidas."
 
-#: identity/views.py:602
-msgid "Error when deleting swift account"
-msgstr "Erro ao excluir account do swift"
-
-#: identity/views.py:610
+#: identity/views.py:561
 msgid "Successfully deleted project."
 msgstr "Projeto excluído com sucesso"
 
-#: identity/views.py:615
+#: identity/views.py:565
 msgid "Error when deleting project"
 msgstr "Erro ao excluir projeto"
 
-#: identity/views.py:687
+#: identity/views.py:630
 msgid "User already registered with this role"
 msgstr "Usuário já registrado com este papel"
 
-#: identity/views.py:688
+#: identity/views.py:631
 msgid "Conflict:"
 msgstr "Conflito:"
 
-#: identity/views.py:692
+#: identity/views.py:635
 msgid "Error adding user"
 msgstr "Erro ao adicionar usuário"
 
-#: identity/views.py:717
+#: identity/views.py:657
 msgid "Error removing user"
 msgstr "Erro ao remover usuário"
 
-#: identity/views.py:800
+#: identity/views.py:728
 msgid "projects"
 msgstr "projetos"
 
-#: identity/views.py:805
+#: identity/views.py:729
 msgid "users"
 msgstr "usuários"
+
+#~ msgid "with role:"
+#~ msgstr "com papel:"
+
+#~ msgid "Copied!"
+#~ msgstr "Copiado!"
+
+#~ msgid "Error when deleting swift account"
+#~ msgstr "Erro ao excluir account do swift"
 
 #~ msgid "Edit"
 #~ msgstr "Editar"

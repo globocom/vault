@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-29 18:47-0300\n"
+"POT-Creation-Date: 2022-04-06 23:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: admin.py:28 forms.py:60 utils.py:98 utils.py:166 views/main.py:60
+#: admin.py:28 forms.py:60 utils.py:112 utils.py:180 views/main.py:60
 msgid "Unable to retrieve Keystone data"
 msgstr "Não foi possível recuperar dados do Keystone"
 
@@ -380,35 +380,35 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
 
-#: views/swift_cloud.py:169
+#: views/swift_cloud.py:167
 msgid "Couldn't get migration data"
 msgstr "Não foi possível obter dados de migração"
 
-#: views/swift_cloud.py:174
+#: views/swift_cloud.py:172
 msgid "Migration not initialized yet"
 msgstr "Migração não inicializada"
 
-#: views/swift_cloud.py:177 views/translations.py:26
+#: views/swift_cloud.py:175 views/translations.py:26
 msgid "Waiting in migration queue"
 msgstr "Aguardando na fila de migração"
 
-#: views/swift_cloud.py:180 views/translations.py:27
+#: views/swift_cloud.py:178 views/translations.py:27
 msgid "Migrating..."
 msgstr "Migrando..."
 
-#: views/swift_cloud.py:183 views/translations.py:25
+#: views/swift_cloud.py:181 views/translations.py:25
 msgid "Migration Completed"
 msgstr "Migração concluída"
 
-#: views/swift_cloud.py:196 views/translations.py:33
+#: views/swift_cloud.py:194 views/translations.py:33
 msgid "Marked for removal"
 msgstr "Marcado para remoção"
 
-#: views/swift_cloud.py:208
+#: views/swift_cloud.py:207
 msgid "Method not allowed"
 msgstr "Método não permitido"
 
-#: views/swift_cloud.py:215
+#: views/swift_cloud.py:214
 msgid "Migration job created"
 msgstr "Job de migração criado"
 
@@ -491,3 +491,23 @@ msgstr "Projetos marcados para remoção"
 #: views/translations.py:34
 msgid "This project has been marked for removal"
 msgstr "Este projeto foi marcado para ser removido"
+
+#: views/translations.py:36
+msgid "Containers"
+msgstr "Containers"
+
+#: views/translations.py:37
+msgid "Total Used Space"
+msgstr "Total de Espaço Utilizado"
+
+#: views/translations.py:38
+msgid "Estimated Cloud Price"
+msgstr "Preço Estimado na Cloud"
+
+#: views/translations.py:39
+msgid "Currency"
+msgstr "Moeda"
+
+#: views/translations.py:40
+msgid "Monthly"
+msgstr "Mensal"

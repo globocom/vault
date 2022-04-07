@@ -33,6 +33,11 @@ def js(request):
         "markedForRemoval": _("Marked for removal"),
         "hasBeenMarkedRemoval": _("This project has been marked for removal"),
         "team": _("Team"),
+        "containers": _("Containers"),
+        "totalUsedSpace": _("Total Used Space"),
+        "estimatedCloudPrice": _("Estimated Cloud Price"),
+        "currency": _("Currency"),
+        "monthly": _("Monthly"),
     }
 
     return HttpResponse(
