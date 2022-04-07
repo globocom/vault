@@ -7,6 +7,12 @@ const ProjectStatusApp = {
     removalUrl: REMOVAL_URL,
     environ: ENVIRON,
     trans: TRANSLATIONS,
+    pricePreviewUrl: PRICE_PREVIEW_URL,
+    pricePreview: "",
+    currency: "",
+  },
+  created() {
+    this.getPricePreview();
   },
   computed: {
     hasMigrationData() {
@@ -17,6 +23,24 @@ const ProjectStatusApp = {
         "x-account-meta-cloud-remove"
       );
     },
+    totalContainers() {
+      return this.project.metadata.hasOwnProperty("x-account-container-count")
+        ? this.project.metadata["x-account-container-count"]
+        : "";
+    },
+    totalObjects() {
+      return this.project.metadata.hasOwnProperty("x-account-object-count")
+        ? this.project.metadata["x-account-object-count"]
+        : "";
+    },
+    bytesUsed() {
+      return this.project.metadata.hasOwnProperty("x-account-bytes-used")
+        ? this.project.metadata["x-account-bytes-used"]
+        : "0";
+    },
+    formatedBytes() {
+      return Base.formatBytes(parseFloat(this.bytesUsed));
+    },
   },
   methods: {
     reset() {
@@ -24,6 +48,21 @@ const ProjectStatusApp = {
         Base.Loading.hide();
         window.location.reload();
       }, 1000);
+    },
+    async getPricePreview() {
+      const res = await fetch(
+        `${this.pricePreviewUrl}?amount=${this.bytesUsed}`
+      );
+
+      if (res.ok) {
+        const result = await res.json();
+        this.pricePreview = result.price;
+        this.currency = result.currency;
+        return;
+      }
+
+      this.pricePreview = "--";
+      this.currency = "--";
     },
     async startMigration() {
       if (!window.confirm(this.trans.startMigrationMsg)) {
@@ -162,6 +201,29 @@ const ProjectStatusApp = {
     </div>
 
     <div v-if="!hasMigrationData && !wasRemoved">
+      <div class="box-table flex-fill">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ trans.containers }}</th>
+              <th>{{ trans.objects }}</th>
+              <th>{{ trans.totalUsedSpace }}</th>
+              <th>{{ trans.estimatedCloudPrice }} ({{ trans.monthly }})</th>
+              <th>{{ trans.currency }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ totalContainers }}</td>
+              <td>{{ totalObjects }}</td>
+              <td>{{ formatedBytes }}</td>
+              <td>{{ pricePreview }}</td>
+              <td>{{ currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <button class="btn btn-primary me-3" @click="startMigration">
         {{ trans.migrateProject }}
       </button>

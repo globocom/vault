@@ -64,6 +64,7 @@ if settings.SWIFT_CLOUD_ENABLED:
     urlpatterns.append(re_path(r"^swift-cloud/project-status/?$", views.swift_cloud_project_status, name="swift_cloud_project_status"))
     urlpatterns.append(re_path(r"^swift-cloud/migrate/?$", views.swift_cloud_migrate, name="swift_cloud_migrate"))
     urlpatterns.append(re_path(r"^swift-cloud/removal/?$", views.swift_cloud_removal, name="swift_cloud_removal"))
+    urlpatterns.append(re_path(r"^swift-cloud/price-preview/?$", views.swift_cloud_price_preview, name="swift_cloud_price_preview"))
 
 
 for app in apps.app_configs:

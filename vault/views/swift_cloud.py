@@ -132,9 +132,10 @@ def swift_cloud_status(request):
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
 
-    return render(request, "vault/swift_cloud/status.html",
-        {"projects": json.dumps(projects),
-         "migration_data": json.dumps(data)})
+    return render(request, "vault/swift_cloud/status.html", {
+        "projects": json.dumps(projects),
+        "migration_data": json.dumps(data)
+    })
 
 
 @login_required
@@ -153,11 +154,8 @@ def swift_cloud_project_status(request):
             {"project": None,
              "error": "Keystone Error"})
 
-    sct_client = SCTClient(
-        settings.SWIFT_CLOUD_TOOLS_URL,
-        settings.SWIFT_CLOUD_TOOLS_API_KEY
-    )
-
+    sct_client = SCTClient(settings.SWIFT_CLOUD_TOOLS_URL,
+                           settings.SWIFT_CLOUD_TOOLS_API_KEY)
     status = ""
     data = {}
 
@@ -195,11 +193,12 @@ def swift_cloud_project_status(request):
     if head_account.get("x-account-meta-cloud-remove"):
         status = _("Marked for removal")
 
-    return render(request, "vault/swift_cloud/project_status.html",
-        {"project": project,
-         "status": status,
-         "metadata": json.dumps(head_account),
-         "migration_data": json.dumps(data)})
+    return render(request, "vault/swift_cloud/project_status.html", {
+        "project": project,
+        "status": status,
+        "metadata": json.dumps(head_account),
+        "migration_data": json.dumps(data)
+    })
 
 
 @login_required
@@ -209,8 +208,8 @@ def swift_cloud_migrate(request):
 
     sct_client = SCTClient(
         settings.SWIFT_CLOUD_TOOLS_URL,
-        settings.SWIFT_CLOUD_TOOLS_API_KEY
-    )
+        settings.SWIFT_CLOUD_TOOLS_API_KEY)
+
     params = json.loads(request.body)
     content = {"message": _("Migration job created")}
     status = 201
@@ -218,9 +217,10 @@ def swift_cloud_migrate(request):
     response = sct_client.transfer_create(
         params.get('project_id'),
         params.get('project_name'),
-        params.get('environment')
-    )
+        params.get('environment'))
+
     status = response.status_code
+
     if status != 201:
         content = {"error": response.text}
 
@@ -254,3 +254,32 @@ def swift_cloud_removal(request):
         return JsonResponse({"error": "Project update error"}, status=500)
 
     return JsonResponse({"message": "Success"}, status=200)
+
+
+@login_required
+def swift_cloud_price_preview(request):
+    amount = request.GET.get('amount')
+
+    if not amount:
+        return JsonResponse(
+            {"error": "Missing amount parameter"}, status=400)
+
+    sct_client = SCTClient(
+        settings.SWIFT_CLOUD_TOOLS_URL,
+        settings.SWIFT_CLOUD_TOOLS_API_KEY)
+
+    response = sct_client.billing_get_price_from_service(
+        settings.SWIFT_CLOUD_GCP_SERVICE_ID,
+        settings.SWIFT_CLOUD_GCP_SKU,
+        int(amount))
+
+    result = {"price": None, "currency": None}
+    status = 500
+
+    if response.ok:
+        result = response.json()
+        status = 200
+
+    import ipdb; ipdb.set_trace()
+
+    return JsonResponse(result, status=status)
