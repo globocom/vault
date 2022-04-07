@@ -104,21 +104,11 @@ def swift_cloud_status(request):
                         "environment": environ,
                         "team": gp.group.name,
                         "status": "",
+                        "metadata": {}
                     })
         projects.sort(key=lambda p: p["name"].lower())
     except Exception as err:
         log.exception(f"Keystone error: {err}")
-
-    # Get each project metadata
-    auth_token = request.session.get('auth_token')
-    for project in projects:
-        http_conn, storage_url = get_conn_and_storage_url(request, project["id"])
-        project["metadata"] = {}
-        try:
-            project["metadata"] = client.head_account(storage_url,
-                auth_token, http_conn=http_conn)
-        except Exception as err:
-            log.exception(f'Exception: {err}')
 
     # Get transfer status for all projects in swift cloud tools api
     sct_client = SCTClient(settings.SWIFT_CLOUD_TOOLS_URL,
