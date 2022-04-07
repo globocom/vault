@@ -280,6 +280,4 @@ def swift_cloud_price_preview(request):
         result = response.json()
         status = 200
 
-    import ipdb; ipdb.set_trace()
-
     return JsonResponse(result, status=status)
