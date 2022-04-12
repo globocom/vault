@@ -92,3 +92,7 @@
 .btn-remove-user:hover .remove-user-text {
   display: inline;
 }
+
+.btn-remove-user:disabled {
+  opacity: 0.2;
+}

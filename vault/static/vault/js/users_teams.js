@@ -1,6 +1,7 @@
 // globals: ALL_USERS, ALL_TEAMS, ADD_URL, DELETE_URL, LIST_URL, TEXT
 
 const state = Vue.observable({
+  loggedUser: LOGGED_USER,
   allUsers: ALL_USERS,
   allTeams: ALL_TEAMS,
   teams: [],
@@ -143,6 +144,7 @@ const TeamCard = {
   data() {
     return {
       selectedUser: "",
+      loggedUser: state.loggedUser,
     };
   },
   computed: {
@@ -191,6 +193,7 @@ const TeamCard = {
           v-for="(user, index) in filteredUsers">
         {{ user.name }}
         <button class="btn btn-sm btn-default text-danger btn-remove-user"
+                :disabled="user.name === loggedUser"
                 @click="removeUserTeam(user.id)">
           <span class="remove-user-text me-2">{{ text.removeUser }}</span><i class="fas fa-times"></i>
         </button>

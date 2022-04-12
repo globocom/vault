@@ -22,6 +22,7 @@ const ALL_USERS = {{ users|safe  }};
 const ADD_URL = '{% url "team_add_user" %}';
 const DELETE_URL = '{% url "team_delete_user" %}';
 const LIST_URL = '{% url "team_list_users" %}';
+const LOGGED_USER = '{{ logged_user }}';
 const TEXT = {
   selectUser: '{% trans "Select a user" %}',
   filterUsers: '{% trans "Filter users within each team" %}',
