@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-06 23:05-0300\n"
+"POT-Creation-Date: 2022-04-12 17:59-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,8 +55,7 @@ msgstr "500, Algo deu errado..."
 msgid "Models in the %(name)s application"
 msgstr "Models na aplicação %(name)s"
 
-#: templates/admin/index.html:40
-#: templates/vault/team_manager/users_teams.html:34
+#: templates/admin/index.html:40 views/translations.py:10
 msgid "Add"
 msgstr "Adicionar"
 
@@ -115,7 +114,7 @@ msgstr "Login"
 
 #: templates/vault/pagination.html:7
 msgid "previous"
-msgstr ""
+msgstr "anterior"
 
 #: templates/vault/pagination.html:11
 msgid "of"
@@ -220,7 +219,7 @@ msgstr "Relatório Geral"
 #: templates/vault/sidebar.html:79 templates/vault/sidebar.html:80
 #: templates/vault/swift_cloud/status.html:5
 #: templates/vault/swift_cloud/status.html:9
-#: templates/vault/swift_cloud/status.html:13 views/translations.py:16
+#: templates/vault/swift_cloud/status.html:13 views/translations.py:30
 msgid "Migration Status"
 msgstr "Status de Migração"
 
@@ -238,8 +237,7 @@ msgstr "Status de Migração do Projeto"
 msgid "Add user to"
 msgstr "Adicionar usuário a"
 
-#: templates/vault/team_manager/add_user_modal.html:18
-#: templates/vault/team_manager/users_teams.html:26
+#: templates/vault/team_manager/add_user_modal.html:18 views/translations.py:42
 msgid "Select a user"
 msgstr "Selecione um usuário"
 
@@ -247,8 +245,7 @@ msgstr "Selecione um usuário"
 msgid "Add User"
 msgstr "Adicionar Usuário"
 
-#: templates/vault/team_manager/add_user_modal.html:25
-#: templates/vault/team_manager/users_teams.html:39
+#: templates/vault/team_manager/add_user_modal.html:25 views/translations.py:14
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -262,67 +259,6 @@ msgstr "Gerenciar Usuários e Times"
 msgid "Add new user to"
 msgstr "Adicionar novo usuário a"
 
-#: templates/vault/team_manager/users_teams.html:27
-msgid "Filter users within each team"
-msgstr "Filtrar usuários dentro dos times"
-
-#: templates/vault/team_manager/users_teams.html:28
-msgid "Clear"
-msgstr "Limpar"
-
-#: templates/vault/team_manager/users_teams.html:29
-#: templates/vault/users_teams.html:17 templates/vault/users_teams.html:35
-#: views/translations.py:35
-msgid "Team"
-msgstr "Time"
-
-#: templates/vault/team_manager/users_teams.html:30
-msgid "Teams"
-msgstr "Times"
-
-#: templates/vault/team_manager/users_teams.html:31
-msgid "My Teams"
-msgstr "Meus Times"
-
-#: templates/vault/team_manager/users_teams.html:32
-#: templates/vault/users_teams.html:26 templates/vault/users_teams.html:36
-msgid "User"
-msgstr "Usuário"
-
-#: templates/vault/team_manager/users_teams.html:33
-msgid "Users"
-msgstr "Usuários"
-
-#: templates/vault/team_manager/users_teams.html:35
-msgid "Add to"
-msgstr "Adicionar em"
-
-#: templates/vault/team_manager/users_teams.html:36
-msgid "Add new user"
-msgstr "Adicionar novo usuário"
-
-#: templates/vault/team_manager/users_teams.html:37
-msgid "Add new user to this team"
-msgstr "Adicionar novo usuário a este time"
-
-#: templates/vault/team_manager/users_teams.html:38
-msgid "Remove user"
-msgstr "Remover usuário"
-
-#: templates/vault/team_manager/users_teams.html:40
-msgid "User removed"
-msgstr "Usuario removido"
-
-#: templates/vault/team_manager/users_teams.html:41
-msgid "User added"
-msgstr "Usuário adicionado"
-
-#: templates/vault/team_manager/users_teams.html:42
-msgid "The user will lose access to all projects owned by this team! Continue?"
-msgstr ""
-"O Usuário perderá acesso a todos os projetos pertencentes a este time! "
-"Continuar?"
-
 #: templates/vault/user_info.html:12
 msgid "Logout"
 msgstr "Sair"
@@ -331,9 +267,19 @@ msgstr "Sair"
 msgid "List Teams and Users"
 msgstr "Listar Times e Usuários"
 
+#: templates/vault/users_teams.html:17 templates/vault/users_teams.html:35
+#: views/translations.py:45
+msgid "Team"
+msgstr "Time"
+
 #: templates/vault/users_teams.html:19
 msgid "All"
 msgstr "Todos"
+
+#: templates/vault/users_teams.html:26 templates/vault/users_teams.html:36
+#: views/translations.py:52
+msgid "User"
+msgstr "Usuário"
 
 #: tests/test_views.py:91 views/main.py:137
 msgid "Unable to change your project."
@@ -380,134 +326,184 @@ msgstr "Erro ao adicionar usuário, cheque time do usuário"
 msgid "Error removing user, check user and team"
 msgstr "Erro ao remover usuário, cheque usuário e time"
 
-#: views/swift_cloud.py:167
+#: views/swift_cloud.py:157
 msgid "Couldn't get migration data"
 msgstr "Não foi possível obter dados de migração"
 
-#: views/swift_cloud.py:172
+#: views/swift_cloud.py:162
 msgid "Migration not initialized yet"
 msgstr "Migração não inicializada"
 
-#: views/swift_cloud.py:175 views/translations.py:26
+#: views/swift_cloud.py:165 views/translations.py:56
 msgid "Waiting in migration queue"
 msgstr "Aguardando na fila de migração"
 
-#: views/swift_cloud.py:178 views/translations.py:27
+#: views/swift_cloud.py:168 views/translations.py:27
 msgid "Migrating..."
 msgstr "Migrando..."
 
-#: views/swift_cloud.py:181 views/translations.py:25
+#: views/swift_cloud.py:171 views/translations.py:28
 msgid "Migration Completed"
 msgstr "Migração concluída"
 
-#: views/swift_cloud.py:194 views/translations.py:33
+#: views/swift_cloud.py:184 views/translations.py:23
 msgid "Marked for removal"
 msgstr "Marcado para remoção"
 
-#: views/swift_cloud.py:207
+#: views/swift_cloud.py:197
 msgid "Method not allowed"
 msgstr "Método não permitido"
 
-#: views/swift_cloud.py:214
+#: views/swift_cloud.py:204
 msgid "Migration job created"
 msgstr "Job de migração criado"
 
-#: views/translations.py:10
-msgid "This will start the migration. Confirm?"
-msgstr "Isto irá começar a migração. Confirma?"
-
 #: views/translations.py:11
-msgid "The project will be marked for removal. Confirm?"
-msgstr "Este projeto será marcado para remoção. Confirma?"
+msgid "Add new user"
+msgstr "Adicionar novo usuário"
 
 #: views/translations.py:12
-msgid "This will undo the removal of this project. Continue?"
-msgstr "Isto irá desfazer a remoção do projeto. Continuar?"
+msgid "Add new user to this team"
+msgstr "Adicionar novo usuário a este time"
 
 #: views/translations.py:13
-msgid "Project"
-msgstr "Projeto"
-
-#: views/translations.py:14
-msgid "Project ID"
-msgstr "ID do Projeto"
+msgid "Add to"
+msgstr "Adicionar em"
 
 #: views/translations.py:15
-msgid "Project Name"
-msgstr "Nome do Projeto"
+msgid "Clear"
+msgstr "Limpar"
 
-#: views/translations.py:17
-msgid "Migrate this project"
-msgstr "Migrar este projeto"
-
-#: views/translations.py:18
-msgid "Remove this project"
-msgstr "Remover este projeto"
-
-#: views/translations.py:19
-msgid "Undo Project Removal"
-msgstr "Desfazer a remoção deste projeto"
-
-#: views/translations.py:20
-msgid "Swift Data"
-msgstr "Dados no Swift"
-
-#: views/translations.py:21
-msgid "Objects"
-msgstr "Objetos"
-
-#: views/translations.py:22
-msgid "Total bytes"
-msgstr "Total em bytes"
-
-#: views/translations.py:23
-msgid "Migrated Data"
-msgstr "Dados migrados"
-
-#: views/translations.py:24
-msgid "Migration Info"
-msgstr "Informações da Migração"
-
-#: views/translations.py:28
-msgid "Done"
-msgstr "Finalizado"
-
-#: views/translations.py:29
-msgid "Details"
-msgstr "Detalhes"
-
-#: views/translations.py:30
-msgid "Total projects"
-msgstr "Total de projetos"
-
-#: views/translations.py:31
-msgid "Migrated projects"
-msgstr "Projetos migrados"
-
-#: views/translations.py:32
-msgid "Projects marked for removal"
-msgstr "Projetos marcados para remoção"
-
-#: views/translations.py:34
-msgid "This project has been marked for removal"
-msgstr "Este projeto foi marcado para ser removido"
-
-#: views/translations.py:36
+#: views/translations.py:16
 msgid "Containers"
 msgstr "Containers"
 
-#: views/translations.py:37
-msgid "Total Used Space"
-msgstr "Total de Espaço Utilizado"
-
-#: views/translations.py:38
-msgid "Estimated Cloud Price"
-msgstr "Preço Estimado na Cloud"
-
-#: views/translations.py:39
+#: views/translations.py:17
 msgid "Currency"
 msgstr "Moeda"
 
-#: views/translations.py:40
+#: views/translations.py:18
+msgid "Details"
+msgstr "Detalhes"
+
+#: views/translations.py:19
+msgid "Done"
+msgstr "Finalizado"
+
+#: views/translations.py:20
+msgid "Estimated Cloud Price"
+msgstr "Preço Estimado na Cloud"
+
+#: views/translations.py:21
+msgid "Filter users within each team"
+msgstr "Filtrar usuários dentro dos times"
+
+#: views/translations.py:22
+msgid "This project has been marked for removal"
+msgstr "Este projeto foi marcado para ser removido"
+
+#: views/translations.py:24
+msgid "Migrated Data"
+msgstr "Dados migrados"
+
+#: views/translations.py:25
+msgid "Migrated projects"
+msgstr "Projetos migrados"
+
+#: views/translations.py:26
+msgid "Migrate this project"
+msgstr "Migrar este projeto"
+
+#: views/translations.py:29
+msgid "Migration Info"
+msgstr "Informações da Migração"
+
+#: views/translations.py:31
 msgid "Monthly"
 msgstr "Mensal"
+
+#: views/translations.py:32
+msgid "My Teams"
+msgstr "Meus Times"
+
+#: views/translations.py:33
+msgid "Objects"
+msgstr "Objetos"
+
+#: views/translations.py:34
+msgid "Project"
+msgstr "Projeto"
+
+#: views/translations.py:35
+msgid "Project ID"
+msgstr "ID do Projeto"
+
+#: views/translations.py:36
+msgid "Project Name"
+msgstr "Nome do Projeto"
+
+#: views/translations.py:37
+msgid "The project will be marked for removal. Confirm?"
+msgstr "Este projeto será marcado para remoção. Confirma?"
+
+#: views/translations.py:38
+msgid "Projects marked for removal"
+msgstr "Projetos marcados para remoção"
+
+#: views/translations.py:39
+msgid "Remove this project"
+msgstr "Remover este projeto"
+
+#: views/translations.py:40
+msgid "Remove user"
+msgstr "Remover usuário"
+
+#: views/translations.py:41
+msgid "The user will lose access to all projects owned by this team! Continue?"
+msgstr ""
+"O Usuário perderá acesso a todos os projetos pertencentes a este time! "
+"Continuar?"
+
+#: views/translations.py:43
+msgid "This will start the migration. Confirm?"
+msgstr "Isto irá começar a migração. Confirma?"
+
+#: views/translations.py:44
+msgid "Swift Data"
+msgstr "Dados no Swift"
+
+#: views/translations.py:46
+msgid "Teams"
+msgstr "Times"
+
+#: views/translations.py:47
+msgid "Total bytes"
+msgstr "Total em bytes"
+
+#: views/translations.py:48
+msgid "Total projects"
+msgstr "Total de projetos"
+
+#: views/translations.py:49
+msgid "Total Used Space"
+msgstr "Total de Espaço Utilizado"
+
+#: views/translations.py:50
+msgid "This will undo the removal of this project. Continue?"
+msgstr "Isto irá desfazer a remoção do projeto. Continuar?"
+
+#: views/translations.py:51
+msgid "Undo Project Removal"
+msgstr "Desfazer a remoção deste projeto"
+
+#: views/translations.py:53
+msgid "User added"
+msgstr "Usuário adicionado"
+
+#: views/translations.py:54
+msgid "User removed"
+msgstr "Usuario removido"
+
+#: views/translations.py:55
+msgid "Users"
+msgstr "Usuários"

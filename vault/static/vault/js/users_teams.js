@@ -1,9 +1,12 @@
-// globals: ALL_USERS, ALL_TEAMS, ADD_URL, DELETE_URL, LIST_URL, TEXT
+// globals: ALL_USERS, ALL_TEAMS, ADD_URL, DELETE_URL, LIST_URL, TRANSLATIONS
 
 const state = Vue.observable({
   loggedUser: LOGGED_USER,
   allUsers: ALL_USERS,
   allTeams: ALL_TEAMS,
+  addUrl: ADD_URL,
+  listUrl: LIST_URL,
+  deleteUrl: DELETE_URL,
   teams: [],
   currentTeam: {
     id: 0,
@@ -15,14 +18,14 @@ const state = Vue.observable({
 const UsersTeamsMixin = {
   data() {
     return {
-      text: TEXT,
+      trans: TRANSLATIONS,
       loading: false,
     };
   },
   methods: {
     async getUsersAndTeams() {
       this.loading = true;
-      const data = await fetch(LIST_URL);
+      const data = await fetch(state.listUrl);
       const result = await data.json();
 
       if (!data.ok) {
@@ -63,17 +66,17 @@ const UsersModal = {
   },
   computed: {
     filteredAllUsers() {
-      return ALL_USERS.filter((u) => u.name.search(this.query) >= 0);
+      return state.allUsers.filter((u) => u.name.search(this.query) >= 0);
     },
   },
   methods: {
     async addUserTeam() {
       if (this.selectedUser === "") {
-        this.showMsg(this.text.selectUser, "warning");
+        this.showMsg(this.trans.selectUser, "warning");
         return;
       }
 
-      const data = await fetch(ADD_URL, {
+      const data = await fetch(state.addUrl, {
         method: "POST",
         body: `user=${this.selectedUser}&group=${state.currentTeam.id}`,
         headers: {
@@ -89,7 +92,7 @@ const UsersModal = {
         return;
       }
 
-      this.showMsg(this.text.userAdded);
+      this.showMsg(this.trans.userAdded);
       this.getUsersAndTeams();
 
       state.currentTeam.id = 0;
@@ -107,7 +110,7 @@ const UsersModal = {
        @keyup.esc="close">
     <div class="users-modal" @click.stop>
       <div class="users-modal-header">
-        <h5 class="mb-4">{{ text.addNewUser }}</h5>
+        <h5 class="mb-4">{{ trans.addNewUser }}</h5>
         <button class="btn btn-sm btn-default btn-close"
                 @click="close">
         </button>
@@ -130,7 +133,7 @@ const UsersModal = {
         <button class="btn btn-sm btn-primary"
                 @click="addUserTeam"
                 :disabled="selectedUser === ''">
-          {{ text.addTo }} {{ currentTeam.name }}
+          {{ trans.addTo }} {{ currentTeam.name }}
         </button>
       </div>
     </div>
@@ -154,11 +157,11 @@ const TeamCard = {
   },
   methods: {
     async removeUserTeam(userId) {
-      if (!window.confirm(this.text.removeUserWarning)) {
+      if (!window.confirm(this.trans.removeUserWarning)) {
         return;
       }
 
-      const data = await fetch(DELETE_URL, {
+      const data = await fetch(state.deleteUrl, {
         method: "POST",
         body: `user=${userId}&group=${this.team.id}`,
         headers: {
@@ -174,7 +177,7 @@ const TeamCard = {
         return;
       }
 
-      this.showMsg(this.text.userRemoved);
+      this.showMsg(this.trans.userRemoved);
       this.getUsersAndTeams();
     },
   },
@@ -185,7 +188,7 @@ const TeamCard = {
 
       <button class="btn btn-sm btn-default text-primary"
               @click="setCurrentTeam(team)">
-        <i class="fas fa-plus me-1"></i> {{ text.addNewUserTeam }}
+        <i class="fas fa-plus me-1"></i> {{ trans.addNewUserTeam }}
       </button>
     </div>
     <ul class="list-group list-group-flush">
@@ -195,7 +198,7 @@ const TeamCard = {
         <button class="btn btn-sm btn-default text-danger btn-remove-user"
                 :disabled="user.name === loggedUser"
                 @click="removeUserTeam(user.id)">
-          <span class="remove-user-text me-2">{{ text.removeUser }}</span><i class="fas fa-times"></i>
+          <span class="remove-user-text me-2">{{ trans.removeUser }}</span><i class="fas fa-times"></i>
         </button>
       </li>
     </ul>
@@ -221,9 +224,9 @@ const UserTeamsApp = {
   template: `
   <div id="add-user-team" class="mb-5">
     <div class="mb-4 d-flex justify-content-between align-items-center">
-      <h3 class="fw-light mb-0">{{ text.myTeams }}</h3>
+      <h3 class="fw-light mb-0">{{ trans.myTeams }}</h3>
       <input type="text" class="form-control w-50 me-1 mb-0"
-             :placeholder="text.filterUsers"
+             :placeholder="trans.filterUsers"
              v-model="userFilter" />
     </div>
     <div class="d-flex justify-content-center fs-2"
