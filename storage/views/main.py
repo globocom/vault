@@ -254,10 +254,7 @@ def objectview(request, project, container, prefix=None):
     }
 
     if len(objects) >= limit:
-        if prefix:
-            context['marker'] = f'{objects[-1].get("name") or objects[-1].get("subdir")}'
-        else:
-            context['marker'] = f'{container}/{objects[-1].get("name") or objects[-1].get("subdir")}'
+        context['marker'] = f'{objects[-1].get("name") or objects[-1].get("subdir")}'
 
     return render(request, "objectview.html", context)
 
