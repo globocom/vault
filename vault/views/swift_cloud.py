@@ -63,7 +63,7 @@ def swift_cloud_report(request):
     try:
         reponse = sct_client.transfer_status_by_projects(
             [p["id"] for p in projects])
-        if response.ok:
+        if reponse.status_code == 200:
             data = reponse.json()
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
@@ -117,7 +117,7 @@ def swift_cloud_status(request):
     try:
         response = sct_client.transfer_status_by_projects(
             [p["id"] for p in projects])
-        if response.ok:
+        if reponse.status_code == 200:
             data = response.json()
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
@@ -151,7 +151,7 @@ def swift_cloud_project_status(request):
 
     try:
         response = sct_client.transfer_get(project_id)
-        if response.ok:
+        if reponse.status_code == 200:
             data = response.json()
         else:
             status = _("Couldn't get migration data")
@@ -266,7 +266,7 @@ def swift_cloud_price_preview(request):
     result = {"price": None, "currency": None}
     status = 500
 
-    if response.ok:
+    if reponse.status_code == 200:
         result = response.json()
         status = 200
 
