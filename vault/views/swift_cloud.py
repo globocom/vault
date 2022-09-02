@@ -1,7 +1,6 @@
 import json
 import logging
 import pdb
-from urllib import response
 from swiftclient import client
 from django.conf import settings
 from django.shortcuts import render
@@ -61,10 +60,10 @@ def swift_cloud_report(request):
 
     data = []
     try:
-        reponse = sct_client.transfer_status_by_projects(
+        response = sct_client.transfer_status_by_projects(
             [p["id"] for p in projects])
-        if reponse and reponse.status_code == 200:
-            data = reponse.json()
+        if response.ok:
+            data = response.json()
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
 
@@ -117,7 +116,7 @@ def swift_cloud_status(request):
     try:
         response = sct_client.transfer_status_by_projects(
             [p["id"] for p in projects])
-        if reponse and reponse.status_code == 200:
+        if response.ok:
             data = response.json()
     except Exception as err:
         log.exception(f"Swift Cloud Tools Error: {err}")
@@ -151,7 +150,7 @@ def swift_cloud_project_status(request):
 
     try:
         response = sct_client.transfer_get(project_id)
-        if reponse and reponse.status_code == 200:
+        if response.ok:
             data = response.json()
         else:
             status = _("Couldn't get migration data")
@@ -266,7 +265,7 @@ def swift_cloud_price_preview(request):
     result = {"price": None, "currency": None}
     status = 500
 
-    if reponse and reponse.status_code == 200:
+    if response.ok:
         result = response.json()
         status = 200
 
