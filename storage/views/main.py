@@ -874,22 +874,27 @@ def edit_cors(request, project, container):
             if host:
                 cors += " {}".format(host)
 
-            headers = {
-                'x-container-meta-access-control-allow-origin': cors.strip()
-            }
+            if len(cors.strip()) <= 256:
+                headers = {
+                    'x-container-meta-access-control-allow-origin': cors.strip()
+                }
 
-            try:
-                client.post_container(storage_url,
-                    auth_token, container, headers=headers, http_conn=http_conn)
+                try:
+                    client.post_container(storage_url,
+                        auth_token, container, headers=headers, http_conn=http_conn)
 
-                messages.add_message(request, messages.SUCCESS, _('CORS updated'))
+                    messages.add_message(request, messages.SUCCESS, _('CORS updated'))
 
-                actionlog.log(request.user.username, "update",
-                              'headers: {}, container: {}'.format(headers, container))
+                    actionlog.log(request.user.username, "update",
+                                  'headers: {}, container: {}'.format(headers, container))
 
-            except client.ClientException as err:
-                log.exception('Exception: {0}'.format(err))
-                messages.add_message(request, messages.ERROR, _('CORS update failed'))
+                except client.ClientException as err:
+                    log.exception('Exception: {0}'.format(err))
+                    messages.add_message(request, messages.ERROR, _('CORS update failed'))
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR, _('CORS value must be less than 256 characters'))
 
     if request.method == 'GET':
         delete = request.GET.get('delete', None)
