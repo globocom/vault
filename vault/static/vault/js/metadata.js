@@ -99,7 +99,6 @@ Metadata.CacheControl = {};
     function bindEvents() {
         $btnCacheControl.on('click', function() {
             cacheUrl = $(this).data('cache-control-url');
-            $inputMaxAge.val(180);
             getMetaInfo(cacheUrl.replace('cache-control', 'metadata'));
         });
 
@@ -131,6 +130,7 @@ Metadata.CacheControl = {};
                     var regexp = /max-age=([0-9]+)/gi;
                     var match = regexp.exec(cacheControl);
                     $inputMaxAge.val(match[1]);
+                    $inputMaxAge.prop('disabled', false);
                     break;
                 }
             }
