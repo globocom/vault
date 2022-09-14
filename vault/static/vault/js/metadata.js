@@ -134,6 +134,10 @@ Metadata.CacheControl = {};
                     break;
                 }
             }
+            if ($inputMaxAge.prop('disabled')) {
+                $inputMaxAge.val(180);
+                $inputMaxAge.prop('disabled', false);
+            }
         })
         .fail(function (data) {
             Base.Messages.setMessage({
