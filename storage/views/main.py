@@ -65,7 +65,7 @@ def containerview(request, project):
     try:
         account_stat, containers = client.get_account(storage_url,
             auth_token, full_listing=False, http_conn=http_conn,
-            limit=limit, marker=marker)
+            limit=(2*limit), marker=marker)
     except client.ClientException as err:
         log.exception('Exception: {0}'.format(err))
         messages.add_message(request, messages.ERROR,
@@ -74,6 +74,7 @@ def containerview(request, project):
 
     containers = _hide_containers_with_prefixes(containers)
     account_stat = replace_hyphens(account_stat)
+    containers = containers[:limit]
 
     context = {
         'account_stat': account_stat,
