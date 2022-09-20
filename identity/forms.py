@@ -16,7 +16,7 @@ BOOLEAN_CHOICES = (
     (False, 'No')
 )
 CLOUD_CHOICES = (
-    ('gcp', 'Google Cloud')
+    ('gcp', 'Google Cloud'),
 )
 
 
