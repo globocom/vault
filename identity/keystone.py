@@ -398,19 +398,6 @@ class KeystoneBase:
         # if user:
         #     self.user_update_enabled(user.id, False)
 
-        # Delete from Swift
-        del_swift = self._project_delete_swift(project.id)
-
-        # Swift returns 404 if the project had never been used
-        if del_swift.status_code not in (204, 404):
-            reason = 'Unable to delete project from Swift (HTTP {})'.format(
-                del_swift.status_code)
-
-            return {
-                'status': False,
-                'reason': reason
-            }
-
         # Delete user named "u_<project_name>"
         user = self.find_user_with_u_prefix(project.id, 'u')
         if user:

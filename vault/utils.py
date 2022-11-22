@@ -148,8 +148,11 @@ def delete_current_project(user_id):
     except Exception:
         return False
 
-    request.session.pop('project_id')
-    request.session.pop('project_name')
+    try:
+        request.session.pop('project_id')
+        request.session.pop('project_name')
+    except KeyError:
+        pass
 
     return True
 
@@ -163,8 +166,11 @@ def purge_current_project(request, project_id):
     except Exception:
         return False
 
-    request.session.pop('project_id')
-    request.session.pop('project_name')
+    try:
+        request.session.pop('project_id')
+        request.session.pop('project_name')
+    except KeyError:
+        pass
 
     return True
 
