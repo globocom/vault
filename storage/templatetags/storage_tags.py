@@ -47,7 +47,7 @@ def lastpart(value):
 @stringfilter
 def dateconv(value):
     try:
-        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
         value = value.replace(tzinfo=utc)
     except ValueError:
         value = 0.0

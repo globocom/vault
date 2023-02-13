@@ -112,10 +112,10 @@
                     title="{% trans 'Click to copy URL' %}">Copy URL</button>
           </td>
           <td>
-            {{obj.metadata.get('last-modified')|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+            {{obj.last_modified|dateconv|date:"d/m/Y H:i"}}
           </td>
           <td>
-            {{obj.size|filesizeformat}}
+            {{obj.bytes|filesizeformat}}
           </td>
           <td>
             <button class="btn-meta btn btn-sm btn-light" title="Object Metadata"
