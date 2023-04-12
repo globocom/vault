@@ -55,6 +55,7 @@ RUN	pip install supervisor; mkdir /var/log/supervisor/ && \
     chmod +x /swift/bin/* && \
     cp /usr/local/src/swift/test/sample.conf /etc/swift/test.conf && \
     sed -i 's/\$PrivDropToGroup syslog/\$PrivDropToGroup adm/' /etc/rsyslog.conf && \
+    sed -i '/imklog/s/^/#/' /etc/rsyslog.conf && \
     mkdir -p /var/log/swift/hourly; chown -R syslog.adm /var/log/swift; chmod -R g+w /var/log/swift && \
     mkdir -p /var/cache/swift; chown -R root:swift /var/cache/swift; chmod -R 775 /var/cache/swift && \
     echo swift:fingertips | chpasswd; usermod -a -G sudo swift && \
