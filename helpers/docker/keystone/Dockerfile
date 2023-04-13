@@ -7,7 +7,7 @@ RUN set -x \
     && apt-get install -y libffi-dev python-dev libssl-dev netcat default-libmysqlclient-dev \
     && apt-get -y clean all
 
-RUN curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
+RUN curl -kfSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
     && tar xvf keystone-${VERSION}.tar.gz \
     && cd keystone-${VERSION} \
     && pip install -r requirements.txt \
@@ -23,7 +23,7 @@ COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
 COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
 
 RUN pip install -r /etc/requirements.txt \
-    && pip install python-openstackclient==4.0.0
+    && pip install python-openstackclient==4.0.0 --no-deps
 
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
 
