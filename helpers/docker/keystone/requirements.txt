@@ -14,7 +14,7 @@ decorator==4.2.1
 dogpile.cache==0.6.5
 enum-compat==0.0.2
 enum34==1.1.6
-eventlet==0.20.0
+eventlet==0.31.0
 fasteners==0.14.1
 funcsigs==1.0.2
 functools32==3.2.3.post2
