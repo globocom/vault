@@ -14,7 +14,7 @@ setup(
     author_email='storm@g.globo',
     url='https://github.com/globocom/vault',
     install_requires=[
-        'Babel==2.3.4',
+        'Babel==2.9.1',
         'gunicorn==19.3.0',
         'Django==3.1.6',
         'django3-all-access==0.10.0',
