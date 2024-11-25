@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 
 from swiftclient import client
 

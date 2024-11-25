@@ -26,7 +26,6 @@ if DEBUG:
 ENVIRON = os.getenv("VAULT_ENVIRON", None)
 
 INSTALLED_APPS = [
-    "allaccess",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -41,7 +40,6 @@ INSTALLED_APPS = [
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
-    "allaccess.backends.AuthorizedServiceBackend",
 )
 
 MIDDLEWARE = [
@@ -52,6 +50,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "vault.middleware.auth.AuthMiddleware",
 ]
 
 TEMPLATES = [
@@ -77,6 +76,7 @@ WSGI_APPLICATION = "vault.wsgi.application"
 ROOT_URLCONF = "vault.urls"
 
 LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/accounts/callback/oidc/"
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -202,6 +202,13 @@ SWIFT_CLOUD_TOOLS_API_KEY = os.getenv("VAULT_SWIFT_CLOUD_TOOLS_API_KEY")
 SWIFT_CLOUD_PROVIDERS = ["gcp"]
 SWIFT_CLOUD_GCP_SERVICE_ID = '95FF-2EF5-5EA1'
 SWIFT_CLOUD_GCP_SKU = '6B9B-6AB4-AC59'
+
+OIDC_CLIENT_ID = os.getenv("VAULT_OIDC_CLIENT_ID")
+OIDC_CLIENT_SECRET = os.getenv("VAULT_OIDC_CLIENT_SECRET")
+OIDC_USERINFO_ENDPOINT = os.getenv("VAULT_OIDC_USERINFO_ENDPOINT")
+OIDC_ACCESS_TOKEN_URL = os.getenv("VAULT_OIDC_ACCESS_TOKEN_URL")
+OIDC_AUTHORIZE_URL = os.getenv("VAULT_OIDC_AUTHORIZE_URL")
+OIDC_LOGOUT = os.getenv("VAULT_OIDC_LOGOUT")
 
 # Logging conf
 LOGGING = {

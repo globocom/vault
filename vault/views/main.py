@@ -1,7 +1,6 @@
 """
 Vault Generic Views
 """
-
 import json
 import logging
 
@@ -10,19 +9,21 @@ from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
-from django.shortcuts import render
+from django.shortcuts import render, redirect, resolve_url
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.signals import user_logged_out
+from django.conf import settings
 from django.apps import apps
 
 from keystoneclient import exceptions
+from functools import wraps
+from datetime import datetime
 
-from allaccess.models import Provider
-from allaccess.views import OAuthCallback, OAuthRedirect
+from authlib.integrations.django_client import OAuth
 
 from actionlogger.actionlogger import ActionLogger
 from identity.keystone import Keystone
@@ -32,7 +33,73 @@ from vault.client import OAuth2BearerClient
 
 log = logging.getLogger(__name__)
 actionlog = ActionLogger()
+oauth = OAuth()
 
+oauth.register(
+    name='oidc',
+    client_id=settings.OIDC_CLIENT_ID,
+    client_secret=settings.OIDC_CLIENT_SECRET,
+    userinfo_endpoint=settings.OIDC_USERINFO_ENDPOINT,
+    access_token_url=settings.OIDC_ACCESS_TOKEN_URL,
+    access_token_params=None,
+    authorize_url=settings.OIDC_AUTHORIZE_URL,
+    authorize_params=None,
+    client_kwargs={'scope': 'email'},
+)
+
+
+def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
+    """
+    Decorator for views that checks that the user passes the given test,
+    redirecting to the log-in page if necessary. The test should be a callable
+    that takes the user object and returns True if the user passes.
+    """
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            expires_at = request.session.get('expires_at')
+            expires_at_date = None
+            if expires_at:
+                expires_at_date = datetime.utcfromtimestamp(expires_at)
+            if not expires_at_date or expires_at_date < datetime.utcnow():
+                log.info('Token has expired for user [{}]'.format(request.user))
+                messages.add_message(request, messages.ERROR, "Seu token expirou")
+                return redirect(settings.LOGIN_URL)
+            if request.user:
+                return view_func(request, *args, **kwargs)
+            return redirect(settings.LOGIN_URL)
+        return _wrapped_view
+    return decorator
+
+def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
+    """
+    Decorator for views that checks that the user is logged in, redirecting
+    to the log-in page if necessary.
+    """
+    actual_decorator = user_passes_test(
+        lambda u: u.is_authenticated,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+def logout(request):
+    """
+    Remove the authenticated user's ID from the request and flush their session
+    data.
+    """
+    # Dispatch the signal before the user is logged out so the receivers have a
+    # chance to find out *who* logged out.
+    user = getattr(request, 'user', None)
+    if not getattr(user, 'is_authenticated', True):
+        user = None
+    user_logged_out.send(sender=user.__class__, request=request, user=user)
+    request.session.flush()
+    if hasattr(request, 'user'):
+        from django.contrib.auth.models import AnonymousUser
+        request.user = AnonymousUser()
 
 def _build_next_url(request):
     next_url = request.META.get("HTTP_REFERER")
@@ -44,7 +111,6 @@ def _build_next_url(request):
         return next_url
 
     return reverse("main")
-
 
 def switch(request, project_id):
     """Switch session parameters to project with project_id"""
@@ -165,15 +231,14 @@ class VaultLogin(LoginView):
         user = self.request.user
         providers = []
 
-        for provider in Provider.objects.all():
-            providers.append({
-                "name": provider.name,
-                "url": reverse("allaccess-login", kwargs={"provider": provider.name})
-            })
+        providers.append({
+            "name": "oidc",
+            "url": reverse("oidc-login")
+        })
 
         context.update({
             "providers": providers,
-            "username": user.get_username()
+            "username": user and user.get_username()
         })
 
         return context
@@ -185,7 +250,9 @@ class VaultLogout(View):
         user = request.user
         logout(request)
         log.info(_("User logged out:") + " [{}]".format(user))
-        return HttpResponseRedirect(reverse("main"))
+        url = f"{settings.OIDC_LOGOUT}?client_id={settings.OIDC_CLIENT_ID}&redirect_uri={request.scheme}://{request.get_host()}{settings.LOGIN_URL}"
+        # return HttpResponseRedirect(reverse("main"))
+        return redirect(url)
 
 
 def handler500(request):
@@ -323,72 +390,29 @@ class ListUsersTeamsView(SuperUserMixin, FormView):
         return self.render_to_response(context)
 
 
-class OAuthBearerCallback(OAuthCallback):
-    "Callback de OAuth2 usando header de bearer"
+class OIDCLogin(View):
 
-    def get_client(self, provider):
-        return OAuth2BearerClient(provider)
+    def get(self, request):
+        oidc = oauth.create_client('oidc')
+        redirect_uri = f"{request.scheme}://{request.get_host()}{settings.LOGIN_REDIRECT_URL}"
+        return oidc.authorize_redirect(request, redirect_uri)
 
-    def get_login_redirect(self, provider, user, access, new=False):
-        return reverse("main")
+class OIDCAuthorize(View):
 
-    def get_user_id(self, provider, info):
-        identifier = None
-
-        if hasattr(info, "get"):
-            identifier = info.get("email")
-
-        if identifier is not None:
-            return identifier
-
-        return super(OAuthBearerCallback, self).get_user_id(provider, info)
-
-    def get_or_create_user(self, provider, access, info):
-        "Vincula o usuário django logado à sua conta"
-        username = info.get("username")
-
-        if username is None:
-            username = info.get("email")
-
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            user = User.objects.create_user(username=username)
-            self._save_user_info(user, info)
-
-            return user
-
-    def _save_user_info(self, user, info):
-        if "email" in info:
-            user.email = info["email"]
-
-        if "name" in info:
-            parts = info["name"].split(" ", 1)
-            user.first_name = parts[0]
-            user.last_name = (len(parts) > 1) and parts[1] or ""
-
-        user.save()
-
-
-class OAuthVaultCallback(OAuthBearerCallback):
-    pass
-
-
-class OAuthVaultRedirect(OAuthRedirect):
-
-    def get_additional_parameters(self, provider):
-
-        if provider.name == "facebook":
-            # Request permission to see user's email
-            return {"scope": "email"}
-
-        if provider.name == "google":
-            # Request permission to see user's profile and email
-            perms = ["userinfo.email", "userinfo.profile"]
-            scope = " ".join(["https://www.googleapis.com/auth/" + p for p in perms])
-            return {"scope": scope}
-
-        return super(OAuthVaultRedirect, self).get_additional_parameters(provider)
+    def get(self, request):
+        token = oauth.oidc.authorize_access_token(request)
+        user = oauth.oidc.userinfo(token=token)
+        user.is_authenticated = True
+        user = User.objects.get(email=user.email)
+        request.user = user
+        request._cached_user = user
+        request.session['user'] = user
+        request.session['_auth_user_id'] = user.id
+        request.session['_auth_user_backend'] = user
+        request.session['access_token'] = token.get('access_token')
+        request.session['refresh_token'] = token.get('refresh_token')
+        request.session['expires_at'] = token.get('expires_at')
+        return redirect(reverse("change_project"))
 
 
 @login_required

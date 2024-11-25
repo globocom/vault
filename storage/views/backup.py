@@ -11,7 +11,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 
 from keystoneclient import exceptions
 

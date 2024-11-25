@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template.defaultfilters import filesizeformat
 
