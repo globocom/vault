@@ -62,7 +62,7 @@ def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIE
             if expires_at:
                 expires_at_date = datetime.utcfromtimestamp(expires_at)
             if not expires_at_date or expires_at_date < datetime.utcnow():
-                log.info('Token has expired for user [{}]'.format(request.user))
+                # log.info('Token has expired for user [{}]'.format(request.user))
                 messages.add_message(request, messages.ERROR, "Seu token expirou")
                 return redirect(settings.LOGIN_URL)
             if request.user:
@@ -250,7 +250,7 @@ class VaultLogout(View):
         user = request.user
         logout(request)
         log.info(_("User logged out:") + " [{}]".format(user))
-        url = f"{settings.OIDC_LOGOUT}?client_id={settings.OIDC_CLIENT_ID}&redirect_uri={request.scheme}://{request.get_host()}{settings.LOGIN_URL}"
+        url = f"{settings.OIDC_LOGOUT}?client_id={settings.OIDC_CLIENT_ID}&redirect_uri={settings.HTTP_PROTOCOL}://{request.get_host()}{settings.LOGIN_URL}"
         # return HttpResponseRedirect(reverse("main"))
         return redirect(url)
 
@@ -394,7 +394,7 @@ class OIDCLogin(View):
 
     def get(self, request):
         oidc = oauth.create_client('oidc')
-        redirect_uri = f"{request.scheme}://{request.get_host()}{settings.LOGIN_REDIRECT_URL}"
+        redirect_uri = f"{settings.HTTP_PROTOCOL}://{request.get_host()}{settings.LOGIN_REDIRECT_URL}"
         return oidc.authorize_redirect(request, redirect_uri)
 
 class OIDCAuthorize(View):

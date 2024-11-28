@@ -77,6 +77,7 @@ ROOT_URLCONF = "vault.urls"
 
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/accounts/callback/oidc/"
+HTTP_PROTOCOL = "https"
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
