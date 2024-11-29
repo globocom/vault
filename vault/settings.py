@@ -77,6 +77,9 @@ ROOT_URLCONF = "vault.urls"
 
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/accounts/callback/oidc/"
+
+PROVIDER_NAME = os.getenv("VAULT_PROVIDER_NAME", "Accounts Connect")
+
 HTTP_PROTOCOL = "https"
 
 # Password validation

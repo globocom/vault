@@ -232,7 +232,7 @@ class VaultLogin(LoginView):
         providers = []
 
         providers.append({
-            "name": "oidc",
+            "name": settings.PROVIDER_NAME,
             "url": reverse("oidc-login")
         })
 
