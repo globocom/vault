@@ -397,13 +397,14 @@ class OIDCLogin(View):
         redirect_uri = f"{settings.HTTP_PROTOCOL}://{request.get_host()}{settings.LOGIN_REDIRECT_URL}"
         return oidc.authorize_redirect(request, redirect_uri)
 
+
 class OIDCAuthorize(View):
 
     def get(self, request):
         token = oauth.oidc.authorize_access_token(request)
-        user = oauth.oidc.userinfo(token=token)
-        user.is_authenticated = True
-        user = User.objects.get(email=user.email)
+        info = oauth.oidc.userinfo(token=token)
+        info.is_authenticated = True
+        user = self.get_or_create_user(info)
         request.user = user
         request._cached_user = user
         request.session['user'] = user
@@ -413,6 +414,35 @@ class OIDCAuthorize(View):
         request.session['refresh_token'] = token.get('refresh_token')
         request.session['expires_at'] = token.get('expires_at')
         return redirect(reverse("change_project"))
+
+    def get_or_create_user(self, info):
+        "Vincula o usuário django logado à sua conta"
+        username = info.get("username")
+
+        if username is None:
+            username = info.get("email")
+
+        name = username.split('@')
+        info['name'] = name[0]
+
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = User.objects.create_user(username=username)
+            self._save_user_info(user, info)
+
+            return user
+
+    def _save_user_info(self, user, info):
+        if "email" in info:
+            user.email = info["email"]
+
+        if "name" in info:
+            parts = info["name"].split(" ", 1)
+            user.first_name = parts[0]
+            user.last_name = (len(parts) > 1) and parts[1] or ""
+
+        user.save()
 
 
 @login_required
