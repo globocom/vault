@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 
 
 @login_required

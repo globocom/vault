@@ -19,14 +19,11 @@ urlpatterns = [
     # overwrite admin:logout (need to be before admin urls)
     re_path(r"^admin/logout/$", views.VaultLogout.as_view(), name="vault_logout"),
 
-    # OAuthCallback
-    re_path(r"^accounts/callback/(?P<provider>[\w\-]+)/$", views.OAuthVaultCallback.as_view(), name="allaccess-callback"),
-
     # OAuthLogin
-    re_path(r"^accounts/login/(?P<provider>[\w\-]+)/$", views.OAuthVaultRedirect.as_view(), name="allaccess-login"),
+    re_path(r"^accounts/login/oidc/$", views.OIDCLogin.as_view(), name="oidc-login"),
 
-    # OAuth
-    re_path(r"^accounts/", include("allaccess.urls")),
+    # OAuthCallback
+    re_path(r"^accounts/callback/oidc/$", views.OIDCAuthorize.as_view(), name="oidc-callback"),
 
     # Admin
     re_path(r"^admin/", admin.site.urls),

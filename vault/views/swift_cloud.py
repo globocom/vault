@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 from identity.keystone import Keystone
 from vault.models import GroupProjects
 from swift_cloud_tools.client import SCTClient

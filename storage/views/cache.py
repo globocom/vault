@@ -3,7 +3,7 @@ import requests
 from django.conf import settings
 from django.shortcuts import render
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from vault.views.main import login_required
 from django.utils.translation import gettext_lazy as _
 from vault import utils
 from actionlogger.actionlogger import ActionLogger
