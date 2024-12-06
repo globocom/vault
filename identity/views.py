@@ -405,7 +405,8 @@ class CreateProjectView(BaseProjectView):
             cloud = request.POST.get("cloud")
             if cloud != "":
                 update_swift_account(user.name, password,
-                    project.name, {"x-account-meta-cloud": cloud})
+                    project.name, {"x-account-meta-cloud": cloud,
+                    "account-meta-cloud-migration": "x"})
 
         actionlog.log(request.user.username, "create", project)
         actionlog.log(request.user.username, "create", user)

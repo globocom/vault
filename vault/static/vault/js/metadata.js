@@ -166,6 +166,7 @@ Metadata.CacheControl = {};
                 description: data.message,
                 type: 'success'
             });
+            $inputMaxAge.prop('disabled', true);
             $('#modal-cache-control').modal('hide');
             $btnSend.removeClass('waiting');
         })
@@ -174,6 +175,7 @@ Metadata.CacheControl = {};
                 description: data.message,
                 type: 'error'
             });
+            $inputMaxAge.prop('disabled', true);
             $('#modal-cache-control').modal('hide');
             $btnSend.removeClass('waiting');
         });
