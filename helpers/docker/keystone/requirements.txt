@@ -51,7 +51,7 @@ oslo.middleware==3.34.0
 oslo.policy==1.33.1
 oslo.serialization==2.24.0
 oslo.service==1.29.0
-oslo.utils==3.35.0
+oslo.utils==4.10.1
 osprofiler==1.15.2
 passlib==1.7.1
 Paste==2.0.3
