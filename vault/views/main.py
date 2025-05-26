@@ -43,8 +43,9 @@ oauth.register(
     access_token_url=settings.OIDC_ACCESS_TOKEN_URL,
     access_token_params=None,
     authorize_url=settings.OIDC_AUTHORIZE_URL,
+    jwks_uri=settings.OIDC_JWKS_URI,
     authorize_params=None,
-    client_kwargs={'scope': 'email'},
+    client_kwargs={'scope': 'email openid'},
 )
 
 
